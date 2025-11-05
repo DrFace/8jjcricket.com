@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { SITE } from '@/lib/seo'
 import Link from 'next/link'
@@ -29,6 +29,8 @@ export const metadata: Metadata = {
     shortcut: '/favicon.ico',
     apple: '/apple-touch-icon.png',
   },
+}
+export const viewport: Viewport = {
   themeColor: '#0ea5e9',
 }
 
