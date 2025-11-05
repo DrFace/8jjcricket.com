@@ -22,7 +22,7 @@ export default function HomePage() {
       <BannerCarousel />
 
       <section className="space-y-3">
-        <h1 className="text-2xl font-bold">Live Cricket</h1>
+        <h1 className="text-2xl font-bold">Live00 Cricket</h1>
         <LiveGrid />
       </section>
 
