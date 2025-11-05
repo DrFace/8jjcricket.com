@@ -1,6 +1,8 @@
 // /app/api/recent/route.ts
 import { NextResponse } from 'next/server'
 import { smFetch, mapTeam } from '@/lib/sportmonks'
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET() {
   try {
@@ -26,3 +28,4 @@ export async function GET() {
     return NextResponse.json({ error: e.message }, { status: 500 })
   }
 }
+
