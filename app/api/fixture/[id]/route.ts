@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 const TOKEN =
   process.env.SPORTMONKS_TOKEN ||
-  'WIC2mh4z3wO7x7dxAloPWmgiGi6GBZ17LulzrAe3dzq8FHOHZ2Sm9vmyKz9Q'
+  'BdX22sWKKmJHbLsvIQEQesYN7riNnmiAgTnCdWlgj5XwcmA5PucrUdNVCFXz'
 
 const BASE = 'https://cricket.sportmonks.com/api/v2.0'
 

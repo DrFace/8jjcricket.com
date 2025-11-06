@@ -1,8 +1,9 @@
-import type { Metadata, Viewport } from 'next'
-import './globals.css'
-import { SITE } from '@/lib/seo'
-import Link from 'next/link'
-import Image from 'next/image'
+import type { Metadata, Viewport } from "next";
+import "./globals.css";
+import { SITE } from "@/lib/seo";
+import Link from "next/link";
+import Image from "next/image";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -16,25 +17,29 @@ export const metadata: Metadata = {
     description: SITE.description,
     url: SITE.url,
     siteName: SITE.name,
-    images: [{ url: '/og.jpg', width: 1200, height: 630 }],
-    type: 'website',
+    images: [{ url: "/og.jpg", width: 1200, height: 630 }],
+    type: "website",
   },
   robots: {
     index: true,
     follow: true,
   },
-  alternates: { canonical: '/' },
+  alternates: { canonical: "/" },
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
-}
+};
 export const viewport: Viewport = {
-  themeColor: '#0ea5e9',
-}
+  themeColor: "#0ea5e9",
+};
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen flex flex-col bg-gray-50 selection:bg-blue-100 selection:text-blue-800">
@@ -45,13 +50,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20">
                 🎉
               </span>
-              <span className="opacity-90">Welcome bonus 150% + daily free spins</span>
+              <span className="opacity-90">
+                Welcome bonus 150% + daily free spins
+              </span>
             </p>
             <div className="hidden md:flex items-center gap-3">
-              <Link href="/promos" className="rounded-full bg-white/10 px-3 py-1.5 hover:bg-white/20 transition">
+              <Link
+                href="/promos"
+                className="rounded-full bg-white/10 px-3 py-1.5 hover:bg-white/20 transition"
+              >
                 View Promos
               </Link>
-              <Link href="/minigames" className="rounded-full bg-white px-3 py-1.5 font-semibold text-gray-900 hover:scale-105 transition">
+              <Link
+                href="/minigames"
+                className="rounded-full bg-white px-3 py-1.5 font-semibold text-gray-900 hover:scale-105 transition"
+              >
                 Play Minigames →
               </Link>
             </div>
@@ -78,10 +91,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
             <nav className="hidden md:flex gap-6 text-[15px] font-semibold text-gray-700">
               {[
-                { href: '/', label: '🏠 Home' },
-                { href: '/upcoming', label: '⏰ Upcoming' },
-                { href: '/recent', label: '🏁 Recent' },
-                { href: '/minigames', label: '🎮 Minigames' },
+                { href: "/", label: "🏠 Home" },
+                { href: "/upcoming", label: "⏰ Upcoming" },
+                { href: "/recent", label: "🏁 Recent" },
+                { href: "/players", label: "👥 Players" }, 
+                { href: "/minigames", label: "🎮 Minigames" },
               ].map((link) => (
                 <Link
                   key={link.href}
@@ -128,19 +142,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                title: 'Instant Withdrawals',
-                desc: 'Cashout in minutes with trusted gateways',
-                emoji: '⚡',
+                title: "Instant Withdrawals",
+                desc: "Cashout in minutes with trusted gateways",
+                emoji: "⚡",
               },
               {
-                title: 'Live Cricket Odds',
-                desc: 'Real-time updates during every over',
-                emoji: '🏏',
+                title: "Live Cricket Odds",
+                desc: "Real-time updates during every over",
+                emoji: "🏏",
               },
               {
-                title: 'Daily Missions',
-                desc: 'Spin, scratch & win bonus coins',
-                emoji: '🎯',
+                title: "Daily Missions",
+                desc: "Spin, scratch & win bonus coins",
+                emoji: "🎯",
               },
             ].map((c) => (
               <div
@@ -186,7 +200,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="container grid grid-cols-1 gap-6 md:grid-cols-3">
             <div>
               <div className="mb-2 flex items-center gap-2">
-                <Image src="/8jjlogo.png" alt="8jjcricket" width={32} height={32} />
+                <Image
+                  src="/8jjlogo.png"
+                  alt="8jjcricket"
+                  width={32}
+                  height={32}
+                />
                 <span className="font-semibold">8jjcricket</span>
               </div>
               <p className="text-sm text-gray-500">
@@ -196,10 +215,30 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="text-sm">
               <p className="mb-2 font-semibold">Quick Links</p>
               <div className="grid grid-cols-2 gap-2">
-                <Link href="/promos" className="text-gray-600 hover:text-gray-900">Promos</Link>
-                <Link href="/minigames" className="text-gray-600 hover:text-gray-900">Minigames</Link>
-                <Link href="/recent" className="text-gray-600 hover:text-gray-900">Recent</Link>
-                <Link href="/upcoming" className="text-gray-600 hover:text-gray-900">Upcoming</Link>
+                <Link
+                  href="/promos"
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  Promos
+                </Link>
+                <Link
+                  href="/minigames"
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  Minigames
+                </Link>
+                <Link
+                  href="/recent"
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  Recent
+                </Link>
+                <Link
+                  href="/upcoming"
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  Upcoming
+                </Link>
               </div>
             </div>
             <div className="text-sm">
@@ -222,11 +261,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             href="/minigames"
             className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-2 text-sm font-semibold text-white shadow-xl shadow-emerald-500/20 ring-1 ring-white/30 hover:brightness-110 active:scale-95"
           >
-            <span className="i-lucide-rocket" aria-hidden>🚀</span>
+            <span className="i-lucide-rocket" aria-hidden>
+              🚀
+            </span>
             Quick Play
           </Link>
         </div>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-FBJM2CQHHS"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FBJM2CQHHS');
+  `}
+        </Script>
       </body>
     </html>
-  )
+  );
 }
