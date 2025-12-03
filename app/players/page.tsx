@@ -181,6 +181,7 @@ export default function PlayersPage() {
                                         {paged.map((p) => (
                                             <PlayerCard
                                                 key={p.id}
+                                                id={p.id}                
                                                 fullname={p.fullname}
                                                 position={p.position}
                                                 country={p.country}
