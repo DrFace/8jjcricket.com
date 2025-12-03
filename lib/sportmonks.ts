@@ -7,21 +7,29 @@ if (!TOKEN) {
   console.warn('⚠️ SPORTMONKS_API_TOKEN is missing in .env.local')
 }
 
-export async function smFetch(path: string, init?: RequestInit) {
-  const sep = path.includes('?') ? '&' : '?'
-  const url = `${BASE}${path}${sep}api_token=${TOKEN}`
 
-  const res = await fetch(url, { ...init, next: { revalidate: 60 } })
-  const text = await res.text()
-  let json: any = {}
-  try { json = text ? JSON.parse(text) : {} } catch { /* ignore */ }
+export async function smFetch(path: string, options: any = {}) {
+  const url = `https://cricket.sportmonks.com/api/v2.0${path}${
+    path.includes('?') ? '&' : '?'
+  }api_token=${process.env.SPORTMONKS_API_TOKEN}`;
 
+  const res = await fetch(url, {
+    cache: 'no-store', // IMPORTANT — stop Next.js from caching SportMonks responses
+    ...options,
+  });
+
+  // Rate-limit handling
   if (!res.ok) {
-    // surface API error messages
-    const msg = json?.message?.message || json?.message || text || `HTTP ${res.status}`
-    throw new Error(`SportMonks ${res.status}: ${msg}`)
+    const text = await res.text();
+
+    if (text.includes("Too Many Attempts") || res.status === 429) {
+      throw new Error("SPORTMONKS_RATE_LIMIT");
+    }
+
+    throw new Error(`SPORTMONKS_ERROR: ${res.status} - ${text}`);
   }
-  return json
+
+  return res.json();
 }
 
 export function mapTeam(t: any) {
