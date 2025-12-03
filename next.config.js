@@ -1,14 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  images: {
-    remotePatterns: [
-      { protocol: 'https', hostname: 'cdn.sportmonks.com' },
-    ],
-  },
-  experimental: {
-    optimizePackageImports: ['lucide-react'],
-  },
+  images: { remotePatterns: [{ protocol: 'https', hostname: 'cdn.sportmonks.com' }] },
+  experimental: { optimizePackageImports: ['lucide-react'] },
 };
 
-export default nextConfig;
+module.exports = nextConfig; 

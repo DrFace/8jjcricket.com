@@ -1,17 +1,22 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 type Props = {
+    id: number;
     fullname: string;
     position?: string | null;
     country?: string | null;
     image_path?: string | null;
 };
 
-export default function PlayerCard({ fullname, position, country, image_path }: Props) {
+export default function PlayerCard({ id, fullname, position, country, image_path }: Props) {
     return (
-        <div className="group rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:shadow-md">
+        <Link
+            href={`/players/${id}`}
+            className="group block rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:shadow-md"
+        >
             <div className="flex items-center gap-4">
                 <div className="relative h-20 w-20 overflow-hidden rounded-xl bg-gray-100">
                     {image_path ? (
@@ -36,6 +41,6 @@ export default function PlayerCard({ fullname, position, country, image_path }: 
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 }
