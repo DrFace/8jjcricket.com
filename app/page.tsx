@@ -21,10 +21,10 @@ export default function HomePage() {
     <div className="space-y-8">
       <BannerCarousel />
 
-      <section className="space-y-3">
+      {/* <section className="space-y-3">
         <h1 className="text-2xl font-bold">Live Cricket</h1>
         <LiveGrid />
-      </section>
+      </section> */}
 
       <section className="space-y-3">
         <h2 className="text-xl font-semibold">Latest Minigames</h2>

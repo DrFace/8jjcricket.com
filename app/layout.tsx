@@ -96,6 +96,7 @@ export default function RootLayout({
                 { href: "/recent", label: "🏁 Recent" },
                 { href: "/players", label: "👥 Players" }, 
                 { href: "/minigames", label: "🎮 Minigames" },
+                { href: "/news", label: "📰News" },
               ].map((link) => (
                 <Link
                   key={link.href}
