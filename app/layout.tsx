@@ -228,10 +228,10 @@ export default function RootLayout({
               <p className="mb-2 font-semibold">Quick Links</p>
               <div className="grid grid-cols-2 gap-2">
                 <Link
-                  href="/promos"
+                  href="/players"
                   className="text-gray-600 hover:text-gray-900"
                 >
-                  Promos
+                  Players
                 </Link>
                 <Link
                   href="/minigames"
@@ -256,8 +256,7 @@ export default function RootLayout({
             <div className="text-sm">
               <p className="mb-2 font-semibold">Trust & Safety</p>
               <ul className="space-y-1 text-gray-500">
-                <li>18+ Only • Play responsibly</li>
-                <li>Encrypted & secure payments</li>
+                <li>Play responsibly</li>
                 <li>Support: support@8jjcricket.com</li>
               </ul>
             </div>

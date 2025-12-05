@@ -6,7 +6,9 @@ import type { Fixture } from '@/types/fixture'  // ✅ from shared types
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
 export default function LiveGrid() {
-  const { data, error, isLoading } = useSWR('/api/live', fetcher, { refreshInterval: 10000 })
+  const { data, error, isLoading } = useSWR('/api/live', fetcher, {
+    refreshInterval: 10000,
+  })
 
   if (error) {
     return (
@@ -35,11 +37,16 @@ export default function LiveGrid() {
     )
   }
 
-  // List-style layout to match new Match Centre card
+  // 👉 Just layout/styling changed here: each LiveCard in its own card
   return (
-    <div className="divide-y divide-gray-100 text-sm">
-      {fixtures.map(f => (
-        <LiveCard key={f.id} f={f} />
+    <div className="space-y-3 text-sm">
+      {fixtures.map((f) => (
+        <div
+          key={f.id}
+          className="rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-sm hover:shadow-md transition"
+        >
+          <LiveCard f={f} />
+        </div>
       ))}
     </div>
   )
