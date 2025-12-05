@@ -10,25 +10,37 @@ type Article = {
     published_at: string | null;
 };
 
+const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
+const BACKEND_ORIGIN = "http://72.60.107.98:8001"; // for stripping host from image URLs
+
+function normalizeImageUrl(url: string | null): string | null {
+    if (!url) return null;
+    return url.replace(BACKEND_ORIGIN, "");
+}
+
 async function getArticle(slug: string): Promise<Article | null> {
-    const base = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE;
 
-    if (!base) {
-        throw new Error("NEXT_PUBLIC_API_BASE_URL is not set");
-    }
+    const url = `${base.replace(/\/+$/, "")}/news/${encodeURIComponent(slug)}`;
+    console.log("Fetching article from:", url);
 
-    const res = await fetch(`${base}/news/${slug}`, {
+    const res = await fetch(url, {
         cache: "no-store",
     });
 
     if (!res.ok) {
         console.error("Failed to fetch article:", res.status);
+        try {
+            console.error(await res.text());
+        } catch {
+            /* ignore */
+        }
         return null;
     }
 
     const json = await res.json();
     // Laravel resource: { data: {...} }
-    return json.data as Article;
+    return (json.data || null) as Article | null;
 }
 
 type Props = {
@@ -56,7 +68,7 @@ export default async function ArticlePage({ params }: Props) {
             <main className="min-h-screen bg-slate-950 text-slate-100 px-4 py-10">
                 <div className="max-w-3xl mx-auto">
                     <a href="/news" className="text-sky-400 hover:underline">
-                        ← Back to news
+                        ? Back to news
                     </a>
                     <p className="mt-6 text-slate-300">Article not found.</p>
                 </div>
@@ -64,11 +76,13 @@ export default async function ArticlePage({ params }: Props) {
         );
     }
 
+    const imgSrc = normalizeImageUrl(article.image_url);
+
     return (
         <main className="min-h-screen bg-slate-950 text-slate-100 px-4 py-10">
             <div className="max-w-3xl mx-auto">
                 <a href="/news" className="text-sky-400 hover:underline">
-                    ← Back to news
+                    ←  Back to news
                 </a>
 
                 <h1 className="text-3xl md:text-4xl font-bold mt-4 mb-3">
@@ -81,10 +95,10 @@ export default async function ArticlePage({ params }: Props) {
                     </p>
                 )}
 
-                {article.image_url && (
+                {imgSrc && (
                     <div className="mb-6 overflow-hidden rounded-2xl">
                         <img
-                            src={article.image_url}
+                            src={imgSrc}
                             alt={article.title}
                             className="w-full max-h-96 object-cover"
                         />
