@@ -1,39 +1,41 @@
-'use client'
+// components/Scoreboard.tsx
+'use client';
 
-import useSWR from 'swr'
-import { useMemo } from 'react'
-import { formatDate } from '@/lib/utils'
-import TeamBadge from '@/components/TeamBadge'
-import { useTeams } from '@/hooks/useTeams'
-import { usePlayers } from '@/hooks/usePlayers'
+import useSWR from 'swr';
+import { useMemo } from 'react';
+import Link from 'next/link';
+import { formatDate } from '@/lib/utils';
+import TeamBadge from '@/components/TeamBadge';
+import { useTeams } from '@/hooks/useTeams';
+import { usePlayers } from '@/hooks/usePlayers';
 
 const fetcher = async (u: string) => {
-  const res = await fetch(u, { headers: { Accept: 'application/json' } })
-  const text = await res.text()
-  let json: any = {}
+  const res = await fetch(u, { headers: { Accept: 'application/json' } });
+  const text = await res.text();
+  let json: any = {};
   try {
-    json = text ? JSON.parse(text) : {}
+    json = text ? JSON.parse(text) : {};
   } catch {
-    throw new Error(`Bad JSON (${res.status}) ${text.slice(0, 160)}`)
+    throw new Error(`Bad JSON (${res.status}) ${text.slice(0, 160)}`);
   }
-  if (!res.ok || json?.error) throw new Error(json?.error || `HTTP ${res.status}`)
-  return json
-}
+  if (!res.ok || json?.error) throw new Error(json?.error || `HTTP ${res.status}`);
+  return json;
+};
 
-type AnyRow = Record<string, any>
+type AnyRow = Record<string, any>;
 
 export default function Scoreboard({ id }: { id: string }) {
   const { data, error, isLoading } = useSWR(`/api/fixture/${id}`, fetcher, {
     refreshInterval: 15000,
-  })
-  const fx = data?.data
+  });
+  const fx = data?.data;
 
   // Arrays
-  const runs: AnyRow[] = (fx?.runs as any[] | undefined) ?? []
-  const batting: AnyRow[] = (fx?.batting as any[] | undefined) ?? []
-  const bowling: AnyRow[] = (fx?.bowling as any[] | undefined) ?? []
+  const runs: AnyRow[] = (fx?.runs as any[] | undefined) ?? [];
+  const batting: AnyRow[] = (fx?.batting as any[] | undefined) ?? [];
+  const bowling: AnyRow[] = (fx?.bowling as any[] | undefined) ?? [];
 
-  // Build ids
+  // Build team ids
   const teamIds = useMemo(() => {
     const ids = [
       fx?.localteam_id,
@@ -41,35 +43,36 @@ export default function Scoreboard({ id }: { id: string }) {
       ...runs.map((r) => r.team_id),
       ...batting.map((b) => b.team_id),
       ...bowling.map((b) => b.team_id),
-    ].filter(Boolean) as number[]
-    return Array.from(new Set(ids))
-  }, [fx?.localteam_id, fx?.visitorteam_id, runs, batting, bowling])
+    ].filter(Boolean) as number[];
+    return Array.from(new Set(ids));
+  }, [fx?.localteam_id, fx?.visitorteam_id, runs, batting, bowling]);
 
+  // Build player ids (ensure numeric)
   const playerIds = useMemo(() => {
     const ids = [
-      ...batting.map((b) => b.player_id),
-      ...bowling.map((b) => b.player_id),
-    ].filter(Boolean) as number[]
-    return Array.from(new Set(ids))
-  }, [batting, bowling])
+      ...batting.map((b) => Number(b.player_id)),
+      ...bowling.map((b) => Number(b.player_id)),
+    ].filter((id) => !!id && !Number.isNaN(id)) as number[];
+    return Array.from(new Set(ids));
+  }, [batting, bowling]);
 
-  const { teams } = useTeams(teamIds)
-  const { players } = usePlayers(playerIds)
+  const { teams } = useTeams(teamIds);
+  const { players } = usePlayers(playerIds);
 
   if (error) {
     return (
       <div className="card">
         Failed to load scoreboard.{' '}
-        <span className="text-xs text-gray-500">{String(error.message)}</span>
+        <span className="text-xs text-gray-500">{String((error as any).message)}</span>
       </div>
-    )
+    );
   }
-  if (isLoading) return <div className="card animate-pulse">Loading scoreboard…</div>
-  if (!fx) return <div className="card">No data.</div>
+  if (isLoading) return <div className="card animate-pulse">Loading scoreboard…</div>;
+  if (!fx) return <div className="card">No data.</div>;
 
   // ✅ Merge: keep fixture images (`image_path`) even if hook objects are lean
-  const home = { ...(fx?.localteam ?? {}), ...(teams.get(fx.localteam_id) ?? {}) }
-  const away = { ...(fx?.visitorteam ?? {}), ...(teams.get(fx.visitorteam_id) ?? {}) }
+  const home = { ...(fx?.localteam ?? {}), ...(teams.get(fx.localteam_id) ?? {}) };
+  const away = { ...(fx?.visitorteam ?? {}), ...(teams.get(fx.visitorteam_id) ?? {}) };
 
   // Normalize for TeamBadge (ensures a `logo` key)
   const toBadgeTeam = (t: any) =>
@@ -78,50 +81,51 @@ export default function Scoreboard({ id }: { id: string }) {
         ...t,
         logo: t.logo ?? t.logo_url ?? t.image_path ?? t.image?.path ?? '',
       }
-      : undefined
+      : undefined;
 
-  const homeBadge = toBadgeTeam(home)
-  const awayBadge = toBadgeTeam(away)
+  const homeBadge = toBadgeTeam(home);
+  const awayBadge = toBadgeTeam(away);
 
-  // Player name resolver
+  // Player name resolver (similar idea to WP $get_player_name)
   const nameFor = (row: any) => {
-    const live = row.player_id ? players.get(row.player_id)?.fullname : undefined
+    const pid = row.player_id ? Number(row.player_id) : undefined;
+    const live = pid ? players.get(pid)?.fullname : undefined;
     return (
       live ??
       row.player_name ??
       row.fullname ??
       row.firstname ??
-      row.player?.fullname ??        // <— extra fallback
-      row.player?.firstname ??       // <— extra fallback
-      (row.player_id ? `Player ${row.player_id}` : '—')
-    )
-  }
+      row.player?.fullname ??
+      row.player?.firstname ??
+      (pid ? `Player ${pid}` : '—')
+    );
+  };
 
   // Group rows by team
   const byTeam = <T extends AnyRow>(rows: T[]) =>
     rows.reduce<Record<number, T[]>>((acc, r) => {
-      const tid = r.team_id
-      if (!tid) return acc
-      if (!acc[tid]) acc[tid] = []
-      acc[tid].push(r)
-      return acc
-    }, {})
+      const tid = r.team_id;
+      if (!tid) return acc;
+      if (!acc[tid]) acc[tid] = [];
+      acc[tid].push(r);
+      return acc;
+    }, {});
 
-  const batByTeam = byTeam(batting)
-  const bowlByTeam = byTeam(bowling)
+  const batByTeam = byTeam(batting);
+  const bowlByTeam = byTeam(bowling);
 
   const teamForId = (tid?: number) =>
     tid
       ? teams.get(tid) ??
       (tid === fx.localteam_id ? home : tid === fx.visitorteam_id ? away : undefined)
-      : undefined
+      : undefined;
 
   const tossTeam =
     fx.toss_won_team_id === fx.localteam_id
       ? home
       : fx.toss_won_team_id === fx.visitorteam_id
         ? away
-        : teamForId(fx.toss_won_team_id)
+        : teamForId(fx.toss_won_team_id);
 
   return (
     <div className="space-y-6">
@@ -179,7 +183,7 @@ export default function Scoreboard({ id }: { id: string }) {
           <h3 className="font-semibold mb-2">Innings Summary</h3>
           <div className="grid sm:grid-cols-2 gap-3">
             {runs.map((inn) => {
-              const t = teamForId(inn.team_id)
+              const t = teamForId(inn.team_id);
               const label =
                 t?.short_name ||
                 t?.name ||
@@ -187,7 +191,7 @@ export default function Scoreboard({ id }: { id: string }) {
                   ? home?.short_name || home?.name
                   : inn.team_id === fx.visitorteam_id
                     ? away?.short_name || away?.name
-                    : `Team ${inn.team_id}`)
+                    : `Team ${inn.team_id}`);
 
               return (
                 <div key={inn.id ?? `${inn.team_id}-${inn.inning}`} className="border rounded-lg p-3">
@@ -205,23 +209,25 @@ export default function Scoreboard({ id }: { id: string }) {
                     PP1 {inn.pp1 ?? '—'} · PP2 {inn.pp2 ?? '—'}
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
       )}
 
       {/* Per-team sections */}
-      {([
-        { id: fx.localteam_id, label: home?.name || home?.short_name },
-        { id: fx.visitorteam_id, label: away?.name || away?.short_name },
-      ] as const)
+      {(
+        [
+          { id: fx.localteam_id, label: home?.name || home?.short_name },
+          { id: fx.visitorteam_id, label: away?.name || away?.short_name },
+        ] as const
+      )
         .filter((t) => t.id)
         .map((team) => {
-          const tid = team.id as number
-          const teamObj = teamForId(tid)
-          const bats = batByTeam[tid] ?? []
-          const bowls = bowlByTeam[tid] ?? []
+          const tid = team.id as number;
+          const teamObj = teamForId(tid);
+          const bats = batByTeam[tid] ?? [];
+          const bowls = bowlByTeam[tid] ?? [];
 
           return (
             <div key={tid} className="card space-y-4">
@@ -244,16 +250,35 @@ export default function Scoreboard({ id }: { id: string }) {
                     </thead>
                     <tbody>
                       {bats.length ? (
-                        bats.map((b: AnyRow) => (
-                          <tr key={b.id} className="border-t">
-                            <td className="py-1 px-2">{nameFor(b)}</td>
-                            <td className="py-1 px-2 text-center">{b.score ?? '–'}</td>
-                            <td className="py-1 px-2 text-center">{b.ball ?? '–'}</td>
-                            <td className="py-1 px-2 text-center">{b.four_x ?? '–'}</td>
-                            <td className="py-1 px-2 text-center">{b.six_x ?? '–'}</td>
-                            <td className="py-1 px-2 text-center">{b.rate ?? '–'}</td>
-                          </tr>
-                        ))
+                        bats.map((b: AnyRow) => {
+                          const label = nameFor(b);
+                          const pid = b.player_id ? Number(b.player_id) : undefined;
+
+                          return (
+                            <tr
+                              key={b.id ?? `${tid}-bat-${pid}-${b.score}-${b.ball}`}
+                              className="border-t"
+                            >
+                              <td className="py-1 px-2">
+                                {pid ? (
+                                  <Link
+                                    href={`/players/${pid}`}
+                                    className="text-[#134486] hover:underline"
+                                  >
+                                    {label}
+                                  </Link>
+                                ) : (
+                                  label
+                                )}
+                              </td>
+                              <td className="py-1 px-2 text-center">{b.score ?? '–'}</td>
+                              <td className="py-1 px-2 text-center">{b.ball ?? '–'}</td>
+                              <td className="py-1 px-2 text-center">{b.four_x ?? '–'}</td>
+                              <td className="py-1 px-2 text-center">{b.six_x ?? '–'}</td>
+                              <td className="py-1 px-2 text-center">{b.rate ?? '–'}</td>
+                            </tr>
+                          );
+                        })
                       ) : (
                         Array.from({ length: 5 }).map((_, i) => (
                           <tr key={i} className="border-t">
@@ -290,16 +315,35 @@ export default function Scoreboard({ id }: { id: string }) {
                     </thead>
                     <tbody>
                       {bowls.length ? (
-                        bowls.map((b: AnyRow) => (
-                          <tr key={b.id} className="border-t">
-                            <td className="py-1 px-2">{nameFor(b)}</td>
-                            <td className="py-1 px-2 text-center">{b.overs ?? '–'}</td>
-                            <td className="py-1 px-2 text-center">{b.medians ?? '–'}</td>
-                            <td className="py-1 px-2 text-center">{b.runs ?? '–'}</td>
-                            <td className="py-1 px-2 text-center">{b.wickets ?? '–'}</td>
-                            <td className="py-1 px-2 text-center">{b.rate ?? '–'}</td>
-                          </tr>
-                        ))
+                        bowls.map((b: AnyRow) => {
+                          const label = nameFor(b);
+                          const pid = b.player_id ? Number(b.player_id) : undefined;
+
+                          return (
+                            <tr
+                              key={b.id ?? `${tid}-bowl-${pid}-${b.overs}-${b.runs}`}
+                              className="border-t"
+                            >
+                              <td className="py-1 px-2">
+                                {pid ? (
+                                  <Link
+                                    href={`/players/${pid}`}
+                                    className="text-[#134486] hover:underline"
+                                  >
+                                    {label}
+                                  </Link>
+                                ) : (
+                                  label
+                                )}
+                              </td>
+                              <td className="py-1 px-2 text-center">{b.overs ?? '–'}</td>
+                              <td className="py-1 px-2 text-center">{b.medians ?? '–'}</td>
+                              <td className="py-1 px-2 text-center">{b.runs ?? '–'}</td>
+                              <td className="py-1 px-2 text-center">{b.wickets ?? '–'}</td>
+                              <td className="py-1 px-2 text-center">{b.rate ?? '–'}</td>
+                            </tr>
+                          );
+                        })
                       ) : (
                         Array.from({ length: 5 }).map((_, i) => (
                           <tr key={i} className="border-t">
@@ -317,8 +361,8 @@ export default function Scoreboard({ id }: { id: string }) {
                 </div>
               </div>
             </div>
-          )
+          );
         })}
     </div>
-  )
+  );
 }
