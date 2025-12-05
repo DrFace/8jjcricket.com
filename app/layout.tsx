@@ -51,15 +51,26 @@ export default function RootLayout({
                 🎉
               </span>
               <span className="opacity-90">
-                Welcome bonus 150% + daily free spins
-              </span>
+                Welcome To 8jjcricket Your Ultimate Cricket Destination              </span>
             </p>
             <div className="hidden md:flex items-center gap-3">
               <Link
-                href="/promos"
-                className="rounded-full bg-white/10 px-3 py-1.5 hover:bg-white/20 transition"
+                href="/minigames"
+                className="rounded-full bg-white px-3 py-1.5 font-semibold text-gray-900 hover:scale-105 transition"
               >
-                View Promos
+                Match Rankings
+              </Link>
+              <Link
+                href="/minigames"
+                className="rounded-full bg-white px-3 py-1.5 font-semibold text-gray-900 hover:scale-105 transition"
+              >
+                Series
+              </Link>
+              <Link
+                href="/minigames"
+                className="rounded-full bg-white px-3 py-1.5 font-semibold text-gray-900 hover:scale-105 transition"
+              >
+                Archives
               </Link>
               <Link
                 href="/minigames"
@@ -118,7 +129,7 @@ export default function RootLayout({
                 Sign In
               </Link> */}
               <Link
-                href="/auth/register"
+                href="/minigames"
                 className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-pink-500/20 ring-1 ring-white/20 transition active:scale-95 hover:brightness-110"
               >
                 <span className="relative">
@@ -140,7 +151,7 @@ export default function RootLayout({
         {/* main page content */}
         <main className="container py-6 flex-grow">
           {/* Callouts row */}
-          <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {/* <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
                 title: "Instant Withdrawals",
@@ -172,7 +183,7 @@ export default function RootLayout({
                 </div>
               </div>
             ))}
-          </div>
+          </div> */}
 
           {children}
         </main>

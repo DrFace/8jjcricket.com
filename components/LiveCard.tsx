@@ -9,31 +9,58 @@ export default function LiveCard({ f }: { f: Fixture }) {
   const away = f.visitorteam
 
   return (
-    <Link href={`/match/${f.id}`} className="card block hover:shadow-md transition">
-      <div className="flex items-center justify-between gap-2">
-        <div>
-          <h3 className="font-semibold">
+    <Link
+      href={`/match/${f.id}`}
+      className="block px-2 sm:px-3 py-3 hover:bg-gray-50 transition"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-gray-900 truncate">
             {(home?.short_name || home?.name || `Team ${f.localteam_id}`)} vs{' '}
             {(away?.short_name || away?.name || `Team ${f.visitorteam_id}`)}
           </h3>
-          <p className="text-sm text-gray-600">{f.round ?? 'Match'}</p>
-          <p className="text-xs text-gray-500">{formatDate(f.starting_at)}</p>
+          <p className="text-xs text-gray-600 mt-0.5">
+            {f.round ?? 'Match'}
+          </p>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            {formatDate(f.starting_at)}
+          </p>
         </div>
-        <div className="text-right">
-          <span className={cn('badge', f.live ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-800')}>
+
+        <div className="text-right flex flex-col items-end gap-1">
+          <span
+            className={cn(
+              'inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold',
+              f.live
+                ? 'bg-red-100 text-red-700'
+                : 'bg-gray-100 text-gray-700'
+            )}
+          >
             {f.live ? 'LIVE' : 'Not live'}
           </span>
-          <div className="text-xs text-gray-600 mt-1">{f.status}</div>
+          <div className="text-[11px] text-gray-600">
+            {f.status}
+          </div>
         </div>
       </div>
 
-      <div className="mt-3 grid grid-cols-5 items-center gap-2">
-        <TeamBadge team={home} className="col-span-2" />
-        <div className="text-center text-xs text-gray-500">vs</div>
-        <TeamBadge team={away} className="col-span-2 justify-self-end text-right" />
+      <div className="mt-2 flex items-center justify-between gap-2">
+        <div className="flex-1 min-w-0">
+          <TeamBadge team={home} className="justify-start" />
+        </div>
+        <div className="px-2 text-[11px] text-gray-500 uppercase tracking-wide">
+          vs
+        </div>
+        <div className="flex-1 min-w-0 flex justify-end">
+          <TeamBadge team={away} className="justify-end text-right" />
+        </div>
       </div>
 
-      {f.note && <p className="text-sm mt-2 text-gray-700">{f.note}</p>}
+      {f.note && (
+        <p className="text-xs sm:text-sm mt-2 text-gray-700">
+          {f.note}
+        </p>
+      )}
     </Link>
   )
 }
