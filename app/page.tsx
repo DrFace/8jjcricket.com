@@ -3,9 +3,6 @@ import LiveGrid from "@/components/LiveGrid";
 import MinigameCard from "@/components/MinigameCard";
 import Link from "next/link";
 
-
-
-
 /* ---- NEWS TYPES + FETCHER ---- */
 
 type Article = {
@@ -18,6 +15,20 @@ type Article = {
 };
 
 const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
+
+
+function normalizeImageUrl(url: string | null): string | null {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    // Return only the path and search components (drop the protocol + host)
+    return u.pathname + u.search;
+  } catch {
+    // If it's already a relative URL starting with a slash, return as‑is
+    if (url.startsWith("/")) return url;
+    return null;
+  }
+}
 
 async function getNewsPreview(): Promise<Article[]> {
   const base = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE;
@@ -69,7 +80,14 @@ export default async function HomePage() {
             </div>
 
             <div className="flex flex-wrap gap-2 text-xs sm:text-sm">
-              {["All", "International", "T20", "ODI", "Test", "Leagues"].map((f) => (
+              {[
+                "All",
+                "International",
+                "T20",
+                "ODI",
+                "Test",
+                "Leagues",
+              ].map((f) => (
                 <button
                   key={f}
                   type="button"
@@ -85,8 +103,12 @@ export default async function HomePage() {
             {/* Tabs */}
             <div className="flex items-center gap-4 border-b bg-gray-50 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold">
               <button className="border-b-2 border-blue-500 pb-1 text-blue-600">Live</button>
-              <Link href="/upcoming" className="pb-1 text-gray-600 hover:text-blue-600">Upcoming</Link>
-              <Link href="/recent" className="pb-1 text-gray-600 hover:text-blue-600">Recent</Link>
+              <Link href="/upcoming" className="pb-1 text-gray-600 hover:text-blue-600">
+                Upcoming
+              </Link>
+              <Link href="/recent" className="pb-1 text-gray-600 hover:text-blue-600">
+                Recent
+              </Link>
             </div>
 
             {/* Live Matches */}
@@ -112,47 +134,44 @@ export default async function HomePage() {
               <p className="text-xs text-gray-400">No news found right now.</p>
             ) : (
               <div className="space-y-3">
-                {news.map((a) => (
-                  <Link
-                    key={a.id}
-                    href={`/news/${a.slug}`}
-                    className="block overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-md transition"
-                  >
-                    {/* Card Image */}
-                    {a.image_url && (
-                      <div className="h-24 w-full overflow-hidden">
-                        <img
-                          src={a.image_url}
-                          alt={a.title}
-                          className="h-full w-full object-cover"
-                        />
+                {news.map((a) => {
+                  const imgSrc = normalizeImageUrl(a.image_url);
+                  return (
+                    <Link
+                      key={a.id}
+                      href={`/news/${a.slug}`}
+                      className="block overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-md transition"
+                    >
+                      {/* Card Image */}
+                      {imgSrc && (
+                        <div className="h-24 w-full overflow-hidden">
+                          <img
+                            src={imgSrc}
+                            alt={a.title || "News image"}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                      )}
+
+                      {/* Card Content */}
+                      <div className="p-3">
+                        <p className="text-sm font-semibold text-gray-900 line-clamp-2">{a.title}</p>
+                        {a.excerpt && (
+                          <p className="mt-1 text-xs text-gray-500 line-clamp-2">{a.excerpt}</p>
+                        )}
+                        {a.published_at && (
+                          <p className="mt-2 text-[11px] font-medium text-blue-600">
+                            {new Date(a.published_at).toLocaleDateString(undefined, {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}
+                          </p>
+                        )}
                       </div>
-                    )}
-
-                    {/* Card Content */}
-                    <div className="p-3">
-                      <p className="text-sm font-semibold text-gray-900 line-clamp-2">
-                        {a.title}
-                      </p>
-
-                      {a.excerpt && (
-                        <p className="mt-1 text-xs text-gray-500 line-clamp-2">
-                          {a.excerpt}
-                        </p>
-                      )}
-
-                      {a.published_at && (
-                        <p className="mt-2 text-[11px] font-medium text-blue-600">
-                          {new Date(a.published_at).toLocaleDateString(undefined, {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
-                        </p>
-                      )}
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -162,16 +181,20 @@ export default async function HomePage() {
             <h2 className="mb-3 text-xs font-semibold tracking-wide text-gray-500">QUICK LINKS</h2>
             <div className="space-y-2 text-sm">
               <Link href="/players" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">
-                <span>Player rankings</span><span className="text-gray-400">›</span>
+                <span>Player rankings</span>
+                <span className="text-gray-400">›</span>
               </Link>
               <Link href="/upcoming" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">
-                <span>Upcoming series</span><span className="text-gray-400">›</span>
+                <span>Upcoming series</span>
+                <span className="text-gray-400">›</span>
               </Link>
               <Link href="/recent" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">
-                <span>Recent results</span><span className="text-gray-400">›</span>
+                <span>Recent results</span>
+                <span className="text-gray-400">›</span>
               </Link>
               <Link href="/news" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">
-                <span>Cricket news</span><span className="text-gray-400">›</span>
+                <span>Cricket news</span>
+                <span className="text-gray-400">›</span>
               </Link>
             </div>
           </div>
