@@ -15,6 +15,5 @@ export type Fixture = {
   // enriched when the API includes teams or when you hydrate via hooks
   localteam?: Team
   visitorteam?: Team
-
   runs?: any[]
 }

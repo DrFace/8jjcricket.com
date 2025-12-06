@@ -3,6 +3,7 @@ import LiveGrid from "@/components/LiveGrid";
 import MinigameCard from "@/components/MinigameCard";
 import Link from "next/link";
 
+
 /* ---- NEWS TYPES + FETCHER ---- */
 
 type Article = {
