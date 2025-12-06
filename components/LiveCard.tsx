@@ -1,9 +1,15 @@
-'use client'
+"use client"
+
 import Link from 'next/link'
 import { formatDate, cn } from '@/lib/utils'
 import TeamBadge from '@/components/TeamBadge'
 import type { Fixture } from '@/types/fixture'
 
+/**
+ * Displays a compact card summarizing a cricket fixture. Each card links to
+ * the match details page. It shows the competing teams, match round and
+ * start date/time along with a live/not-live badge and any optional notes.
+ */
 export default function LiveCard({ f }: { f: Fixture }) {
   const home = f.localteam
   const away = f.visitorteam
@@ -31,16 +37,12 @@ export default function LiveCard({ f }: { f: Fixture }) {
           <span
             className={cn(
               'inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold',
-              f.live
-                ? 'bg-red-100 text-red-700'
-                : 'bg-gray-100 text-gray-700'
+              f.live ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'
             )}
           >
             {f.live ? 'LIVE' : 'Not live'}
           </span>
-          <div className="text-[11px] text-gray-600">
-            {f.status}
-          </div>
+          <div className="text-[11px] text-gray-600">{f.status}</div>
         </div>
       </div>
 
@@ -57,9 +59,7 @@ export default function LiveCard({ f }: { f: Fixture }) {
       </div>
 
       {f.note && (
-        <p className="text-xs sm:text-sm mt-2 text-gray-700">
-          {f.note}
-        </p>
+        <p className="text-xs sm:text-sm mt-2 text-gray-700">{f.note}</p>
       )}
     </Link>
   )

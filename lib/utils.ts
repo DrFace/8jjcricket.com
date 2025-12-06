@@ -1,8 +1,11 @@
 export function formatDate(d: string | Date) {
   const dt = typeof d === 'string' ? new Date(d) : d
   return dt.toLocaleString(undefined, {
-    year: 'numeric', month: 'short', day: '2-digit',
-    hour: '2-digit', minute: '2-digit'
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
   })
 }
 

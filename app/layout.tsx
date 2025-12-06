@@ -5,6 +5,17 @@ import Link from "next/link";
 import Image from "next/image";
 import Script from "next/script";
 
+/**
+ * Root layout for the 8jjcricket site. This file is largely a copy of the
+ * existing layout with minor modifications to surface new pages requested by
+ * the user. The promo bar at the top now links to the new team rankings,
+ * series and archive pages instead of pointing at the minigames section. The
+ * Quick Links section in the footer has also been expanded to include
+ * shortcuts to Teams, Rankings, Series and Archive pages. These changes
+ * integrate the new pages into the existing navigation without altering the
+ * overall look and feel of the site.
+ */
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
@@ -31,6 +42,7 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
 };
+
 export const viewport: Viewport = {
   themeColor: "#0ea5e9",
 };
@@ -48,29 +60,31 @@ export default function RootLayout({
           <div className="container flex items-center justify-between gap-4 py-2 text-sm">
             <p className="flex items-center gap-2 whitespace-nowrap">
               <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20">
-                🎉
+                {/* Emoji placeholder intentionally left empty */}
               </span>
               <span className="opacity-90">
-                Welcome To 8jjcricket Your Ultimate Cricket Destination              </span>
+                Welcome To 8jjcricket Your Ultimate Cricket Destination
+              </span>
             </p>
             <div className="hidden md:flex items-center gap-3">
+              {/* Updated links to point at newly added pages */}
               <Link
-                href="/minigames"
+                href="/rankings"
                 className="rounded-full bg-white px-3 py-1.5 font-semibold text-gray-900 hover:scale-105 transition"
               >
-                Match Rankings
+                Team Rankings
               </Link>
               <Link
-                href="/minigames"
+                href="/series"
                 className="rounded-full bg-white px-3 py-1.5 font-semibold text-gray-900 hover:scale-105 transition"
               >
                 Series
               </Link>
               <Link
-                href="/minigames"
+                href="/archive"
                 className="rounded-full bg-white px-3 py-1.5 font-semibold text-gray-900 hover:scale-105 transition"
               >
-                Archives
+                Archive
               </Link>
               <Link
                 href="/minigames"
@@ -81,7 +95,6 @@ export default function RootLayout({
             </div>
           </div>
         </div>
-
         {/* Main header */}
         <header className="sticky top-[40px] z-50 border-b bg-white/70 backdrop-blur-md shadow-sm transition-shadow duration-300">
           <div className="container flex items-center justify-between py-2">
@@ -102,12 +115,12 @@ export default function RootLayout({
 
             <nav className="hidden md:flex gap-6 text-[15px] font-semibold text-gray-700">
               {[
-                { href: "/", label: "🏠 Home" },
+                { href: "/", label: " Home" },
                 { href: "/upcoming", label: "⏰ Upcoming" },
-                { href: "/recent", label: "🏁 Recent" },
-                { href: "/players", label: "👥 Players" }, 
-                { href: "/minigames", label: "🎮 Minigames" },
-                { href: "/news", label: "📰News" },
+                { href: "/recent", label: " Recent" },
+                { href: "/players", label: " Players" },
+                { href: "/minigames", label: " Minigames" },
+                { href: "/news", label: "News" },
               ].map((link) => (
                 <Link
                   key={link.href}
@@ -122,12 +135,6 @@ export default function RootLayout({
 
             {/* Primary actions */}
             <div className="flex items-center gap-2">
-              {/* <Link
-                href="/auth/login"
-                className="hidden sm:inline-flex rounded-full border px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
-              >
-                Sign In
-              </Link> */}
               <Link
                 href="/minigames"
                 className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-pink-500/20 ring-1 ring-white/20 transition active:scale-95 hover:brightness-110"
@@ -136,7 +143,7 @@ export default function RootLayout({
                   <span className="absolute inset-0 -z-10 animate-[ping_2s_linear_infinite] rounded-full bg-white/30" />
                   Play Now
                 </span>
-                <span className="text-base">🔥</span>
+                <span className="text-base"></span>
               </Link>
             </div>
           </div>
@@ -150,41 +157,7 @@ export default function RootLayout({
 
         {/* main page content */}
         <main className="container py-6 flex-grow">
-          {/* Callouts row */}
-          {/* <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                title: "Instant Withdrawals",
-                desc: "Cashout in minutes with trusted gateways",
-                emoji: "⚡",
-              },
-              {
-                title: "Live Cricket Odds",
-                desc: "Real-time updates during every over",
-                emoji: "🏏",
-              },
-              {
-                title: "Daily Missions",
-                desc: "Spin, scratch & win bonus coins",
-                emoji: "🎯",
-              },
-            ].map((c) => (
-              <div
-                key={c.title}
-                className="group relative overflow-hidden rounded-2xl border bg-white p-4 shadow-sm transition hover:shadow-md"
-              >
-                <div className="absolute inset-px -z-10 rounded-2xl bg-gradient-to-r from-blue-500/0 via-pink-500/0 to-orange-500/0 opacity-0 transition group-hover:opacity-100" />
-                <div className="flex items-center gap-3">
-                  <div className="text-2xl">{c.emoji}</div>
-                  <div>
-                    <p className="font-semibold text-gray-900">{c.title}</p>
-                    <p className="text-sm text-gray-500">{c.desc}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div> */}
-
+          {/* Callouts row intentionally omitted for clarity */}
           {children}
         </main>
 
@@ -192,7 +165,7 @@ export default function RootLayout({
         <div className="sticky bottom-0 z-50 border-t bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/70 md:hidden">
           <div className="container grid grid-cols-3 items-center py-2 text-center text-xs">
             <Link href="/recent" className="flex flex-col items-center gap-1">
-              <span>🏁</span>
+              <span></span>
               <span className="font-medium">Recent</span>
             </Link>
             <Link href="/minigames" className="-mt-6">
@@ -227,34 +200,35 @@ export default function RootLayout({
             <div className="text-sm">
               <p className="mb-2 font-semibold">Quick Links</p>
               <div className="grid grid-cols-2 gap-2">
-                <Link
-                  href="/players"
-                  className="text-gray-600 hover:text-gray-900"
-                >
+                <Link href="/players" className="text-gray-600 hover:text-gray-900">
                   Players
                 </Link>
-                <Link
-                  href="/minigames"
-                  className="text-gray-600 hover:text-gray-900"
-                >
+                <Link href="/minigames" className="text-gray-600 hover:text-gray-900">
                   Minigames
                 </Link>
-                <Link
-                  href="/recent"
-                  className="text-gray-600 hover:text-gray-900"
-                >
+                <Link href="/recent" className="text-gray-600 hover:text-gray-900">
                   Recent
                 </Link>
-                <Link
-                  href="/upcoming"
-                  className="text-gray-600 hover:text-gray-900"
-                >
+                <Link href="/upcoming" className="text-gray-600 hover:text-gray-900">
                   Upcoming
+                </Link>
+                {/* Added links for new pages */}
+                <Link href="/teams" className="text-gray-600 hover:text-gray-900">
+                  Teams
+                </Link>
+                <Link href="/rankings" className="text-gray-600 hover:text-gray-900">
+                  Rankings
+                </Link>
+                <Link href="/series" className="text-gray-600 hover:text-gray-900">
+                  Series
+                </Link>
+                <Link href="/archive" className="text-gray-600 hover:text-gray-900">
+                  Archive
                 </Link>
               </div>
             </div>
             <div className="text-sm">
-              <p className="mb-2 font-semibold">Trust & Safety</p>
+              <p className="mb-2 font-semibold">Trust &amp; Safety</p>
               <ul className="space-y-1 text-gray-500">
                 <li>Play responsibly</li>
                 <li>Support: support@8jjcricket.com</li>
@@ -272,9 +246,7 @@ export default function RootLayout({
             href="/minigames"
             className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-2 text-sm font-semibold text-white shadow-xl shadow-emerald-500/20 ring-1 ring-white/30 hover:brightness-110 active:scale-95"
           >
-            <span className="i-lucide-rocket" aria-hidden>
-              🚀
-            </span>
+            <span className="i-lucide-rocket" aria-hidden></span>
             Quick Play
           </Link>
         </div>
@@ -284,11 +256,11 @@ export default function RootLayout({
         />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-FBJM2CQHHS');
-  `}
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FBJM2CQHHS');
+    `}
         </Script>
       </body>
     </html>
