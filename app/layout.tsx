@@ -4,6 +4,7 @@ import { SITE } from "@/lib/seo";
 import Link from "next/link";
 import Image from "next/image";
 import Script from "next/script";
+import NewsTicker from "@/components/NewsTicker";
 
 /**
  * Root layout for the 8jjcricket site. This file is largely a copy of the
@@ -57,42 +58,16 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col bg-gray-50 selection:bg-blue-100 selection:text-blue-800">
         {/* Top promo bar */}
         <div className="sticky top-0 z-[60] w-full bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 text-white">
-          <div className="container flex items-center justify-between gap-4 py-2 text-sm">
-            <p className="flex items-center gap-2 whitespace-nowrap">
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20">
-                {/* Emoji placeholder intentionally left empty */}
-              </span>
-              <span className="opacity-90">
-                Welcome To 8jjcricket Your Ultimate Cricket Destination
-              </span>
-            </p>
-            <div className="hidden md:flex items-center gap-3">
-              {/* Updated links to point at newly added pages */}
-              <Link
-                href="/rankings"
-                className="rounded-full bg-white px-3 py-1.5 font-semibold text-gray-900 hover:scale-105 transition"
-              >
-                Team Rankings
-              </Link>
-              <Link
-                href="/series"
-                className="rounded-full bg-white px-3 py-1.5 font-semibold text-gray-900 hover:scale-105 transition"
-              >
-                Series
-              </Link>
-              <Link
-                href="/archive"
-                className="rounded-full bg-white px-3 py-1.5 font-semibold text-gray-900 hover:scale-105 transition"
-              >
-                Archive
-              </Link>
-              <Link
-                href="/minigames"
-                className="rounded-full bg-white px-3 py-1.5 font-semibold text-gray-900 hover:scale-105 transition"
-              >
-                Play Minigames →
-              </Link>
+          <div className="container flex items-center gap-4 py-2 text-sm">
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <span className="font-semibold tracking-wide">Latest News</span>
             </div>
+
+            <div className="flex-1">
+              <NewsTicker />
+            </div>
+
+            {/* scrolling news titles – right to left */}
           </div>
         </div>
         {/* Main header */}
@@ -121,6 +96,8 @@ export default function RootLayout({
                 { href: "/players", label: " Players" },
                 { href: "/minigames", label: " Minigames" },
                 { href: "/news", label: "News" },
+                { href: "/rankings", label: "Team Rankings" },
+
               ].map((link) => (
                 <Link
                   key={link.href}

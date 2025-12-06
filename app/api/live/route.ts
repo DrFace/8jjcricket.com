@@ -92,7 +92,7 @@ export async function GET() {
     // Handle SportMonks rate limit
     if (msg.includes('Too Many Attempts') || msg === 'SPORTMONKS_RATE_LIMIT') {
       return NextResponse.json(
-        { error: 'SportMonks rate limit hit. Please try again in a moment.' },
+        { error: 'API rate limit hit. Please try again in a moment.' },
         { status: 503 }
       );
     }
