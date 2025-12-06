@@ -1,11 +1,8 @@
 // app/page.tsx
-
-import LiveGrid from "@/components/LiveGrid";
 import MinigameCard from "@/components/MinigameCard";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-
-/* ---- NEWS TYPES + FETCHER ---- */
+import MatchCentre from "@/components/MatchCentre";
 
 type Article = {
   id: number;
@@ -22,10 +19,8 @@ function normalizeImageUrl(url: string | null): string | null {
   if (!url) return null;
   try {
     const u = new URL(url);
-    // Return only the path and search components (drop the protocol + host)
     return u.pathname + u.search;
   } catch {
-    // If it's already a relative URL starting with a slash, return as‑is
     if (url.startsWith("/")) return url;
     return null;
   }
@@ -33,27 +28,24 @@ function normalizeImageUrl(url: string | null): string | null {
 
 async function getNewsPreview(): Promise<Article[]> {
   const base = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE;
-  const url = `${base.replace(/\/+\$/, "")}/news`;
+  const url = `${base.replace(/\/+$/, "")}/news`;
 
   try {
     const res = await fetch(url, { cache: "no-store" });
-
     if (!res.ok) {
       console.error("Failed to fetch news:", res.status);
       return [];
     }
-
     const json = await res.json();
     const all = (json.data || []) as Article[];
-    return all.slice(0, 4); // homepage shows 4
+    return all.slice(0, 4);
   } catch (e) {
     console.error("Error fetching news:", e);
     return [];
   }
 }
 
-/* ---- MINIGAMES ---- */
-
+// Latest minigames list
 const latest = [
   { slug: "cricket-legends", title: "Cricket Legends", desc: "Career mode with levels & characters." },
   { slug: "cricket-superover", title: "Cricket Super Over", desc: "6 balls, pure timing — hit for 6s!" },
@@ -61,81 +53,29 @@ const latest = [
   { slug: "flappysquare", title: "Flappy Square", desc: "Click to fly!" },
 ];
 
-// Dynamically import the AnimatedText component client‑side. It renders the
-// scrolling image clipped to the text. Using dynamic import ensures that
-// server rendering remains unaffected and avoids including client‑side code in
-// the initial server bundle.
-const AnimatedText = dynamic(() => import("@/components/AnimatedText"), {
-  ssr: false,
-});
-
-/* ---- PAGE ---- */
+// Dynamically import AnimatedText (as in original code)
+const AnimatedText = dynamic(() => import("@/components/AnimatedText"), { ssr: false });
 
 export default async function HomePage() {
   const news = await getNewsPreview();
 
   return (
     <div className="space-y-10">
-      {/* Hero section with animated site name */}
+      {/* Hero with animated site name */}
       <section className="flex items-center justify-center py-8">
-        {/* The AnimatedText component defaults to displaying "8JJCRICKET". */}
         <AnimatedText />
       </section>
 
-      {/* Match centre + news sidebar */}
+      {/* Match centre and news sidebar */}
       <section className="grid gap-6 lg:grid-cols-[2.2fr,1.3fr]">
         {/* MAIN MATCH CENTRE */}
         <div className="space-y-4">
-          <header className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Match Centre</h1>
-              <p className="text-xs sm:text-sm text-gray-500">
-                Live scores, upcoming fixtures and recent results from major tours and leagues.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-2 text-xs sm:text-sm">
-              {[
-                "All",
-                "International",
-                "T20",
-                "ODI",
-                "Test",
-                "Leagues",
-              ].map((f) => (
-                <button
-                  key={f}
-                  type="button"
-                  className="rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-gray-700 hover:border-blue-400 hover:text-blue-600"
-                >
-                  {f}
-                </button>
-              ))}
-            </div>
-          </header>
-
-          <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
-            {/* Tabs */}
-            <div className="flex items-center gap-4 border-b bg-gray-50 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold">
-              <button className="border-b-2 border-blue-500 pb-1 text-blue-600">Live</button>
-              <Link href="/upcoming" className="pb-1 text-gray-600 hover:text-blue-600">
-                Upcoming
-              </Link>
-              <Link href="/recent" className="pb-1 text-gray-600 hover:text-blue-600">
-                Recent
-              </Link>
-            </div>
-
-            {/* Live Matches */}
-            <div className="px-3 sm:px-4 py-3 sm:py-4">
-              <LiveGrid />
-            </div>
-          </div>
+          <MatchCentre />
         </div>
 
         {/* ---- RIGHT SIDEBAR NEWS ---- */}
         <aside className="space-y-4">
-          {/* Latest News Header */}
+          {/* Latest news */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-lg font-semibold text-gray-900">Latest News</h2>
@@ -143,8 +83,6 @@ export default async function HomePage() {
                 View all
               </Link>
             </div>
-
-            {/* NEWS CARDS */}
             {news.length === 0 ? (
               <p className="text-xs text-gray-400">No news found right now.</p>
             ) : (
@@ -157,23 +95,14 @@ export default async function HomePage() {
                       href={`/news/${a.slug}`}
                       className="block overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-md transition"
                     >
-                      {/* Card Image */}
                       {imgSrc && (
                         <div className="h-24 w-full overflow-hidden">
-                          <img
-                            src={imgSrc}
-                            alt={a.title || "News image"}
-                            className="h-full w-full object-cover"
-                          />
+                          <img src={imgSrc} alt={a.title || "News image"} className="h-full w-full object-cover" />
                         </div>
                       )}
-
-                      {/* Card Content */}
                       <div className="p-3">
                         <p className="text-sm font-semibold text-gray-900 line-clamp-2">{a.title}</p>
-                        {a.excerpt && (
-                          <p className="mt-1 text-xs text-gray-500 line-clamp-2">{a.excerpt}</p>
-                        )}
+                        {a.excerpt && <p className="mt-1 text-xs text-gray-500 line-clamp-2">{a.excerpt}</p>}
                         {a.published_at && (
                           <p className="mt-2 text-[11px] font-medium text-blue-600">
                             {new Date(a.published_at).toLocaleDateString(undefined, {
@@ -196,27 +125,23 @@ export default async function HomePage() {
             <h2 className="mb-3 text-xs font-semibold tracking-wide text-gray-500">QUICK LINKS</h2>
             <div className="space-y-2 text-sm">
               <Link href="/rankings" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">
-                <span>Team rankings</span>
-                <span className="text-gray-400">›</span>
+                <span>Team rankings</span><span className="text-gray-400">›</span>
               </Link>
               <Link href="/upcoming" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">
-                <span>Upcoming series</span>
-                <span className="text-gray-400">›</span>
+                <span>Upcoming series</span><span className="text-gray-400">›</span>
               </Link>
               <Link href="/recent" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">
-                <span>Recent results</span>
-                <span className="text-gray-400">›</span>
+                <span>Recent results</span><span className="text-gray-400">›</span>
               </Link>
               <Link href="/news" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">
-                <span>Cricket news</span>
-                <span className="text-gray-400">›</span>
+                <span>Cricket news</span><span className="text-gray-400">›</span>
               </Link>
             </div>
           </div>
         </aside>
       </section>
 
-      {/* Minigames */}
+      {/* Latest Minigames */}
       <section className="space-y-4">
         <header className="flex items-center justify-between gap-2">
           <div>
@@ -227,14 +152,12 @@ export default async function HomePage() {
             View all minigames →
           </Link>
         </header>
-
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {latest.map((g) => (
             <MinigameCard key={g.slug} {...g} />
           ))}
         </div>
       </section>
-
     </div>
   );
 }
