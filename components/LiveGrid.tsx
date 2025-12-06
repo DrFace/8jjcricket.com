@@ -7,13 +7,15 @@ const fetcher = (url: string) => fetch(url).then(r => r.json())
 
 export default function LiveGrid() {
   const { data, error, isLoading } = useSWR('/api/live', fetcher, {
-    refreshInterval: 10000,
+    refreshInterval: 60_000,
+    dedupingInterval: 60_000,
+    revalidateOnFocus: false,
   })
 
-  if (error) {
+  if (data?.error) {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
-        Failed to load live scores.
+        {data.error}
       </div>
     )
   }
