@@ -1,8 +1,9 @@
 // app/page.tsx
+
 import LiveGrid from "@/components/LiveGrid";
 import MinigameCard from "@/components/MinigameCard";
 import Link from "next/link";
-
+import dynamic from "next/dynamic";
 
 /* ---- NEWS TYPES + FETCHER ---- */
 
@@ -16,7 +17,6 @@ type Article = {
 };
 
 const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
-
 
 function normalizeImageUrl(url: string | null): string | null {
   if (!url) return null;
@@ -33,7 +33,7 @@ function normalizeImageUrl(url: string | null): string | null {
 
 async function getNewsPreview(): Promise<Article[]> {
   const base = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE;
-  const url = `${base.replace(/\/+$/, "")}/news`;
+  const url = `${base.replace(/\/+\$/, "")}/news`;
 
   try {
     const res = await fetch(url, { cache: "no-store" });
@@ -61,6 +61,14 @@ const latest = [
   { slug: "flappysquare", title: "Flappy Square", desc: "Click to fly!" },
 ];
 
+// Dynamically import the AnimatedText component client‑side. It renders the
+// scrolling image clipped to the text. Using dynamic import ensures that
+// server rendering remains unaffected and avoids including client‑side code in
+// the initial server bundle.
+const AnimatedText = dynamic(() => import("@/components/AnimatedText"), {
+  ssr: false,
+});
+
 /* ---- PAGE ---- */
 
 export default async function HomePage() {
@@ -68,6 +76,12 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-10">
+      {/* Hero section with animated site name */}
+      <section className="flex items-center justify-center py-8">
+        {/* The AnimatedText component defaults to displaying "8JJCRICKET". */}
+        <AnimatedText />
+      </section>
+
       {/* Match centre + news sidebar */}
       <section className="grid gap-6 lg:grid-cols-[2.2fr,1.3fr]">
         {/* MAIN MATCH CENTRE */}
@@ -181,8 +195,8 @@ export default async function HomePage() {
           <div className="rounded-xl border bg-white p-4 shadow-sm">
             <h2 className="mb-3 text-xs font-semibold tracking-wide text-gray-500">QUICK LINKS</h2>
             <div className="space-y-2 text-sm">
-              <Link href="/players" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">
-                <span>Player rankings</span>
+              <Link href="/rankings" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">
+                <span>Team rankings</span>
                 <span className="text-gray-400">›</span>
               </Link>
               <Link href="/upcoming" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">

@@ -1,113 +1,115 @@
-// app/news/page.tsx
+"use client"
+
+import useSWR from 'swr'
 
 type Article = {
-    id: number;
-    title: string;
-    slug: string;
-    excerpt: string | null;
-    image_url: string | null;
-    published_at: string | null;
-};
+  id: number
+  title: string
+  slug: string
+  excerpt: string | null
+  image_url: string | null
+  published_at: string | null
+}
 
-const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
-// const DEFAULT_API_BASE = "http://127.0.0.1:8000/api";
+// Fetcher helper for SWR
+const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
-
-/** Converts any absolute image URL ? /storage/... */
+// Normalize absolute URLs returned by the API to relative paths
 function normalizeImageUrl(url: string | null): string | null {
-    if (!url) return null;
-
-    try {
-        const u = new URL(url);
-        return u.pathname + u.search;  // keep only the path
-    } catch {
-        if (url.startsWith("/")) return url; // already relative
-        return null;
-    }
+  if (!url) return null
+  try {
+    const u = new URL(url)
+    return u.pathname + u.search
+  } catch {
+    if (url.startsWith('/')) return url
+    return null
+  }
 }
 
-async function getNews(): Promise<Article[]> {
-    const base = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE;
+// Metadata is defined in a parent layout or left to the default site settings.
+// Do not export metadata from a client component, as this is disallowed in Next.js.
 
-    const url = `${base.replace(/\/+$/, "")}/news`;
-    console.log("Fetching news from:", url);
-
-    const res = await fetch(url, { cache: "no-store" });
-
-    if (!res.ok) {
-        console.error("Failed to fetch news:", res.status);
-        try { console.error(await res.text()); } catch { }
-        return [];
-    }
-
-    const json = await res.json();
-    return (json.data || []) as Article[];
-}
-
-export const metadata = {
-    title: "News | 8jjcricket",
-};
-
-export default async function NewsPage() {
-    const articles = await getNews();
-
+export default function NewsPage() {
+  const { data, error, isLoading } = useSWR('/api/news', fetcher)
+  // If the API returns an error property we treat it as a failure
+  if (error || (data && data.error)) {
     return (
-        <main className="min-h-screen bg-slate-950 text-slate-100 px-4 py-10">
-            <div className="max-w-5xl mx-auto">
-                <h1 className="text-3xl md:text-4xl font-bold mb-6">Latest News</h1>
-
-                {articles.length === 0 ? (
-                    <p className="text-slate-400">No news articles found.</p>
-                ) : (
-                    <div className="grid gap-6 md:grid-cols-2">
-                        {articles.map((item) => {
-                            const imgSrc = normalizeImageUrl(item.image_url);
-
-                            return (
-                                <article
-                                    key={item.id}
-                                    className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 hover:border-sky-500 transition"
-                                >
-                                    {imgSrc && (
-                                        <div className="mb-3 overflow-hidden rounded-xl">
-                                            <img
-                                                src={imgSrc}
-                                                alt={item.title}
-                                                className="w-full h-40 object-cover"
-                                            />
-                                        </div>
-                                    )}
-
-                                    <h2 className="text-xl font-semibold mb-2">
-                                        <a href={`/news/${item.slug}`} className="hover:text-sky-400">
-                                            {item.title}
-                                        </a>
-                                    </h2>
-
-                                    {item.published_at && (
-                                        <p className="text-xs text-slate-400 mb-2">
-                                            {new Date(item.published_at).toLocaleString()}
-                                        </p>
-                                    )}
-
-                                    {item.excerpt && (
-                                        <p className="text-sm text-slate-300">{item.excerpt}</p>
-                                    )}
-
-                                    <div className="mt-4">
-                                        <a
-                                            href={`/news/${item.slug}`}
-                                            className="text-sm font-medium text-sky-400 hover:underline"
-                                        >
-                                            Read more..
-                                        </a>
-                                    </div>
-                                </article>
-                            );
-                        })}
+      <main className="min-h-screen bg-slate-950 text-slate-100 px-4 py-10">
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-3xl md:text-4xl font-bold mb-6">Latest News</h1>
+          <p className="text-slate-400">Failed to load news articles.</p>
+        </div>
+      </main>
+    )
+  }
+  if (isLoading) {
+    return (
+      <main className="min-h-screen bg-slate-950 text-slate-100 px-4 py-10">
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-3xl md:text-4xl font-bold mb-6">Latest News</h1>
+          <p className="text-slate-400">Loading news…</p>
+        </div>
+      </main>
+    )
+  }
+  const articles: Article[] = (data?.data || []) as Article[]
+  return (
+    <main className="min-h-screen bg-slate-950 text-slate-100 px-4 py-10">
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-3xl md:text-4xl font-bold mb-6">Latest News</h1>
+        {articles.length === 0 ? (
+          <p className="text-slate-400">No news articles found.</p>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2">
+            {articles.map((item) => {
+              const imgSrc = normalizeImageUrl(item.image_url)
+              return (
+                <article
+                  key={item.id}
+                  className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 hover:border-sky-500 transition"
+                >
+                  {imgSrc && (
+                    <div className="mb-3 overflow-hidden rounded-xl">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={imgSrc}
+                        alt={item.title}
+                        className="w-full h-40 object-cover"
+                      />
                     </div>
-                )}
-            </div>
-        </main>
-    );
+                  )}
+                  <h2 className="text-xl font-semibold mb-2">
+                    <a
+                      href={`/news/${item.slug}`}
+                      className="hover:text-sky-400"
+                    >
+                      {item.title}
+                    </a>
+                  </h2>
+                  {item.published_at && (
+                    <p className="text-xs text-slate-400 mb-2">
+                      {new Date(item.published_at).toLocaleString()}
+                    </p>
+                  )}
+                  {item.excerpt && (
+                    <p className="text-sm text-slate-300">
+                      {item.excerpt}
+                    </p>
+                  )}
+                  <div className="mt-4">
+                    <a
+                      href={`/news/${item.slug}`}
+                      className="text-sm font-medium text-sky-400 hover:underline"
+                    >
+                      Read more..
+                    </a>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        )}
+      </div>
+    </main>
+  )
 }

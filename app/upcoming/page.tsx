@@ -12,14 +12,31 @@ export default function UpcomingPage() {
     if (error) return <div className="card">Failed to load upcoming fixtures.</div>
     if (isLoading) return <div className="card animate-pulse">Loading upcoming matches…</div>
 
-    // /api/upcoming -> { data: Fixture[] }
     const fixtures: Fixture[] = data?.data ?? []
 
     if (!fixtures.length) return <div className="card">No upcoming matches right now.</div>
 
     return (
         <div className="space-y-4">
-            <h1 className="text-2xl font-semibold mb-4">Upcoming Matches</h1>
+
+            {/* Heading + Button */}
+            <div className="flex items-center justify-between mb-4">
+                <h1 className="text-2xl font-semibold">Upcoming Matches</h1>
+
+                <a
+                    href="/recent"
+                    className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+                >
+                    Recent Matches
+                </a>
+                <a
+                    href="/"
+                    className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+                >
+                    Live  Matches
+                </a>
+            </div>
+
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {fixtures.map(f => <FixtureCard key={f.id} f={f} />)}
             </div>
@@ -29,8 +46,10 @@ export default function UpcomingPage() {
 
 function FixtureCard({ f }: { f: Fixture }) {
     if (!f) return null
+
     const home = f.localteam
     const away = f.visitorteam
+
     return (
         <div className="card">
             <div className="flex items-center justify-between gap-2">
