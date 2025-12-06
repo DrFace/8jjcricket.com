@@ -1,42 +1,86 @@
 "use client"
 
-import React from 'react'
-import TeamBadge from '@/components/TeamBadge'
-import type { Team } from '@/types/team'
+import useSWR from 'swr'
+import Image from 'next/image'
 
-// A static list of major international cricket teams. Logos are left empty
-// because the source repository does not bundle team logos. If you have
-// appropriate logo URLs, populate the `logo` field accordingly.
-const teams: Team[] = [
-  { id: 1, name: 'India', short_name: 'IND', logo: '' },
-  { id: 2, name: 'Australia', short_name: 'AUS', logo: '' },
-  { id: 3, name: 'England', short_name: 'ENG', logo: '' },
-  { id: 4, name: 'Pakistan', short_name: 'PAK', logo: '' },
-  { id: 5, name: 'South Africa', short_name: 'SA', logo: '' },
-  { id: 6, name: 'New Zealand', short_name: 'NZ', logo: '' },
-  { id: 7, name: 'Sri Lanka', short_name: 'SL', logo: '' },
-  { id: 8, name: 'Bangladesh', short_name: 'BAN', logo: '' },
-  { id: 9, name: 'West Indies', short_name: 'WI', logo: '' },
-  { id: 10, name: 'Afghanistan', short_name: 'AFG', logo: '' },
-]
+interface TeamFromAPI {
+  id: number
+  name: string
+  code: string
+  image_path: string
+  country_id: number
+  national_team: boolean
+}
+
+const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 export default function TeamsPage() {
+  const { data, error, isLoading } = useSWR('/api/teams', fetcher)
+
+  if (error) {
+    return <div className="card">Failed to load teams.</div>
+  }
+  if (isLoading) {
+    return <div className="card animate-pulse">Loading teams…</div>
+  }
+  const teams: TeamFromAPI[] = data?.data ?? []
+  const national = teams.filter((t) => t.national_team)
+  const domestic = teams.filter((t) => !t.national_team)
+  // Limit domestic teams to a manageable number for display
+  const domesticLimited = domestic.slice(0, 30)
+
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-semibold mb-4">Teams</h1>
-      <p className="text-sm text-gray-600">
-        Browse some of the major cricket teams around the world.
-      </p>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {teams.map((team) => (
-          <div
-            key={team.id}
-            className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm flex items-center"
-          >
-            <TeamBadge team={team} size={40} />
+    <div className="space-y-8">
+      <h1 className="text-2xl font-semibold mb-4">Cricket Teams</h1>
+      {/* International teams */}
+      {national.length > 0 && (
+        <div>
+          <h2 className="text-xl font-semibold mb-2">International Teams</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {national.map((t) => (
+              <div
+                key={t.id}
+                className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <Image
+                  src={t.image_path}
+                  alt={t.name}
+                  width={32}
+                  height={32}
+                  className="object-contain rounded-full"
+                />
+                <span className="font-medium text-gray-800">{t.name}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+      {/* Domestic teams */}
+      {domesticLimited.length > 0 && (
+        <div>
+          <h2 className="text-xl font-semibold mb-2">Domestic Teams</h2>
+          <p className="text-sm text-gray-500 mb-2">
+            Showing a selection of domestic teams. There are many more available via the API.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {domesticLimited.map((t) => (
+              <div
+                key={t.id}
+                className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <Image
+                  src={t.image_path}
+                  alt={t.name}
+                  width={28}
+                  height={28}
+                  className="object-contain rounded-full"
+                />
+                <span className="font-medium text-gray-800 truncate">{t.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

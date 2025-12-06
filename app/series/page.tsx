@@ -1,66 +1,55 @@
 "use client"
 
-import React from 'react'
+import useSWR from 'swr'
+import Image from 'next/image'
 
-type Series = {
+interface League {
   id: number
   name: string
-  dates: string
-  details: string
+  code: string
+  image_path: string
+  type: string
 }
 
-// Static list of upcoming or notable series. In a real application this
-// information would likely come from an API. For now, it is hard-coded to
-// provide users with an overview of important tournaments.
-const seriesList: Series[] = [
-  {
-    id: 1,
-    name: 'India Tour of Australia 2025',
-    dates: 'Jan 5 – Feb 10, 2025',
-    details: '3 Tests · 5 ODIs · 3 T20Is',
-  },
-  {
-    id: 2,
-    name: 'Ashes 2025',
-    dates: 'Jul 1 – Aug 1, 2025',
-    details: '5 Tests',
-  },
-  {
-    id: 3,
-    name: 'ICC Champions Trophy 2025',
-    dates: 'Oct 10 – Nov 5, 2025',
-    details: 'Top ODI teams compete',
-  },
-  {
-    id: 4,
-    name: 'New Zealand Tour of Pakistan 2024',
-    dates: 'Nov 15 – Dec 20, 2024',
-    details: '2 Tests · 3 ODIs · 3 T20Is',
-  },
-  {
-    id: 5,
-    name: 'Asia Cup 2024',
-    dates: 'Aug 20 – Sep 6, 2024',
-    details: 'Regional ODI tournament',
-  },
-]
+const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 export default function SeriesPage() {
+  const { data, error, isLoading } = useSWR('/api/leagues', fetcher)
+
+  if (error) {
+    return <div className="card">Failed to load series.</div>
+  }
+  if (isLoading) {
+    return <div className="card animate-pulse">Loading series…</div>
+  }
+  const leagues: League[] = data?.data ?? []
+  // Filter to show only a handful of notable leagues. We'll prioritise leagues
+  // marked as "league" type and include a few international tournaments.
+  const notable = leagues
+    .filter((l) => l.type === 'league' || l.code.match(/IPL|BBL|PSL|BPL|T20I|ODI|TEST|WC|AC/i))
+    .slice(0, 18)
+
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-semibold mb-4">Series</h1>
-      <p className="text-sm text-gray-600">
-        Keep up with upcoming and notable cricket series.
-      </p>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {seriesList.map((series) => (
+    <div className="space-y-8">
+      <h1 className="text-2xl font-semibold mb-4">Series &amp; Leagues</h1>
+      <p className="text-sm text-gray-600">Explore major cricket leagues and tournaments.</p>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {notable.map((l) => (
           <div
-            key={series.id}
-            className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm space-y-1"
+            key={l.id}
+            className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center"
           >
-            <h2 className="text-lg font-semibold">{series.name}</h2>
-            <p className="text-xs text-gray-500">{series.dates}</p>
-            <p className="text-xs text-gray-500">{series.details}</p>
+            <Image
+              src={l.image_path}
+              alt={l.name}
+              width={48}
+              height={48}
+              className="object-contain mb-2"
+            />
+            <span className="font-medium text-gray-800 truncate w-full" title={l.name}>
+              {l.name}
+            </span>
+            <span className="text-xs text-gray-500 mt-0.5 uppercase">{l.code}</span>
           </div>
         ))}
       </div>
