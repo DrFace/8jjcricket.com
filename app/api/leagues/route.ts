@@ -4,12 +4,12 @@ import { smFetch } from '@/lib/sportmonks'
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-// GET /api/teams
-// Returns a list of all teams with basic metadata. Clients can filter
-// national and domestic teams based on the `national_team` boolean.
+// GET /api/leagues
+// Fetches a list of leagues and tournaments. Each league includes its
+// associated country information. This endpoint powers the Series page.
 export async function GET() {
   try {
-    const json = await smFetch('/teams?include=country')
+    const json = await smFetch('/leagues?include=country')
     return NextResponse.json({ data: json?.data ?? [] })
   } catch (err: any) {
     const msg = String(err?.message ?? '')
@@ -20,7 +20,7 @@ export async function GET() {
       )
     }
     return NextResponse.json(
-      { error: msg || 'Failed to load teams' },
+      { error: msg || 'Failed to load leagues' },
       { status: 500 }
     )
   }
