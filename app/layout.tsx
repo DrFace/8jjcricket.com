@@ -89,25 +89,55 @@ export default function RootLayout({
             </Link>
 
             <nav className="hidden md:flex gap-6 text-[15px] font-semibold text-gray-700">
-              {[
-                { href: "/", label: " Home" },
-                { href: "/archive", label: "Archive" },
-                { href: "/series", label: " Series" },
-                { href: "/players", label: " Players" },
-                { href: "/minigames", label: " Minigames" },
-                { href: "/news", label: "News" },
-                { href: "/rankings", label: "Team Rankings" },
+              {/* Regular links */}
+              <Link href="/" className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105">
+                Home
+                <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
+              </Link>
+              <Link href="/archive" className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105">
+                Archive
+                <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
+              </Link>
+              <Link href="/series" className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105">
+                Series
+                <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
+              </Link>
+              <Link href="/players" className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105">
+                Players
+                <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
+              </Link>
+              <Link href="/minigames" className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105">
+                Minigames
+                <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
+              </Link>
+              <Link href="/news" className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105">
+                News
+                <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
+              </Link>
 
-              ].map((link) => (
+              {/* Dropdown for team rankings */}
+              <div className="relative group">
                 <Link
-                  key={link.href}
-                  href={link.href}
-                  className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105"
+                  href="/rankings/t20i"
+                  className="relative transition-all duration-200 hover:text-blue-600 hover:scale-105"
                 >
-                  {link.label}
+                  Team Rankings
                   <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
                 </Link>
-              ))}
+
+                {/* show menu on hover or focus within the group */}
+                <div className="absolute left-0 top-full z-40 mt-2 hidden min-w-[8rem] rounded-md border bg-white py-1 text-sm shadow-lg group-hover:block group-focus-within:block">
+                  <Link href="/rankings/t20i" className="block px-4 py-2 whitespace-nowrap hover:bg-gray-50">
+                    T20I
+                  </Link>
+                  <Link href="/rankings/odi" className="block px-4 py-2 whitespace-nowrap hover:bg-gray-50">
+                    ODI
+                  </Link>
+                  <Link href="/rankings/test" className="block px-4 py-2 whitespace-nowrap hover:bg-gray-50">
+                    Test
+                  </Link>
+                </div>
+              </div>
             </nav>
 
             {/* Primary actions */}

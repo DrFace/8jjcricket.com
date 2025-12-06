@@ -37,7 +37,7 @@ a {
   text-transform: uppercase;
   line-height: 1.2;
   /* Use the generated image placed in public/images/animate.png */
-  background-image: url('/images/animate.png');
+  background-image: url('/images/animate2.png');
   background-size: cover;
   background-repeat: repeat-x;
   background-position-x: 0;
