@@ -116,8 +116,8 @@ export default function RootLayout({
             <nav className="hidden md:flex gap-6 text-[15px] font-semibold text-gray-700">
               {[
                 { href: "/", label: " Home" },
-                { href: "/upcoming", label: "Upcoming" },
-                { href: "/recent", label: " Recent" },
+                { href: "/archive", label: "Archive" },
+                { href: "/series", label: " Series" },
                 { href: "/players", label: " Players" },
                 { href: "/minigames", label: " Minigames" },
                 { href: "/news", label: "News" },
