@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server"
 
-// Backend base URL (no trailing slash)
-const DEFAULT_API_BASE = "http://72.60.107.98:8001/api"
-
 export const dynamic = "force-dynamic"
 export const revalidate = 0
+
+// Backend base URL via domain (no trailing slash)
+const DEFAULT_API_BASE = "https://8jjcricket.com/api"
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const category = searchParams.get("category")
 
+  // Allow override in dev if you want
   const base = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE
 
   // Build backend URL, keep query params (e.g. ?category=xxx)
