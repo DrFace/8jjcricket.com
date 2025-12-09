@@ -189,55 +189,107 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
           {/* Home Tab */}
           {activeTab === 'home' && (
-            <div className="p-6 space-y-6">
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Series Information</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <p className="text-sm text-gray-600 mb-1">Competition Type</p>
-                    <p className="text-lg font-medium text-gray-900 capitalize">{league.type}</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <p className="text-sm text-gray-600 mb-1">Series Code</p>
-                    <p className="text-lg font-medium text-gray-900 uppercase">{league.code}</p>
-                  </div>
-                  {league.country && (
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <p className="text-sm text-gray-600 mb-1">Country</p>
-                      <p className="text-lg font-medium text-gray-900">{league.country.name}</p>
-                    </div>
-                  )}
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <p className="text-sm text-gray-600 mb-1">Total Seasons</p>
-                    <p className="text-lg font-medium text-gray-900">{seasons.length}</p>
-                  </div>
+            <div className="p-6 space-y-8">
+              {/* Series Overview */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center p-4 bg-gray-50 rounded-lg">
+                  <p className="text-3xl font-bold text-gray-900">{seasons.length}</p>
+                  <p className="text-sm text-gray-600 mt-1">Editions</p>
+                </div>
+                <div className="text-center p-4 bg-gray-50 rounded-lg">
+                  <p className="text-3xl font-bold text-gray-900 uppercase">{league.code}</p>
+                  <p className="text-sm text-gray-600 mt-1">Series Code</p>
+                </div>
+                <div className="text-center p-4 bg-gray-50 rounded-lg">
+                  <p className="text-3xl font-bold text-gray-900 capitalize">{league.type}</p>
+                  <p className="text-sm text-gray-600 mt-1">Format</p>
                 </div>
               </div>
 
+              {/* Current Season Info */}
               {currentSeason && (
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Current Season</h2>
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <p className="text-lg font-medium text-gray-900 mb-2">{currentSeason.name}</p>
-                    <p className="text-sm text-gray-600">{dateRange}</p>
+                <div className="border-l-4 border-green-500 bg-green-50 p-4 rounded-r-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-green-700 font-medium mb-1">CURRENT SEASON</p>
+                      <p className="text-xl font-bold text-gray-900">{currentSeason.name}</p>
+                      {dateRange && (
+                        <p className="text-sm text-gray-600 mt-1">📅 {dateRange}</p>
+                      )}
+                    </div>
+                    <Link 
+                      href={`#`}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                    >
+                      View Matches
+                    </Link>
                   </div>
                 </div>
               )}
 
+              {/* News Section */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-semibold text-gray-900">Latest News</h2>
+                  <Link href="/news" className="text-sm text-green-600 hover:text-green-700 font-medium">
+                    View All →
+                  </Link>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* News items would come from your news API */}
+                  <div className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors cursor-pointer">
+                    <div className="flex gap-4">
+                      <div className="w-24 h-24 bg-gray-200 rounded-lg flex-shrink-0"></div>
+                      <div className="flex-1">
+                        <h3 className="font-medium text-gray-900 line-clamp-2 mb-2">
+                          {league.name} updates and latest news will appear here
+                        </h3>
+                        <p className="text-xs text-gray-500">Just now</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors cursor-pointer">
+                    <div className="flex gap-4">
+                      <div className="w-24 h-24 bg-gray-200 rounded-lg flex-shrink-0"></div>
+                      <div className="flex-1">
+                        <h3 className="font-medium text-gray-900 line-clamp-2 mb-2">
+                          Team announcements and squad updates
+                        </h3>
+                        <p className="text-xs text-gray-500">2 hours ago</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <p className="text-sm text-gray-500 mt-4 text-center">
+                  News integration coming soon. Connect your news API to show real articles.
+                </p>
+              </div>
+
+              {/* Recent Seasons */}
               {seasons.length > 0 && (
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">All Seasons</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    {seasons.slice(0, 9).map((season) => (
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Seasons</h2>
+                  <div className="space-y-2">
+                    {seasons.slice(0, 5).map((season) => (
                       <div
                         key={season.id}
-                        className="bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors"
+                        className="flex items-center justify-between bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors"
                       >
-                        <p className="font-medium text-gray-900">{season.name}</p>
-                        {season.id === currentSeason?.id && (
-                          <span className="inline-block mt-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded">
-                            Current
-                          </span>
+                        <div className="flex items-center gap-3">
+                          <p className="font-medium text-gray-900">{season.name}</p>
+                          {season.id === currentSeason?.id && (
+                            <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded">
+                              Current
+                            </span>
+                          )}
+                        </div>
+                        {season.starting_at && (
+                          <p className="text-sm text-gray-600">
+                            {new Date(season.starting_at).getFullYear()}
+                          </p>
                         )}
                       </div>
                     ))}

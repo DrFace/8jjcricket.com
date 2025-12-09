@@ -78,13 +78,63 @@ export default function SeriesPage() {
     filteredLeagues = leagues.filter((l) => l.code.match(/WOMEN|WOM/i) || l.name.toLowerCase().includes('women'))
   }
 
-  // Group series by month (mock data - you can enhance this with actual date info)
-  const currentMonth = 'December 2025'
-  const nextMonth = 'January 2026'
+  // Filter only current and future series (2024 onwards)
+  const currentYear = 2025
+  const currentAndFutureLeagues = filteredLeagues.filter((league) => {
+    // If league has seasons, check if any season is from 2024 onwards
+    if (league.seasons && league.seasons.length > 0) {
+      return league.seasons.some((season: any) => {
+        const seasonName = season.name || ''
+        // Extract year from season name (e.g., "2024/2025", "2025", "2024-25")
+        const yearMatch = seasonName.match(/\d{4}/)
+        if (yearMatch) {
+          const year = parseInt(yearMatch[0])
+          return year >= 2024
+        }
+        return false
+      })
+    }
+    return true // Include leagues without season info
+  })
+
+  // Group series by month based on current season dates
+  const seriesByMonth: SeriesByMonth = {}
   
-  const seriesByMonth: SeriesByMonth = {
-    [currentMonth]: filteredLeagues.slice(0, Math.ceil(filteredLeagues.length / 2)),
-    [nextMonth]: filteredLeagues.slice(Math.ceil(filteredLeagues.length / 2)),
+  currentAndFutureLeagues.forEach((league) => {
+    const currentSeason = league.seasons?.find((s: any) => s.is_current) || league.seasons?.[0]
+    
+    if (currentSeason?.starting_at) {
+      const startDate = new Date(currentSeason.starting_at)
+      const monthYear = startDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+      
+      if (!seriesByMonth[monthYear]) {
+        seriesByMonth[monthYear] = []
+      }
+      seriesByMonth[monthYear].push({
+        ...league,
+        dateRange: formatDateRange(currentSeason.starting_at, currentSeason.ending_at)
+      })
+    } else {
+      // For leagues without dates, put them in current month
+      const monthYear = 'December 2025'
+      if (!seriesByMonth[monthYear]) {
+        seriesByMonth[monthYear] = []
+      }
+      seriesByMonth[monthYear].push(league)
+    }
+  })
+
+  // Sort months chronologically
+  const sortedMonths = Object.keys(seriesByMonth).sort((a, b) => {
+    return new Date(a).getTime() - new Date(b).getTime()
+  })
+
+  // Helper function to format date range
+  function formatDateRange(start: string, end: string) {
+    if (!start || !end) return ''
+    const startDate = new Date(start)
+    const endDate = new Date(end)
+    return `${startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
   }
 
   return (
@@ -139,49 +189,73 @@ export default function SeriesPage() {
 
             {/* Series grouped by month */}
             <div className="space-y-6">
-              {Object.entries(seriesByMonth).map(([month, series]) => (
-                <div key={month} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                  {/* Month Header */}
-                  <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-gray-900">{month}</h2>
-                  </div>
-
-                  {/* Series List */}
-                  <div className="divide-y divide-gray-200">
-                    {series.length === 0 ? (
-                      <div className="px-4 py-8 text-center text-gray-500">
-                        No series found for this category
-                      </div>
-                    ) : (
-                      series.map((league) => (
-                        <Link
-                          key={league.id}
-                          href={`/series/${league.id}`}
-                          className="flex items-center justify-between px-4 py-4 hover:bg-gray-50 transition-colors"
-                        >
-                          <div className="flex-1">
-                            <h3 className="font-medium text-gray-900">{league.name}</h3>
-                            <p className="text-sm text-gray-500 mt-1 uppercase">{league.code}</p>
-                          </div>
-                          <svg 
-                            className="w-5 h-5 text-gray-400" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            viewBox="0 0 24 24"
-                          >
-                            <path 
-                              strokeLinecap="round" 
-                              strokeLinejoin="round" 
-                              strokeWidth={2} 
-                              d="M9 5l7 7-7 7" 
-                            />
-                          </svg>
-                        </Link>
-                      ))
-                    )}
-                  </div>
+              {sortedMonths.length === 0 ? (
+                <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
+                  <p className="text-gray-600">No current or upcoming series found for this filter.</p>
                 </div>
-              ))}
+              ) : (
+                sortedMonths.map((month) => (
+                  <div key={month} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                    {/* Month Header */}
+                    <div className="bg-gray-50 px-6 py-3 border-b border-gray-200">
+                      <h2 className="font-semibold text-gray-900">{month}</h2>
+                    </div>
+
+                    {/* Series List Table */}
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-gray-50 border-b border-gray-200">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Month
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Series Name
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {seriesByMonth[month].map((league: any) => (
+                            <tr key={league.id} className="hover:bg-gray-50 transition-colors">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 w-48">
+                                {month}
+                              </td>
+                              <td className="px-6 py-4">
+                                <Link
+                                  href={`/series/${league.id}`}
+                                  className="block hover:text-green-600 transition-colors"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div>
+                                      <h3 className="font-medium text-gray-900">{league.name}</h3>
+                                      {league.dateRange && (
+                                        <p className="text-xs text-gray-500 mt-1">{league.dateRange}</p>
+                                      )}
+                                    </div>
+                                    <svg 
+                                      className="w-5 h-5 text-gray-400 flex-shrink-0 ml-4" 
+                                      fill="none" 
+                                      stroke="currentColor" 
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path 
+                                        strokeLinecap="round" 
+                                        strokeLinejoin="round" 
+                                        strokeWidth={2} 
+                                        d="M9 5l7 7-7 7" 
+                                      />
+                                    </svg>
+                                  </div>
+                                </Link>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </>
         )}
