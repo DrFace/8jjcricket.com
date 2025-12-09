@@ -21,7 +21,7 @@ export async function GET(
       )
     }
     
-    // First get the league to find its seasons
+    // First get the league with seasons to find the current/latest season
     const leagueJson = await smFetch(`/leagues/${leagueId}?include=seasons`)
     const seasons = leagueJson?.data?.seasons || []
     
@@ -33,18 +33,24 @@ export async function GET(
       })
     }
     
-    // Get the current or latest season
-    const currentSeason = seasons.find((s: any) => s.is_current) || seasons[0]
+    // Get the current or latest season (not oldest)
+    const sortedSeasons = [...seasons].sort((a: any, b: any) => {
+      const getLatestYear = (name: string) => {
+        const years = name.match(/\d{4}/g)
+        return years ? Math.max(...years.map(y => parseInt(y))) : 0
+      }
+      return getLatestYear(b.name) - getLatestYear(a.name)
+    })
+    const currentSeason = seasons.find((s: any) => s.is_current) || sortedSeasons[0]
     
-    // Fetch all fixtures with complete includes
-    const fixturesJson = await smFetch(`/fixtures?include=tosswon,manofmatch,manofseries,secondumpire,firstumpire,scoreboards,batting,bowling,runs,balls,visitorteam,localteam`)
-    
-    // Filter fixtures by season_id
-    const allFixtures = fixturesJson?.data ?? []
-    const seasonFixtures = allFixtures.filter((f: any) => f.season_id === currentSeason.id)
+    // Now fetch fixtures for this season with all necessary includes
+    // Include teams, runs, venue, stage, and other match details
+    const fixturesJson = await smFetch(
+      `/fixtures?filter[season_id]=${currentSeason.id}&include=localteam,visitorteam,runs,venue,league,stage,tosswon,manofmatch`
+    )
     
     return NextResponse.json({ 
-      data: seasonFixtures,
+      data: fixturesJson?.data ?? [],
       success: true 
     })
   } catch (err: any) {

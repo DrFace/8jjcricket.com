@@ -38,8 +38,15 @@ export async function GET(
       if (currentSeason) {
         league.currentseason = currentSeason
       } else {
-        // If no current season, use the most recent one
-        league.currentseason = league.seasons[0]
+        // If no current season, use the most recent one (latest year)
+        const sortedSeasons = [...league.seasons].sort((a: any, b: any) => {
+          const getLatestYear = (name: string) => {
+            const years = name.match(/\d{4}/g)
+            return years ? Math.max(...years.map(y => parseInt(y))) : 0
+          }
+          return getLatestYear(b.name) - getLatestYear(a.name)
+        })
+        league.currentseason = sortedSeasons[0]
       }
     }
     

@@ -61,7 +61,21 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
   
   // Extract league data from response
   const leagueData: League = data?.data
-  const seasonId = leagueData?.currentseason?.id || leagueData?.seasons?.[0]?.id
+  
+  // Get latest season ID (not first/oldest)
+  const getLatestSeasonId = () => {
+    if (!leagueData?.seasons?.length) return undefined
+    const sorted = [...leagueData.seasons].sort((a: any, b: any) => {
+      const getYear = (name: string) => {
+        const years = name.match(/\d{4}/g)
+        return years ? Math.max(...years.map(y => parseInt(y))) : 0
+      }
+      return getYear(b.name) - getYear(a.name)
+    })
+    return sorted[0]?.id
+  }
+  
+  const seasonId = leagueData?.currentseason?.id || getLatestSeasonId()
   
   const { data: fixturesData } = useSWR(
     activeTab === 'matches' && params.id ? `/api/leagues/${params.id}/fixtures` : null,
@@ -319,8 +333,6 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
           {/* Matches Tab */}
           {activeTab === 'matches' && (
             <div className="p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Matches</h2>
-              
               {!fixturesData ? (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
@@ -328,43 +340,106 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                 </div>
               ) : fixturesData.data?.length === 0 ? (
                 <div className="text-center py-12 bg-gray-50 rounded-lg">
-                  <p className="text-gray-600">No matches available for this series</p>
+                  <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p className="text-gray-600 font-medium">No matches available for this series</p>
+                  <p className="text-sm text-gray-500 mt-2">Matches will appear here once the schedule is announced</p>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {fixturesData.data?.slice(0, 10).map((match: any) => (
-                    <Link
-                      key={match.id}
-                      href={`/match/${match.id}`}
-                      className="block bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <p className="text-sm text-gray-600 mb-2">
-                            {match.stage?.name || 'Match'} • {match.venue?.name || 'Venue TBD'}
-                          </p>
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium text-gray-900">
-                                {match.localteam?.name || 'Team 1'}
-                              </span>
-                              {match.runs && <span className="text-gray-600">{match.runs[0]?.score || ''}</span>}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium text-gray-900">
-                                {match.visitorteam?.name || 'Team 2'}
-                              </span>
-                              {match.runs && <span className="text-gray-600">{match.runs[1]?.score || ''}</span>}
-                            </div>
-                          </div>
-                          <p className="text-xs text-gray-500 mt-2 capitalize">{match.status || 'Scheduled'}</p>
+                <div className="space-y-4">
+                  {(() => {
+                    // Group matches by date
+                    const groupedMatches: { [key: string]: any[] } = {}
+                    fixturesData.data?.forEach((match: any) => {
+                      if (match.starting_at) {
+                        const date = new Date(match.starting_at)
+                        const dateKey = date.toLocaleDateString('en-US', { 
+                          weekday: 'short', 
+                          month: 'short', 
+                          day: 'numeric',
+                          year: 'numeric'
+                        })
+                        if (!groupedMatches[dateKey]) {
+                          groupedMatches[dateKey] = []
+                        }
+                        groupedMatches[dateKey].push(match)
+                      }
+                    })
+
+                    return Object.entries(groupedMatches).map(([date, matches]) => (
+                      <div key={date}>
+                        {/* Date Header */}
+                        <div className="bg-green-50 px-4 py-2 mb-3 rounded">
+                          <p className="text-sm font-semibold text-green-800 uppercase">{date}</p>
                         </div>
-                        <svg className="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
+                        
+                        {/* Matches for this date */}
+                        <div className="space-y-3">
+                          {matches.map((match: any) => (
+                            <Link
+                              key={match.id}
+                              href={`/match/${match.id}`}
+                              className="block border border-gray-200 rounded-lg p-4 hover:border-green-500 hover:shadow-md transition-all"
+                            >
+                              {/* Match Type & Venue */}
+                              <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2 text-xs text-gray-600">
+                                  <span className="font-medium">{match.type || 'Match'}</span>
+                                  <span>•</span>
+                                  <span>{match.venue?.name || 'Venue TBD'}</span>
+                                </div>
+                                {match.starting_at && (
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(match.starting_at).toLocaleTimeString('en-US', { 
+                                      hour: '2-digit', 
+                                      minute: '2-digit' 
+                                    })}
+                                  </span>
+                                )}
+                              </div>
+                              
+                              {/* Teams & Scores */}
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="font-semibold text-gray-900">
+                                    {match.localteam?.name || 'Team 1'}
+                                  </span>
+                                  {match.runs?.[0] && (
+                                    <span className="font-medium text-gray-900">
+                                      {match.runs[0].score}/{match.runs[0].wickets || 0}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <span className="font-semibold text-gray-900">
+                                    {match.visitorteam?.name || 'Team 2'}
+                                  </span>
+                                  {match.runs?.[1] && (
+                                    <span className="font-medium text-gray-900">
+                                      {match.runs[1].score}/{match.runs[1].wickets || 0}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              
+                              {/* Match Status/Result */}
+                              {match.note && (
+                                <p className="text-sm text-green-600 font-medium mt-3">
+                                  {match.note}
+                                </p>
+                              )}
+                              {!match.note && match.status && (
+                                <p className="text-xs text-gray-500 mt-2 capitalize">
+                                  {match.status}
+                                </p>
+                              )}
+                            </Link>
+                          ))}
+                        </div>
                       </div>
-                    </Link>
-                  ))}
+                    ))
+                  })()}
                 </div>
               )}
             </div>
