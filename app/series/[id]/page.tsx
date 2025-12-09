@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 interface Season {
+  is_current: boolean
   id: number
   name: string
   league_id: number
@@ -58,9 +59,9 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
   const [activeTab, setActiveTab] = useState('home')
   const { data, error, isLoading } = useSWR(`/api/leagues/${params.id}`, fetcher)
   
-  // Fetch additional data based on active tab
-  const league: League = data?.data
-  const seasonId = league?.currentseason?.id || league?.seasons?.[0]?.id
+  // Extract league data from response
+  const leagueData: League = data?.data
+  const seasonId = leagueData?.currentseason?.id || leagueData?.seasons?.[0]?.id
   
   const { data: fixturesData } = useSWR(
     activeTab === 'matches' && params.id ? `/api/leagues/${params.id}/fixtures` : null,
@@ -108,7 +109,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
     )
   }
 
-  if (!league) {
+  if (!leagueData) {
     return (
       <div className="space-y-4">
         <Link href="/series" className="text-green-600 hover:underline text-sm">
@@ -121,10 +122,26 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
     )
   }
 
-  const seasons = league.seasons || []
-  const currentSeason = league.currentseason || seasons.find(s => s.name.includes('2025')) || seasons[0]
-  const title = `${league.name} | 8jjcricket`
-  const description = `View matches, news, stats and information about ${league.name}`
+  const seasons = leagueData.seasons || []
+  
+  // Sort seasons by year to get the latest one
+  const sortedSeasons = [...seasons].sort((a, b) => {
+    // Extract years from season names (e.g., "2025/2026", "2023", "2021/2022")
+    const getLatestYear = (name: string) => {
+      const years = name.match(/\d{4}/g)
+      return years ? Math.max(...years.map(y => parseInt(y))) : 0
+    }
+    return getLatestYear(b.name) - getLatestYear(a.name)
+  })
+  
+  // Get current season: prefer is_current, then 2025/2026 seasons, then latest season
+  const currentSeason = leagueData.currentseason || 
+    seasons.find(s => s.is_current === true) ||
+    sortedSeasons.find(s => s.name.includes('2025') || s.name.includes('2026')) || 
+    sortedSeasons[0] // Latest season
+    
+  const title = `${leagueData.name} | 8jjcricket`
+  const description = `View matches, news, stats and information about ${leagueData.name}`
 
   // Format dates if available
   const dateRange = currentSeason?.starting_at && currentSeason?.ending_at
@@ -140,10 +157,10 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
         {/* Series Header */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-start gap-4 mb-4">
-            {league.image_path && (
+            {leagueData.image_path && (
               <Image
-                src={league.image_path}
-                alt={league.name}
+                src={leagueData.image_path}
+                alt={leagueData.name}
                 width={60}
                 height={60}
                 className="object-contain"
@@ -151,7 +168,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
             )}
             <div className="flex-1">
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                {league.name}
+                {leagueData.name}
               </h1>
               <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
                 {currentSeason && (
@@ -197,11 +214,11 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                   <p className="text-sm text-gray-600 mt-1">Editions</p>
                 </div>
                 <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <p className="text-3xl font-bold text-gray-900 uppercase">{league.code}</p>
+                  <p className="text-3xl font-bold text-gray-900 uppercase">{leagueData.code}</p>
                   <p className="text-sm text-gray-600 mt-1">Series Code</p>
                 </div>
                 <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <p className="text-3xl font-bold text-gray-900 capitalize">{league.type}</p>
+                  <p className="text-3xl font-bold text-gray-900 capitalize">{leagueData.type}</p>
                   <p className="text-sm text-gray-600 mt-1">Format</p>
                 </div>
               </div>
@@ -243,7 +260,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                       <div className="w-24 h-24 bg-gray-200 rounded-lg flex-shrink-0"></div>
                       <div className="flex-1">
                         <h3 className="font-medium text-gray-900 line-clamp-2 mb-2">
-                          {league.name} updates and latest news will appear here
+                          {leagueData.name} updates and latest news will appear here
                         </h3>
                         <p className="text-xs text-gray-500">Just now</p>
                       </div>
@@ -364,7 +381,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">News & Updates</h3>
                 <p className="text-gray-600">
-                  Latest news, updates and articles about {league.name}
+                  Latest news, updates and articles about {leagueData.name}
                 </p>
                 <p className="text-sm text-gray-500 mt-4">
                   News articles will be displayed here
@@ -501,7 +518,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2 capitalize">{activeTab}</h3>
                 <p className="text-gray-600">
-                  {activeTab === 'videos' && `Watch videos and highlights from ${league.name}`}
+                  {activeTab === 'videos' && `Watch videos and highlights from ${leagueData.name}`}
                   {activeTab === 'photos' && `Browse photo galleries from the series`}
                   {activeTab === 'stats' && `Explore detailed statistics and records`}
                 </p>
