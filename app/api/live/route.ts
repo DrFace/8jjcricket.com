@@ -28,15 +28,11 @@ export async function GET() {
 
     const startPast = new Date(today);
     startPast.setUTCDate(startPast.getUTCDate() - 45);
-
     const endFuture = new Date(today);
     endFuture.setUTCDate(endFuture.getUTCDate() + 90);
 
-    // Endpoint promises.  We initiate all three requests in parallel to
-    // minimise total latency.  Each call may throw if SportMonks
-    // responds with an error (e.g. rate limiting), in which case it
-    // will be caught below.
-    const liveP = smFetch(`/livescores?include=league,localteam,visitorteam,runs,tosswon`);
+    // Use livescores endpoint with comprehensive includes
+    const liveP = smFetch(`/livescores?include=league,localteam,visitorteam,balls,runs,bowling,batting,scoreboards,firstumpire,secondumpire,manofseries,manofmatch,tosswon`);
     const upcomingP = smFetch(
       `/fixtures?filter[starts_between]=${iso(today)},${iso(
         endFuture

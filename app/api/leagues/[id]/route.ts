@@ -13,10 +13,17 @@ export async function GET(
   try {
     const leagueId = parseInt(params.id)
     
-    // Fetch all leagues and find the specific one
-    const json = await smFetch('/leagues?include=country')
-    const leagues = json?.data ?? []
-    const league = leagues.find((l: any) => l.id === leagueId)
+    // Validate that ID is an integer
+    if (isNaN(leagueId)) {
+      return NextResponse.json(
+        { error: 'League ID must be an integer' },
+        { status: 400 }
+      )
+    }
+    
+    // Use GET League By ID endpoint with correct includes
+    const json = await smFetch(`/leagues/${leagueId}?include=country,season,seasons`)
+    const league = json?.data
     
     if (!league) {
       return NextResponse.json(
@@ -25,20 +32,15 @@ export async function GET(
       )
     }
     
-    // Try to fetch seasons for this league
-    try {
-      const seasonsJson = await smFetch(`/seasons?league_id=${leagueId}`)
-      league.seasons = seasonsJson?.data ?? []
-      
-      // Find current season
+    // Find current season
+    if (league.seasons && league.seasons.length > 0) {
       const currentSeason = league.seasons.find((s: any) => s.is_current === true)
       if (currentSeason) {
         league.currentseason = currentSeason
+      } else {
+        // If no current season, use the most recent one
+        league.currentseason = league.seasons[0]
       }
-    } catch (seasonErr) {
-      // If seasons endpoint fails, continue without seasons data
-      console.error('Failed to fetch seasons:', seasonErr)
-      league.seasons = []
     }
     
     return NextResponse.json({ data: league })
