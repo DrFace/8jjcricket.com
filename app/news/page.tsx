@@ -18,36 +18,36 @@ type Article = {
     published_at: string | null
 }
 
-// Base of your backend (no trailing /)
-const API_BASE =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://72.60.107.98:8001"
+// Use your domain instead of the IP
+const API_ORIGIN = "https://8jjcricket.com"
 
+// SWR fetcher (relative URLs -> same origin: https://8jjcricket.com)
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
-// Make sure images always come from 72.60.107.98:8001
 function normalizeImageUrl(url: string | null): string | null {
     if (!url) return null
 
-    // Already absolute (http or https) – use as-is
-    if (/^https?:\/\//i.test(url)) {
-        return url
+    try {
+        // Build against the domain
+        const u = new URL(url, API_ORIGIN)
+
+        // Ensure the path ALWAYS starts with /storage/
+        if (!u.pathname.startsWith("/storage/")) {
+            return `${API_ORIGIN}/storage/${u.pathname.replace(/^\/+/, "")}`
+        }
+
+        return `${API_ORIGIN}${u.pathname}${u.search}`
+    } catch {
+        // If backend returns just a filename
+        const clean = String(url).replace(/^\/+/, "")
+        return `${API_ORIGIN}/storage/${clean}`
     }
-
-    const baseOrigin = new URL(API_BASE).origin
-
-    // If backend returns "/storage/..."
-    if (url.startsWith("/")) {
-        return baseOrigin + url
-    }
-
-    // If backend returns "storage/..." (no leading slash)
-    return baseOrigin + "/" + url.replace(/^\/+/, "")
 }
 
 export default function NewsPage() {
     const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
-    // API URLs
+    // API URLs (these hit /api/news on the SAME origin, which Nginx sends to Laravel)
     const newsUrl = activeCategory
         ? `/api/news?category=${encodeURIComponent(activeCategory)}`
         : `/api/news`
@@ -75,8 +75,8 @@ export default function NewsPage() {
                         <button
                             onClick={() => setActiveCategory(null)}
                             className={`block w-full text-left px-3 py-2 rounded-lg mb-1 ${activeCategory === null
-                                    ? "bg-blue-600 text-white"
-                                    : "hover:bg-gray-100"
+                                ? "bg-blue-600 text-white"
+                                : "hover:bg-gray-100"
                                 }`}
                         >
                             All News
@@ -87,8 +87,8 @@ export default function NewsPage() {
                                 key={cat.id}
                                 onClick={() => setActiveCategory(cat.slug)}
                                 className={`block w-full text-left px-3 py-2 rounded-lg mb-1 ${activeCategory === cat.slug
-                                        ? "bg-blue-600 text-white"
-                                        : "hover:bg-gray-100"
+                                    ? "bg-blue-600 text-white"
+                                    : "hover:bg-gray-100"
                                     }`}
                             >
                                 {cat.name}
@@ -99,9 +99,7 @@ export default function NewsPage() {
                     {/* MAIN CONTENT */}
                     <section className="md:col-span-3">
                         <h1 className="text-3xl md:text-4xl font-bold mb-6">
-                            {activeCategory
-                                ? `News in "${activeCategory}"`
-                                : "Latest News"}
+                            {activeCategory ? `News in "${activeCategory}"` : "Latest News"}
                         </h1>
 
                         {error ? (
@@ -122,6 +120,7 @@ export default function NewsPage() {
                                         >
                                             {imgSrc && (
                                                 <div className="mb-3 overflow-hidden rounded-xl">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                                     <img
                                                         src={imgSrc}
                                                         alt={item.title}
@@ -146,9 +145,7 @@ export default function NewsPage() {
                                             )}
 
                                             {item.excerpt && (
-                                                <p className="text-sm text-gray-700">
-                                                    {item.excerpt}
-                                                </p>
+                                                <p className="text-sm text-gray-700">{item.excerpt}</p>
                                             )}
 
                                             <div className="mt-4">
