@@ -100,7 +100,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
   if (error) {
     return (
       <div className="space-y-4">
-        <Link href="/series" className="text-green-600 hover:underline text-sm">
+        <Link href="/series" className="text-blue-600 hover:underline text-sm">
           ← Back to Series
         </Link>
         <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -126,7 +126,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
   if (!leagueData) {
     return (
       <div className="space-y-4">
-        <Link href="/series" className="text-green-600 hover:underline text-sm">
+        <Link href="/series" className="text-blue-600 hover:underline text-sm">
           ← Back to Series
         </Link>
         <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -205,7 +205,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
                     activeTab === tab.id
-                      ? 'border-green-600 text-green-600'
+                      ? 'border-blue-600 text-blue-600'
                       : 'border-transparent text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -239,10 +239,10 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
 
               {/* Current Season Info */}
               {currentSeason && (
-                <div className="border-l-4 border-green-500 bg-green-50 p-4 rounded-r-lg">
+                <div className="border-l-4 border-blue-500 bg-blue-50 p-4 rounded-r-lg">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-green-700 font-medium mb-1">CURRENT SEASON</p>
+                      <p className="text-sm text-blue-700 font-medium mb-1">CURRENT SEASON</p>
                       <p className="text-xl font-bold text-gray-900">{currentSeason.name}</p>
                       {dateRange && (
                         <p className="text-sm text-gray-600 mt-1">📅 {dateRange}</p>
@@ -250,7 +250,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                     </div>
                     <Link 
                       href={`#`}
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                     >
                       View Matches
                     </Link>
@@ -262,7 +262,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold text-gray-900">Latest News</h2>
-                  <Link href="/news" className="text-sm text-green-600 hover:text-green-700 font-medium">
+                  <Link href="/news" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
                     View All →
                   </Link>
                 </div>
@@ -312,7 +312,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                         <div className="flex items-center gap-3">
                           <p className="font-medium text-gray-900">{season.name}</p>
                           {season.id === currentSeason?.id && (
-                            <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded">
+                            <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded">
                               Current
                             </span>
                           )}
@@ -335,7 +335,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
             <div className="p-6">
               {!fixturesData ? (
                 <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
                   <p className="text-gray-600 mt-4">Loading matches...</p>
                 </div>
               ) : fixturesData.data?.length === 0 ? (
@@ -370,8 +370,8 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                     return Object.entries(groupedMatches).map(([date, matches]) => (
                       <div key={date}>
                         {/* Date Header */}
-                        <div className="bg-green-50 px-4 py-2 mb-3 rounded">
-                          <p className="text-sm font-semibold text-green-800 uppercase">{date}</p>
+                        <div className="bg-blue-50 px-4 py-2 mb-3 rounded">
+                          <p className="text-sm font-semibold text-blue-800 uppercase">{date}</p>
                         </div>
                         
                         {/* Matches for this date */}
@@ -380,7 +380,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                             <Link
                               key={match.id}
                               href={`/match/${match.id}`}
-                              className="block border border-gray-200 rounded-lg p-4 hover:border-green-500 hover:shadow-md transition-all"
+                              className="block border border-gray-200 rounded-lg p-4 hover:border-blue-500 hover:shadow-md transition-all"
                             >
                               {/* Match Type & Venue */}
                               <div className="flex items-center justify-between mb-3">
@@ -425,7 +425,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                               
                               {/* Match Status/Result */}
                               {match.note && (
-                                <p className="text-sm text-green-600 font-medium mt-3">
+                                <p className="text-sm text-blue-600 font-medium mt-3">
                                   {match.note}
                                 </p>
                               )}
@@ -472,7 +472,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
               
               {!standingsData ? (
                 <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
                   <p className="text-gray-600 mt-4">Loading standings...</p>
                 </div>
               ) : standingsData.data?.length === 0 ? (
@@ -517,7 +517,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
               
               {!teamsData ? (
                 <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
                   <p className="text-gray-600 mt-4">Loading teams...</p>
                 </div>
               ) : teamsData.data?.length === 0 ? (
@@ -559,7 +559,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
               
               {!venuesData ? (
                 <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
                   <p className="text-gray-600 mt-4">Loading venues...</p>
                 </div>
               ) : venuesData.data?.length === 0 ? (
