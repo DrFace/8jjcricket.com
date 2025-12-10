@@ -107,7 +107,7 @@ export default function TeamsPage() {
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
-      <div className="space-y-8">
+      <div className="space-y-8 pb-8">
         {/* Header Section with Gradient Background */}
         <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 rounded-2xl shadow-xl p-6 md:p-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
