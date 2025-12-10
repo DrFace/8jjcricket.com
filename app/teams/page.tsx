@@ -231,9 +231,9 @@ export default function TeamsPage() {
                   <Image
                     src={t.image_path}
                     alt={t.name}
-                    width={28}
-                    height={28}
-                    className="object-contain rounded-full"
+                    width={32}
+                    height={32}
+                    className="object-contain rounded-full ring-2 ring-gray-100"
                   />
                   <span className="font-semibold text-gray-900 truncate">{t.name}</span>
                 </div>
