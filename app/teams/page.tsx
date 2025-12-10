@@ -204,7 +204,7 @@ export default function TeamsPage() {
                     height={32}
                     className="object-contain rounded-full"
                   />
-                    <span className="font-medium text-gray-800">{t.name}</span>
+                    <span className="font-semibold text-gray-900">{t.name}</span>
                 </div>
               ))}
             </div>
