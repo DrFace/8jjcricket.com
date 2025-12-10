@@ -53,4 +53,9 @@ a {
   to {
     background-position-x: -500px;
   }
+  
+}
+.gradient-border {
+  background-size: 200% 200%;
+  animation: border-move 2s linear infinite;
 }

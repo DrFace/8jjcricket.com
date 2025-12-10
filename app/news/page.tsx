@@ -1,7 +1,8 @@
 "use client"
 
-import useSWR from "swr"
 import { useState } from "react"
+import useSWR from "swr"
+import Link from "next/link"
 
 type Category = {
     id: number
@@ -18,36 +19,43 @@ type Article = {
     published_at: string | null
 }
 
-// Use your domain instead of the IP
-const API_ORIGIN = "https://8jjcricket.com"
+// Same pattern as the single article page
+const SITE_ORIGIN =
+    process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com"
 
-// SWR fetcher (relative URLs -> same origin: https://8jjcricket.com)
-const fetcher = (url: string) => fetch(url).then((r) => r.json())
+// SWR fetcher – these URLs are relative (e.g. "/api/news")
+const fetcher = (url: string) =>
+    fetch(url, { cache: "no-store" }).then((r) => {
+        if (!r.ok) {
+            throw new Error(`Failed to fetch ${url}: ${r.status} ${r.statusText}`)
+        }
+        return r.json()
+    })
 
+// Reuse the SAME normalizeImageUrl logic as in [slug]/page.tsx
 function normalizeImageUrl(url: string | null): string | null {
     if (!url) return null
 
     try {
-        // Build against the domain
-        const u = new URL(url, API_ORIGIN)
+        const u = new URL(url, SITE_ORIGIN)
+        let pathname = u.pathname
 
-        // Ensure the path ALWAYS starts with /storage/
-        if (!u.pathname.startsWith("/storage/")) {
-            return `${API_ORIGIN}/storage/${u.pathname.replace(/^\/+/, "")}`
+        if (!pathname.startsWith("/storage/")) {
+            const clean = pathname.replace(/^\/+/, "")
+            pathname = `/storage/${clean}`
         }
 
-        return `${API_ORIGIN}${u.pathname}${u.search}`
+        return `${SITE_ORIGIN}${pathname}${u.search}`
     } catch {
-        // If backend returns just a filename
         const clean = String(url).replace(/^\/+/, "")
-        return `${API_ORIGIN}/storage/${clean}`
+        return `${SITE_ORIGIN}/storage/${clean}`
     }
 }
 
 export default function NewsPage() {
     const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
-    // API URLs (these hit /api/news on the SAME origin, which Nginx sends to Laravel)
+    // These hit /api/news on the SAME origin (Next), which your proxy sends to Laravel
     const newsUrl = activeCategory
         ? `/api/news?category=${encodeURIComponent(activeCategory)}`
         : `/api/news`
@@ -63,6 +71,8 @@ export default function NewsPage() {
 
     return (
         <>
+            {/* If this is an /app route, prefer the metadata API.
+                Leaving this here since you already had it. */}
             <title>{title}</title>
             <meta name="description" content={description} />
 
@@ -130,31 +140,35 @@ export default function NewsPage() {
                                             )}
 
                                             <h2 className="text-xl font-semibold mb-2">
-                                                <a
+                                                <Link
                                                     href={`/news/${item.slug}`}
                                                     className="hover:text-blue-600"
                                                 >
                                                     {item.title}
-                                                </a>
+                                                </Link>
                                             </h2>
 
                                             {item.published_at && (
                                                 <p className="text-xs text-gray-500 mb-2">
-                                                    {new Date(item.published_at).toLocaleString()}
+                                                    {new Date(
+                                                        item.published_at
+                                                    ).toLocaleString()}
                                                 </p>
                                             )}
 
                                             {item.excerpt && (
-                                                <p className="text-sm text-gray-700">{item.excerpt}</p>
+                                                <p className="text-sm text-gray-700">
+                                                    {item.excerpt}
+                                                </p>
                                             )}
 
                                             <div className="mt-4">
-                                                <a
+                                                <Link
                                                     href={`/news/${item.slug}`}
                                                     className="text-sm font-medium text-blue-600 hover:underline"
                                                 >
                                                     Read more..
-                                                </a>
+                                                </Link>
                                             </div>
                                         </article>
                                     )
