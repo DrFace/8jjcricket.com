@@ -57,8 +57,8 @@ export default function TeamsPage() {
   
   const { data, error, isLoading } = useSWR(teamsUrl, fetcher)
   
-  const title = 'Cricket Teams | 8jjcricket'
-  const description = 'Browse cricket teams by series and leagues, including international and domestic teams.'
+  const title = 'Cricket Teams - All International & Domestic Teams | 8jjcricket'
+  const description = 'Explore cricket teams from around the world. Filter by series and leagues including ODI, T20I, Test, IPL, and more. View international and domestic cricket teams.'
   if (error) {
     return (
       <>
