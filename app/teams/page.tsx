@@ -109,7 +109,7 @@ export default function TeamsPage() {
       <meta name="description" content={description} />
       <div className="space-y-8 pb-8">
         {/* Header Section with Gradient Background */}
-        <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl shadow-xl p-6 md:p-8">
+        <div className="bg-gradient-to-r from-blue-600 via-cyan-600 to-sky-500 rounded-2xl shadow-xl p-6 md:p-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             {/* Title and Back Button */}
             <div className="flex items-center gap-4">
@@ -215,7 +215,7 @@ export default function TeamsPage() {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <h2 className="text-2xl font-bold text-gray-900">Domestic Teams</h2>
-              <span className="px-3 py-1 bg-purple-100 text-purple-700 text-sm font-semibold rounded-full">
+              <span className="px-3 py-1 bg-cyan-100 text-cyan-700 text-sm font-semibold rounded-full">
                 {domesticLimited.length}
               </span>
             </div>
@@ -226,7 +226,7 @@ export default function TeamsPage() {
               {domesticLimited.map((t) => (
                 <div
                   key={t.id}
-                  className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm hover:shadow-lg hover:border-purple-300 transition-all duration-200 cursor-pointer hover:-translate-y-0.5"
+                  className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all duration-200 cursor-pointer hover:-translate-y-0.5"
                 >
                   <Image
                     src={t.image_path}
