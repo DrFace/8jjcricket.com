@@ -281,13 +281,13 @@ export default function SeriesPage() {
                     <div className="flex gap-2 mt-auto w-full">
                       <Link
                         href={`/series/${league.id}`}
-                        className="flex-1 px-3 py-1.5 text-xs font-medium text-green-600 border border-green-600 rounded hover:bg-green-50 transition-colors"
+                        className="flex-1 px-3 py-1.5 text-xs font-medium text-blue-600 border border-blue-600 rounded hover:bg-blue-50 transition-colors"
                       >
                         Details
                       </Link>
                       <Link
                         href={`/teams?series=${getLatestSeasonId(league)}`}
-                        className="flex-1 px-3 py-1.5 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700 transition-colors"
+                        className="flex-1 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors"
                       >
                         Teams
                       </Link>
