@@ -160,9 +160,12 @@ export default function TeamsPage() {
                   })}
                 </select>
               </div>
-              <p className="text-green-50/80 text-xs mt-2 ml-1">
-                {selectedLeague === 'all' ? 'Showing all teams' : 'Filtered by selected series'}
-              </p>
+              <div className="flex items-center gap-2 mt-2 ml-1">
+                <div className={`w-2 h-2 rounded-full ${selectedLeague === 'all' ? 'bg-yellow-300' : 'bg-green-300'} animate-pulse`}></div>
+                <p className="text-green-50/90 text-xs font-medium">
+                  {selectedLeague === 'all' ? 'Showing all teams' : 'Filtered by selected series'}
+                </p>
+              </div>
             </div>
           </div>
         </div>
