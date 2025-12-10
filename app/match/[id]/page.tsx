@@ -100,12 +100,12 @@ export default function MatchPage({ params }: { params: { id: string } }) {
         </div>
 
         {/* Match Status */}
-        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-          <p className="text-sm font-medium text-green-800 capitalize">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <p className="text-sm font-medium text-blue-800 capitalize">
             {match.status || 'Scheduled'}
           </p>
           {match.note && (
-            <p className="text-xs text-green-700 mt-1">{match.note}</p>
+            <p className="text-xs text-blue-700 mt-1">{match.note}</p>
           )}
         </div>
 
@@ -117,7 +117,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
               onClick={() => setTab(t.id)}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                 tab === t.id
-                  ? 'border-green-600 text-green-600'
+                  ? 'border-blue-600 text-blue-600'
                   : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -223,7 +223,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
           <div>
             {commentaryLoading ? (
               <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
                 <p className="text-gray-600 mt-2">Loading commentary...</p>
               </div>
             ) : commentaryData?.data?.balls && commentaryData.data.balls.length > 0 ? (
