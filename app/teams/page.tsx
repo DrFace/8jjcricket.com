@@ -195,7 +195,7 @@ export default function TeamsPage() {
               {national.map((t) => (
                 <div
                   key={t.id}
-                  className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm hover:shadow-md transition-shadow"
+                  className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm hover:shadow-lg hover:border-blue-300 transition-all duration-200 cursor-pointer hover:-translate-y-0.5"
                 >
                   <Image
                     src={t.image_path}
