@@ -59,3 +59,10 @@ a {
   background-size: 200% 200%;
   animation: border-move 2s linear infinite;
 }
+
+.winner-card {
+  border: 1px solid red;
+}
+body{
+  overflow-x:hidden !important;
+}

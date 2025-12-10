@@ -3,7 +3,7 @@ import MinigameCard from "@/components/MinigameCard";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import MatchCentre from "@/components/MatchCentre";
-
+import OddsCard from "@/components/BetButton";
 type Article = {
   id: number;
   title: string;
@@ -72,7 +72,7 @@ export default async function HomePage() {
         <div className="space-y-4">
           <MatchCentre />
         </div>
-
+       
         {/* ---- RIGHT SIDEBAR NEWS ---- */}
         <aside className="space-y-4">
           {/* Latest news */}

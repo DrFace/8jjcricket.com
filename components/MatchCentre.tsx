@@ -4,6 +4,8 @@
 import { useState } from 'react';
 import LiveGrid from './LiveGrid';
 import Link from 'next/link';
+import BetButton from './BetButton';
+
 
 export default function MatchCentre() {
     // default selection is International
@@ -49,6 +51,8 @@ export default function MatchCentre() {
 
                 {/* Live matches grid */}
                 <div className="px-3 sm:px-4 py-3 sm:py-4">
+                    
+                    <BetButton />
                     <LiveGrid filter={selected} />
                 </div>
             </div>

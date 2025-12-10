@@ -67,12 +67,7 @@ export default function LiveGrid({ filter = 'All' }: LiveGridProps) {
   return (
     <div className="space-y-3 text-sm">
       {filtered.map((f) => (
-        <div
-          key={f.id}
-          className="rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-sm hover:shadow-md transition"
-        >
-          <LiveCard f={f} />
-        </div>
+        <LiveCard key={f.id} f={f} />
       ))}
     </div>
   );
