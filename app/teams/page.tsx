@@ -115,7 +115,7 @@ export default function TeamsPage() {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => window.history.back()}
-                className="flex items-center justify-center w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full transition-all duration-200 hover:scale-110 group"
+                className="flex items-center justify-center w-11 h-11 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full transition-all duration-300 hover:scale-110 group shadow-lg"
                 aria-label="Go back"
               >
                 <svg className="w-5 h-5 text-white group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
