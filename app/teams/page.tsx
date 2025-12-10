@@ -140,7 +140,7 @@ export default function TeamsPage() {
                   id="league-select"
                   value={selectedLeague}
                   onChange={(e) => setSelectedLeague(e.target.value)}
-                  className="w-full lg:w-80 pl-12 pr-10 py-3.5 bg-white/95 backdrop-blur-sm border-2 border-white/30 rounded-xl shadow-lg text-gray-800 font-medium text-sm md:text-base focus:outline-none focus:ring-4 focus:ring-white/50 focus:border-white transition-all duration-200 cursor-pointer hover:bg-white appearance-none"
+                  className="w-full lg:w-80 pl-12 pr-10 py-3.5 bg-white border-2 border-sky-200 rounded-xl shadow-sm text-sky-700 font-medium text-sm md:text-base focus:outline-none focus:ring-4 focus:ring-sky-100 focus:border-sky-300 transition-all duration-200 cursor-pointer hover:bg-sky-50 appearance-none"
                   style={{
                     backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                     backgroundPosition: 'right 0.75rem center',
@@ -148,7 +148,7 @@ export default function TeamsPage() {
                     backgroundSize: '1.5em 1.5em'
                   }}
                 >
-                  <option value="all">🌍 All Teams</option>
+                  <option value="all"> Series/League</option>
                   <option disabled>─────────────────</option>
                   {leagues.map((league) => {
                     const seasonId = getLatestSeasonId(league)
@@ -161,8 +161,8 @@ export default function TeamsPage() {
                 </select>
               </div>
               <div className="flex items-center gap-2 mt-2 ml-1">
-                <div className={`w-2 h-2 rounded-full ${selectedLeague === 'all' ? 'bg-yellow-300' : 'bg-green-300'} animate-pulse`}></div>
-                <p className="text-green-50/90 text-xs font-medium">
+                <div className={`w-2 h-2 rounded-full ${selectedLeague === 'all' ? 'bg-yellow-400' : 'bg-emerald-500'} animate-pulse`}></div>
+                <p className="text-white/90 text-xs font-medium">
                   {selectedLeague === 'all' ? 'Showing all teams' : 'Filtered by selected series'}
                 </p>
               </div>
