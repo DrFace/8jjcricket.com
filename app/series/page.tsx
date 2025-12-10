@@ -21,14 +21,23 @@ interface SeriesByMonth {
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 const tabs = [
-  { id: 'current', label: 'Current Matches' },
   { id: 'series', label: 'Current & Future Series' },
-  { id: 'byDay', label: 'Matches By Day' },
-  { id: 'teams', label: 'Teams' },
-  { id: 'archive', label: 'Series Archive' },
 ]
 
 const filters = ['All', 'International', 'League', 'Domestic', 'Women']
+
+// Helper to get the latest season ID from a league
+const getLatestSeasonId = (league: League) => {
+  if (!league.seasons?.length) return null
+  const sorted = [...league.seasons].sort((a: any, b: any) => {
+    const getYear = (name: string) => {
+      const years = name.match(/\d{4}/g)
+      return years ? Math.max(...years.map(y => parseInt(y))) : 0
+    }
+    return getYear(b.name) - getYear(a.name)
+  })
+  return sorted[0]?.id
+}
 
 /**
  * SeriesPage displays cricket series similar to Cricbuzz format
@@ -230,9 +239,8 @@ export default function SeriesPage() {
                 sortedLeagues.map((league) => {
                   const isActive = league.seasons?.some((s: any) => s.is_current)
                   return (
-                  <Link
+                  <div
                     key={league.id}
-                    href={`/series/${league.id}`}
                     className={`bg-white rounded-lg border p-6 hover:shadow-lg transition-shadow duration-200 flex flex-col items-center text-center group relative ${
                       isActive ? 'border-green-500 ring-2 ring-green-100' : 'border-gray-200'
                     }`}
@@ -260,15 +268,31 @@ export default function SeriesPage() {
                     </div>
                     
                     {/* League Name */}
-                    <h3 className="font-medium text-gray-900 text-sm line-clamp-2 group-hover:text-green-600 transition-colors mb-1">
+                    <h3 className="font-medium text-gray-900 text-sm line-clamp-2 mb-1">
                       {league.name}
                     </h3>
                     
                     {/* League Code */}
-                    <p className="text-xs text-gray-500 uppercase font-medium">
+                    <p className="text-xs text-gray-500 uppercase font-medium mb-3">
                       {league.code}
                     </p>
-                  </Link>
+                    
+                    {/* Action Buttons */}
+                    <div className="flex gap-2 mt-auto w-full">
+                      <Link
+                        href={`/series/${league.id}`}
+                        className="flex-1 px-3 py-1.5 text-xs font-medium text-green-600 border border-green-600 rounded hover:bg-green-50 transition-colors"
+                      >
+                        Details
+                      </Link>
+                      <Link
+                        href={`/teams?series=${getLatestSeasonId(league)}`}
+                        className="flex-1 px-3 py-1.5 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700 transition-colors"
+                      >
+                        Teams
+                      </Link>
+                    </div>
+                  </div>
                 )})
               )}
             </div>

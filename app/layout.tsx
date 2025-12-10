@@ -106,6 +106,10 @@ export default function RootLayout({
                 Players
                 <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
               </Link>
+              <Link href="/teams" className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105">
+                Teams
+                <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
+              </Link>
               <Link href="/minigames" className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105">
                 Minigames
                 <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
