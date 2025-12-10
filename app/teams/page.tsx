@@ -109,7 +109,7 @@ export default function TeamsPage() {
       <meta name="description" content={description} />
       <div className="space-y-8 pb-8">
         {/* Header Section with Gradient Background */}
-        <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 rounded-2xl shadow-xl p-6 md:p-8">
+        <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl shadow-xl p-6 md:p-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             {/* Title and Back Button */}
             <div className="flex items-center gap-4">
@@ -124,7 +124,7 @@ export default function TeamsPage() {
               </button>
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">Cricket Teams</h1>
-                <p className="text-green-50 text-sm md:text-base mt-1 font-medium">Browse teams by series and leagues</p>
+                <p className="text-blue-50 text-sm md:text-base mt-1 font-medium">Browse teams by series and leagues</p>
               </div>
             </div>
             
