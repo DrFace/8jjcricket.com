@@ -1,7 +1,5 @@
 "use client"
 
-import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
 import useSWR from 'swr'
 import Image from 'next/image'
 
@@ -14,52 +12,16 @@ interface TeamFromAPI {
   national_team: boolean
 }
 
-interface League {
-  id: number
-  name: string
-  code: string
-  seasons?: Array<{
-    id: number
-    name: string
-    is_current?: boolean
-    starting_at?: string
-  }>
-}
-
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 /**
- * TeamsPage lists cricket teams filtered by Series/League selection.
- * Users can select a specific series to view only related teams.
- * Supports auto-selection via URL parameter: /teams?series={seasonId}
+ * TeamsPage lists international and domestic cricket teams. It adds
+ * `<title>` and `<meta>` tags for SEO and adheres to the light theme.
  */
 export default function TeamsPage() {
-  const searchParams = useSearchParams()
-  const seriesParam = searchParams.get('series')
-  
-  const [selectedLeague, setSelectedLeague] = useState<string>('all')
-  
-  // Auto-select series from URL parameter
-  useEffect(() => {
-    if (seriesParam) {
-      setSelectedLeague(seriesParam)
-    }
-  }, [seriesParam])
-  
-  // Fetch all leagues for the dropdown
-  const { data: leaguesData } = useSWR('/api/leagues', fetcher)
-  const leagues: League[] = leaguesData?.data ?? []
-  
-  // Fetch teams based on selected league
-  const teamsUrl = selectedLeague === 'all' 
-    ? '/api/teams' 
-    : `/api/seasons/${selectedLeague}/teams`
-  
-  const { data, error, isLoading } = useSWR(teamsUrl, fetcher)
-  
-  const title = 'Cricket Teams | 8jjcricket'
-  const description = 'Browse cricket teams by series and leagues, including international and domestic teams.'
-  
+  const { data, error, isLoading } = useSWR('/api/teams', fetcher)
+  const title = 'Teams | 8jjcricket'
+  const description = 'Browse cricket teams, including international and domestic teams.'
   if (error) {
     return (
       <>
@@ -69,87 +31,27 @@ export default function TeamsPage() {
       </>
     )
   }
-  
   if (isLoading) {
     return (
       <>
         <title>{title}</title>
         <meta name="description" content={description} />
-        <div className="space-y-6">
-          <div className="h-10 bg-gray-200 rounded w-64 animate-pulse"></div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {[...Array(10)].map((_, i) => (
-              <div key={i} className="h-20 bg-gray-200 rounded-lg animate-pulse"></div>
-            ))}
-          </div>
-        </div>
+        <div className="card animate-pulse">Loading teams…</div>
       </>
     )
   }
-  
   const teams: TeamFromAPI[] = data?.data ?? []
   const national = teams.filter((t) => t.national_team)
   const domestic = teams.filter((t) => !t.national_team)
+  // Limit domestic teams to a manageable number for display
   const domesticLimited = domestic.slice(0, 30)
-  
-  // Get the latest season ID for each league
-  const getLatestSeasonId = (league: any) => {
-    if (!league.seasons?.length) return null
-    const sorted = [...league.seasons].sort((a: any, b: any) => {
-      const getYear = (name: string) => {
-        const years = name.match(/\d{4}/g)
-        return years ? Math.max(...years.map(y => parseInt(y))) : 0
-      }
-      return getYear(b.name) - getYear(a.name)
-    })
-    return sorted[0]?.id
-  }
-
   return (
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
-      <div className="space-y-6">
-        {/* Header with Series/League Filter */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h1 className="text-3xl font-bold text-gray-900">Cricket Teams</h1>
-          
-          {/* Series/League Dropdown */}
-          <div className="w-full sm:w-auto">
-            <label htmlFor="league-select" className="block text-sm font-medium text-gray-700 mb-2">
-              Filter by Series/League
-            </label>
-            <select
-              id="league-select"
-              value={selectedLeague}
-              onChange={(e) => setSelectedLeague(e.target.value)}
-              className="w-full sm:w-64 px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900"
-            >
-              <option value="all">All Series/League</option>
-              {leagues.map((league) => {
-                const seasonId = getLatestSeasonId(league)
-                return seasonId ? (
-                  <option key={league.id} value={seasonId}>
-                    {league.name}
-                  </option>
-                ) : null
-              })}
-            </select>
-          </div>
-        </div>
-
-        {/* Teams Display */}
-        {teams.length === 0 ? (
-          <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
-            <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            <p className="text-gray-600 font-medium">No teams found for this selection</p>
-            <p className="text-sm text-gray-500 mt-2">Try selecting a different series or league</p>
-          </div>
-        ) : (
-          <>
-            {/* International teams */}
+      <div className="space-y-8">
+        <h1 className="text-2xl font-semibold mb-4">Cricket Teams</h1>
+        {/* International teams */}
         {national.length > 0 && (
           <div>
             <h2 className="text-xl font-semibold mb-2">International Teams</h2>
@@ -197,8 +99,6 @@ export default function TeamsPage() {
               ))}
             </div>
           </div>
-        )}
-          </>
         )}
       </div>
     </>
