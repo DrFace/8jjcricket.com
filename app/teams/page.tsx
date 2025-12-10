@@ -124,7 +124,7 @@ export default function TeamsPage() {
               </button>
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">Cricket Teams</h1>
-                <p className="text-green-50 text-sm md:text-base mt-1">Browse teams by series and leagues</p>
+                <p className="text-green-50 text-sm md:text-base mt-1 font-medium">Browse teams by series and leagues</p>
               </div>
             </div>
             
