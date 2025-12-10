@@ -210,7 +210,7 @@ export default function SeriesPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-6 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
                   activeTab === tab.id
-                    ? 'border-green-600 text-green-600'
+                    ? 'border-blue-600 text-blue-600'
                     : 'border-transparent text-gray-600 hover:text-gray-900'
                 }`}
               >
@@ -242,12 +242,12 @@ export default function SeriesPage() {
                   <div
                     key={league.id}
                     className={`bg-white rounded-lg border p-6 hover:shadow-lg transition-shadow duration-200 flex flex-col items-center text-center group relative ${
-                      isActive ? 'border-green-500 ring-2 ring-green-100' : 'border-gray-200'
+                      isActive ? 'border-blue-500 ring-2 ring-blue-100' : 'border-gray-200'
                     }`}
                   >
                     {/* Active Badge */}
                     {isActive && (
-                      <span className="absolute top-2 right-2 px-2 py-0.5 bg-green-500 text-white text-xs font-bold rounded-full">
+                      <span className="absolute top-2 right-2 px-2 py-0.5 bg-blue-500 text-white text-xs font-bold rounded-full">
                         LIVE
                       </span>
                     )}
