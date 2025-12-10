@@ -185,7 +185,12 @@ export default function TeamsPage() {
         {/* International teams */}
         {national.length > 0 && (
           <div>
-            <h2 className="text-xl font-semibold mb-2">International Teams</h2>
+            <div className="flex items-center gap-3 mb-4">
+              <h2 className="text-2xl font-bold text-gray-900">International Teams</h2>
+              <span className="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-semibold rounded-full">
+                {national.length}
+              </span>
+            </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {national.map((t) => (
                 <div
