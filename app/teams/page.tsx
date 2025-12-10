@@ -213,9 +213,14 @@ export default function TeamsPage() {
         {/* Domestic teams */}
         {domesticLimited.length > 0 && (
           <div>
-            <h2 className="text-xl font-semibold mb-2">Domestic Teams</h2>
-            <p className="text-sm text-gray-500 mb-2">
-              Showing a selection of domestic teams. There are many more available via the API.
+            <div className="flex items-center gap-3 mb-4">
+              <h2 className="text-2xl font-bold text-gray-900">Domestic Teams</h2>
+              <span className="px-3 py-1 bg-purple-100 text-purple-700 text-sm font-semibold rounded-full">
+                {domesticLimited.length}
+              </span>
+            </div>
+            <p className="text-sm text-gray-600 mb-4 bg-gray-50 border-l-4 border-gray-300 pl-4 py-2 rounded">
+              📋 Showing top {domesticLimited.length} domestic teams. Many more available via API.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {domesticLimited.map((t) => (
