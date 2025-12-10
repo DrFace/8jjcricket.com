@@ -235,7 +235,7 @@ export default function TeamsPage() {
                     height={28}
                     className="object-contain rounded-full"
                   />
-                  <span className="font-medium text-gray-800 truncate">{t.name}</span>
+                  <span className="font-semibold text-gray-900 truncate">{t.name}</span>
                 </div>
               ))}
             </div>
