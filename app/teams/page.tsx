@@ -149,6 +149,7 @@ export default function TeamsPage() {
                   }}
                 >
                   <option value="all">🌍 All Teams</option>
+                  <option disabled>─────────────────</option>
                   {leagues.map((league) => {
                     const seasonId = getLatestSeasonId(league)
                     return seasonId ? (
