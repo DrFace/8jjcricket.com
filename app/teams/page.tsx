@@ -107,32 +107,62 @@ export default function TeamsPage() {
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
-      <div className="space-y-6">
-        {/* Header with Series/League Filter */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h1 className="text-3xl font-bold text-gray-900">Cricket Teams</h1>
-          
-          {/* Series/League Dropdown */}
-          <div className="w-full sm:w-auto">
-            <label htmlFor="league-select" className="block text-sm font-medium text-gray-700 mb-2">
-              Filter by Series/League
-            </label>
-            <select
-              id="league-select"
-              value={selectedLeague}
-              onChange={(e) => setSelectedLeague(e.target.value)}
-              className="w-full sm:w-64 px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900"
-            >
-              <option value="all">All Teams</option>
-              {leagues.map((league) => {
-                const seasonId = getLatestSeasonId(league)
-                return seasonId ? (
-                  <option key={league.id} value={seasonId}>
-                    {league.name}
-                  </option>
-                ) : null
-              })}
-            </select>
+      <div className="space-y-8">
+        {/* Header Section with Gradient Background */}
+        <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 rounded-2xl shadow-xl p-6 md:p-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            {/* Title and Back Button */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => window.history.back()}
+                className="flex items-center justify-center w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full transition-all duration-200 hover:scale-110 group"
+                aria-label="Go back"
+              >
+                <svg className="w-5 h-5 text-white group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">Cricket Teams</h1>
+                <p className="text-green-50 text-sm md:text-base mt-1">Browse teams by series and leagues</p>
+              </div>
+            </div>
+            
+            {/* Modern Series/League Dropdown */}
+            <div className="w-full lg:w-auto">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                  <svg className="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                  </svg>
+                </div>
+                <select
+                  id="league-select"
+                  value={selectedLeague}
+                  onChange={(e) => setSelectedLeague(e.target.value)}
+                  className="w-full lg:w-80 pl-12 pr-10 py-3.5 bg-white/95 backdrop-blur-sm border-2 border-white/30 rounded-xl shadow-lg text-gray-800 font-medium text-sm md:text-base focus:outline-none focus:ring-4 focus:ring-white/50 focus:border-white transition-all duration-200 cursor-pointer hover:bg-white appearance-none"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                    backgroundPosition: 'right 0.75rem center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: '1.5em 1.5em'
+                  }}
+                >
+                  <option value="all">🌍 All Teams</option>
+                  {leagues.map((league) => {
+                    const seasonId = getLatestSeasonId(league)
+                    return seasonId ? (
+                      <option key={league.id} value={seasonId}>
+                        🏆 {league.name}
+                      </option>
+                    ) : null
+                  })}
+                </select>
+              </div>
+              <p className="text-green-50/80 text-xs mt-2 ml-1">
+                {selectedLeague === 'all' ? 'Showing all teams' : 'Filtered by selected series'}
+              </p>
+            </div>
           </div>
         </div>
 
