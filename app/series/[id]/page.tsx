@@ -40,15 +40,9 @@ interface Match {
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 const seriesTabs = [
-  { id: 'home', label: 'Home' },
   { id: 'matches', label: 'Matches' },
-  { id: 'news', label: 'News' },
-  { id: 'videos', label: 'Videos' },
   { id: 'table', label: 'Table' },
-  { id: 'squads', label: 'Squads' },
-  { id: 'photos', label: 'Photos' },
   { id: 'stats', label: 'Stats' },
-  { id: 'venues', label: 'Venues' },
 ]
 
 /**
@@ -56,7 +50,7 @@ const seriesTabs = [
  * cricket series/league similar to Cricbuzz format with multiple tabs
  */
 export default function SeriesDetailPage({ params }: { params: { id: string } }) {
-  const [activeTab, setActiveTab] = useState('home')
+  const [activeTab, setActiveTab] = useState('matches')
   const { data, error, isLoading } = useSWR(`/api/leagues/${params.id}`, fetcher)
   
   // Extract league data from response
