@@ -356,9 +356,39 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
               ) : (
                 <div className="space-y-4">
                   {(() => {
-                    // Group matches by date
-                    const groupedMatches: { [key: string]: any[] } = {}
+                    const now = new Date()
+                    
+                    // Separate matches into live, recent, and upcoming
+                    const liveMatches: any[] = []
+                    const recentMatches: any[] = []
+                    const upcomingMatches: any[] = []
+                    
                     fixturesData.data?.forEach((match: any) => {
+                      if (match.starting_at) {
+                        const matchDate = new Date(match.starting_at)
+                        const matchEndEstimate = new Date(matchDate.getTime() + (8 * 60 * 60 * 1000)) // Assume 8 hours max
+                        
+                        // Check if match is currently live
+                        if (match.status === 'NS' && matchDate <= now && now <= matchEndEstimate) {
+                          liveMatches.push(match)
+                        } else if (matchDate < now) {
+                          recentMatches.push(match)
+                        } else {
+                          upcomingMatches.push(match)
+                        }
+                      }
+                    })
+                    
+                    // Sort recent matches (newest first), upcoming (soonest first)
+                    recentMatches.sort((a, b) => new Date(b.starting_at).getTime() - new Date(a.starting_at).getTime())
+                    upcomingMatches.sort((a, b) => new Date(a.starting_at).getTime() - new Date(b.starting_at).getTime())
+                    
+                    // Combine: live first, then recent, then upcoming
+                    const sortedMatches = [...liveMatches, ...recentMatches, ...upcomingMatches]
+                    
+                    // Group matches by date for display
+                    const groupedMatches: { [key: string]: any[] } = {}
+                    sortedMatches.forEach((match: any) => {
                       if (match.starting_at) {
                         const date = new Date(match.starting_at)
                         const dateKey = date.toLocaleDateString('en-US', { 
@@ -377,17 +407,26 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                     return Object.entries(groupedMatches).map(([date, matches]) => (
                       <div key={date}>
                         {/* Date Header */}
-                        <div className="bg-blue-50 px-4 py-2 mb-3 rounded">
+                        <div className="bg-blue-50 px-4 py-2 mb-3 rounded flex items-center justify-between">
                           <p className="text-sm font-semibold text-blue-800 uppercase">{date}</p>
+                          {liveMatches.some(m => matches.includes(m)) && (
+                            <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded animate-pulse">
+                              ● LIVE
+                            </span>
+                          )}
                         </div>
                         
                         {/* Matches for this date */}
                         <div className="space-y-3">
-                          {matches.map((match: any) => (
+                          {matches.map((match: any) => {
+                            const isLive = liveMatches.includes(match)
+                            return (
                             <Link
                               key={match.id}
                               href={`/match/${match.id}`}
-                              className="block border border-gray-200 rounded-lg p-4 hover:border-blue-500 hover:shadow-md transition-all"
+                              className={`block border rounded-lg p-4 hover:shadow-md transition-all ${
+                                isLive ? 'border-red-500 bg-red-50 hover:border-red-600' : 'border-gray-200 hover:border-blue-500'
+                              }`}
                             >
                               {/* Match Type & Venue */}
                               <div className="flex items-center justify-between mb-3">
@@ -431,18 +470,29 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                               </div>
                               
                               {/* Match Status/Result */}
-                              {match.note && (
+                              {isLive && (
+                                <div className="flex items-center gap-2 mt-3">
+                                  <span className="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded">
+                                    ● LIVE NOW
+                                  </span>
+                                  <p className="text-sm text-red-600 font-medium">
+                                    {match.note || 'Match in progress'}
+                                  </p>
+                                </div>
+                              )}
+                              {!isLive && match.note && (
                                 <p className="text-sm text-blue-600 font-medium mt-3">
                                   {match.note}
                                 </p>
                               )}
-                              {!match.note && match.status && (
+                              {!isLive && !match.note && match.status && (
                                 <p className="text-xs text-gray-500 mt-2 capitalize">
                                   {match.status}
                                 </p>
                               )}
                             </Link>
-                          ))}
+                            )
+                          })}
                         </div>
                       </div>
                     ))
@@ -592,7 +642,14 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
           {/* Stats Tab */}
           {activeTab === 'stats' && (
             <div className="p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Statistics</h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">Statistics</h2>
+                {currentSeason && (
+                  <span className="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded">
+                    {currentSeason.name}
+                  </span>
+                )}
+              </div>
               
               {!statsData ? (
                 <div className="text-center py-8">
@@ -604,7 +661,10 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                   {/* Batting Stats */}
                   {statsData.data?.batting && statsData.data.batting.length > 0 && (
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Top Run Scorers</h3>
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-lg font-semibold text-gray-900">Top Run Scorers</h3>
+                        <span className="text-xs text-gray-500">Latest Season Data</span>
+                      </div>
                       <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                           <thead className="bg-gray-50">
@@ -643,7 +703,10 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                   {/* Bowling Stats */}
                   {statsData.data?.bowling && statsData.data.bowling.length > 0 && (
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Top Wicket Takers</h3>
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-lg font-semibold text-gray-900">Top Wicket Takers</h3>
+                        <span className="text-xs text-gray-500">Latest Season Data</span>
+                      </div>
                       <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                           <thead className="bg-gray-50">
