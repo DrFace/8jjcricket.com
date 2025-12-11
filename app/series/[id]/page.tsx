@@ -41,7 +41,6 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 const seriesTabs = [
   { id: 'matches', label: 'Matches' },
-  { id: 'table', label: 'Table' },
   { id: 'stats', label: 'Stats' },
 ]
 
