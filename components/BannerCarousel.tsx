@@ -36,6 +36,7 @@ export default function BannerCarousel() {
 
     // Swipe support
     const touchX = useRef<number | null>(null);
+
     const onTouchStart = (e: React.TouchEvent) => {
         touchX.current = e.touches[0].clientX;
         stop();
@@ -43,8 +44,8 @@ export default function BannerCarousel() {
 
     const onTouchEnd = (e: React.TouchEvent) => {
         if (touchX.current === null) return start();
-        const dx = e.changedTouches[0].clientX - touchX.current;
 
+        const dx = e.changedTouches[0].clientX - touchX.current;
         if (Math.abs(dx) > 40) {
             setIndex((i) => (dx > 0 ? (i - 1 + len) % len : (i + 1) % len));
         }
@@ -56,9 +57,9 @@ export default function BannerCarousel() {
     return (
         <div
             className="
-                relative w-full overflow-hidden rounded-2xl shadow
-                h-28 sm:h-36 md:h-40 lg:h-24
-            "
+        relative w-full overflow-hidden rounded-2xl shadow
+        h-[150px] sm:h-[190px] md:h-[230px] lg:h-[270px]
+      "
             onMouseEnter={stop}
             onMouseLeave={start}
             onTouchStart={onTouchStart}
@@ -84,25 +85,39 @@ export default function BannerCarousel() {
                 </div>
             </div>
 
-            {/* Prev */}
+            {/* Prev Button */}
             <button
                 aria-label="previous"
                 onClick={() => setIndex((i) => (i - 1 + len) % len)}
                 className="absolute left-2 top-1/2 -translate-y-1/2 grid place-items-center h-9 w-9 rounded-full bg-black/40 hover:bg-black/55 backdrop-blur active:scale-95"
             >
                 <svg viewBox="0 0 24 24" className="h-5 w-5 text-white">
-                    <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                    <path
+                        d="M15 18l-6-6 6-6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
                 </svg>
             </button>
 
-            {/* Next */}
+            {/* Next Button */}
             <button
                 aria-label="next"
                 onClick={() => setIndex((i) => (i + 1) % len)}
                 className="absolute right-2 top-1/2 -translate-y-1/2 grid place-items-center h-9 w-9 rounded-full bg-black/40 hover:bg-black/55 backdrop-blur active:scale-95"
             >
                 <svg viewBox="0 0 24 24" className="h-5 w-5 text-white">
-                    <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                    <path
+                        d="M9 6l6 6-6 6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
                 </svg>
             </button>
 
@@ -112,8 +127,10 @@ export default function BannerCarousel() {
                     <button
                         key={i}
                         onClick={() => setIndex(i)}
-                        aria-label={`go to item ${i + 1}`}
-                        className={`h-2.5 w-2.5 rounded-full transition-all ${i === index ? "scale-110 bg-white" : "bg-white/50 hover:bg-white/80"
+                        aria-label={`go to slide ${i + 1}`}
+                        className={`h-2.5 w-2.5 rounded-full transition-all ${i === index
+                                ? "scale-110 bg-white"
+                                : "bg-white/50 hover:bg-white/80"
                             }`}
                     />
                 ))}

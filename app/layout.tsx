@@ -5,13 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import Script from "next/script";
 import NewsTicker from "@/components/NewsTicker";
+import MobileBottomBar from "@/components/MobileBottomBar";
 
 /**
- * Root layout for the 8jjcricket site. This version removes unintended
- * vertical scroll by:
- * - Making the top promo bar non-sticky
- * - Making the main header sticky at top: 0
- * - Constraining background gradient overflow
+ * Root layout for the 8jjcricket site.
  */
 
 export const metadata: Metadata = {
@@ -53,7 +50,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen flex flex-col bg-gray-50 selection:bg-blue-100 selection:text-blue-800">
-        {/* Top promo bar (non-sticky now) */}
+        {/* Top promo bar (non-sticky) */}
         <div className="w-full bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 text-white">
           <div className="container flex items-center gap-4 py-2 text-sm">
             <div className="flex items-center gap-2 whitespace-nowrap">
@@ -183,8 +180,6 @@ export default function RootLayout({
                   Play Now
                 </span>
               </Link>
-
-
             </div>
           </div>
         </header>
@@ -204,27 +199,8 @@ export default function RootLayout({
           {children}
         </main>
 
-        {/* Sticky bottom action bar (mobile focus) */}
-        <div className="sticky bottom-0 z-50 border-t bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/70 md:hidden">
-          <div className="container grid grid-cols-3 items-center py-2 text-center text-xs">
-            <Link href="/recent" className="flex flex-col items-center gap-1">
-              <span></span>
-              <span className="font-medium">Recent</span>
-            </Link>
-            <Link href="/minigames" className="-mt-6">
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold shadow-lg shadow-indigo-500/30 ring-2 ring-white/60">
-                Play
-              </span>
-            </Link>
-            <Link
-              href="/upcoming"
-              className="flex flex-col items-center gap-1"
-            >
-              <span>⏰</span>
-              <span className="font-medium">Upcoming</span>
-            </Link>
-          </div>
-        </div>
+        {/* Mobile bottom bar as a separate component */}
+        <MobileBottomBar />
 
         {/* footer */}
         <footer className="border-t bg-white py-10">
