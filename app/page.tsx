@@ -132,65 +132,48 @@ export default async function HomePage() {
         </section>
 
         {/* FEATURED NEWS STRIP */}
-        {news.length > 0 && (
-          <section className="w-full">
-            <div className="mb-2 flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-gray-900">
-                Featured News
-              </h2>
+        <div
+          className="flex gap-3 overflow-x-auto scroll-smooth
+             [-ms-overflow-style:none] [scrollbar-width:none]
+             [&::-webkit-scrollbar]:hidden p-2 snap-x snap-mandatory"
+        >
+          {news
+            .map((a) => ({
+              ...a,
+              imgSrc: normalizeImageUrl(a.image_url),
+            }))
+            .filter((a) => a.imgSrc)
+            .map((a) => (
               <Link
-                href="/news"
-                className="text-xs font-semibold text-blue-600 hover:text-blue-700"
+                key={a.id}
+                href={`/news/${a.slug}`}
+                className="relative h-40 min-w-full flex-shrink-0 sm:h-48 snap-center"
               >
-                View all →
+                <img
+                  src={a.imgSrc as string}
+                  alt={a.title}
+                  className="h-full w-full rounded-2xl object-cover"
+                />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 rounded-b-2xl bg-gradient-to-t from-white/95 to-transparent p-3">
+                  <p className="line-clamp-1 text-xs font-semibold text-gray-900">
+                    {a.title}
+                  </p>
+                </div>
               </Link>
-            </div>
+            ))}
+        </div>
 
-            <div className="relative overflow-hidden rounded-2xl bg-gray-900 text-white">
-              <div
-                className="flex gap-3 overflow-x-auto scroll-smooth
-                           [-ms-overflow-style:none] [scrollbar-width:none]
-                           [&::-webkit-scrollbar]:hidden"
-              >
-                {news
-                  .map((a) => ({
-                    ...a,
-                    imgSrc: normalizeImageUrl(a.image_url),
-                  }))
-                  .filter((a) => a.imgSrc)
-                  .map((a) => (
-                    <Link
-                      key={a.id}
-                      href={`/news/${a.slug}`}
-                      className="relative h-40 min-w-[280px] flex-1 sm:h-48"
-                    >
-                      <img
-                        src={a.imgSrc as string}
-                        alt={a.title}
-                        className="h-full w-full rounded-2xl object-cover"
-                      />
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 rounded-b-2xl bg-gradient-to-t from-black/70 to-transparent p-3">
-                        <p className="line-clamp-1 text-xs font-semibold text-white">
-                          {a.title}
-                        </p>
-                      </div>
-                    </Link>
-                  ))}
-              </div>
-            </div>
-          </section>
-        )}
 
         {/* LATEST PROMOTIONS & NEWS */}
         {news.length > 0 && (
-          <section className="mt-2 rounded-2xl border border-gray-800 bg-gray-900 p-4 text-white shadow-sm">
+          <section className="mt-2 rounded-2xl border border-gray-200 bg-white p-4 text-gray-900 shadow-sm">
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-xs font-semibold uppercase tracking-wide">
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-700">
                 Latest Promotions &amp; News
               </h2>
               <Link
                 href="/news"
-                className="text-[11px] font-semibold text-blue-400 hover:text-blue-300"
+                className="text-[11px] font-semibold text-blue-600 hover:text-blue-700"
               >
                 View all →
               </Link>
@@ -207,7 +190,7 @@ export default async function HomePage() {
                   <Link
                     key={a.id}
                     href={`/news/${a.slug}`}
-                    className="flex items-center gap-3 rounded-xl bg-gray-800 p-3 transition hover:bg-gray-700"
+                    className="flex items-center gap-3 rounded-xl bg-gray-50 p-3 transition hover:bg-gray-100"
                   >
                     {a.imgSrc && (
                       <div className="h-16 w-20 flex-shrink-0 overflow-hidden rounded-lg">
@@ -220,12 +203,12 @@ export default async function HomePage() {
                     )}
 
                     <div className="flex flex-1 items-center justify-between gap-3">
-                      <p className="line-clamp-2 text-xs font-semibold sm:text-sm">
+                      <p className="line-clamp-2 text-xs font-semibold text-gray-900 sm:text-sm">
                         {a.title}
                       </p>
 
                       {a.published_at && (
-                        <span className="whitespace-nowrap text-[10px] text-gray-300 sm:text-xs">
+                        <span className="whitespace-nowrap text-[10px] text-gray-500 sm:text-xs">
                           {new Date(a.published_at).toLocaleDateString(
                             undefined,
                             {
