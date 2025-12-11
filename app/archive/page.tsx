@@ -424,7 +424,7 @@ export default function ArchivePage() {
           </div>
 
           {/* Archive grid – keep your ArchhiveCard look, no extra dark wrappers */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
             {filteredFixtures.map((f) => (
               <div
                 key={f.id}
