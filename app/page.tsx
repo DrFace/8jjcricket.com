@@ -7,8 +7,6 @@ import OddsCard from "@/components/BetButton";
 import SocialBox from "@/components/SocialBox";
 import BannerCarousel from "@/components/BannerCarousel";
 
-
-
 type Article = {
   id: number;
   title: string;
@@ -20,14 +18,27 @@ type Article = {
 
 const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
 
+// Same origin constant as in your /news page
+const SITE_ORIGIN =
+  process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
+
+// Reuse the SAME normalizeImageUrl logic as in /news
 function normalizeImageUrl(url: string | null): string | null {
   if (!url) return null;
+
   try {
-    const u = new URL(url);
-    return u.pathname + u.search;
+    const u = new URL(url, SITE_ORIGIN);
+    let pathname = u.pathname;
+
+    if (!pathname.startsWith("/storage/")) {
+      const clean = pathname.replace(/^\/+/, "");
+      pathname = `/storage/${clean}`;
+    }
+
+    return `${SITE_ORIGIN}${pathname}${u.search}`;
   } catch {
-    if (url.startsWith("/")) return url;
-    return null;
+    const clean = String(url).replace(/^\/+/, "");
+    return `${SITE_ORIGIN}/storage/${clean}`;
   }
 }
 
@@ -52,14 +63,24 @@ async function getNewsPreview(): Promise<Article[]> {
 
 // Latest minigames list
 const latest = [
-  { slug: "cricket-legends", title: "Cricket Legends", desc: "Career mode with levels & characters." },
-  { slug: "cricket-superover", title: "Cricket Super Over", desc: "6 balls, pure timing — hit for 6s!" },
+  {
+    slug: "cricket-legends",
+    title: "Cricket Legends",
+    desc: "Career mode with levels & characters.",
+  },
+  {
+    slug: "cricket-superover",
+    title: "Cricket Super Over",
+    desc: "6 balls, pure timing — hit for 6s!",
+  },
   { slug: "tictactoe", title: "Tic Tac Toe", desc: "Classic 3×3 duel." },
   { slug: "flappysquare", title: "Flappy Square", desc: "Click to fly!" },
 ];
 
 // Dynamically import AnimatedText (as in original code)
-const AnimatedText = dynamic(() => import("@/components/AnimatedText"), { ssr: false });
+const AnimatedText = dynamic(() => import("@/components/AnimatedText"), {
+  ssr: false,
+});
 
 export default async function HomePage() {
   const news = await getNewsPreview();
@@ -67,14 +88,13 @@ export default async function HomePage() {
   return (
     <div className="space-y-10">
       {/* Hero with animated site name */}
-      <section className="grid gap-4  items-stretch">
+      <section className="grid gap-4 items-stretch">
         <BannerCarousel />
-
-        {/* Vertically center the SocialBox relative to the banner */}
         {/* <div className="flex items-center">
           <SocialBox />
         </div> */}
       </section>
+
       <section className="flex items-center justify-center py-3">
         <AnimatedText />
       </section>
@@ -85,15 +105,19 @@ export default async function HomePage() {
         <div className="space-y-4">
           <MatchCentre />
         </div>
-        
-      
+
         {/* ---- RIGHT SIDEBAR NEWS ---- */}
         <aside className="space-y-4">
           {/* Latest news */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-lg font-semibold text-gray-900">Latest News</h2>
-              <Link href="/news" className="text-xs font-semibold text-blue-600 hover:text-blue-700">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Latest News
+              </h2>
+              <Link
+                href="/news"
+                className="text-xs font-semibold text-blue-600 hover:text-blue-700"
+              >
                 View all
               </Link>
             </div>
@@ -103,6 +127,7 @@ export default async function HomePage() {
               <div className="space-y-3">
                 {news.map((a) => {
                   const imgSrc = normalizeImageUrl(a.image_url);
+
                   return (
                     <Link
                       key={a.id}
@@ -111,19 +136,33 @@ export default async function HomePage() {
                     >
                       {imgSrc && (
                         <div className="h-24 w-full overflow-hidden">
-                          <img src={imgSrc} alt={a.title || "News image"} className="h-full w-full object-cover" />
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={imgSrc}
+                            alt={a.title || "News image"}
+                            className="h-full w-full object-cover"
+                          />
                         </div>
                       )}
                       <div className="p-3">
-                        <p className="text-sm font-semibold text-gray-900 line-clamp-2">{a.title}</p>
-                        {a.excerpt && <p className="mt-1 text-xs text-gray-500 line-clamp-2">{a.excerpt}</p>}
+                        <p className="text-sm font-semibold text-gray-900 line-clamp-2">
+                          {a.title}
+                        </p>
+                        {a.excerpt && (
+                          <p className="mt-1 text-xs text-gray-500 line-clamp-2">
+                            {a.excerpt}
+                          </p>
+                        )}
                         {a.published_at && (
                           <p className="mt-2 text-[11px] font-medium text-blue-600">
-                            {new Date(a.published_at).toLocaleDateString(undefined, {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })}
+                            {new Date(a.published_at).toLocaleDateString(
+                              undefined,
+                              {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              }
+                            )}
                           </p>
                         )}
                       </div>
@@ -136,19 +175,37 @@ export default async function HomePage() {
 
           {/* Quick Links */}
           <div className="rounded-xl border bg-white p-4 shadow-sm">
-            <h2 className="mb-3 text-xs font-semibold tracking-wide text-gray-500">QUICK LINKS</h2>
+            <h2 className="mb-3 text-xs font-semibold tracking-wide text-gray-500">
+              QUICK LINKS
+            </h2>
             <div className="space-y-2 text-sm">
-              <Link href="/rankings" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">
-                <span>Team rankings</span><span className="text-gray-400">›</span>
+              <Link
+                href="/rankings"
+                className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50"
+              >
+                <span>Team rankings</span>
+                <span className="text-gray-400">›</span>
               </Link>
-              <Link href="/upcoming" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">
-                <span>Upcoming series</span><span className="text-gray-400">›</span>
+              <Link
+                href="/upcoming"
+                className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50"
+              >
+                <span>Upcoming series</span>
+                <span className="text-gray-400">›</span>
               </Link>
-              <Link href="/recent" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">
-                <span>Recent results</span><span className="text-gray-400">›</span>
+              <Link
+                href="/recent"
+                className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50"
+              >
+                <span>Recent results</span>
+                <span className="text-gray-400">›</span>
               </Link>
-              <Link href="/news" className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50">
-                <span>Cricket news</span><span className="text-gray-400">›</span>
+              <Link
+                href="/news"
+                className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50"
+              >
+                <span>Cricket news</span>
+                <span className="text-gray-400">›</span>
               </Link>
             </div>
           </div>
@@ -159,10 +216,17 @@ export default async function HomePage() {
       <section className="space-y-4">
         <header className="flex items-center justify-between gap-2">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Latest Minigames</h2>
-            <p className="text-sm text-gray-500">Take a break between overs and challenge your skills.</p>
+            <h2 className="text-xl font-semibold text-gray-900">
+              Latest Minigames
+            </h2>
+            <p className="text-sm text-gray-500">
+              Take a break between overs and challenge your skills.
+            </p>
           </div>
-          <Link href="/minigames" className="text-sm font-semibold text-blue-600 hover:text-blue-700">
+          <Link
+            href="/minigames"
+            className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+          >
             View all minigames →
           </Link>
         </header>
