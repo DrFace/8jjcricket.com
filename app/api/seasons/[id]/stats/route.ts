@@ -12,12 +12,18 @@ export async function GET(
   try {
     const seasonId = params.id
 
-    // Fetch season statistics with includes for batting, bowling, and player data
-    const data = await smFetch(
-      `/seasons/${seasonId}?include=batting,bowling`
-    )
+    // Fetch batting and bowling stats separately
+    const [battingData, bowlingData] = await Promise.all([
+      smFetch(`/seasons/${seasonId}/batting`).catch(() => ({ data: [] })),
+      smFetch(`/seasons/${seasonId}/bowling`).catch(() => ({ data: [] }))
+    ])
 
-    return NextResponse.json({ data: data.data })
+    return NextResponse.json({ 
+      data: {
+        batting: battingData.data || [],
+        bowling: bowlingData.data || []
+      }
+    })
   } catch (error: any) {
     if (error.message === 'SPORTMONKS_RATE_LIMIT') {
       return NextResponse.json(
