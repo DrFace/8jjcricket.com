@@ -22,9 +22,7 @@ const PAGE_SIZE = 20 // show 20 players at a time
 /**
  * PlayersPage lists cricket players and provides search and filter controls. It
  * adds a `<title>` and `<meta>` tag at the top of the returned JSX to
- * improve SEO for this client component. Without these head tags, many
- * crawlers would see generic metadata or none at all because client
- * components cannot export a `metadata` object【744642906249488†L34-L87】.
+ * improve SEO for this client component.
  */
 export default function PlayersPage() {
   const [players, setPlayers] = useState<Player[]>([])
@@ -34,16 +32,18 @@ export default function PlayersPage() {
   const [err, setErr] = useState<string | null>(null)
   // filters
   const [q, setQ] = useState('')
-  const [country, setCountry] = useState('')
+  const [country, setCountry] = useState('India')
   const [role, setRole] = useState('')
   // client-side pagination state
   const [page, setPage] = useState(1)
+
   const debouncedSetQ = useRef(
     debounce((val: string) => {
       setQ(val)
       setPage(1)
     }, 300)
   ).current
+
   async function loadData(p = 1) {
     setLoading(true)
     try {
@@ -64,20 +64,24 @@ export default function PlayersPage() {
       setLoading(false)
     }
   }
+
   useEffect(() => {
     loadData()
   }, [])
+
   const countryOptions = useMemo(() => {
     const names = new Set<string>()
     players.forEach((p) => p.country && names.add(p.country))
     countries.forEach((c) => names.add(c.name))
     return Array.from(names).sort((a, b) => a.localeCompare(b))
   }, [players, countries])
+
   const roleOptions = useMemo(() => {
     const names = new Set<string>()
     players.forEach((p) => p.position && names.add(p.position))
     return Array.from(names).sort((a, b) => a.localeCompare(b))
   }, [players])
+
   const filtered = useMemo(() => {
     const qLower = q.trim().toLowerCase()
     return players.filter((p) => {
@@ -86,14 +90,21 @@ export default function PlayersPage() {
         p.fullname.toLowerCase().includes(qLower) ||
         p.firstname?.toLowerCase().includes(qLower) ||
         p.lastname?.toLowerCase().includes(qLower)
-      const matchesCountry = !country || (p.country ?? '').toLowerCase() === country.toLowerCase()
-      const matchesRole = !role || (p.position ?? '').toLowerCase() === role.toLowerCase()
+
+      const matchesCountry =
+        !country || (p.country ?? '').toLowerCase() === country.toLowerCase()
+
+      const matchesRole =
+        !role || (p.position ?? '').toLowerCase() === role.toLowerCase()
+
       return matchesQ && matchesCountry && matchesRole
     })
   }, [players, q, country, role])
+
   // pagination logic
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
   return (
     <>
       <title>Players | 8jjcricket</title>
@@ -101,28 +112,36 @@ export default function PlayersPage() {
         name="description"
         content="Browse all cricket players, search by name and filter by country or role."
       />
-      <div className="mx-auto max-w-7xl px-4 py-8">
-        <h1 className="text-2xl font-bold">Players</h1>
-        <p className="mt-1 text-sm text-gray-600">
-          Browse all players. Use search and filters to find them faster.
-        </p>
-        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-4">
+
+      <div className="mx-auto max-w-7xl px-4 py-8 md:py-10">
+        {/* Page header – matches simple headings used across the site */}
+        <header className="mb-6 border-b border-neutral-200 pb-4">
+          <h1 className="text-2xl font-semibold tracking-tight">Players</h1>
+          <p className="mt-1 text-sm text-neutral-600">
+            Browse all players. Use search and filters to find them faster.
+          </p>
+        </header>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
           {/* Sidebar Filters */}
-          <div className="md:col-span-1">
-            <div className="sticky top-4 space-y-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-              <div>
-                <label className="text-sm font-medium">Search by name</label>
+          <aside className="md:col-span-1">
+            <div className="sticky top-4 space-y-4 rounded-2xl border border-neutral-200 bg-white/80 p-4 text-sm">
+              <div className="space-y-1">
+                <label className="font-medium text-neutral-800">
+                  Search by name
+                </label>
                 <input
                   type="text"
                   placeholder="e.g. Ahmed, Sharma..."
-                  className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-1 w-full rounded-xl border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-400"
                   onChange={(e) => debouncedSetQ(e.target.value)}
                 />
               </div>
-              <div>
-                <label className="text-sm font-medium">Country</label>
+
+              <div className="space-y-1">
+                <label className="font-medium text-neutral-800">Country</label>
                 <select
-                  className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-1 w-full rounded-xl border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-400"
                   value={country}
                   onChange={(e) => {
                     setCountry(e.target.value)
@@ -135,11 +154,12 @@ export default function PlayersPage() {
                   ))}
                 </select>
               </div>
+
               {/*
-              <div>
-                <label className="text-sm font-medium">Role</label>
+              <div className="space-y-1">
+                <label className="font-medium text-neutral-800">Role</label>
                 <select
-                  className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-1 w-full rounded-xl border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-400"
                   value={role}
                   onChange={(e) => {
                     setRole(e.target.value)
@@ -154,31 +174,36 @@ export default function PlayersPage() {
               </div>
               */}
             </div>
-          </div>
+          </aside>
+
           {/* Players Grid */}
-          <div className="md:col-span-3">
+          <main className="md:col-span-3">
             {loading && (
-              <div className="rounded-2xl border border-gray-200 bg-white p-6 text-center text-gray-600 shadow-sm">
+              <div className="rounded-2xl border border-neutral-200 bg-white/80 p-6 text-center text-sm text-neutral-600">
                 Loading players…
               </div>
             )}
+
             {err && !loading && (
-              <div className="rounded-2xl border border-red-300 bg-red-50 p-6 text-red-700">
+              <div className="rounded-2xl border border-red-300 bg-red-50 p-6 text-sm text-red-700">
                 {err}
               </div>
             )}
+
             {!loading && !err && (
               <>
                 {filtered.length === 0 ? (
-                  <div className="rounded-2xl border border-gray-200 bg-white p-6 text-center text-gray-600 shadow-sm">
+                  <div className="rounded-2xl border border-neutral-200 bg-white/80 p-6 text-center text-sm text-neutral-600">
                     No players match your filters.
                   </div>
                 ) : (
                   <>
-                    <div className="mb-3 text-sm text-gray-600">
-                      Showing {paged.length} of {filtered.length} players
+                    <div className="mb-3 text-xs text-neutral-500">
+                      Showing <span className="font-medium text-neutral-700">{paged.length}</span> of{' '}
+                      <span className="font-medium text-neutral-700">{filtered.length}</span> players
                       {q || country || role ? ' (filtered)' : ''}.
                     </div>
+
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                       {paged.map((p) => (
                         <PlayerCard
@@ -191,23 +216,24 @@ export default function PlayersPage() {
                         />
                       ))}
                     </div>
+
                     {/* Pagination buttons */}
                     {totalPages > 1 && (
-                      <div className="mt-6 flex items-center justify-center gap-3">
+                      <div className="mt-6 flex items-center justify-center gap-3 text-sm">
                         <button
                           disabled={page === 1}
                           onClick={() => setPage((p) => Math.max(1, p - 1))}
-                          className="rounded-full border border-gray-300 px-3 py-1.5 text-sm disabled:opacity-50"
+                          className="rounded-full border border-neutral-300 px-3 py-1.5 text-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           Prev
                         </button>
-                        <span className="rounded-full border border-gray-200 px-3 py-1.5 text-sm">
+                        <span className="rounded-full border border-neutral-200 px-3 py-1.5 text-neutral-600">
                           Page {page} of {totalPages}
                         </span>
                         <button
                           disabled={page === totalPages}
                           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                          className="rounded-full border border-gray-300 px-3 py-1.5 text-sm disabled:opacity-50"
+                          className="rounded-full border border-neutral-300 px-3 py-1.5 text-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           Next
                         </button>
@@ -217,7 +243,7 @@ export default function PlayersPage() {
                 )}
               </>
             )}
-          </div>
+          </main>
         </div>
       </div>
     </>

@@ -7,14 +7,11 @@ import Script from "next/script";
 import NewsTicker from "@/components/NewsTicker";
 
 /**
- * Root layout for the 8jjcricket site. This file is largely a copy of the
- * existing layout with minor modifications to surface new pages requested by
- * the user. The promo bar at the top now links to the new team rankings,
- * series and archive pages instead of pointing at the minigames section. The
- * Quick Links section in the footer has also been expanded to include
- * shortcuts to Teams, Rankings, Series and Archive pages. These changes
- * integrate the new pages into the existing navigation without altering the
- * overall look and feel of the site.
+ * Root layout for the 8jjcricket site. This version removes unintended
+ * vertical scroll by:
+ * - Making the top promo bar non-sticky
+ * - Making the main header sticky at top: 0
+ * - Constraining background gradient overflow
  */
 
 export const metadata: Metadata = {
@@ -56,8 +53,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen flex flex-col bg-gray-50 selection:bg-blue-100 selection:text-blue-800">
-        {/* Top promo bar */}
-        <div className="sticky top-0 z-[60] w-full bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 text-white">
+        {/* Top promo bar (non-sticky now) */}
+        <div className="w-full bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 text-white">
           <div className="container flex items-center gap-4 py-2 text-sm">
             <div className="flex items-center gap-2 whitespace-nowrap">
               <span className="font-semibold tracking-wide">Latest News</span>
@@ -70,8 +67,9 @@ export default function RootLayout({
             {/* scrolling news titles – right to left */}
           </div>
         </div>
-        {/* Main header */}
-        <header className="sticky top-[40px] z-50 border-b bg-white/70 backdrop-blur-md shadow-sm transition-shadow duration-300">
+
+        {/* Main header (sticky at the very top of viewport) */}
+        <header className="sticky top-0 z-50 border-b bg-white/70 backdrop-blur-md shadow-sm transition-shadow duration-300">
           <div className="container flex items-center justify-between py-2">
             <Link
               href="/"
@@ -90,27 +88,45 @@ export default function RootLayout({
 
             <nav className="hidden md:flex gap-6 text-[15px] font-semibold text-gray-700">
               {/* Regular links */}
-              <Link href="/" className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105">
+              <Link
+                href="/"
+                className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105"
+              >
                 Home
                 <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
               </Link>
-              <Link href="/archive" className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105">
+              <Link
+                href="/archive"
+                className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105"
+              >
                 Archive
                 <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
               </Link>
-              <Link href="/series" className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105">
+              <Link
+                href="/series"
+                className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105"
+              >
                 Series
                 <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
               </Link>
-              <Link href="/players" className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105">
+              <Link
+                href="/players"
+                className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105"
+              >
                 Players
                 <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
               </Link>
-              <Link href="/minigames" className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105">
+              <Link
+                href="/minigames"
+                className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105"
+              >
                 Minigames
                 <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
               </Link>
-              <Link href="/news" className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105">
+              <Link
+                href="/news"
+                className="relative group transition-all duration-200 hover:text-blue-600 hover:scale-105"
+              >
                 News
                 <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
               </Link>
@@ -127,13 +143,22 @@ export default function RootLayout({
 
                 {/* show menu on hover or focus within the group */}
                 <div className="absolute left-0 top-full z-40 mt-2 hidden min-w-[8rem] rounded-md border bg-white py-1 text-sm shadow-lg group-hover:block group-focus-within:block">
-                  <Link href="/rankings/t20i" className="block px-4 py-2 whitespace-nowrap hover:bg-gray-50">
+                  <Link
+                    href="/rankings/t20i"
+                    className="block px-4 py-2 whitespace-nowrap hover:bg-gray-50"
+                  >
                     T20I
                   </Link>
-                  <Link href="/rankings/odi" className="block px-4 py-2 whitespace-nowrap hover:bg-gray-50">
+                  <Link
+                    href="/rankings/odi"
+                    className="block px-4 py-2 whitespace-nowrap hover:bg-gray-50"
+                  >
                     ODI
                   </Link>
-                  <Link href="/rankings/test" className="block px-4 py-2 whitespace-nowrap hover:bg-gray-50">
+                  <Link
+                    href="/rankings/test"
+                    className="block px-4 py-2 whitespace-nowrap hover:bg-gray-50"
+                  >
                     Test
                   </Link>
                 </div>
@@ -157,7 +182,10 @@ export default function RootLayout({
         </header>
 
         {/* Gradient ambience (subtle, behind content) */}
-        <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+        >
           <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-blue-200 blur-3xl opacity-40" />
           <div className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-purple-200 blur-3xl opacity-40" />
         </div>
@@ -180,7 +208,10 @@ export default function RootLayout({
                 Play
               </span>
             </Link>
-            <Link href="/upcoming" className="flex flex-col items-center gap-1">
+            <Link
+              href="/upcoming"
+              className="flex flex-col items-center gap-1"
+            >
               <span>⏰</span>
               <span className="font-medium">Upcoming</span>
             </Link>
@@ -201,35 +232,60 @@ export default function RootLayout({
                 <span className="font-semibold">8jjcricket</span>
               </div>
               <p className="text-sm text-gray-500">
-                Live cricket, instant odds and fast minigames. Play responsibly.
+                Live cricket, instant odds and fast minigames. Play
+                responsibly.
               </p>
             </div>
             <div className="text-sm">
               <p className="mb-2 font-semibold">Quick Links</p>
               <div className="grid grid-cols-2 gap-2">
-                <Link href="/players" className="text-gray-600 hover:text-gray-900">
+                <Link
+                  href="/players"
+                  className="text-gray-600 hover:text-gray-900"
+                >
                   Players
                 </Link>
-                <Link href="/minigames" className="text-gray-600 hover:text-gray-900">
+                <Link
+                  href="/minigames"
+                  className="text-gray-600 hover:text-gray-900"
+                >
                   Minigames
                 </Link>
-                <Link href="/recent" className="text-gray-600 hover:text-gray-900">
+                <Link
+                  href="/recent"
+                  className="text-gray-600 hover:text-gray-900"
+                >
                   Recent
                 </Link>
-                <Link href="/upcoming" className="text-gray-600 hover:text-gray-900">
+                <Link
+                  href="/upcoming"
+                  className="text-gray-600 hover:text-gray-900"
+                >
                   Upcoming
                 </Link>
                 {/* Added links for new pages */}
-                <Link href="/teams" className="text-gray-600 hover:text-gray-900">
+                <Link
+                  href="/teams"
+                  className="text-gray-600 hover:text-gray-900"
+                >
                   Teams
                 </Link>
-                <Link href="/rankings" className="text-gray-600 hover:text-gray-900">
+                <Link
+                  href="/rankings"
+                  className="text-gray-600 hover:text-gray-900"
+                >
                   Rankings
                 </Link>
-                <Link href="/series" className="text-gray-600 hover:text-gray-900">
+                <Link
+                  href="/series"
+                  className="text-gray-600 hover:text-gray-900"
+                >
                   Series
                 </Link>
-                <Link href="/archive" className="text-gray-600 hover:text-gray-900">
+                <Link
+                  href="/archive"
+                  className="text-gray-600 hover:text-gray-900"
+                >
                   Archive
                 </Link>
               </div>
@@ -257,6 +313,7 @@ export default function RootLayout({
             Quick Play
           </Link>
         </div>
+
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-FBJM2CQHHS"
           strategy="afterInteractive"

@@ -3,6 +3,11 @@ import MinigameCard from "@/components/MinigameCard";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import MatchCentre from "@/components/MatchCentre";
+import OddsCard from "@/components/BetButton";
+import SocialBox from "@/components/SocialBox";
+import BannerCarousel from "@/components/BannerCarousel";
+
+
 
 type Article = {
   id: number;
@@ -62,7 +67,15 @@ export default async function HomePage() {
   return (
     <div className="space-y-10">
       {/* Hero with animated site name */}
-      <section className="flex items-center justify-center py-8">
+      <section className="grid gap-4  items-stretch">
+        <BannerCarousel />
+
+        {/* Vertically center the SocialBox relative to the banner */}
+        {/* <div className="flex items-center">
+          <SocialBox />
+        </div> */}
+      </section>
+      <section className="flex items-center justify-center py-3">
         <AnimatedText />
       </section>
 
@@ -72,7 +85,8 @@ export default async function HomePage() {
         <div className="space-y-4">
           <MatchCentre />
         </div>
-
+        
+      
         {/* ---- RIGHT SIDEBAR NEWS ---- */}
         <aside className="space-y-4">
           {/* Latest news */}
