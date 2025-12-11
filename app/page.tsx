@@ -86,156 +86,241 @@ export default async function HomePage() {
   const news = await getNewsPreview();
 
   return (
-    <div className="space-y-10">
-      {/* Hero with animated site name */}
-      <section className="grid gap-4 items-stretch">
-        <BannerCarousel />
-        {/* <div className="flex items-center">
-          <SocialBox />
-        </div> */}
-      </section>
+    <main className="min-h-screen bg-gray-100">
+      {/* Centered content similar to FotMob */}
+      <div className="mx-auto flex max-w-6xl flex-col gap-6 px-3 py-4 sm:px-4 sm:py-6 lg:py-8">
+        {/* TOP: BANNER + SOCIAL STRIP */}
+        <section className="space-y-3">
+          {/* Banner as compact hero, like FotMob's top promo bar */}
+          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+            <BannerCarousel />
+          </div>
 
-      <section className="flex items-center justify-center py-3">
-        <AnimatedText />
-      </section>
+          {/* Animated ticker / text strip */}
+          <div className="flex items-center justify-between gap-3 rounded-full bg-white px-4 py-2 text-xs shadow-sm">
+            <div className="font-semibold text-gray-800">
+              Live cricket • Scores • Odds • Minigames
+            </div>
+            <div className="hidden sm:block text-blue-600">
+              <AnimatedText />
+            </div>
+          </div>
 
-      {/* Match centre and news sidebar */}
-      <section className="grid gap-6 lg:grid-cols-[2.2fr,1.3fr]">
-        {/* MAIN MATCH CENTRE */}
-        <div className="space-y-4">
-          <MatchCentre />
-        </div>
+          {/* Social row */}
+          {/* <div className="flex justify-end">
+            <SocialBox />
+          </div> */}
+        </section>
 
-        {/* ---- RIGHT SIDEBAR NEWS ---- */}
-        <aside className="space-y-4">
-          {/* Latest news */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Latest News
+        {/* MAIN GRID 3-COLUMN ON DESKTOP (FotMob-style) */}
+        <section className="grid gap-4 lg:grid-cols-[1.1fr,2.2fr,1.4fr] xl:gap-6">
+          {/* LEFT COLUMN: QUICK NAV / ODDS / MINIGAME PROMO */}
+          <div className="space-y-4">
+            {/* Quick Links */}
+            <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+              <h2 className="mb-3 text-xs font-semibold tracking-wide text-gray-500">
+                QUICK NAVIGATION
               </h2>
-              <Link
-                href="/news"
-                className="text-xs font-semibold text-blue-600 hover:text-blue-700"
-              >
-                View all
-              </Link>
-            </div>
-            {news.length === 0 ? (
-              <p className="text-xs text-gray-400">No news found right now.</p>
-            ) : (
-              <div className="space-y-3">
-                {news.map((a) => {
-                  const imgSrc = normalizeImageUrl(a.image_url);
-
-                  return (
-                    <Link
-                      key={a.id}
-                      href={`/news/${a.slug}`}
-                      className="block overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-md transition"
-                    >
-                      {imgSrc && (
-                        <div className="h-24 w-full overflow-hidden">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={imgSrc}
-                            alt={a.title || "News image"}
-                            className="h-full w-full object-cover"
-                          />
-                        </div>
-                      )}
-                      <div className="p-3">
-                        <p className="text-sm font-semibold text-gray-900 line-clamp-2">
-                          {a.title}
-                        </p>
-                        {a.excerpt && (
-                          <p className="mt-1 text-xs text-gray-500 line-clamp-2">
-                            {a.excerpt}
-                          </p>
-                        )}
-                        {a.published_at && (
-                          <p className="mt-2 text-[11px] font-medium text-blue-600">
-                            {new Date(a.published_at).toLocaleDateString(
-                              undefined,
-                              {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              }
-                            )}
-                          </p>
-                        )}
-                      </div>
-                    </Link>
-                  );
-                })}
+              <div className="space-y-1.5 text-sm">
+                <Link
+                  href="/recent"
+                  className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50"
+                >
+                  <span>Live & recent matches</span>
+                  <span className="text-gray-400">›</span>
+                </Link>
+                <Link
+                  href="/upcoming"
+                  className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50"
+                >
+                  <span>Upcoming series</span>
+                  <span className="text-gray-400">›</span>
+                </Link>
+                <Link
+                  href="/rankings"
+                  className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50"
+                >
+                  <span>Team rankings</span>
+                  <span className="text-gray-400">›</span>
+                </Link>
+                <Link
+                  href="/news"
+                  className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50"
+                >
+                  <span>Cricket news</span>
+                  <span className="text-gray-400">›</span>
+                </Link>
               </div>
-            )}
-          </div>
+            </div>
 
-          {/* Quick Links */}
-          <div className="rounded-xl border bg-white p-4 shadow-sm">
-            <h2 className="mb-3 text-xs font-semibold tracking-wide text-gray-500">
-              QUICK LINKS
-            </h2>
-            <div className="space-y-2 text-sm">
+            {/* Odds widget card (kept subtle, like FotMob’s betting box) */}
+            {/* <div className="rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
+              <h2 className="mb-2 text-xs font-semibold tracking-wide text-gray-500">
+                ODDS & OFFERS
+              </h2>
+              <OddsCard />
+            </div> */}
+
+            {/* Small minigame teaser */}
+            <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+              <h2 className="text-sm font-semibold text-gray-900">
+                Quick Minigame
+              </h2>
+              <p className="mt-1 text-xs text-gray-500">
+                Waiting for the next over? Jump into a fast game.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {latest.slice(0, 2).map((g) => (
+                  <Link
+                    key={g.slug}
+                    href={`/minigames/${g.slug}`}
+                    className="flex-1 rounded-xl border border-gray-200 px-3 py-2 text-xs hover:bg-gray-50"
+                  >
+                    <div className="font-semibold text-gray-900">
+                      {g.title}
+                    </div>
+                    <div className="mt-0.5 text-[11px] text-gray-500">
+                      {g.desc}
+                    </div>
+                  </Link>
+                ))}
+              </div>
               <Link
-                href="/rankings"
-                className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50"
+                href="/minigames"
+                className="mt-3 inline-block text-xs font-semibold text-blue-600 hover:text-blue-700"
               >
-                <span>Team rankings</span>
-                <span className="text-gray-400">›</span>
-              </Link>
-              <Link
-                href="/upcoming"
-                className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50"
-              >
-                <span>Upcoming series</span>
-                <span className="text-gray-400">›</span>
-              </Link>
-              <Link
-                href="/recent"
-                className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50"
-              >
-                <span>Recent results</span>
-                <span className="text-gray-400">›</span>
-              </Link>
-              <Link
-                href="/news"
-                className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-gray-50"
-              >
-                <span>Cricket news</span>
-                <span className="text-gray-400">›</span>
+                View all minigames →
               </Link>
             </div>
           </div>
-        </aside>
-      </section>
 
-      {/* Latest Minigames */}
-      <section className="space-y-4">
-        <header className="flex items-center justify-between gap-2">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">
-              Latest Minigames
-            </h2>
-            <p className="text-sm text-gray-500">
-              Take a break between overs and challenge your skills.
-            </p>
+          {/* CENTER COLUMN: MAIN MATCH CENTRE (FotMob-style strongest column) */}
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
+              <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+                <div className="space-y-0.5">
+                  <h2 className="text-sm font-semibold text-gray-900">
+                    Match Centre
+                  </h2>
+                  <p className="text-[11px] text-gray-500">
+                    Live scores, upcoming fixtures and results.
+                  </p>
+                </div>
+                {/* You can later replace this area with tabs (Live / Upcoming / Finished) for a more FotMob feel */}
+                <div className="flex items-center gap-2 rounded-full bg-gray-100 px-2 py-1 text-[11px] font-medium text-gray-600">
+                  <span className="rounded-full bg-white px-2 py-0.5 shadow-sm">
+                    Live
+                  </span>
+                  <span>Upcoming</span>
+                  <span>Results</span>
+                </div>
+              </div>
+
+              <div className="px-2 pb-3 pt-2 sm:px-4 sm:pb-4">
+                <MatchCentre />
+              </div>
+            </div>
           </div>
-          <Link
-            href="/minigames"
-            className="text-sm font-semibold text-blue-600 hover:text-blue-700"
-          >
-            View all minigames →
-          </Link>
-        </header>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {latest.map((g) => (
-            <MinigameCard key={g.slug} {...g} />
-          ))}
-        </div>
-      </section>
-    </div>
+
+          {/* RIGHT COLUMN: LATEST NEWS (like FotMob’s side content) */}
+          <aside className="space-y-4">
+            <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
+              <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+                <h2 className="text-sm font-semibold text-gray-900">
+                  Latest News
+                </h2>
+                <Link
+                  href="/news"
+                  className="text-xs font-semibold text-blue-600 hover:text-blue-700"
+                >
+                  View all
+                </Link>
+              </div>
+
+              <div className="space-y-2 p-3">
+                {news.length === 0 ? (
+                  <p className="text-xs text-gray-400">
+                    No news found right now.
+                  </p>
+                ) : (
+                  news.map((a) => {
+                    const imgSrc = normalizeImageUrl(a.image_url);
+
+                    return (
+                      <Link
+                        key={a.id}
+                        href={`/news/${a.slug}`}
+                        className="flex gap-3 rounded-xl p-2 hover:bg-gray-50 transition"
+                      >
+                        {imgSrc && (
+                          <div className="h-16 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-gray-100">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={imgSrc}
+                              alt={a.title || "News image"}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                        )}
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-gray-900 line-clamp-2">
+                            {a.title}
+                          </p>
+                          {a.excerpt && (
+                            <p className="mt-0.5 text-[11px] text-gray-500 line-clamp-2">
+                              {a.excerpt}
+                            </p>
+                          )}
+                          {a.published_at && (
+                            <p className="mt-1 text-[10px] font-medium text-blue-600">
+                              {new Date(a.published_at).toLocaleDateString(
+                                undefined,
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )}
+                            </p>
+                          )}
+                        </div>
+                      </Link>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        {/* BOTTOM: FULL-WIDTH MINIGAMES GRID (kept simple) */}
+        <section className="space-y-3">
+          <header className="flex items-center justify-between gap-2">
+            <div>
+              <h2 className="text-sm font-semibold text-gray-900">
+                Latest Minigames
+              </h2>
+              <p className="text-xs text-gray-500">
+                Take a break between overs and challenge your skills.
+              </p>
+            </div>
+            <Link
+              href="/minigames"
+              className="text-xs font-semibold text-blue-600 hover:text-blue-700"
+            >
+              View all →
+            </Link>
+          </header>
+
+          <div className="rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {latest.map((g) => (
+                <MinigameCard key={g.slug} {...g} />
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
   );
 }
