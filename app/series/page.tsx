@@ -241,8 +241,8 @@ export default function SeriesPage() {
                   return (
                   <div
                     key={league.id}
-                    className={`bg-white rounded-lg border p-6 hover:shadow-lg transition-shadow duration-200 flex flex-col items-center text-center group relative ${
-                      isActive ? 'border-blue-500 ring-2 ring-blue-100' : 'border-gray-200'
+                    className={`bg-white rounded-lg border p-6 hover:shadow-xl hover:-translate-y-1 hover:scale-105 transition-all duration-300 flex flex-col items-center text-center group relative cursor-pointer ${
+                      isActive ? 'border-blue-500 ring-2 ring-blue-100' : 'border-gray-200 hover:border-blue-300'
                     }`}
                   >
                     {/* Active Badge */}
