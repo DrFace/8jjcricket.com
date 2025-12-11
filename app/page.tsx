@@ -6,6 +6,7 @@ import MatchCentre from "@/components/MatchCentre";
 import OddsCard from "@/components/BetButton";
 import SocialBox from "@/components/SocialBox";
 import BannerCarousel from "@/components/BannerCarousel";
+import NewsCarousel from "@/components/NewsCarousel";
 
 type Article = {
   id: number;
@@ -77,6 +78,23 @@ const AnimatedText = dynamic(() => import("@/components/AnimatedText"), {
 export default async function HomePage() {
   const news = await getNewsPreview();
 
+  // Prepare news items with normalized image URLs for the carousel
+  const newsWithImages = news
+    .map((a) => ({
+      id: a.id,
+      slug: a.slug,
+      title: a.title,
+      imgSrc: normalizeImageUrl(a.image_url),
+      published_at: a.published_at,
+    }))
+    .filter((a) => a.imgSrc) as {
+      id: number;
+      slug: string;
+      title: string;
+      imgSrc: string;
+      published_at: string | null;
+    }[];
+
   return (
     <main className="min-h-screen bg-gray-100">
       {/* TEXT STRIP */}
@@ -131,57 +149,39 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* FEATURED NEWS STRIP */}
-        <div
-          className="flex gap-3 overflow-x-auto scroll-smooth
-             [-ms-overflow-style:none] [scrollbar-width:none]
-             [&::-webkit-scrollbar]:hidden p-2 snap-x snap-mandatory"
-        >
-          {news
-            .map((a) => ({
-              ...a,
-              imgSrc: normalizeImageUrl(a.image_url),
-            }))
-            .filter((a) => a.imgSrc)
-            .map((a) => (
-              <Link
-                key={a.id}
-                href={`/news/${a.slug}`}
-                className="relative h-40 min-w-full flex-shrink-0 sm:h-48 snap-center"
-              >
-                <img
-                  src={a.imgSrc as string}
-                  alt={a.title}
-                  className="h-full w-full rounded-2xl object-cover"
-                />
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 rounded-b-2xl bg-gradient-to-t from-white/95 to-transparent p-3">
-                  <p className="line-clamp-1 text-xs font-semibold text-gray-900">
-                    {a.title}
-                  </p>
-                </div>
-              </Link>
-            ))}
-        </div>
-
+        {/* FEATURED NEWS AUTO SLIDESHOW */}
+        {newsWithImages.length > 0 && (
+          <section className="px-1">
+            <NewsCarousel
+              items={newsWithImages.map((a) => ({
+                id: a.id,
+                slug: a.slug,
+                title: a.title,
+                imgSrc: a.imgSrc,
+              }))}
+              intervalMs={4000} // change speed here if you like
+            />
+          </section>
+        )}
 
         {/* LATEST PROMOTIONS & NEWS */}
         {news.length > 0 && (
-          <section className="mt-2 rounded-2xl border border-gray-200 bg-white p-4 text-gray-900 shadow-sm">
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-700">
+          <section className="mt-2 rounded-2xl border border-gray-200 bg-white p-5 text-gray-900 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-700 sm:text-base">
                 Latest Promotions &amp; News
               </h2>
               <Link
                 href="/news"
-                className="text-[11px] font-semibold text-blue-600 hover:text-blue-700"
+                className="text-xs font-semibold text-blue-600 hover:text-blue-700 sm:text-sm"
               >
                 View all →
               </Link>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {news
-                .slice(0, 5) // ENSURE EXACTLY 5 SHOW HERE
+                .slice(0, 5)
                 .map((a) => ({
                   ...a,
                   imgSrc: normalizeImageUrl(a.image_url),
@@ -190,10 +190,10 @@ export default async function HomePage() {
                   <Link
                     key={a.id}
                     href={`/news/${a.slug}`}
-                    className="flex items-center gap-3 rounded-xl bg-gray-50 p-3 transition hover:bg-gray-100"
+                    className="flex items-center gap-4 rounded-xl bg-gray-50 p-4 transition hover:bg-gray-100"
                   >
                     {a.imgSrc && (
-                      <div className="h-16 w-20 flex-shrink-0 overflow-hidden rounded-lg">
+                      <div className="h-20 w-24 flex-shrink-0 overflow-hidden rounded-lg sm:h-24 sm:w-32">
                         <img
                           src={a.imgSrc}
                           alt={a.title}
@@ -202,21 +202,18 @@ export default async function HomePage() {
                       </div>
                     )}
 
-                    <div className="flex flex-1 items-center justify-between gap-3">
-                      <p className="line-clamp-2 text-xs font-semibold text-gray-900 sm:text-sm">
+                    <div className="flex flex-1 items-center justify-between gap-4">
+                      <p className="line-clamp-2 text-sm font-semibold text-gray-900 sm:text-base">
                         {a.title}
                       </p>
 
                       {a.published_at && (
-                        <span className="whitespace-nowrap text-[10px] text-gray-500 sm:text-xs">
-                          {new Date(a.published_at).toLocaleDateString(
-                            undefined,
-                            {
-                              year: "numeric",
-                              month: "2-digit",
-                              day: "2-digit",
-                            }
-                          )}
+                        <span className="whitespace-nowrap text-xs text-gray-500 sm:text-sm">
+                          {new Date(a.published_at).toLocaleDateString(undefined, {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                          })}
                         </span>
                       )}
                     </div>
