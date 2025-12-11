@@ -89,6 +89,11 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
     activeTab === 'venues' && seasonId ? `/api/seasons/${seasonId}/venues` : null,
     fetcher
   )
+  
+  const { data: statsData } = useSWR(
+    activeTab === 'stats' && seasonId ? `/api/seasons/${seasonId}/stats` : null,
+    fetcher
+  )
 
   if (error) {
     return (
@@ -584,25 +589,107 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
             </div>
           )}
 
-          {/* Other Tabs (Videos, Photos, Stats) */}
-          {['videos', 'photos', 'stats'].includes(activeTab) && (
+          {/* Stats Tab */}
+          {activeTab === 'stats' && (
             <div className="p-6">
-              <div className="text-center py-12">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Statistics</h2>
+              
+              {!statsData ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                  <p className="text-gray-600 mt-4">Loading statistics...</p>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2 capitalize">{activeTab}</h3>
-                <p className="text-gray-600">
-                  {activeTab === 'videos' && `Watch videos and highlights from ${leagueData.name}`}
-                  {activeTab === 'photos' && `Browse photo galleries from the series`}
-                  {activeTab === 'stats' && `Explore detailed statistics and records`}
-                </p>
-                <p className="text-sm text-gray-500 mt-4">
-                  This section will be available soon
-                </p>
-              </div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Batting Stats */}
+                  {statsData.data?.batting && statsData.data.batting.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Top Run Scorers</h3>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rank</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Player</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Runs</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Innings</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Average</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">SR</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">HS</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">100s</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">50s</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-200">
+                            {statsData.data.batting.slice(0, 10).map((stat: any, index: number) => (
+                              <tr key={stat.id} className="hover:bg-gray-50">
+                                <td className="px-4 py-3 text-sm font-medium text-gray-900">{index + 1}</td>
+                                <td className="px-4 py-3 text-sm text-gray-900">{stat.player?.fullname || 'Unknown'}</td>
+                                <td className="px-4 py-3 text-sm text-center font-medium text-gray-900">{stat.total?.runs || 0}</td>
+                                <td className="px-4 py-3 text-sm text-center text-gray-600">{stat.total?.innings || 0}</td>
+                                <td className="px-4 py-3 text-sm text-center text-gray-600">{stat.total?.average || '0.00'}</td>
+                                <td className="px-4 py-3 text-sm text-center text-gray-600">{stat.total?.strike_rate || '0.00'}</td>
+                                <td className="px-4 py-3 text-sm text-center text-gray-600">{stat.total?.highest_score || 0}</td>
+                                <td className="px-4 py-3 text-sm text-center text-gray-600">{stat.total?.hundreds || 0}</td>
+                                <td className="px-4 py-3 text-sm text-center text-gray-600">{stat.total?.fifties || 0}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Bowling Stats */}
+                  {statsData.data?.bowling && statsData.data.bowling.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Top Wicket Takers</h3>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rank</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Player</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Wickets</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Innings</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Average</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Economy</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">SR</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Best</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-200">
+                            {statsData.data.bowling.slice(0, 10).map((stat: any, index: number) => (
+                              <tr key={stat.id} className="hover:bg-gray-50">
+                                <td className="px-4 py-3 text-sm font-medium text-gray-900">{index + 1}</td>
+                                <td className="px-4 py-3 text-sm text-gray-900">{stat.player?.fullname || 'Unknown'}</td>
+                                <td className="px-4 py-3 text-sm text-center font-medium text-gray-900">{stat.total?.wickets || 0}</td>
+                                <td className="px-4 py-3 text-sm text-center text-gray-600">{stat.total?.innings || 0}</td>
+                                <td className="px-4 py-3 text-sm text-center text-gray-600">{stat.total?.average || '0.00'}</td>
+                                <td className="px-4 py-3 text-sm text-center text-gray-600">{stat.total?.econ || '0.00'}</td>
+                                <td className="px-4 py-3 text-sm text-center text-gray-600">{stat.total?.strike_rate || '0.00'}</td>
+                                <td className="px-4 py-3 text-sm text-center text-gray-600">{stat.total?.best || '-'}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* No Stats Available */}
+                  {(!statsData.data?.batting || statsData.data.batting.length === 0) && 
+                   (!statsData.data?.bowling || statsData.data.bowling.length === 0) && (
+                    <div className="text-center py-12 bg-gray-50 rounded-lg">
+                      <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                      <p className="text-gray-600 font-medium">No statistics available for this series</p>
+                      <p className="text-sm text-gray-500 mt-2">Statistics will appear here once matches are completed</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
