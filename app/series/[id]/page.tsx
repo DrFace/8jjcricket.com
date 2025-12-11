@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import useSWR from 'swr'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -56,6 +56,14 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
   // Extract league data from response
   const leagueData: League = data?.data
   
+  // Reset selected season when switching tabs or league changes
+  useEffect(() => {
+    if (activeTab !== 'points') {
+      // Keep the selected season even when switching away from points tab
+      // This prevents unnecessary resets
+    }
+  }, [activeTab])
+  
   // Get latest season ID (not first/oldest)
   const getLatestSeasonId = () => {
     if (!leagueData?.seasons?.length) return undefined
@@ -76,11 +84,19 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
     fetcher
   )
   
-  // Fetch standings for the selected season
-  const { data: standingsData } = useSWR(
+  // Fetch standings for the selected season with revalidation
+  const { data: standingsData, mutate: mutateStandings } = useSWR(
     activeTab === 'points' && seasonId ? `/api/seasons/${seasonId}/standings` : null,
-    fetcher
+    fetcher,
+    { revalidateOnFocus: false, dedupingInterval: 0 }
   )
+  
+  // Refetch standings when selected season changes
+  useEffect(() => {
+    if (activeTab === 'points' && seasonId) {
+      mutateStandings()
+    }
+  }, [seasonId, activeTab, mutateStandings])
   
   // Auto-select the most recent season with standings data when Points Table tab is opened
   const { data: allSeasonsStandings } = useSWR(
@@ -90,12 +106,26 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
     async () => {
       // Fetch standings for all seasons to find the most recent one with data
       const seasons = leagueData?.seasons || []
+      const now = new Date()
+      const currentYear = now.getFullYear()
+      
+      // Sort by year, but prioritize completed seasons
       const sortedSeasons = [...seasons].sort((a, b) => {
         const getYear = (name: string) => {
           const years = name.match(/\d{4}/g)
           return years ? Math.max(...years.map(y => parseInt(y))) : 0
         }
-        return getYear(b.name) - getYear(a.name)
+        const aYear = getYear(a.name)
+        const bYear = getYear(b.name)
+        
+        // Prioritize current year and past years over future
+        const aIsFuture = aYear > currentYear
+        const bIsFuture = bYear > currentYear
+        
+        if (aIsFuture && !bIsFuture) return 1
+        if (!aIsFuture && bIsFuture) return -1
+        
+        return bYear - aYear
       })
       
       // Try to find the first season with standings data
@@ -111,8 +141,14 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
           continue
         }
       }
-      // If no season has standings, use the latest season
-      if (sortedSeasons[0]) {
+      // If no season has standings, use the most recent non-future season
+      const nonFutureSeasons = sortedSeasons.filter(s => {
+        const year = s.name.match(/\d{4}/g)
+        return year && Math.max(...year.map(y => parseInt(y))) <= currentYear
+      })
+      if (nonFutureSeasons[0]) {
+        setSelectedSeasonId(nonFutureSeasons[0].id)
+      } else if (sortedSeasons[0]) {
         setSelectedSeasonId(sortedSeasons[0].id)
       }
       return null
@@ -180,11 +216,31 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
     return getLatestYear(b.name) - getLatestYear(a.name)
   })
   
-  // Get current season: prefer is_current, then 2025/2026 seasons, then latest season
-  const currentSeason = leagueData.currentseason || 
-    seasons.find(s => s.is_current === true) ||
-    sortedSeasons.find(s => s.name.includes('2025') || s.name.includes('2026')) || 
-    sortedSeasons[0] // Latest season
+  // Get current season: prefer completed recent season over future seasons
+  const currentSeason = (() => {
+    const now = new Date()
+    const currentYear = now.getFullYear()
+    
+    // First try to find a season that has started
+    const startedSeasons = sortedSeasons.filter(s => {
+      if (s.starting_at) {
+        return new Date(s.starting_at) <= now
+      }
+      // If no date, check year from name
+      const years = s.name.match(/\d{4}/g)
+      if (years) {
+        const maxYear = Math.max(...years.map(y => parseInt(y)))
+        return maxYear <= currentYear
+      }
+      return false
+    })
+    
+    // Return the most recent started season, or current season, or latest season
+    return leagueData.currentseason ||
+      seasons.find(s => s.is_current === true) ||
+      startedSeasons[0] ||
+      sortedSeasons[0]
+  })()
     
   const title = `${leagueData.name} | 8jjcricket`
   const description = `View matches, news, stats and information about ${leagueData.name}`
@@ -558,7 +614,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
 
           {/* Points Table Tab */}
           {activeTab === 'points' && (
-            <div className="p-6">
+            <div className="p-6" key={`points-${seasonId}`}>
               {/* Header with Gradient */}
               <div className="bg-gradient-to-r from-blue-600 via-cyan-600 to-sky-500 rounded-t-2xl p-6 mb-0">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

@@ -130,29 +130,9 @@ export default function SeriesPage() {
     return sorted[0]
   }
 
-  // Sort leagues: currently active leagues first, then by start date
+  // Sort leagues alphabetically by name
   const sortedLeagues = [...currentAndFutureLeagues].sort((a, b) => {
-    const aCurrentSeason = a.seasons?.find((s: any) => s.is_current) || getLatestSeason(a.seasons)
-    const bCurrentSeason = b.seasons?.find((s: any) => s.is_current) || getLatestSeason(b.seasons)
-    
-    // Active leagues come first
-    if (aCurrentSeason?.is_current && !bCurrentSeason?.is_current) return -1
-    if (!aCurrentSeason?.is_current && bCurrentSeason?.is_current) return 1
-    
-    // If both or neither are active, sort by start date or season year
-    const aDate = aCurrentSeason?.starting_at
-    const bDate = bCurrentSeason?.starting_at
-    
-    if (!aDate && !bDate) {
-      // Sort by season year if no dates
-      const aYear = aCurrentSeason?.name.match(/\d{4}/g)?.[0] || '0'
-      const bYear = bCurrentSeason?.name.match(/\d{4}/g)?.[0] || '0'
-      return parseInt(bYear) - parseInt(aYear)
-    }
-    if (!aDate) return 1
-    if (!bDate) return -1
-    
-    return new Date(aDate).getTime() - new Date(bDate).getTime()
+    return a.name.localeCompare(b.name)
   })
 
   // Group series by month based on current season dates
