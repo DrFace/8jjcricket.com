@@ -169,14 +169,22 @@ export default function RootLayout({
             <div className="flex items-center gap-2">
               <Link
                 href="/minigames"
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-pink-500/20 ring-1 ring-white/20 transition active:scale-95 hover:brightness-110"
+                className="inline-flex items-center gap-2 rounded-full
+             bg-gradient-to-r from-[#4A63D5] via-[#5E78E0] to-[#3F55C2]
+             px-4 py-2 text-sm font-semibold text-white shadow-lg
+             shadow-blue-600/40 ring-1 ring-white/20 transition
+             active:scale-95 hover:brightness-110"
               >
                 <span className="relative">
-                  <span className="absolute inset-0 -z-10 animate-[ping_2s_linear_infinite] rounded-full bg-white/30" />
+                  <span
+                    className="absolute inset-0 -z-10 animate-[ping_2s_linear_infinite]
+                 rounded-full bg-[#6F87E8]/40"
+                  />
                   Play Now
                 </span>
-                <span className="text-base"></span>
               </Link>
+
+
             </div>
           </div>
         </header>
