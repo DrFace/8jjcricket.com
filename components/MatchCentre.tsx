@@ -1,106 +1,117 @@
-// components/MatchCentre.tsx
 'use client';
 
 import { useState } from 'react';
-import LiveGrid from './LiveGrid';
+import useSWR from 'swr';
 import Link from 'next/link';
+
+import LiveGrid from './LiveGrid';
 import BetButton from './BetButton';
 import LiveCard from './LiveCard';
-import type { Fixture } from '@/types/fixture'
-import useSWR from 'swr';
+import type { Fixture } from '@/types/fixture';
 
-// simple fetcher for SWR
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
 export default function MatchCentre() {
-    // default selection is International
     const [selected, setSelected] = useState<string>('All');
 
-    // recent matches (reusing LiveCard, like RecentPage)
     const { data: recentData, error: recentError, isLoading: recentLoading } = useSWR('/api/recent', fetcher);
     const recentFixtures: Fixture[] = recentData?.data ?? [];
 
     const categories = ['International', 'T20', 'ODI', 'Test', 'Leagues', 'All'];
 
     return (
-        <div className="space-y-4">
-            <header className="flex flex-wrap items-center justify-between gap-3">
+        <div className="h-full w-full flex flex-col">
+            {/* Header */}
+            <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Match Centre</h1>
-                    <p className="text-xs sm:text-sm text-gray-500">
-                        Live scores, upcoming fixtures and recent results from major tours and leagues.
+                    <h1 className="text-lg sm:text-2xl font-extrabold text-white">Match Centre</h1>
+                    <p className="mt-1 text-xs sm:text-sm text-sky-100/70">
+                        Live scores, upcoming fixtures and recent results.
                     </p>
                 </div>
 
-                {/* Filter buttons */}
-                <div className="flex flex-wrap gap-2 text-xs sm:text-sm">
-                    {categories.map((cat) => (
-                        <button
-                            key={cat}
-                            type="button"
-                            onClick={() => setSelected(cat)}
-                            className={`rounded-full border px-3 py-1 text-xs font-medium bg-white ${selected === cat
-                                ? 'border-blue-400 text-blue-600'
-                                : 'border-gray-200 text-gray-700 hover:border-blue-400 hover:text-blue-600'
-                                }`}
-                        >
-                            {cat}
-                        </button>
-                    ))}
+                {/* Filters */}
+                <div className="flex flex-wrap gap-2">
+                    {categories.map((cat) => {
+                        const active = selected === cat;
+                        return (
+                            <button
+                                key={cat}
+                                type="button"
+                                onClick={() => setSelected(cat)}
+                                className={[
+                                    'rounded-full px-3 py-1 text-[11px] sm:text-xs font-semibold transition',
+                                    'border backdrop-blur',
+                                    active
+                                        ? 'border-amber-300/60 bg-amber-300/15 text-amber-200 shadow'
+                                        : 'border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100',
+                                ].join(' ')}
+                            >
+                                {cat}
+                            </button>
+                        );
+                    })}
                 </div>
-            </header>
+            </div>
 
-            <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
-                {/* Live / Upcoming / Recent tabs */}
-                <div className="flex items-center gap-4 border-b bg-gray-50 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold">
-                    <button className="border-b-2 border-blue-500 pb-1 text-blue-600">Live</button>
-                    <Link href="/upcoming" className="pb-1 text-gray-600 hover:text-blue-600">Upcoming</Link>
-                    <Link href="/recent" className="pb-1 text-gray-600 hover:text-blue-600">Recent</Link>
+            {/* Main card: constrained height + internal scroll */}
+            <div className="flex-1 min-h-0 overflow-hidden rounded-2xl border border-white/15 bg-black/40 shadow-2xl backdrop-blur-2xl">
+                {/* Tabs */}
+                <div className="flex items-center gap-6 border-b border-white/10 bg-black/30 px-4 py-3">
+                    <button className="pb-2 text-xs sm:text-sm font-semibold border-b-2 border-amber-300 text-amber-200">
+                        Live
+                    </button>
+                    <Link href="/upcoming" className="pb-2 text-xs sm:text-sm font-semibold text-sky-100/70 hover:text-sky-100">
+                        Upcoming
+                    </Link>
+                    <Link href="/recent" className="pb-2 text-xs sm:text-sm font-semibold text-sky-100/70 hover:text-sky-100">
+                        Recent
+                    </Link>
                 </div>
 
-                {/* Live matches grid */}
-                <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-4">
-
-                    {/* LIVE SECTION */}
-                    <div className="space-y-2">
+                {/* Scroll area (THIS fixes “too big for screen”) */}
+                <div className="h-full overflow-y-auto px-4 py-4 space-y-5">
+                    {/* LIVE */}
+                    <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-sm font-semibold text-gray-900">
+                            <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-sky-100/70">
                                 Live Now
                             </h2>
                         </div>
-                        <BetButton />
-                        <LiveGrid filter={selected} />
+
+                        <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                            <BetButton />
+                            <div className="mt-3">
+                                <LiveGrid filter={selected} />
+                            </div>
+                        </div>
                     </div>
 
-                    {/* NOTICEABLE BREAK */}
-                    <div className="border-t border-gray-200" />
+                    <div className="h-px w-full bg-white/10" />
 
-                    {/* RECENT SECTION */}
-                    <div className="mb-4 space-y-2">
+                    {/* RECENT */}
+                    <div className="space-y-3 pb-2">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-sm font-semibold text-gray-900">
+                            <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-sky-100/70">
                                 Recent Results
                             </h2>
-                            <Link
-                                href="/recent"
-                                className="text-xs font-medium text-blue-600 hover:underline"
-                            >
-                                View all
+                            <Link href="/recent" className="text-[11px] sm:text-xs font-semibold text-amber-300 hover:text-amber-200">
+                                View all →
                             </Link>
                         </div>
 
                         {recentError && (
-                            <div className="text-xs text-red-500">
+                            <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-200">
                                 Failed to load recent matches.
                             </div>
                         )}
 
                         {recentLoading && !recentError && (
                             <div className="space-y-2 animate-pulse">
-                                <div className="h-4 w-32 rounded bg-gray-200" />
+                                <div className="h-4 w-40 rounded bg-white/10" />
                                 <div className="space-y-2">
-                                    <div className="h-20 rounded bg-gray-200" />
-                                    <div className="h-20 rounded bg-gray-200" />
+                                    <div className="h-20 rounded bg-white/10" />
+                                    <div className="h-20 rounded bg-white/10" />
                                 </div>
                             </div>
                         )}
@@ -114,12 +125,11 @@ export default function MatchCentre() {
                         )}
 
                         {!recentLoading && !recentError && recentFixtures.length === 0 && (
-                            <div className="text-xs text-gray-500">
+                            <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-sky-100/60">
                                 No recent matches found.
                             </div>
                         )}
                     </div>
-
                 </div>
             </div>
         </div>
