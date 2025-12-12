@@ -1,5 +1,5 @@
-// components/LiveGrid.tsx
 'use client';
+
 import useSWR from 'swr';
 import LiveCard from './LiveCard';
 import type { Fixture } from '@/types/fixture';
@@ -10,7 +10,6 @@ interface LiveGridProps {
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
-// Helper: filter fixtures by category
 function filterFixtures(fixtures: Fixture[], filter: string | undefined): Fixture[] {
   if (!filter || filter === 'All') return fixtures;
 
@@ -30,7 +29,7 @@ function filterFixtures(fixtures: Fixture[], filter: string | undefined): Fixtur
 }
 
 export default function LiveGrid({ filter = 'All' }: LiveGridProps) {
-  const { data, error, isLoading } = useSWR('/api/live', fetcher, {
+  const { data, isLoading } = useSWR('/api/live', fetcher, {
     refreshInterval: 60_000,
     dedupingInterval: 60_000,
     revalidateOnFocus: false,
@@ -38,7 +37,7 @@ export default function LiveGrid({ filter = 'All' }: LiveGridProps) {
 
   if (data?.error) {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
+      <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-3 text-xs text-red-200">
         {data.error}
       </div>
     );
@@ -46,26 +45,25 @@ export default function LiveGrid({ filter = 'All' }: LiveGridProps) {
 
   if (isLoading) {
     return (
-      <div className="rounded-lg border bg-white px-3 py-3 text-sm text-gray-500 animate-pulse">
+      <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-xs text-sky-100/60 animate-pulse">
         Loading live scores…
       </div>
     );
   }
 
-  // Get the live fixtures and apply the current filter
   const fixtures: Fixture[] = data?.data?.live ?? [];
   const filtered = filterFixtures(fixtures, filter);
 
   if (!filtered.length) {
     return (
-      <div className="rounded-lg border bg-white px-3 py-3 text-sm text-gray-500">
+      <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-xs text-sky-100/60">
         No live matches right now.
       </div>
     );
   }
 
   return (
-    <div className="space-y-3 text-sm">
+    <div className="space-y-2">
       {filtered.map((f) => (
         <LiveCard key={f.id} f={f} />
       ))}

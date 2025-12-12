@@ -6,9 +6,33 @@
   color-scheme: light dark;
 }
 
+html,
 body {
-  @apply bg-gray-950 text-gray-50 antialiased;
-  overflow-x: hidden !important;
+  height: 100%;
+}
+
+html {
+  scrollbar-width: none;
+  /* Firefox */
+  scroll-behavior: auto;
+  /* Lenis controls smoothness */
+}
+
+body {
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+}
+
+/* Each full-page section */
+[data-snap] {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Hide scrollbars but keep scrolling */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 a {
@@ -25,38 +49,4 @@ a {
 
 .badge {
   @apply inline-block rounded-full px-2 py-0.5 text-xs font-medium;
-}
-
-/* Animated text effect */
-.animated-text {
-  font-size: 4rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  line-height: 1.2;
-
-  background-image: url("/images/animate2.png");
-  background-size: cover;
-  background-repeat: repeat-x;
-  background-position-x: 0;
-
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-
-  animation: scroll-background 20s linear infinite;
-}
-
-@keyframes scroll-background {
-  to {
-    background-position-x: -500px;
-  }
-}
-
-.gradient-border {
-  background-size: 200% 200%;
-  animation: border-move 2s linear infinite;
-}
-
-.winner-card {
-  border: 1px solid red;
 }
