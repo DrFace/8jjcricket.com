@@ -110,93 +110,90 @@ export default async function HomePage() {
         </section>
 
         {/* SLIDE 2 */}
-        <section className="sticky top-0 relative flex h-screen w-full items-center px-6">
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: "url(/CricketBG.jpg)" }}
-          />
-          <div className="absolute inset-0 bg-black/70" />
+        <section className="sticky top-0 flex h-screen w-full items-center px-6">
+          <div className="relative h-full w-full flex items-center">
+            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url(/CricketBG.jpg)" }} />
+            <div className="absolute inset-0 bg-black/70" />
 
-          <div className="relative w-full">
-            <div className="mb-8 rounded-2xl border border-white/10 bg-black/40 px-4 py-4 text-center shadow-xl backdrop-blur-xl">
-              <div className="flex justify-center">
-                <AnimatedText />
-              </div>
-              <p className="mt-2 text-xs font-medium uppercase tracking-[0.2em] text-sky-100/80">
-                Live cricket · Fast odds · Instant minigames
-              </p>
-            </div>
-
-            <div className="grid w-full gap-6 md:grid-cols-[2fr,1.1fr]">
-              <div className="overflow-hidden rounded-2xl border border-white/15 bg-black/50 shadow-2xl backdrop-blur-xl">
-                <BannerCarousel />
+            <div className="relative w-full">
+              <div className="mb-8 rounded-2xl border border-white/10 bg-black/40 px-4 py-4 text-center shadow-xl backdrop-blur-xl">
+                <div className="flex justify-center">
+                  <AnimatedText />
+                </div>
+                <p className="mt-2 text-xs font-medium uppercase tracking-[0.2em] text-sky-100/80">
+                  Live cricket · Fast odds · Instant minigames
+                </p>
               </div>
 
-              <div className="rounded-2xl border border-amber-400/60 bg-gradient-to-br from-black/70 via-slate-900/80 to-amber-900/40 p-4 shadow-2xl backdrop-blur-xl">
-                <div className="mb-2 flex items-center justify-between">
-                  <h2 className="text-xs font-semibold uppercase tracking-wide text-amber-200">Hot Minigames</h2>
-                  <Link href="/minigames" className="text-[11px] font-semibold text-amber-300 hover:text-amber-200">
-                    View all →
+              <div className="grid w-full gap-6 md:grid-cols-[2fr,1.1fr]">
+                <div className="overflow-hidden rounded-2xl border border-white/15 bg-black/50 shadow-2xl backdrop-blur-xl">
+                  <BannerCarousel />
+                </div>
+
+                <div className="rounded-2xl border border-amber-400/60 bg-gradient-to-br from-black/70 via-slate-900/80 to-amber-900/40 p-4 shadow-2xl backdrop-blur-xl">
+                  <div className="mb-2 flex items-center justify-between">
+                    <h2 className="text-xs font-semibold uppercase tracking-wide text-amber-200">Hot Minigames</h2>
+                    <Link href="/minigames" className="text-[11px] font-semibold text-amber-300 hover:text-amber-200">
+                      View all →
+                    </Link>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    {latest.slice(0, 2).map((g) => (
+                      <Link
+                        key={g.slug}
+                        href={`/minigames/${g.slug}`}
+                        className="group flex flex-col items-center justify-center rounded-xl border border-white/15 bg-white/5 p-3 text-white shadow transition hover:border-amber-300/70 hover:bg-white/10"
+                      >
+                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-gradient-to-b from-slate-950/80 to-slate-900/80 shadow-inner">
+                          <span className="text-lg font-extrabold tracking-wide text-white/90">
+                            {gameInitials(g.title)}
+                          </span>
+                        </div>
+
+                        <p className="mt-2 text-center text-[11px] font-semibold text-amber-200">{g.title}</p>
+                      </Link>
+                    ))}
+                  </div>
+
+                  <Link
+                    href="/minigames"
+                    className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 px-4 py-2 text-xs font-bold uppercase tracking-wide text-black shadow-lg hover:brightness-110 active:scale-95"
+                  >
+                    Play Minigames Now
                   </Link>
                 </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  {latest.slice(0, 2).map((g) => (
-                    <Link
-                      key={g.slug}
-                      href={`/minigames/${g.slug}`}
-                      className="group flex flex-col items-center justify-center rounded-xl border border-white/15 bg-white/5 p-3 text-white shadow transition hover:border-amber-300/70 hover:bg-white/10"
-                    >
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-gradient-to-b from-slate-950/80 to-slate-900/80 shadow-inner">
-                        <span className="text-lg font-extrabold tracking-wide text-white/90">
-                          {gameInitials(g.title)}
-                        </span>
-                      </div>
-
-                      <p className="mt-2 text-center text-[11px] font-semibold text-amber-200">{g.title}</p>
-                    </Link>
-                  ))}
-                </div>
-
-                <Link
-                  href="/minigames"
-                  className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 px-4 py-2 text-xs font-bold uppercase tracking-wide text-black shadow-lg hover:brightness-110 active:scale-95"
-                >
-                  Play Minigames Now
-                </Link>
               </div>
             </div>
           </div>
         </section>
 
         {/* SLIDE 3 */}
-        <section className="sticky top-0 relative flex h-screen w-full items-center px-6">
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: "url(/CricketBG.jpg)" }}
-          />
-          <div className="absolute inset-0 bg-black/70" />
+        <section className="sticky top-0 flex h-screen w-full items-center px-6">
+          <div className="relative h-full w-full flex items-center">
+            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url(/CricketBG.jpg)" }} />
+            <div className="absolute inset-0 bg-black/70" />
 
-          <div className="relative h-full w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
-            <MatchCentre />
+            <div className="relative h-full w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
+              <MatchCentre />
+            </div>
           </div>
         </section>
 
         {/* SLIDE 4 */}
         {newsWithImages.length > 0 && (
-          <section className="sticky top-0 relative flex h-screen w-full items-center px-6">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
-            />
-            <div className="absolute inset-0 bg-black/70" />
+          <section className="sticky top-0 flex h-screen w-full items-center px-6">
+            <div className="relative h-full w-full flex items-center">
+              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url(/CricketBG.jpg)" }} />
+              <div className="absolute inset-0 bg-black/70" />
 
-            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
-              <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-sky-100 sm:text-sm">
-                Featured Promotions
-              </h2>
-              <div className="overflow-hidden rounded-xl border border-white/10 bg-black/40">
-                <NewsCarousel items={newsWithImages} intervalMs={4000} />
+              <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
+                <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-sky-100 sm:text-sm">
+                  Featured Promotions
+                </h2>
+                <div className="overflow-hidden rounded-xl border border-white/10 bg-black/40">
+                  <NewsCarousel items={newsWithImages} intervalMs={4000} />
+                </div>
               </div>
             </div>
           </section>
