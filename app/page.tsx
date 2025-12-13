@@ -1,4 +1,4 @@
-// app/(home)/page.tsx
+// app/page.tsx
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import BannerCarousel from "@/components/BannerCarousel";
@@ -9,7 +9,7 @@ import MatchCentre from "@/components/MatchCentre";
 import SmoothScroller from "@/components/SmoothScroller";
 import DesktopOnly from "@/components/DesktopOnly";
 import BottomNav from "@/components/BottomNav";
-
+import HomeVerticalSwiper from "@/components/HomeVerticalSwiper";
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), { ssr: false });
 const AnimatedText = dynamic(() => import("@/components/AnimatedText"), { ssr: false });
@@ -51,7 +51,7 @@ async function getNewsPreview(): Promise<Article[]> {
   }
 }
 
-const latest = [
+const latest: { slug: string; title: string; desc: string }[] = [
   { slug: "cricket-legends", title: "Cricket Legends", desc: "Career mode with levels & characters." },
   { slug: "cricket-superover", title: "Cricket Super Over", desc: "6 balls, pure timing — hit for 6s!" },
   { slug: "tictactoe", title: "Tic Tac Toe", desc: "Classic 3×3 duel." },
@@ -74,19 +74,25 @@ export default async function HomePage() {
   const news = await getNewsPreview();
 
   const newsWithImages = news
-    .map((a) => ({ id: a.id, slug: a.slug, title: a.title, imgSrc: normalizeImageUrl(a.image_url) }))
-    .filter((a) => a.imgSrc) as { id: number; slug: string; title: string; imgSrc: string }[];
+    .map((a: Article) => ({ id: a.id, slug: a.slug, title: a.title, imgSrc: normalizeImageUrl(a.image_url) }))
+    .filter((a: { id: number; slug: string; title: string; imgSrc: string | null }) => a.imgSrc) as {
+      id: number;
+      slug: string;
+      title: string;
+      imgSrc: string;
+    }[];
 
   return (
     <SmoothScroller>
       <DesktopOnly>
         <WelcomePopup />
       </DesktopOnly>
-      <BottomNav />
 
+      <BottomNav />
       <TopNav />
 
-      <div className="relative">
+      {/* Swiper vertical scroll effect wrapper (no content changes inside) */}
+      <HomeVerticalSwiper>
         {/* SLIDE 1 — VIDEO (NO BG IMAGE) */}
         <section data-snap className="SectionScroll sticky top-0 Sh-screen w-full overflow-hidden">
           <video
@@ -101,7 +107,7 @@ export default async function HomePage() {
 
           <div className="pointer-events-auto absolute bottom-4 left-0 right-0 z-20 flex justify-center px-4">
             <div className="inline-flex min-w-0 max-w-full items-center justify-center gap-2 overflow-x-auto rounded-full border border-white/20 bg-black/70 px-3 py-2 shadow-2xl backdrop-blur-xl">
-              {BRAND_ITEMS.map((name) => (
+              {BRAND_ITEMS.map((name: string) => (
                 <a
                   key={name}
                   href={DOWNLOAD_URL}
@@ -146,7 +152,7 @@ export default async function HomePage() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                    {latest.slice(0, 2).map((g) => (
+                    {latest.slice(0, 2).map((g: { slug: string; title: string; desc: string }) => (
                       <Link
                         key={g.slug}
                         href={`/minigames/${g.slug}`}
@@ -203,11 +209,11 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* Footer */}
+        {/* Footer as last slide */}
         <div className="relative">
           <Footer />
         </div>
-      </div>
+      </HomeVerticalSwiper>
     </SmoothScroller>
   );
 }
