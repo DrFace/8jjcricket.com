@@ -1,7 +1,7 @@
+// app/layout.tsx
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { SITE } from "@/lib/seo";
-import Image from "next/image";
 import Script from "next/script";
 
 export const metadata: Metadata = {
@@ -28,24 +28,21 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = { themeColor: "#0ea5e9" };
+export const viewport: Viewport = {
+  themeColor: "#0ea5e9",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-gray-950 text-gray-50 antialiased selection:bg-blue-100 selection:text-blue-800">
-        {/* Fullscreen wallpaper */}
-        <div className="fixed inset-0 -z-20">
-          <Image
-            src="/banner002.png"
-            alt="8jjcricket background"
-            fill
-            priority
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-black/70" />
-        </div>
-
+      <body className="min-h-screen overflow-x-hidden bg-gray-950 text-gray-50 antialiased selection:bg-blue-100 selection:text-blue-800">
         {children}
 
         {/* Analytics */}

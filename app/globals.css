@@ -20,10 +20,11 @@ html {
 
 body {
   overflow-y: scroll;
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: none;
+  /* IMPORTANT: disable native snap to avoid conflicts */
 }
 
-/* Each full-page section */
+/* Optional: keep for semantics, not required when snap-type is none */
 [data-snap] {
   scroll-snap-align: start;
   scroll-snap-stop: always;
@@ -49,4 +50,8 @@ a {
 
 .badge {
   @apply inline-block rounded-full px-2 py-0.5 text-xs font-medium;
+}
+
+.Sh-screen {
+  height: 87vh !important;
 }
