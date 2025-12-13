@@ -320,7 +320,7 @@ export default function ArchivePage() {
 
         <div className="min-h-[60vh] flex flex-col gap-6">
           {/* Dark hero */}
-          <div className="rounded-3xl border border-white/10 bg-slate-900/60 px-6 py-5 shadow-2xl backdrop-blur-sm">
+          <div className="rounded-3xl border border-white/20 bg-slate-900/80 px-6 py-5 shadow-2xl backdrop-blur-xl">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold tracking-[0.18em] text-amber-300">
@@ -398,7 +398,7 @@ export default function ArchivePage() {
         {/* LEFT: existing archive header + grid */}
         <main className="flex-1 space-y-6">
           {/* Dark header / hero */}
-          <div className="rounded-3xl border border-white/10 bg-slate-900/60 px-6 py-5 shadow-2xl backdrop-blur-sm">
+          <div className="rounded-3xl border border-white/20 bg-slate-900/80 px-6 py-5 shadow-2xl backdrop-blur-xl">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold tracking-[0.18em] text-amber-300">
