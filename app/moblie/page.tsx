@@ -8,6 +8,8 @@ import BottomNav from "@/components/BottomNav";
 import MatchCentre from "@/components/MatchCentre";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
+import NewsListCards from "@/components/NewsListCards";
+import SocialBox from "@/components/SocialBox";
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), { ssr: false });
 
@@ -18,8 +20,35 @@ type Article = {
   image_url: string | null;
 };
 
+const GAME_ITEMS = [
+  { slug: "cricket-legends", title: "Cricket Legends", icon: "/games/cricket-legends.png" },
+  { slug: "cricket-superover", title: "Cricket Super Over", icon: "/games/cricket-superover.png" },
+  // add more...
+] as const;
+
 const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
 const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
+
+/**
+ * Place files like:
+ *  public/homevideo.mp4
+ *  public/brands/mb66.png
+ *  public/brands/ok9.png
+ *  public/brands/ip88.png
+ *  ...
+ */
+const DOWNLOAD_URL = "https://download.9ipl.vip/normal/";
+
+const BRAND_ITEMS: { name: string; icon: string }[] = [
+  { name: "F168", icon: "/brands/f168.png" },
+  { name: "FLY88", icon: "/brands/fly88.png" },
+  { name: "CM88", icon: "/brands/cm88.png" },
+  { name: "OK8386", icon: "/brands/ok8386.png" },
+  { name: "SC88", icon: "/brands/sc88.png" },
+
+];
+
+
 
 function normalizeImageUrl(url: string | null): string | null {
   if (!url) return null;
@@ -51,34 +80,42 @@ async function getNewsPreview(): Promise<Article[]> {
 }
 
 const latest = [
-  { slug: "cricket-legends", title: "Cricket Legends" },
-  { slug: "cricket-superover", title: "Cricket Super Over" },
+  { slug: "cricket-legends", title: "Cricket Legends", icon: "/games/cricket-legends.png" },
+  { slug: "cricket-superover", title: "Cricket Super Over", icon: "/games/cricket-superover.png" },
 ];
 
 export default async function MobileHomePage() {
   const news = await getNewsPreview();
 
   const newsWithImages = news
-    .map((a) => ({
+    .map((a: any) => ({
       id: a.id,
       slug: a.slug,
       title: a.title,
       imgSrc: normalizeImageUrl(a.image_url),
+      date: a.created_at
+        ? new Date(a.created_at).toISOString().slice(0, 10)
+        : "",
     }))
+
     .filter((a) => a.imgSrc) as { id: number; slug: string; title: string; imgSrc: string }[];
+
+  // 5 columns like the screenshot; add placeholders to complete the last row
+  const COLS = 5;
+  const remainder = BRAND_ITEMS.length % COLS;
+  const placeholders = remainder === 0 ? 0 : COLS - remainder;
 
   return (
     <div className="min-h-screen w-screen max-w-none overflow-x-hidden bg-black text-white">
       {/* Welcome Popup (client-only) */}
       <WelcomePopup />
 
-      {/* If TopNav/BottomNav are fixed in their own components, this still works.
-          If they are NOT fixed, this layout keeps them above the scroll container. */}
+      {/* TopNav */}
       <div className="w-full max-w-none">
         <TopNav />
       </div>
 
-      {/* Scroll container (only main content scrolls) */}
+      {/* Scroll container */}
       <main
         className="
           h-[calc(100vh-56px)]
@@ -90,11 +127,96 @@ export default async function MobileHomePage() {
         "
         style={{ WebkitOverflowScrolling: "touch" }}
       >
-        {/* HERO / BANNER */}
+        {/* HOME VIDEO (Top Hero) */}
         <section className="w-full max-w-none snap-start scroll-mt-3">
+          <Reveal>
+            <div className="relative w-full max-w-none overflow-hidden rounded-xl border border-white/10 bg-white/5">
+              <div className="h-[180px] w-full sm:h-[220px]">
+                <video
+                  className="h-full w-full object-cover"
+                  src="/homevideo.mp4"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                />
+              </div>
+              <div className="pointer-events-none absolute inset-0 bg-black/10" />
+            </div>
+          </Reveal>
+        </section>
+
+        {/* SOCIALS (under video) */}
+        <section className="mt-4 w-full max-w-none snap-start scroll-mt-3">
+          <Reveal>
+            <SocialBox />
+          </Reveal>
+        </section>
+
+
+        {/* HERO / BANNER */}
+        <section className="mt-3 w-full max-w-none snap-start scroll-mt-3">
           <Reveal>
             <div className="w-full max-w-none overflow-hidden rounded-xl">
               <BannerCarousel />
+            </div>
+          </Reveal>
+        </section>
+
+        {/* BRANDS (GRID, no scroll, like screenshot) */}
+        <section className="mt-4 w-full max-w-none snap-start scroll-mt-3">
+          <Reveal>
+            <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
+              {/* Optional background image behind tiles (like screenshot) */}
+              <div
+                className="absolute inset-0 opacity-30"
+                style={{
+                  backgroundImage: "url(/brands/brands-bg.jpg)",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              />
+              <div className="absolute inset-0 bg-black/50" />
+
+              <div className="relative px-4 py-3">
+                {/* Title */}
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-yellow-400" />
+                  <h3 className="text-sm font-semibold text-white">Sponsors</h3>
+                </div>
+
+                {/* 5-column grid */}
+                <div className="grid grid-cols-5 gap-x-3 gap-y-4">
+                  {BRAND_ITEMS.map((b) => (
+                    <a
+                      key={b.name}
+                      href={DOWNLOAD_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex flex-col items-center transition active:scale-95"
+                    >
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-md">
+                        <img
+                          src={b.icon}
+                          alt={b.name}
+                          className="h-9 w-9 object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                      <span className="mt-1 text-[11px] font-medium text-white/90">{b.name}</span>
+                    </a>
+                  ))}
+
+                  {/* Dashed placeholders to complete the row (matches screenshot empty tile) */}
+                  {Array.from({ length: placeholders }).map((_, i) => (
+                    <div key={`ph-${i}`} className="flex flex-col items-center">
+                      <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
+                      <span className="mt-1 text-[11px] text-transparent">.</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </Reveal>
         </section>
@@ -109,26 +231,71 @@ export default async function MobileHomePage() {
               </Link>
             </div>
 
-            <div className="grid w-full grid-cols-2 gap-3">
-              {latest.map((g) => (
-                <Link
-                  key={g.slug}
-                  href={`/minigames/${g.slug}`}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-3 text-center text-xs font-semibold"
-                >
-                  {g.title}
-                </Link>
-              ))}
-            </div>
+            {(() => {
+              const COLS = 5; // like screenshot
+              const remainder = GAME_ITEMS.length % COLS;
+              const placeholders = remainder === 0 ? 0 : COLS - remainder;
 
-            <Link
-              href="/minigames"
-              className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-xs font-bold text-black"
-            >
-              Play Minigames
-            </Link>
+              return (
+                <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-white/5 p-4">
+                  <div className="grid grid-cols-5 gap-x-3 gap-y-4">
+                    {GAME_ITEMS.map((g) => (
+                      <Link
+                        key={g.slug}
+                        href={`/minigames/${g.slug}`}
+                        className="flex flex-col items-center transition active:scale-95"
+                      >
+                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-md">
+                          <img
+                            src={g.icon}
+                            alt={g.title}
+                            className="h-9 w-9 object-contain"
+                            loading="lazy"
+                          />
+                        </div>
+
+                        {/* <span className="mt-1 text-[11px] font-medium text-white/90">
+                          {g.title}
+                        </span> */}
+                      </Link>
+                    ))}
+
+                    {Array.from({ length: placeholders }).map((_, i) => (
+                      <div key={`ph-${i}`} className="flex flex-col items-center">
+                        <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
+                        <span className="mt-1 text-[11px] text-transparent">.</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Link
+                    href="/minigames"
+                    className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-xs font-bold text-black"
+                  >
+                    Play Minigames
+                  </Link>
+                </div>
+              );
+            })()}
           </Reveal>
         </section>
+
+        {/* NEWS */}
+{newsWithImages.length > 0 && (
+  <section className="mt-5 w-full max-w-none snap-start scroll-mt-3">
+    <Reveal>
+      <h2 className="mb-2 text-sm font-semibold">Latest News</h2>
+
+    
+
+      {/* NEW list-style cards (like screenshot) */}
+      <NewsListCards items={newsWithImages} />
+    </Reveal>
+  </section>
+)}
+
+
+
 
         {/* MATCH CENTRE */}
         <section className="mt-5 w-full max-w-none snap-start scroll-mt-3">
@@ -140,7 +307,7 @@ export default async function MobileHomePage() {
         </section>
 
         {/* NEWS */}
-        {newsWithImages.length > 0 && (
+        {/* {newsWithImages.length > 0 && (
           <section className="mt-5 w-full max-w-none snap-start scroll-mt-3">
             <Reveal>
               <h2 className="mb-2 text-sm font-semibold">Latest News</h2>
@@ -149,7 +316,7 @@ export default async function MobileHomePage() {
               </div>
             </Reveal>
           </section>
-        )}
+        )} */}
 
         {/* FOOTER */}
         <section className="mt-8 w-full max-w-none snap-start scroll-mt-3">
@@ -159,7 +326,7 @@ export default async function MobileHomePage() {
         </section>
       </main>
 
-      {/* BottomNav pinned under scroll area */}
+      {/* BottomNav */}
       <div className="w-full max-w-none">
         <BottomNav />
       </div>
