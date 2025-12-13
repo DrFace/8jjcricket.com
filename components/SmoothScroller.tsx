@@ -24,10 +24,11 @@ export default function SmoothScroller({
 
         // ---------- DESKTOP ONLY ----------
         const lenis = new Lenis({
-            duration: 1.1,
-            lerp: 0.08,
+            duration: 0.8,
+            lerp: 0.12,
             smoothWheel: true,
-            wheelMultiplier: 1,
+            wheelMultiplier: 2.5,
+            
         });
 
         let rafId = 0;
