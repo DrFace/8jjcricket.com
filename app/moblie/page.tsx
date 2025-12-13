@@ -7,6 +7,7 @@ import TopNav from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
 import MatchCentre from "@/components/MatchCentre";
 import Footer from "@/components/Footer";
+import Reveal from "@/components/Reveal";
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), { ssr: false });
 
@@ -71,72 +72,97 @@ export default async function MobileHomePage() {
       {/* Welcome Popup (client-only) */}
       <WelcomePopup />
 
+      {/* If TopNav/BottomNav are fixed in their own components, this still works.
+          If they are NOT fixed, this layout keeps them above the scroll container. */}
       <div className="w-full max-w-none">
         <TopNav />
       </div>
-      <div className="w-full max-w-none">
-        <BottomNav />
-      </div>
 
-      <main className="w-full max-w-none px-3 pb-8 pt-3">
+      {/* Scroll container (only main content scrolls) */}
+      <main
+        className="
+          h-[calc(100vh-56px)]
+          w-full max-w-none
+          overflow-y-auto overflow-x-hidden
+          px-3 pb-8 pt-3
+          snap-y snap-mandatory
+          [scrollbar-width:none] [-ms-overflow-style:none]
+        "
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
         {/* HERO / BANNER */}
-        <section className="w-full max-w-none">
-          <div className="w-full max-w-none overflow-hidden rounded-xl">
-            <BannerCarousel />
-          </div>
+        <section className="w-full max-w-none snap-start scroll-mt-3">
+          <Reveal>
+            <div className="w-full max-w-none overflow-hidden rounded-xl">
+              <BannerCarousel />
+            </div>
+          </Reveal>
         </section>
 
         {/* QUICK GAMES */}
-        <section className="mt-5 w-full max-w-none">
-          <div className="mb-2 flex w-full items-center justify-between">
-            <h2 className="text-sm font-semibold">Hot Minigames</h2>
-            <Link href="/minigames" className="text-xs font-semibold text-sky-400">
-              View all →
-            </Link>
-          </div>
-
-          <div className="grid w-full grid-cols-2 gap-3">
-            {latest.map((g) => (
-              <Link
-                key={g.slug}
-                href={`/minigames/${g.slug}`}
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-3 text-center text-xs font-semibold"
-              >
-                {g.title}
+        <section className="mt-5 w-full max-w-none snap-start scroll-mt-3">
+          <Reveal>
+            <div className="mb-2 flex w-full items-center justify-between">
+              <h2 className="text-sm font-semibold">Hot Minigames</h2>
+              <Link href="/minigames" className="text-xs font-semibold text-sky-400">
+                View all →
               </Link>
-            ))}
-          </div>
+            </div>
 
-          <Link
-            href="/minigames"
-            className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-xs font-bold text-black"
-          >
-            Play Minigames
-          </Link>
+            <div className="grid w-full grid-cols-2 gap-3">
+              {latest.map((g) => (
+                <Link
+                  key={g.slug}
+                  href={`/minigames/${g.slug}`}
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-3 text-center text-xs font-semibold"
+                >
+                  {g.title}
+                </Link>
+              ))}
+            </div>
+
+            <Link
+              href="/minigames"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-xs font-bold text-black"
+            >
+              Play Minigames
+            </Link>
+          </Reveal>
         </section>
 
         {/* MATCH CENTRE */}
-        <section className="mt-5 w-full max-w-none">
-          <div className="w-full max-w-none overflow-hidden rounded-xl border border-white/10 bg-white/5 p-2">
-            <MatchCentre />
-          </div>
+        <section className="mt-5 w-full max-w-none snap-start scroll-mt-3">
+          <Reveal>
+            <div className="w-full max-w-none overflow-hidden rounded-xl border border-white/10 bg-white/5 p-2">
+              <MatchCentre />
+            </div>
+          </Reveal>
         </section>
 
         {/* NEWS */}
         {newsWithImages.length > 0 && (
-          <section className="mt-5 w-full max-w-none">
-            <h2 className="mb-2 text-sm font-semibold">Latest News</h2>
-            <div className="w-full max-w-none overflow-hidden rounded-xl border border-white/10 bg-white/5">
-              <NewsCarousel items={newsWithImages} intervalMs={4000} />
-            </div>
+          <section className="mt-5 w-full max-w-none snap-start scroll-mt-3">
+            <Reveal>
+              <h2 className="mb-2 text-sm font-semibold">Latest News</h2>
+              <div className="w-full max-w-none overflow-hidden rounded-xl border border-white/10 bg-white/5">
+                <NewsCarousel items={newsWithImages} intervalMs={4000} />
+              </div>
+            </Reveal>
           </section>
         )}
 
         {/* FOOTER */}
-        <section className="mt-8 w-full max-w-none">
-          <Footer />
+        <section className="mt-8 w-full max-w-none snap-start scroll-mt-3">
+          <Reveal>
+            <Footer />
+          </Reveal>
         </section>
       </main>
+
+      {/* BottomNav pinned under scroll area */}
+      <div className="w-full max-w-none">
+        <BottomNav />
+      </div>
     </div>
   );
 }
