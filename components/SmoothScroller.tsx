@@ -4,75 +4,87 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 
-export default function SmoothScroller({ children }: { children: React.ReactNode }) {
+export default function SmoothScroller({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
     const pathname = usePathname();
 
     useEffect(() => {
-        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-        if (reduceMotion.matches) return;
+        const reduceMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+        ).matches;
 
+        const isTouch =
+            "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+        // Mobile OR reduced motion → no Lenis, no JS snapping
+        if (reduceMotion || isTouch) return;
+
+        // ---------- DESKTOP ONLY ----------
         const lenis = new Lenis({
-            duration: 1.2,
+            duration: 1.1,
             lerp: 0.08,
             smoothWheel: true,
             wheelMultiplier: 1,
-            touchMultiplier: 1,
         });
 
-        let raf = 0;
-        const rafLoop = (time: number) => {
+        let rafId = 0;
+        const raf = (time: number) => {
             lenis.raf(time);
-            raf = requestAnimationFrame(rafLoop);
+            rafId = requestAnimationFrame(raf);
         };
-        raf = requestAnimationFrame(rafLoop);
+        rafId = requestAnimationFrame(raf);
 
         let locked = false;
 
-        const getSections = () => Array.from(document.querySelectorAll<HTMLElement>("[data-snap]"));
+        const sections = () =>
+            Array.from(
+                document.querySelectorAll<HTMLElement>("[data-snap]")
+            );
 
-        const getActiveIndex = (sections: HTMLElement[]) => {
+        const activeIndex = (els: HTMLElement[]) => {
             const y = window.scrollY;
             let best = 0;
-            let bestDist = Infinity;
-            for (let i = 0; i < sections.length; i++) {
-                const el = sections[i];
+            let dist = Infinity;
+
+            els.forEach((el, i) => {
                 const d = Math.abs(el.offsetTop - y);
-                if (d < bestDist) {
-                    bestDist = d;
+                if (d < dist) {
+                    dist = d;
                     best = i;
                 }
-            }
+            });
+
             return best;
         };
 
         const onWheel = (e: WheelEvent) => {
-            if (Math.abs(e.deltaY) < 8) return;
-
-            const sections = getSections();
-            if (sections.length === 0) return;
+            if (Math.abs(e.deltaY) < 10) return;
             if (locked) return;
 
-            // Prevent native scroll from competing with Lenis
+            const els = sections();
+            if (!els.length) return;
+
             e.preventDefault();
 
-            const current = getActiveIndex(sections);
+            const current = activeIndex(els);
             const dir = e.deltaY > 0 ? 1 : -1;
-            const next = Math.max(0, Math.min(sections.length - 1, current + dir));
+            const next = Math.max(0, Math.min(els.length - 1, current + dir));
             if (next === current) return;
 
             locked = true;
-            lenis.scrollTo(sections[next], { duration: 0.9 });
+            lenis.scrollTo(els[next], { duration: 0.9 });
 
-            window.setTimeout(() => {
-                locked = false;
-            }, 900);
+            setTimeout(() => (locked = false), 900);
         };
 
         window.addEventListener("wheel", onWheel, { passive: false });
 
         return () => {
             window.removeEventListener("wheel", onWheel);
-            cancelAnimationFrame(raf);
+            cancelAnimationFrame(rafId);
             lenis.destroy();
         };
     }, [pathname]);

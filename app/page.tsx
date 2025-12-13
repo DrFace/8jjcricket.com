@@ -193,7 +193,7 @@ export default async function HomePage() {
 
               <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
                 <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-sky-100 sm:text-sm">
-                  Featured Promotions
+                  Latest News
                 </h2>
                 <div className="overflow-hidden rounded-xl border border-white/10 bg-black/40">
                   <NewsCarousel items={newsWithImages} intervalMs={4000} />
