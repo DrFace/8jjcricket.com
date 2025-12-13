@@ -160,7 +160,7 @@ export default function UniversalSearchPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search teams, players, series, matches, news..."
-              className="w-full pl-14 pr-6 py-4 text-lg rounded-xl border-2 border-sky-200 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 outline-none transition-all"
+              className="w-full pl-14 pr-6 py-4 text-lg text-gray-900 bg-white rounded-xl border-2 border-sky-200 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 outline-none transition-all placeholder:text-gray-400"
               autoFocus
             />
           </div>
