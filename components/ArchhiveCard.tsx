@@ -26,8 +26,8 @@ export default function LiveCard({ f }: { f: Fixture }) {
             <div
                 className="
           pointer-events-none
-          absolute -inset-1 rounded-[18px]
-          opacity-0 group-hover:opacity-40
+          absolute -inset-px rounded-[18px]
+          opacity-0 group-hover:opacity-100
           transition-opacity duration-300
           bg-gradient-to-r from-amber-400/20 via-yellow-400/20 to-orange-500/20
           blur-md
