@@ -19,23 +19,24 @@ export default function LiveCard({ f }: { f: Fixture }) {
 
     return (
         <div className="relative group">
-            {/* Base card with dark glassmorphism */}
-            <div className="absolute inset-0 rounded-xl border border-white/10 bg-slate-900/60 backdrop-blur-sm shadow-lg group-hover:shadow-2xl transition-shadow" />
+            {/* Base card with dark glassmorphism and visible border */}
+            <div className="absolute inset-0 rounded-xl border-2 border-white/20 bg-slate-900/80 backdrop-blur-sm shadow-xl group-hover:border-amber-400/60 group-hover:shadow-2xl transition-all" />
 
-            {/* Amber gradient glow halo on hover */}
+            {/* Subtle amber glow on hover (outside border only) */}
             <div
                 className="
           pointer-events-none
-          absolute -inset-px rounded-[18px]
-          opacity-0 group-hover:opacity-100
+          absolute -inset-1 rounded-[18px]
+          opacity-0 group-hover:opacity-40
           transition-opacity duration-300
-          bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-500
+          bg-gradient-to-r from-amber-400/20 via-yellow-400/20 to-orange-500/20
+          blur-md
         "
             />
 
             <Link
                 href={`/match/${f.id}`}
-                className="relative z-10 block rounded-xl px-2 sm:px-3 py-3 hover:bg-white/5 transition"
+                className="relative z-10 block rounded-xl px-2 sm:px-3 py-3 transition"
             >
                 {/* Top row: title + status */}
                 <div className="flex items-start justify-between gap-3">
