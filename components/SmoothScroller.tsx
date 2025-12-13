@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 
 export default function SmoothScroller({ children }: { children: React.ReactNode }) {
+    const pathname = usePathname();
+
     useEffect(() => {
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
         if (reduceMotion.matches) return;
@@ -23,11 +26,9 @@ export default function SmoothScroller({ children }: { children: React.ReactNode
         };
         raf = requestAnimationFrame(rafLoop);
 
-        // Snap-to-section on wheel: one wheel action => next/prev [data-snap]
         let locked = false;
 
-        const getSections = () =>
-            Array.from(document.querySelectorAll<HTMLElement>("[data-snap]"));
+        const getSections = () => Array.from(document.querySelectorAll<HTMLElement>("[data-snap]"));
 
         const getActiveIndex = (sections: HTMLElement[]) => {
             const y = window.scrollY;
@@ -45,13 +46,14 @@ export default function SmoothScroller({ children }: { children: React.ReactNode
         };
 
         const onWheel = (e: WheelEvent) => {
-            // ignore tiny trackpad noise
             if (Math.abs(e.deltaY) < 8) return;
 
             const sections = getSections();
             if (sections.length === 0) return;
-
             if (locked) return;
+
+            // Prevent native scroll from competing with Lenis
+            e.preventDefault();
 
             const current = getActiveIndex(sections);
             const dir = e.deltaY > 0 ? 1 : -1;
@@ -66,14 +68,14 @@ export default function SmoothScroller({ children }: { children: React.ReactNode
             }, 900);
         };
 
-        window.addEventListener("wheel", onWheel, { passive: true });
+        window.addEventListener("wheel", onWheel, { passive: false });
 
         return () => {
             window.removeEventListener("wheel", onWheel);
             cancelAnimationFrame(raf);
             lenis.destroy();
         };
-    }, []);
+    }, [pathname]);
 
     return <>{children}</>;
 }

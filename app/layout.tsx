@@ -1,8 +1,10 @@
+// app/layout.tsx
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { SITE } from "@/lib/seo";
 import Image from "next/image";
 import Script from "next/script";
+
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -28,7 +30,12 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = { themeColor: "#0ea5e9" };
+export const viewport: Viewport = {
+  themeColor: "#0ea5e9",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

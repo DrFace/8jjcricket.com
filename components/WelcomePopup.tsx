@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
+
 export default function WelcomePopup() {
     const [open, setOpen] = useState(false);
 

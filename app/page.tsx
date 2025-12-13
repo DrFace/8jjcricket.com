@@ -6,8 +6,13 @@ import NewsCarousel from "@/components/NewsCarousel";
 import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
 import MatchCentre from "@/components/MatchCentre";
-import WelcomePopup from "@/components/WelcomePopup";
 import SmoothScroller from "@/components/SmoothScroller";
+import DesktopOnly from "@/components/DesktopOnly";
+import BottomNav from "@/components/BottomNav";
+
+
+const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), { ssr: false });
+const AnimatedText = dynamic(() => import("@/components/AnimatedText"), { ssr: false });
 
 type Article = {
   id: number;
@@ -62,8 +67,6 @@ function gameInitials(title: string) {
     .join("");
 }
 
-const AnimatedText = dynamic(() => import("@/components/AnimatedText"), { ssr: false });
-
 const DOWNLOAD_URL = "https://download.9ipl.vip/normal/";
 const BRAND_ITEMS = ["MB66", "OK9", "78win", "QQ88", "F168", "FLY88", "CM88", "OK8386", "SC88", "C168", "iP88"];
 
@@ -76,12 +79,16 @@ export default async function HomePage() {
 
   return (
     <SmoothScroller>
-      <WelcomePopup />
+      <DesktopOnly>
+        <WelcomePopup />
+      </DesktopOnly>
+      <BottomNav />
+
       <TopNav />
 
       <div className="relative">
         {/* SLIDE 1 — VIDEO (NO BG IMAGE) */}
-        <section className="sticky top-0 h-screen w-full overflow-hidden">
+        <section data-snap className="SectionScroll sticky top-0 Sh-screen w-full overflow-hidden">
           <video
             src="/homevideo.mp4"
             autoPlay
@@ -110,7 +117,7 @@ export default async function HomePage() {
         </section>
 
         {/* SLIDE 2 */}
-        <section className="sticky top-0 flex h-screen w-full items-center px-6">
+        <section data-snap className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6">
           <div className="relative h-full w-full flex items-center">
             <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url(/CricketBG.jpg)" }} />
             <div className="absolute inset-0 bg-black/70" />
@@ -146,11 +153,8 @@ export default async function HomePage() {
                         className="group flex flex-col items-center justify-center rounded-xl border border-white/15 bg-white/5 p-3 text-white shadow transition hover:border-amber-300/70 hover:bg-white/10"
                       >
                         <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-gradient-to-b from-slate-950/80 to-slate-900/80 shadow-inner">
-                          <span className="text-lg font-extrabold tracking-wide text-white/90">
-                            {gameInitials(g.title)}
-                          </span>
+                          <span className="text-lg font-extrabold tracking-wide text-white/90">{gameInitials(g.title)}</span>
                         </div>
-
                         <p className="mt-2 text-center text-[11px] font-semibold text-amber-200">{g.title}</p>
                       </Link>
                     ))}
@@ -169,7 +173,7 @@ export default async function HomePage() {
         </section>
 
         {/* SLIDE 3 */}
-        <section className="sticky top-0 flex h-screen w-full items-center px-6">
+        <section data-snap className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6">
           <div className="relative h-full w-full flex items-center">
             <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url(/CricketBG.jpg)" }} />
             <div className="absolute inset-0 bg-black/70" />
@@ -182,7 +186,7 @@ export default async function HomePage() {
 
         {/* SLIDE 4 */}
         {newsWithImages.length > 0 && (
-          <section className="sticky top-0 flex h-screen w-full items-center px-6">
+          <section data-snap className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6">
             <div className="relative h-full w-full flex items-center">
               <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url(/CricketBG.jpg)" }} />
               <div className="absolute inset-0 bg-black/70" />
