@@ -298,13 +298,13 @@ export default async function MobileHomePage() {
 
 
         {/* MATCH CENTRE */}
-        <section className="mt-5 w-full max-w-none snap-start scroll-mt-3">
+        {/* <section className="mt-5 w-full max-w-none snap-start scroll-mt-3">
           <Reveal>
             <div className="w-full max-w-none overflow-hidden rounded-xl border border-white/10 bg-white/5 p-2">
               <MatchCentre />
             </div>
           </Reveal>
-        </section>
+        </section> */}
 
         {/* NEWS */}
         {/* {newsWithImages.length > 0 && (
