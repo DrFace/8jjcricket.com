@@ -44,9 +44,9 @@ export async function GET(
       return getYear(b.name) - getYear(a.name)
     })[0]
 
-    // Fetch fixtures for the latest season
+    // Fetch fixtures using the fixtures endpoint filtered by season
     const fixturesResponse = await fetch(
-      `https://cricket.sportmonks.com/api/v2.0/seasons/${latestSeason.id}?api_token=${SPORTMONKS_API_TOKEN}&include=fixtures.localteam,fixtures.visitorteam,fixtures.venue,fixtures.runs`,
+      `https://cricket.sportmonks.com/api/v2.0/fixtures/season/${latestSeason.id}?api_token=${SPORTMONKS_API_TOKEN}&include=localteam,visitorteam,venue,runs`,
       {
         next: { revalidate: 60 }, // Cache for 1 minute (fixtures update frequently)
       }
@@ -57,7 +57,7 @@ export async function GET(
     }
 
     const fixturesData = await fixturesResponse.json()
-    const fixtures = fixturesData?.data?.fixtures?.data || []
+    const fixtures = fixturesData?.data || []
 
     return NextResponse.json(
       { data: fixtures },
