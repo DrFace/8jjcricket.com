@@ -1,34 +1,34 @@
-"use client"
+"use client";
 
-import React, { useMemo, useState } from 'react'
-import useSWR from 'swr'
-import type { Fixture } from '@/types/fixture'
-import LiveCard from '@/components/LiveCard'
-import ArchhiveCard from '@/components/ArchhiveCard'
-import BetButton from '@/components/BetButton'
-import BottomNav from '@/components/BottomNav'
+import React, { useMemo, useState } from "react";
+import useSWR from "swr";
+import type { Fixture } from "@/types/fixture";
+import LiveCard from "@/components/LiveCard";
+import ArchhiveCard from "@/components/ArchhiveCard";
+import BetButton from "@/components/BetButton";
+import BottomNav from "@/components/BottomNav";
 
 // Simple fetcher for SWR; fetches JSON from the given URL.
-const fetcher = (u: string) => fetch(u).then((r) => r.json())
+const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
 /**
  * Simple inline calendar component (copied from Upcoming/Recent template).
  */
 type CalendarProps = {
-  selectedDate: string | null
-  onSelectDate: (value: string | null) => void
-  minDate?: string
-  maxDate?: string
-}
+  selectedDate: string | null;
+  onSelectDate: (value: string | null) => void;
+  minDate?: string;
+  maxDate?: string;
+};
 
 function toDateString(date: Date) {
   // YYYY-MM-DD in local time
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  const mm = month < 10 ? `0${month}` : `${month}`
-  const dd = day < 10 ? `0${day}` : `${day}`
-  return `${year}-${mm}-${dd}`
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const mm = month < 10 ? `0${month}` : `${month}`;
+  const dd = day < 10 ? `0${day}` : `${day}`;
+  return `${year}-${mm}-${dd}`;
 }
 
 function Calendar({
@@ -37,90 +37,90 @@ function Calendar({
   minDate,
   maxDate,
 }: CalendarProps) {
-  const initialMonth = selectedDate ? new Date(selectedDate) : new Date()
+  const initialMonth = selectedDate ? new Date(selectedDate) : new Date();
   const [viewMonth, setViewMonth] = useState<Date>(
-    new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1),
-  )
+    new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1)
+  );
 
   // Bounds for disabling days (and for year dropdown range)
-  const min = minDate ? new Date(minDate) : undefined
-  const max = maxDate ? new Date(maxDate) : undefined
+  const min = minDate ? new Date(minDate) : undefined;
+  const max = maxDate ? new Date(maxDate) : undefined;
 
   const weeks = useMemo(() => {
     const startOfMonth = new Date(
       viewMonth.getFullYear(),
       viewMonth.getMonth(),
-      1,
-    )
-    const startDay = startOfMonth.getDay() // 0-6, Sunday start
-    const gridStart = new Date(startOfMonth)
-    gridStart.setDate(startOfMonth.getDate() - startDay)
+      1
+    );
+    const startDay = startOfMonth.getDay(); // 0-6, Sunday start
+    const gridStart = new Date(startOfMonth);
+    gridStart.setDate(startOfMonth.getDate() - startDay);
 
-    const days: Date[] = []
+    const days: Date[] = [];
     for (let i = 0; i < 42; i += 1) {
-      const d = new Date(gridStart)
-      d.setDate(gridStart.getDate() + i)
-      days.push(d)
+      const d = new Date(gridStart);
+      d.setDate(gridStart.getDate() + i);
+      days.push(d);
     }
 
-    const weekRows: Date[][] = []
+    const weekRows: Date[][] = [];
     for (let i = 0; i < days.length; i += 7) {
-      weekRows.push(days.slice(i, i + 7))
+      weekRows.push(days.slice(i, i + 7));
     }
 
-    return { weekRows }
-  }, [viewMonth])
+    return { weekRows };
+  }, [viewMonth]);
 
   const isDisabled = (day: Date) => {
-    if (min && day < min) return true
-    if (max && day > max) return true
-    return false
-  }
+    if (min && day < min) return true;
+    if (max && day > max) return true;
+    return false;
+  };
 
   const handleDayClick = (day: Date) => {
-    if (isDisabled(day)) return
-    const value = toDateString(day)
-    onSelectDate(value)
-  }
+    if (isDisabled(day)) return;
+    const value = toDateString(day);
+    onSelectDate(value);
+  };
 
-  const todayStr = toDateString(new Date())
+  const todayStr = toDateString(new Date());
 
   // Month + year dropdown data
-  const monthIndex = viewMonth.getMonth()
-  const yearValue = viewMonth.getFullYear()
+  const monthIndex = viewMonth.getMonth();
+  const yearValue = viewMonth.getFullYear();
 
   const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ]
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
-  const currentYear = new Date().getFullYear()
-  const startYear = min ? min.getFullYear() : currentYear - 3
-  const endYear = max ? max.getFullYear() : currentYear + 3
-  const yearOptions: number[] = []
+  const currentYear = new Date().getFullYear();
+  const startYear = min ? min.getFullYear() : currentYear - 3;
+  const endYear = max ? max.getFullYear() : currentYear + 3;
+  const yearOptions: number[] = [];
   for (let y = startYear; y <= endYear; y += 1) {
-    yearOptions.push(y)
+    yearOptions.push(y);
   }
 
   const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newMonth = Number(e.target.value)
-    setViewMonth(new Date(yearValue, newMonth, 1))
-  }
+    const newMonth = Number(e.target.value);
+    setViewMonth(new Date(yearValue, newMonth, 1));
+  };
 
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newYear = Number(e.target.value)
-    setViewMonth(new Date(newYear, monthIndex, 1))
-  }
+    const newYear = Number(e.target.value);
+    setViewMonth(new Date(newYear, monthIndex, 1));
+  };
 
   return (
     <div className="space-y-3">
@@ -131,7 +131,7 @@ function Calendar({
           className="rounded-md px-2 py-1 text-gray-500 hover:bg-gray-100"
           onClick={() =>
             setViewMonth(
-              new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1),
+              new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1)
             )
           }
         >
@@ -169,7 +169,7 @@ function Calendar({
           className="rounded-md px-2 py-1 text-gray-500 hover:bg-gray-100"
           onClick={() =>
             setViewMonth(
-              new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1),
+              new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1)
             )
           }
         >
@@ -191,10 +191,10 @@ function Calendar({
       {/* Days grid */}
       <div className="grid grid-cols-7 gap-1 text-xs">
         {weeks.weekRows.flat().map((day, idx) => {
-          const dayStr = toDateString(day)
-          const selected = selectedDate === dayStr
-          const isToday = dayStr === todayStr
-          const disabled = isDisabled(day)
+          const dayStr = toDateString(day);
+          const selected = selectedDate === dayStr;
+          const isToday = dayStr === todayStr;
+          const disabled = isDisabled(day);
 
           return (
             <button
@@ -203,19 +203,20 @@ function Calendar({
               disabled={disabled}
               onClick={() => handleDayClick(day)}
               className={[
-                'h-7 w-7 rounded-md text-center leading-7 transition',
-                'text-gray-700',
-                'hover:bg-gray-100',
-                selected && 'bg-blue-600 text-white hover:bg-blue-600',
-                disabled && 'cursor-not-allowed opacity-60 hover:bg-transparent',
-                !selected && isToday && !disabled && 'border border-blue-500',
+                "h-7 w-7 rounded-md text-center leading-7 transition",
+                "text-gray-700",
+                "hover:bg-gray-100",
+                selected && "bg-blue-600 text-white hover:bg-blue-600",
+                disabled &&
+                  "cursor-not-allowed opacity-60 hover:bg-transparent",
+                !selected && isToday && !disabled && "border border-blue-500",
               ]
                 .filter(Boolean)
-                .join(' ')}
+                .join(" ")}
             >
               {day.getDate()}
             </button>
-          )
+          );
         })}
       </div>
 
@@ -224,14 +225,14 @@ function Calendar({
         <button
           type="button"
           onClick={() => {
-            const now = new Date()
+            const now = new Date();
             const today = new Date(
               now.getFullYear(),
               now.getMonth(),
-              now.getDate(),
-            )
-            setViewMonth(new Date(today.getFullYear(), today.getMonth(), 1))
-            onSelectDate(toDateString(today))
+              now.getDate()
+            );
+            setViewMonth(new Date(today.getFullYear(), today.getMonth(), 1));
+            onSelectDate(toDateString(today));
           }}
           className="text-[11px] font-medium text-blue-600 hover:underline"
         >
@@ -246,7 +247,7 @@ function Calendar({
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 /**
@@ -254,40 +255,40 @@ function Calendar({
  * consistent light-themed styling and in-line `<title>`/`<meta>` tags for SEO.
  */
 export default function ArchivePage() {
-  const { data, error, isLoading } = useSWR('/api/recent', fetcher)
-  const title = 'Match Archive | 8jjcricket'
-  const description = 'Browse archived cricket matches with results and details.'
+  const { data, error, isLoading } = useSWR("/api/recent", fetcher);
+  const title = "Match Archive | 8jjcricket";
+  const description =
+    "Browse archived cricket matches with results and details.";
 
-  const fixtures: Fixture[] = data?.data ?? []
+  const fixtures: Fixture[] = data?.data ?? [];
 
   // Calendar / date filter state and derived data
-  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const sortedFixtures = useMemo(
     () =>
       [...fixtures].sort(
         (a, b) =>
-          new Date(a.starting_at).getTime() -
-          new Date(b.starting_at).getTime(),
+          new Date(a.starting_at).getTime() - new Date(b.starting_at).getTime()
       ),
-    [fixtures],
-  )
+    [fixtures]
+  );
 
   const minDate =
     sortedFixtures.length > 0
       ? sortedFixtures[0].starting_at.slice(0, 10)
-      : undefined
+      : undefined;
   const maxDate =
     sortedFixtures.length > 0
       ? sortedFixtures[sortedFixtures.length - 1].starting_at.slice(0, 10)
-      : undefined
+      : undefined;
 
   const filteredFixtures = useMemo(() => {
-    if (!selectedDate) return sortedFixtures
+    if (!selectedDate) return sortedFixtures;
     return sortedFixtures.filter(
-      (f) => f.starting_at.slice(0, 10) === selectedDate,
-    )
-  }, [sortedFixtures, selectedDate])
+      (f) => f.starting_at.slice(0, 10) === selectedDate
+    );
+  }, [sortedFixtures, selectedDate]);
 
   if (error) {
     return (
@@ -310,7 +311,7 @@ export default function ArchivePage() {
           </div>
         </div>
       </>
-    )
+    );
   }
 
   if (isLoading) {
@@ -362,7 +363,7 @@ export default function ArchivePage() {
           </div>
         </div>
       </>
-    )
+    );
   }
 
   if (!fixtures.length) {
@@ -387,7 +388,7 @@ export default function ArchivePage() {
           </div>
         </div>
       </>
-    )
+    );
   }
 
   return (
@@ -412,7 +413,7 @@ export default function ArchivePage() {
                   {description}
                 </p>
               </div>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center justify-between gap-2 w-full">
                 <span className="inline-flex items-center rounded-full border border-sky-200 bg-white px-3 py-1 text-xs font-medium text-sky-700 shadow-sm">
                   <span className="mr-2 h-2 w-2 rounded-full bg-emerald-500" />
                   Completed matches
@@ -441,7 +442,9 @@ export default function ArchivePage() {
         <aside className="lg:w-72">
           <div className="card space-y-4">
             <div>
-              <h2 className="text-sm font-semibold tracking-tight">Filter by date</h2>
+              <h2 className="text-sm font-semibold tracking-tight">
+                Filter by date
+              </h2>
               <p className="mt-1 text-xs text-gray-500">
                 Pick a day to see matches scheduled on that date.
               </p>
@@ -460,11 +463,11 @@ export default function ArchivePage() {
             </div>
           </div>
         </aside>
-              {/* BottomNav */}
-              <div className="w-full max-w-none">
-                <BottomNav />
-              </div>
+        {/* BottomNav */}
+        <div className="w-full max-w-none">
+          <BottomNav />
+        </div>
       </div>
     </>
-  )
+  );
 }
