@@ -19,36 +19,37 @@ export default function LiveCard({ f }: { f: Fixture }) {
 
     return (
         <div className="relative group">
-            {/* Base card with subtle border & shadow */}
-            <div className="absolute inset-0 rounded-xl border border-gray-200 bg-white shadow-sm group-hover:shadow-md transition-shadow" />
+            {/* Base card with dark glassmorphism and visible border */}
+            <div className="absolute inset-0 rounded-xl border-2 border-white/20 bg-slate-900/80 backdrop-blur-sm shadow-xl group-hover:border-amber-400/60 group-hover:shadow-2xl transition-all" />
 
-            {/* Gradient glow halo on hover */}
+            {/* Subtle amber glow on hover (outside border only) */}
             <div
                 className="
           pointer-events-none
           absolute -inset-px rounded-[18px]
           opacity-0 group-hover:opacity-100
           transition-opacity duration-300
-          bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600
+          bg-gradient-to-r from-amber-400/20 via-yellow-400/20 to-orange-500/20
+          blur-md
         "
             />
 
             <Link
                 href={`/match/${f.id}`}
-                className="relative z-10 block rounded-xl px-2 sm:px-3 py-3 hover:bg-gray-50 transition"
+                className="relative z-10 block rounded-xl px-2 sm:px-3 py-3 transition"
             >
                 {/* Top row: title + status */}
                 <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                        <h3 className="text-sm font-semibold text-gray-900 truncate">
+                        <h3 className="text-sm font-semibold text-white truncate">
                             {homeLabel} vs {awayLabel}
                         </h3>
 
-                        <p className="text-xs text-gray-600 mt-0.5">
+                        <p className="text-xs text-amber-200 mt-0.5">
                             {metaLine}
                         </p>
 
-                        <p className="text-[11px] text-gray-500 mt-0.5">
+                        <p className="text-[11px] text-sky-100/70 mt-0.5">
                             {dateLine}
                         </p>
                     </div>
@@ -57,14 +58,14 @@ export default function LiveCard({ f }: { f: Fixture }) {
                         <span
                             className={cn(
                                 'inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold',
-                                f.live ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'
+                                f.live ? 'bg-red-500/20 text-red-300 border border-red-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                             )}
                         >
-                            {f.live ? 'LIVE' : 'Not live'}
+                            {f.live ? 'LIVE' : 'Finished'}
                         </span>
 
                         {f.status && (
-                            <div className="text-[11px] text-gray-600">
+                            <div className="text-[11px] text-amber-200/80">
                                 {f.status}
                             </div>
                         )}
@@ -77,7 +78,7 @@ export default function LiveCard({ f }: { f: Fixture }) {
                         <TeamBadge team={home} className="justify-start" />
                     </div>
 
-                    <div className="px-2 text-[11px] text-gray-500 uppercase tracking-wide">
+                    <div className="px-2 text-[11px] text-amber-300 uppercase tracking-wide font-semibold">
                         vs
                     </div>
 
@@ -88,7 +89,7 @@ export default function LiveCard({ f }: { f: Fixture }) {
 
                 {/* Optional note */}
                 {f.note && (
-                    <p className="text-xs sm:text-sm mt-2 text-gray-700">
+                    <p className="text-xs sm:text-sm mt-2 text-sky-100/80">
                         {f.note}
                     </p>
                 )}
