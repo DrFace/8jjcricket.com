@@ -59,13 +59,21 @@ export default function TeamsPage() {
   
   const title = 'Cricket Teams - All International & Domestic Teams | 8jjcricket'
   const description = 'Explore cricket teams from around the world. Filter by series and leagues including ODI, T20I, Test, IPL, and more. View international and domestic cricket teams.'
-  if (error) {
+  
+  // If there's an error or no teams for selected series, fallback to all teams
+  if (error && selectedLeague !== 'all') {
+    console.log('Error loading teams for season:', selectedLeague, error)
+    // Fallback to all teams if season doesn't have teams
+    setSelectedLeague('all')
+  }
+  
+  if (error && selectedLeague === 'all') {
     return (
       <>
         <title>{title}</title>
         <meta name="description" content={description} />
         <div className="rounded-2xl border border-red-500/30 bg-black/50 backdrop-blur-xl p-8 shadow-2xl">
-          <p className="text-red-300 font-medium">Failed to load teams.</p>
+          <p className="text-red-300 font-medium">Failed to load teams. Please try again later.</p>
         </div>
       </>
     )
@@ -178,8 +186,14 @@ export default function TeamsPage() {
             <svg className="w-16 h-16 text-amber-300/50 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
-            <p className="text-white font-semibold text-lg">No teams found for this selection</p>
-            <p className="text-sm text-sky-100/70 mt-3 max-w-md mx-auto">Try selecting a different series or league from the dropdown above</p>
+            <p className="text-white font-medium mb-2">No teams found for this selection</p>
+            <p className="text-sm text-sky-100/70 mb-4">The selected series may not have team data available yet</p>
+            <button
+              onClick={() => setSelectedLeague('all')}
+              className="px-4 py-2 bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-medium rounded-lg hover:brightness-110 transition-all shadow-lg"
+            >
+              View All Teams
+            </button>
           </div>
         ) : (
           <>
