@@ -9,17 +9,17 @@ export async function GET(
   try {
     const { id } = params
 
-    if (!id) {
+    if (!id || id === 'null' || id === 'undefined') {
       return NextResponse.json(
-        { error: 'League ID is required' },
+        { error: 'Valid season ID is required' },
         { status: 400 }
       )
     }
 
     const response = await fetch(
-      `https://cricket.sportmonks.com/api/v2.0/leagues/${id}?api_token=${SPORTMONKS_API_TOKEN}&include=fixtures.localteam,fixtures.visitorteam,fixtures.venue,fixtures.runs`,
+      `https://cricket.sportmonks.com/api/v2.0/seasons/${id}?api_token=${SPORTMONKS_API_TOKEN}&include=venues`,
       {
-        next: { revalidate: 60 }, // Cache for 1 minute (fixtures update frequently)
+        next: { revalidate: 3600 }, // Cache for 1 hour (venues don't change often)
       }
     )
 
@@ -29,21 +29,21 @@ export async function GET(
 
     const data = await response.json()
 
-    // Extract fixtures from the league data
-    const fixtures = data?.data?.fixtures?.data || []
+    // Extract venues from the season data
+    const venues = data?.data?.venues?.data || []
 
     return NextResponse.json(
-      { data: fixtures },
+      { data: venues },
       {
         headers: {
-          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+          'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=7200',
         },
       }
     )
   } catch (error) {
-    console.error('Error fetching league fixtures:', error)
+    console.error('Error fetching season venues:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch league fixtures' },
+      { error: 'Failed to fetch season venues' },
       { status: 500 }
     )
   }
