@@ -10,6 +10,8 @@ import SmoothScroller from "@/components/SmoothScroller";
 import DesktopOnly from "@/components/DesktopOnly";
 import BottomNav from "@/components/BottomNav";
 import HomeVerticalSwiper from "@/components/HomeVerticalSwiper";
+import HomeGalleryShowcase from "@/components/HomeGalleryShowcase";
+
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), { ssr: false });
 const AnimatedText = dynamic(() => import("@/components/AnimatedText"), { ssr: false });
@@ -121,6 +123,20 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
+        
+        {/* SLIDE — GALLERY SHOWCASE */}
+        <section data-snap className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6">
+          <div className="relative h-full w-full flex items-center">
+            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url(/CricketBG.jpg)" }} />
+            <div className="absolute inset-0 bg-black/70" />
+
+            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
+              <HomeGalleryShowcase />
+            </div>
+          </div>
+        </section>
+
 
         {/* SLIDE 2 */}
         <section data-snap className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6">
