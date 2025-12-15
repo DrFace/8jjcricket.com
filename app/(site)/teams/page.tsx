@@ -55,17 +55,25 @@ export default function TeamsPage() {
     ? '/api/teams' 
     : `/api/seasons/${selectedLeague}/teams`
   
-  const { data, error, isLoading } = useSWR(teamsUrl, fetcher)
+  const { data, error, isLoading } = useSWR(teamsUrl, fetcher, {
+    revalidateOnFocus: false,
+    shouldRetryOnError: false
+  })
   
   const title = 'Cricket Teams - All International & Domestic Teams | 8jjcricket'
   const description = 'Explore cricket teams from around the world. Filter by series and leagues including ODI, T20I, Test, IPL, and more. View international and domestic cricket teams.'
   
-  // If there's an error or no teams for selected series, fallback to all teams
-  if (error && selectedLeague !== 'all') {
-    console.log('Error loading teams for season:', selectedLeague, error)
-    // Fallback to all teams if season doesn't have teams
-    setSelectedLeague('all')
-  }
+  // Debug logging
+  useEffect(() => {
+    console.log('Teams Page Debug:', {
+      seriesParam,
+      selectedLeague,
+      teamsUrl,
+      hasData: !!data,
+      hasError: !!error,
+      teamsCount: data?.data?.length || 0
+    })
+  }, [seriesParam, selectedLeague, teamsUrl, data, error])
   
   if (error && selectedLeague === 'all') {
     return (
@@ -158,13 +166,13 @@ export default function TeamsPage() {
                     backgroundSize: '1.5em 1.5em'
                   }}
                 >
-                  <option value="all"> Series/League</option>
-                  <option disabled>─────────────────</option>
+                  <option value="all">All Teams - All Series/Leagues</option>
+                  <option disabled>────────────────────────────</option>
                   {leagues.map((league) => {
                     const seasonId = getLatestSeasonId(league)
                     return seasonId ? (
                       <option key={league.id} value={seasonId}>
-                        🏆 {league.name}
+                        {league.name} - {league.code}
                       </option>
                     ) : null
                   })}
