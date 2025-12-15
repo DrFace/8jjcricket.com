@@ -64,20 +64,22 @@ export default function TeamsPage() {
       <>
         <title>{title}</title>
         <meta name="description" content={description} />
-        <div className="card">Failed to load teams.</div>
+        <div className="rounded-2xl border border-red-500/30 bg-black/50 backdrop-blur-xl p-8 shadow-2xl">
+          <p className="text-red-300 font-medium">Failed to load teams.</p>
+        </div>
       </>
     )
   }
-  if (isLoading || leaguesLoading) {
+  if (isLoading) {
     return (
       <>
         <title>{title}</title>
         <meta name="description" content={description} />
         <div className="space-y-6">
-          <div className="h-10 bg-gray-200 rounded w-64 animate-pulse"></div>
+          <div className="h-24 bg-slate-900/80 border border-white/20 rounded-3xl animate-pulse backdrop-blur-xl"></div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {[...Array(10)].map((_, i) => (
-              <div key={i} className="h-20 bg-gray-200 rounded-lg animate-pulse"></div>
+              <div key={i} className="h-20 bg-slate-900/80 border border-white/20 rounded-2xl animate-pulse backdrop-blur-xl"></div>
             ))}
           </div>
         </div>
@@ -172,12 +174,12 @@ export default function TeamsPage() {
 
         {/* Teams Display */}
         {teams.length === 0 ? (
-          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border-2 border-dashed border-gray-300 p-12 text-center shadow-inner">
-            <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-12 text-center shadow-2xl">
+            <svg className="w-16 h-16 text-amber-300/50 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
-            <p className="text-gray-700 font-semibold text-lg">No teams found for this selection</p>
-            <p className="text-sm text-gray-500 mt-3 max-w-md mx-auto">Try selecting a different series or league from the dropdown above</p>
+            <p className="text-white font-semibold text-lg">No teams found for this selection</p>
+            <p className="text-sm text-sky-100/70 mt-3 max-w-md mx-auto">Try selecting a different series or league from the dropdown above</p>
           </div>
         ) : (
           <>
@@ -186,8 +188,8 @@ export default function TeamsPage() {
         {national.length > 0 && (
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <h2 className="text-2xl font-bold text-gray-900">International Teams</h2>
-              <span className="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-semibold rounded-full">
+              <h2 className="text-2xl font-bold text-amber-300">International Teams</h2>
+              <span className="px-3 py-1 bg-amber-950/50 text-amber-300 text-sm font-semibold rounded-full border border-amber-400/30">
                 {national.length}
               </span>
             </div>
@@ -195,16 +197,16 @@ export default function TeamsPage() {
               {national.map((t) => (
                 <div
                   key={t.id}
-                  className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm hover:shadow-lg hover:border-blue-300 transition-all duration-200 cursor-pointer hover:-translate-y-0.5"
+                  className="flex items-center gap-3 rounded-2xl border border-white/20 bg-slate-900/80 backdrop-blur-xl p-3 shadow-lg hover:shadow-[0_10px_30px_rgba(251,191,36,0.15)] hover:border-amber-400/50 transition-all duration-200 cursor-pointer hover:-translate-y-0.5"
                 >
                   <Image
                     src={t.image_path}
                     alt={t.name}
                     width={36}
                     height={36}
-                    className="object-contain rounded-full ring-2 ring-gray-100"
+                    className="object-contain rounded-full ring-2 ring-white/20"
                   />
-                    <span className="font-semibold text-gray-900">{t.name}</span>
+                    <span className="font-semibold text-white">{t.name}</span>
                 </div>
               ))}
             </div>
@@ -214,28 +216,28 @@ export default function TeamsPage() {
         {domesticLimited.length > 0 && (
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <h2 className="text-2xl font-bold text-gray-900">Domestic Teams</h2>
-              <span className="px-3 py-1 bg-cyan-100 text-cyan-700 text-sm font-semibold rounded-full">
+              <h2 className="text-2xl font-bold text-amber-300">Domestic Teams</h2>
+              <span className="px-3 py-1 bg-amber-950/50 text-amber-300 text-sm font-semibold rounded-full border border-amber-400/30">
                 {domesticLimited.length}
               </span>
             </div>
-            <p className="text-sm text-gray-600 mb-4 bg-gray-50 border-l-4 border-gray-300 pl-4 py-2 rounded">
+            <p className="text-sm text-sky-100/70 mb-4 bg-black/30 border-l-4 border-amber-400/50 pl-4 py-2 rounded backdrop-blur-sm">
               📋 Showing top {domesticLimited.length} domestic teams. Many more available via API.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {domesticLimited.map((t) => (
                 <div
                   key={t.id}
-                  className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all duration-200 cursor-pointer hover:-translate-y-0.5"
+                  className="flex items-center gap-3 rounded-2xl border border-white/20 bg-slate-900/80 backdrop-blur-xl p-3 shadow-lg hover:shadow-[0_10px_30px_rgba(251,191,36,0.15)] hover:border-amber-400/50 transition-all duration-200 cursor-pointer hover:-translate-y-0.5"
                 >
                   <Image
                     src={t.image_path}
                     alt={t.name}
                     width={32}
                     height={32}
-                    className="object-contain rounded-full ring-2 ring-gray-100"
+                    className="object-contain rounded-full ring-2 ring-white/20"
                   />
-                  <span className="font-semibold text-gray-900 truncate">{t.name}</span>
+                  <span className="font-semibold text-white truncate">{t.name}</span>
                 </div>
               ))}
             </div>

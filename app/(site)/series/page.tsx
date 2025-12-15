@@ -182,7 +182,7 @@ export default function SeriesPage() {
       
       <div className="space-y-6">
         {/* Tabs */}
-        <div className="bg-white border-b border-gray-200">
+        <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl shadow-2xl overflow-hidden">
           <div className="flex overflow-x-auto">
             {tabs.map((tab) => (
               <button
@@ -190,8 +190,8 @@ export default function SeriesPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-6 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
                   activeTab === tab.id
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                    ? 'border-amber-400 text-amber-300 bg-amber-950/30'
+                    : 'border-transparent text-sky-100/70 hover:text-white hover:bg-white/5'
                 }`}
               >
                 {tab.label}
@@ -204,16 +204,17 @@ export default function SeriesPage() {
         {activeTab === 'series' && (
           <>
             {/* Page Title & Description */}
-            <div className="space-y-2">
-              <h1 className="text-3xl font-bold text-gray-900">Series & Leagues</h1>
-              <p className="text-gray-600">Explore major cricket leagues and tournaments.</p>
+            <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
+              <p className="text-xs font-semibold tracking-[0.18em] text-amber-400">8JJCRICKET · SERIES</p>
+              <h1 className="mt-2 text-3xl font-bold text-white">Series & Leagues</h1>
+              <p className="mt-2 text-sky-100/90">Explore major cricket leagues and tournaments.</p>
             </div>
 
             {/* Series Grid - Card Layout like screenshot */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {sortedLeagues.length === 0 ? (
-                <div className="col-span-full bg-white rounded-lg border border-gray-200 p-8 text-center">
-                  <p className="text-gray-600">No current or upcoming series found.</p>
+                <div className="col-span-full rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-8 text-center shadow-2xl">
+                  <p className="text-sky-100/80">No current or upcoming series found.</p>
                 </div>
               ) : (
                 sortedLeagues.map((league) => {
@@ -221,13 +222,13 @@ export default function SeriesPage() {
                   return (
                   <div
                     key={league.id}
-                    className={`bg-white rounded-lg border p-6 hover:shadow-xl hover:-translate-y-1 hover:scale-105 transition-all duration-300 flex flex-col items-center text-center group relative cursor-pointer ${
-                      isActive ? 'border-blue-500 ring-2 ring-blue-100' : 'border-gray-200 hover:border-blue-300'
+                    className={`rounded-lg border p-6 hover:shadow-[0_20px_50px_rgba(251,191,36,0.2)] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center group relative cursor-pointer backdrop-blur-xl ${
+                      isActive ? 'border-amber-400/60 bg-slate-900/90 ring-2 ring-amber-400/20' : 'border-white/20 bg-slate-900/80 hover:border-amber-400/40'
                     }`}
                   >
                     {/* Active Badge */}
                     {isActive && (
-                      <span className="absolute top-2 right-2 px-2 py-0.5 bg-blue-500 text-white text-xs font-bold rounded-full">
+                      <span className="absolute top-2 right-2 px-2 py-0.5 bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black text-xs font-bold rounded-full">
                         LIVE
                       </span>
                     )}
@@ -241,19 +242,19 @@ export default function SeriesPage() {
                           className="max-w-full max-h-full object-contain"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                        <div className="w-full h-full bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center text-black font-bold text-xl shadow-lg">
                           {league.code.substring(0, 2).toUpperCase()}
                         </div>
                       )}
                     </div>
                     
                     {/* League Name */}
-                    <h3 className="font-medium text-gray-900 text-sm line-clamp-2 mb-1">
+                    <h3 className="font-medium text-white text-sm line-clamp-2 mb-1">
                       {league.name}
                     </h3>
                     
                     {/* League Code */}
-                    <p className="text-xs text-gray-500 uppercase font-medium mb-3">
+                    <p className="text-xs text-amber-200/80 uppercase font-medium mb-3">
                       {league.code}
                     </p>
                     
@@ -261,13 +262,13 @@ export default function SeriesPage() {
                     <div className="flex gap-2 mt-auto w-full">
                       <Link
                         href={`/series/${league.id}`}
-                        className="flex-1 px-3 py-1.5 text-xs font-medium text-blue-600 border border-blue-600 rounded hover:bg-blue-50 transition-colors"
+                        className="flex-1 px-3 py-1.5 text-xs font-medium text-amber-300 border border-amber-400/50 rounded hover:bg-amber-950/40 transition-colors backdrop-blur-sm"
                       >
                         Details
                       </Link>
                       <Link
                         href={`/teams?series=${getLatestSeasonId(league)}`}
-                        className="flex-1 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors"
+                        className="flex-1 px-3 py-1.5 text-xs font-medium text-black bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 rounded hover:brightness-110 transition-all shadow-lg"
                       >
                         Teams
                       </Link>
@@ -281,13 +282,13 @@ export default function SeriesPage() {
 
         {/* Current Matches Tab */}
         {activeTab === 'current' && (
-          <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-            <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-8 text-center shadow-2xl">
+            <svg className="w-16 h-16 text-amber-300/50 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Live Matches</h3>
-            <p className="text-gray-600">Check the home page for live cricket matches</p>
-            <Link href="/" className="inline-block mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+            <h3 className="text-lg font-medium text-white mb-2">Live Matches</h3>
+            <p className="text-sky-100/80">Check the home page for live cricket matches</p>
+            <Link href="/" className="inline-block mt-4 px-4 py-2 bg-gradient-to-r from-emerald-400 to-emerald-500 text-black font-medium rounded-lg hover:brightness-110 transition-all shadow-lg">
               View Live Matches
             </Link>
           </div>

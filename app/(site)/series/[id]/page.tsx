@@ -168,11 +168,11 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
   if (error) {
     return (
       <div className="space-y-4">
-        <Link href="/series" className="text-blue-600 hover:underline text-sm">
+        <Link href="/series" className="text-amber-400 hover:text-amber-300 text-sm font-medium">
           ← Back to Series
         </Link>
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          Failed to load series details. Please try again later.
+        <div className="rounded-2xl border border-red-500/30 bg-black/50 backdrop-blur-xl p-6 shadow-2xl">
+          <p className="text-red-300 font-medium">Failed to load series details. Please try again later.</p>
         </div>
       </div>
     )
@@ -182,10 +182,10 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
     return (
       <div className="space-y-4">
         <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-32 mb-6"></div>
-          <div className="h-10 bg-gray-200 rounded w-full mb-4"></div>
-          <div className="h-12 bg-gray-200 rounded w-full mb-6"></div>
-          <div className="h-64 bg-gray-200 rounded"></div>
+          <div className="h-4 bg-slate-900/80 border border-white/20 rounded w-32 mb-6 backdrop-blur-xl"></div>
+          <div className="h-24 bg-slate-900/80 border border-white/20 rounded-3xl mb-4 backdrop-blur-xl"></div>
+          <div className="h-12 bg-slate-900/80 border border-white/20 rounded-2xl mb-6 backdrop-blur-xl"></div>
+          <div className="h-64 bg-slate-900/80 border border-white/20 rounded-2xl backdrop-blur-xl"></div>
         </div>
       </div>
     )
@@ -194,10 +194,10 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
   if (!leagueData) {
     return (
       <div className="space-y-4">
-        <Link href="/series" className="text-blue-600 hover:underline text-sm">
+        <Link href="/series" className="text-amber-400 hover:text-amber-300 text-sm font-medium">
           ← Back to Series
         </Link>
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-6 shadow-2xl">
           Series not found.
         </div>
       </div>
@@ -257,14 +257,14 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
       
       <div className="space-y-6">
         {/* Series Header */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 p-6 shadow-2xl backdrop-blur-xl">
           <div className="flex items-start gap-4 mb-4">
             <button
               onClick={() => window.history.back()}
-              className="flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full transition-all duration-300 hover:scale-110 group shadow-sm flex-shrink-0"
+              className="flex items-center justify-center w-10 h-10 bg-black/40 hover:bg-amber-950/60 border border-amber-400/30 rounded-full transition-all duration-300 hover:scale-110 group shadow-lg backdrop-blur-sm flex-shrink-0"
               aria-label="Go back"
             >
-              <svg className="w-5 h-5 text-gray-700 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-amber-300 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
@@ -278,10 +278,10 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
               />
             )}
             <div className="flex-1">
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
                 {leagueData.name}
               </h1>
-              <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
+              <div className="flex flex-wrap items-center gap-3 text-sm text-sky-100/80">
                 {currentSeason && (
                   <>
                     <span>{currentSeason.name}</span>
@@ -294,7 +294,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
           </div>
 
           {/* Tabs */}
-          <div className="border-t border-gray-200 -mx-6 px-6 mt-4">
+          <div className="border-t border-white/20 -mx-6 px-6 mt-4">
             <div className="flex overflow-x-auto -mx-6 px-6">
               {seriesTabs.map((tab) => (
                 <button
@@ -302,8 +302,8 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
                     activeTab === tab.id
-                      ? 'border-blue-600 text-blue-600'
-                      : 'border-transparent text-gray-600 hover:text-gray-900'
+                      ? 'border-amber-400 text-amber-300 bg-amber-950/30'
+                      : 'border-transparent text-sky-100/70 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   {tab.label}
@@ -314,7 +314,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl overflow-hidden shadow-2xl">
           {/* Home Tab */}
           {activeTab === 'home' && (
             <div className="p-6 space-y-8">
