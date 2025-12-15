@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Activity, Gamepad2, Newspaper, CalendarClock } from "lucide-react";
+import { Home, Activity, Gamepad2, Newspaper, CalendarClock, UserCircle } from "lucide-react";
 
 type Item = {
     href: string;
@@ -16,7 +16,7 @@ export const navItems: Item[] = [
     { href: "/sponsor", label: "Live score", Icon: Activity },
     { href: "/gameshow", label: "Games", Icon: Gamepad2 },
     { href: "/feedback", label: "News", Icon: Newspaper },
-    { href: "/account", label: "Upcoming", Icon: CalendarClock },
+    { href: "/account", label: "Profile", Icon: UserCircle },
 ];
 
 export default function BottomNav() {
