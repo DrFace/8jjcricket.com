@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const SPORTMONKS_API_TOKEN = process.env.NEXT_PUBLIC_SPORTMONKS_API_TOKEN
+const SPORTMONKS_TOKEN = process.env.SPORTMONKS_TOKEN || ''
 
 export async function GET(
   request: NextRequest,
@@ -17,7 +17,7 @@ export async function GET(
     }
 
     const response = await fetch(
-      `https://cricket.sportmonks.com/api/v2.0/leagues/${id}?api_token=${SPORTMONKS_API_TOKEN}&include=fixtures.localteam,fixtures.visitorteam,fixtures.venue,fixtures.runs`,
+      `https://cricket.sportmonks.com/api/v2.0/leagues/${id}?api_token=${SPORTMONKS_TOKEN}&include=fixtures.localteam,fixtures.visitorteam,fixtures.venue,fixtures.runs`,
       {
         next: { revalidate: 60 }, // Cache for 1 minute (fixtures update frequently)
       }
