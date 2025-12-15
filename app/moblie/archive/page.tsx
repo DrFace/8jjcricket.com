@@ -6,6 +6,7 @@ import type { Fixture } from '@/types/fixture'
 import LiveCard from '@/components/LiveCard'
 import ArchhiveCard from '@/components/ArchhiveCard'
 import BetButton from '@/components/BetButton'
+import BottomNav from '@/components/BottomNav'
 
 // Simple fetcher for SWR; fetches JSON from the given URL.
 const fetcher = (u: string) => fetch(u).then((r) => r.json())
@@ -459,6 +460,10 @@ export default function ArchivePage() {
             </div>
           </div>
         </aside>
+              {/* BottomNav */}
+              <div className="w-full max-w-none">
+                <BottomNav />
+              </div>
       </div>
     </>
   )
