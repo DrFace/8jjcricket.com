@@ -1,14 +1,14 @@
 "use client"
 
-import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
-import useSWR from 'swr'
-import Image from 'next/image'
-import Link from 'next/link'
+import React, { Suspense, useEffect, useState } from "react"
+import { useSearchParams } from "next/navigation"
+import useSWR from "swr"
+import Image from "next/image"
+import Link from "next/link"
 
 interface SearchResult {
   id: number
-  type: 'team' | 'player' | 'series' | 'match' | 'news'
+  type: "team" | "player" | "series" | "match" | "news"
   title: string
   subtitle?: string
   image?: string
@@ -18,20 +18,31 @@ interface SearchResult {
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 export default function UniversalSearchPage() {
+  // ✅ Required: wrap the component that uses useSearchParams in Suspense
+  return (
+    <Suspense fallback={null}>
+      <SearchInner />
+    </Suspense>
+  )
+}
+
+function SearchInner() {
   const searchParams = useSearchParams()
-  const queryParam = searchParams.get('q') || ''
-  
+  const queryParam = searchParams.get("q") || ""
+
   const [query, setQuery] = useState(queryParam)
-  const [activeTab, setActiveTab] = useState<'all' | 'teams' | 'players' | 'matches' | 'series' | 'news'>('all')
+  const [activeTab, setActiveTab] = useState<
+    "all" | "teams" | "players" | "matches" | "series" | "news"
+  >("all")
   const [results, setResults] = useState<SearchResult[]>([])
   const [isSearching, setIsSearching] = useState(false)
 
   // Fetch data for search
-  const { data: teamsData } = useSWR('/api/teams', fetcher)
-  const { data: playersData } = useSWR('/api/players', fetcher)
-  const { data: seriesData } = useSWR('/api/leagues', fetcher)
-  const { data: matchesData } = useSWR('/api/live', fetcher)
-  const { data: newsData } = useSWR('/api/news', fetcher)
+  const { data: teamsData } = useSWR("/api/teams", fetcher)
+  const { data: playersData } = useSWR("/api/players", fetcher)
+  const { data: seriesData } = useSWR("/api/leagues", fetcher)
+  const { data: matchesData } = useSWR("/api/live", fetcher)
+  const { data: newsData } = useSWR("/api/news", fetcher)
 
   useEffect(() => {
     if (!query.trim()) {
@@ -46,17 +57,18 @@ export default function UniversalSearchPage() {
     // Search Teams
     if (teamsData?.data) {
       const teamResults = teamsData.data
-        .filter((team: any) => 
-          team.name?.toLowerCase().includes(searchQuery) ||
-          team.code?.toLowerCase().includes(searchQuery)
+        .filter(
+          (team: any) =>
+            team.name?.toLowerCase().includes(searchQuery) ||
+            team.code?.toLowerCase().includes(searchQuery),
         )
         .map((team: any) => ({
           id: team.id,
-          type: 'team' as const,
+          type: "team" as const,
           title: team.name,
           subtitle: team.code,
           image: team.image_path,
-          link: `/teams`
+          link: `/teams`,
         }))
       allResults.push(...teamResults)
     }
@@ -64,18 +76,19 @@ export default function UniversalSearchPage() {
     // Search Players
     if (playersData?.data) {
       const playerResults = playersData.data
-        .filter((player: any) => 
-          player.fullname?.toLowerCase().includes(searchQuery) ||
-          player.firstname?.toLowerCase().includes(searchQuery) ||
-          player.lastname?.toLowerCase().includes(searchQuery)
+        .filter(
+          (player: any) =>
+            player.fullname?.toLowerCase().includes(searchQuery) ||
+            player.firstname?.toLowerCase().includes(searchQuery) ||
+            player.lastname?.toLowerCase().includes(searchQuery),
         )
         .map((player: any) => ({
           id: player.id,
-          type: 'player' as const,
+          type: "player" as const,
           title: player.fullname || `${player.firstname} ${player.lastname}`,
-          subtitle: player.position?.name || 'Player',
+          subtitle: player.position?.name || "Player",
           image: player.image_path,
-          link: `/players/${player.id}`
+          link: `/players/${player.id}`,
         }))
       allResults.push(...playerResults)
     }
@@ -83,15 +96,15 @@ export default function UniversalSearchPage() {
     // Search Series
     if (seriesData?.data) {
       const seriesResults = seriesData.data
-        .filter((series: any) => 
-          series.name?.toLowerCase().includes(searchQuery)
+        .filter((series: any) =>
+          series.name?.toLowerCase().includes(searchQuery),
         )
         .map((series: any) => ({
           id: series.id,
-          type: 'series' as const,
+          type: "series" as const,
           title: series.name,
-          subtitle: 'Series',
-          link: `/series`
+          subtitle: "Series",
+          link: `/series`,
         }))
       allResults.push(...seriesResults)
     }
@@ -99,17 +112,18 @@ export default function UniversalSearchPage() {
     // Search News
     if (newsData?.data) {
       const newsResults = newsData.data
-        .filter((news: any) => 
-          news.title?.toLowerCase().includes(searchQuery) ||
-          news.description?.toLowerCase().includes(searchQuery)
+        .filter(
+          (news: any) =>
+            news.title?.toLowerCase().includes(searchQuery) ||
+            news.description?.toLowerCase().includes(searchQuery),
         )
         .map((news: any) => ({
           id: news.id,
-          type: 'news' as const,
+          type: "news" as const,
           title: news.title,
           subtitle: news.published_at,
           image: news.image_path,
-          link: `/news/${news.slug}`
+          link: `/news/${news.slug}`,
         }))
       allResults.push(...newsResults)
     }
@@ -118,24 +132,25 @@ export default function UniversalSearchPage() {
     setIsSearching(false)
   }, [query, teamsData, playersData, seriesData, matchesData, newsData])
 
-  const filteredResults = activeTab === 'all' 
-    ? results 
-    : results.filter(r => r.type === activeTab.slice(0, -1))
+  const filteredResults =
+    activeTab === "all"
+      ? results
+      : results.filter((r) => r.type === activeTab.slice(0, -1))
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'team':
-        return '🏏'
-      case 'player':
-        return '👤'
-      case 'series':
-        return '🏆'
-      case 'match':
-        return '⚡'
-      case 'news':
-        return '📰'
+      case "team":
+        return "🏏"
+      case "player":
+        return "👤"
+      case "series":
+        return "🏆"
+      case "match":
+        return "⚡"
+      case "news":
+        return "📰"
       default:
-        return '🔍'
+        return "🔍"
     }
   }
 
@@ -147,12 +162,22 @@ export default function UniversalSearchPage() {
           <h1 className="text-3xl md:text-4xl font-bold text-white text-center mb-6">
             Universal Search
           </h1>
-          
+
           {/* Search Input */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-5 pointer-events-none">
-              <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg
+                className="w-6 h-6 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
             </div>
             <input
@@ -168,7 +193,8 @@ export default function UniversalSearchPage() {
           {/* Quick Stats */}
           {query && (
             <div className="mt-4 text-center text-white/90 text-sm">
-              Found <span className="font-bold text-white">{results.length}</span> results
+              Found <span className="font-bold text-white">{results.length}</span>{" "}
+              results
             </div>
           )}
         </div>
@@ -177,18 +203,18 @@ export default function UniversalSearchPage() {
       {/* Filter Tabs */}
       {query && (
         <div className="flex gap-2 overflow-x-auto pb-2">
-          {['all', 'teams', 'players', 'series', 'news'].map((tab) => (
+          {["all", "teams", "players", "series", "news"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab as any)}
-              className={`px-5 py-2.5 rounded-xl font-semibold text-sm whitespace-nowrap transition-all ${
-                activeTab === tab
-                  ? 'bg-blue-600 text-white shadow-lg'
-                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-              }`}
+              className={`px-5 py-2.5 rounded-xl font-semibold text-sm whitespace-nowrap transition-all ${activeTab === tab
+                  ? "bg-blue-600 text-white shadow-lg"
+                  : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
+                }`}
             >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)} 
-              {tab !== 'all' && ` (${results.filter(r => r.type === tab.slice(0, -1)).length})`}
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {tab !== "all" &&
+                ` (${results.filter((r) => r.type === tab.slice(0, -1)).length})`}
             </button>
           ))}
         </div>
@@ -198,21 +224,36 @@ export default function UniversalSearchPage() {
       <div>
         {!query ? (
           <div className="text-center py-16">
-            <svg className="w-20 h-20 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <svg
+              className="w-20 h-20 text-gray-300 mx-auto mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
             <p className="text-gray-600 text-lg font-medium">Start typing to search</p>
-            <p className="text-gray-500 text-sm mt-2">Search across teams, players, series, matches, and news</p>
+            <p className="text-gray-500 text-sm mt-2">
+              Search across teams, players, series, matches, and news
+            </p>
           </div>
         ) : isSearching ? (
           <div className="space-y-3">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="bg-white rounded-xl p-4 border border-gray-200 animate-pulse">
+              <div
+                key={i}
+                className="bg-white rounded-xl p-4 border border-gray-200 animate-pulse"
+              >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+                  <div className="w-12 h-12 bg-gray-200 rounded-lg" />
                   <div className="flex-1">
-                    <div className="h-5 bg-gray-200 rounded w-1/3 mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                    <div className="h-5 bg-gray-200 rounded w-1/3 mb-2" />
+                    <div className="h-4 bg-gray-200 rounded w-1/4" />
                   </div>
                 </div>
               </div>
@@ -220,8 +261,18 @@ export default function UniversalSearchPage() {
           </div>
         ) : filteredResults.length === 0 ? (
           <div className="text-center py-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300">
-            <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-16 h-16 text-gray-300 mx-auto mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             <p className="text-gray-700 font-semibold text-lg">No results found</p>
             <p className="text-gray-500 text-sm mt-2">Try different keywords or check spelling</p>
@@ -266,8 +317,18 @@ export default function UniversalSearchPage() {
                   </div>
 
                   {/* Arrow */}
-                  <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <svg
+                    className="w-5 h-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                 </div>
               </Link>
