@@ -398,25 +398,25 @@ export default function ArchivePage() {
         {/* LEFT: existing archive header + grid */}
         <main className="flex-1 space-y-6">
           {/* Dark header / hero */}
-          <div className="rounded-3xl border border-white/80 bg-slate-800/90 px-6 py-5 shadow-2xl backdrop-blur-xl">
+          <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold tracking-[0.18em] text-amber-300">
+                <p className="text-xs font-semibold tracking-[0.18em] text-amber-400">
                   8JJCRICKET · ARCHIVE
                 </p>
                 <h1 className="mt-2 text-2xl md:text-3xl font-semibold text-white">
                   Archive
                 </h1>
-                <p className="mt-2 text-sm md:text-base text-sky-100/80 max-w-xl">
+                <p className="mt-2 text-sm md:text-base text-sky-100/90 max-w-xl">
                   {description}
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center rounded-full border border-white/20 bg-black/40 backdrop-blur-sm px-3 py-1 text-xs font-medium text-emerald-300 shadow-sm">
-                  <span className="mr-2 h-2 w-2 rounded-full bg-emerald-500" />
+                <span className="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-950/40 backdrop-blur-sm px-3 py-1 text-xs font-medium text-emerald-300 shadow-sm">
+                  <span className="mr-2 h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
                   Completed matches
                 </span>
-                <span className="inline-flex items-center rounded-full border border-white/20 bg-black/40 backdrop-blur-sm px-3 py-1 text-xs font-medium text-amber-200 shadow-sm">
+                <span className="inline-flex items-center rounded-full border border-amber-400/30 bg-amber-950/40 backdrop-blur-sm px-3 py-1 text-xs font-medium text-amber-300 shadow-sm">
                   🏏 All formats
                 </span>
               </div>
