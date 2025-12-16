@@ -16,14 +16,14 @@ export default function MobileMinigameCard({ slug, title, desc, icon }: Props) {
       className="group block h-full rounded-3xl border-2 border-yellow-100 bg-slate-900/80 px-4 py-2 shadow-sm transition hover:-translate-y-0.5 hover:border-3 border-yellow-200 hover:shadow-md hover:border-yellow-400 hover:shadow-yellow-400/50 hover:animate-pulse"
     >
       <div className="flex items-start justify-between gap-2 w-full  h-full">
-        <div className="flex items-start justify-between gap-2 w-full  h-full">
-          <div className="w-3/5  h-full pt-2">
+        <div className="flex items-start justify-between gap-2 w-full  h-full pt-1">
+          <div className="w-3/5  h-full">
             <h3 className="text-base font-semibold text-white group-hover:text-yellow-600">
               {title}
             </h3>
             <p className="mt-1 text-sm text-yellow-100">{desc}</p>
             <div className="">
-              <p className="mt-3 inline-flex text-xs font-semibold text-yellow-400 group-hover:text-blue-500">
+              <p className="mt-3 inline-flex text-xs font-semibold text-yellow-400 group-hover:text-fuchsia-500">
                 Start Game
                 <svg
                   className="ml-1 h-5 w-5"

@@ -7,12 +7,12 @@ export const metadata: Metadata = {
 }
 
 const GAMES = [
-  { slug: 'stickman-quest', title: 'Stickman Quest', desc: 'Dash, slash, and level up.', icon: "/games/stick-man.png" }, // 👈 add this
-  { slug: 'tictactoe', title: 'Tic Tac Toe', desc: 'Classic 3×3 duel.', icon: "/games/stick-man.png" },
-  { slug: 'numberguess', title: 'Number Guess', desc: 'Hot or cold 1–100.', icon: "/games/stick-man.png" },
-  { slug: 'flappysquare', title: 'Flappy Square', desc: 'Click to fly!', icon: "/games/stick-man.png" },
-  { slug: 'cricket-superover', title: 'Cricket Super Over', desc: '6 balls, pure timing — hit for 6s!', icon: "/games/stick-man.png" }, // ✅ new game
-  { slug: 'cricket-legends', title: 'Cricket Legends', desc: 'Career mode with levels & characters.', icon: "/games/stick-man.png" }
+  { slug: 'stickman-quest', title: 'Stickman Quest', desc: 'Dash, slash, and level up.', icon: "/games/stick-game.png" }, // 👈 add this
+  { slug: 'tictactoe', title: 'Tic Tac Toe', desc: 'Classic 3×3 duel.', icon: "/games/tictac-game.png" },
+  { slug: 'numberguess', title: 'Number Guess', desc: 'Hot or cold 1–100.', icon: "/games/number-guess-game.png" },
+  { slug: 'flappysquare', title: 'Flappy Square', desc: 'Click to fly!', icon: "/games/flappy-square-game.png" },
+  { slug: 'cricket-superover', title: 'Cricket Super Over', desc: '6 balls, pure timing — hit for 6s!', icon: "/games/criket-superover-game.png" }, // ✅ new game
+  { slug: 'cricket-legends', title: 'Cricket Legends', desc: 'Career mode with levels & characters.', icon: "/games/cricket-legends-game.png" }
   
 
 
