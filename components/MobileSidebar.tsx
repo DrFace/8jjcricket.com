@@ -35,17 +35,17 @@ export default function MobileSidebar() {
 
     const items: NavItem[] = useMemo(
         () => [
-            { href: "/", label: "Home", Icon: Home },
-            { href: "/search", label: "Search", Icon: Search },
-            { href: "/upcoming", label: "Upcoming", Icon: CalendarClock },
-            { href: "/recent", label: "Recent", Icon: CalendarClock },
-            { href: "/series", label: "Series", Icon: Trophy },
-            { href: "/teams", label: "Teams", Icon: Users },
-            { href: "/players", label: "Players", Icon: Users },
-            { href: "/rankings/t20i", label: "Team Rankings", Icon: BarChart3 },
-            { href: "/archive", label: "Archive", Icon: Archive },
-            { href: "/minigames", label: "Minigames", Icon: Gamepad2 },
-            { href: "/news", label: "News", Icon: Newspaper },
+            { href: "/moblie", label: "Home", Icon: Home },
+            { href: "/moblie/search", label: "Search", Icon: Search },
+            { href: "/moblie/upcoming", label: "Upcoming", Icon: CalendarClock },
+            { href: "/moblie/recent", label: "Recent", Icon: CalendarClock },
+            { href: "/moblie/series", label: "Series", Icon: Trophy },
+            { href: "/moblie/teams", label: "Teams", Icon: Users },
+            { href: "/moblie/players", label: "Players", Icon: Users },
+            { href: "/moblie/rankings/t20i", label: "Team Rankings", Icon: BarChart3 },
+            { href: "/moblie/archive", label: "Archive", Icon: Archive },
+            { href: "/moblie/minigames", label: "Minigames", Icon: Gamepad2 },
+            { href: "/moblie/news", label: "News", Icon: Newspaper },
         ],
         [],
     );
