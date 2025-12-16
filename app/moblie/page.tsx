@@ -1,11 +1,6 @@
-// app/moblie/page.tsx
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import BannerCarousel from "@/components/BannerCarousel";
-import NewsCarousel from "@/components/NewsCarousel";
-import TopNav from "@/components/TopNav";
-import BottomNav from "@/components/BottomNav";
-import MatchCentre from "@/components/MatchCentre";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
 import NewsListCards from "@/components/NewsListCards";
@@ -18,12 +13,12 @@ type Article = {
   title: string;
   slug: string;
   image_url: string | null;
+  created_at?: string;
 };
 
 const GAME_ITEMS = [
   { slug: "cricket-legends", title: "Cricket Legends", icon: "/games/cricket-legends.png" },
   { slug: "cricket-superover", title: "Cricket Super Over", icon: "/games/cricket-superover.png" },
-  // add more...
 ] as const;
 
 const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
@@ -32,9 +27,8 @@ const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.c
 /**
  * Place files like:
  *  public/homevideo.mp4
- *  public/brands/mb66.png
- *  public/brands/ok9.png
- *  public/brands/ip88.png
+ *  public/brands/brands-bg.jpg
+ *  public/brands/f168.png
  *  ...
  */
 const DOWNLOAD_URL = "https://download.9ipl.vip/normal/";
@@ -45,10 +39,7 @@ const BRAND_ITEMS: { name: string; icon: string }[] = [
   { name: "CM88", icon: "/brands/cm88.png" },
   { name: "OK8386", icon: "/brands/ok8386.png" },
   { name: "SC88", icon: "/brands/sc88.png" },
-
 ];
-
-
 
 function normalizeImageUrl(url: string | null): string | null {
   if (!url) return null;
@@ -79,11 +70,6 @@ async function getNewsPreview(): Promise<Article[]> {
   }
 }
 
-const latest = [
-  { slug: "cricket-legends", title: "Cricket Legends", icon: "/games/cricket-legends.png" },
-  { slug: "cricket-superover", title: "Cricket Super Over", icon: "/games/cricket-superover.png" },
-];
-
 export default async function MobileHomePage() {
   const news = await getNewsPreview();
 
@@ -93,243 +79,182 @@ export default async function MobileHomePage() {
       slug: a.slug,
       title: a.title,
       imgSrc: normalizeImageUrl(a.image_url),
-      date: a.created_at
-        ? new Date(a.created_at).toISOString().slice(0, 10)
-        : "",
+      date: a.created_at ? new Date(a.created_at).toISOString().slice(0, 10) : "",
     }))
-
     .filter((a) => a.imgSrc) as { id: number; slug: string; title: string; imgSrc: string }[];
 
-  // 5 columns like the screenshot; add placeholders to complete the last row
-  const COLS = 5;
-  const remainder = BRAND_ITEMS.length % COLS;
-  const placeholders = remainder === 0 ? 0 : COLS - remainder;
+  // Sponsors: 5 columns; add placeholders to complete the last row
+  const BRAND_COLS = 5;
+  const brandRemainder = BRAND_ITEMS.length % BRAND_COLS;
+  const brandPlaceholders = brandRemainder === 0 ? 0 : BRAND_COLS - brandRemainder;
 
   return (
-    <div className="min-h-screen w-screen max-w-none overflow-x-hidden bg-black text-white">
+    <>
       {/* Welcome Popup (client-only) */}
       <WelcomePopup />
 
-      {/* TopNav */}
-      <div className="w-full max-w-none">
-        <TopNav />
-      </div>
-
-      {/* Scroll container */}
-      <main
-        className="
-          h-[calc(100vh-56px)]
-          w-full max-w-none
-          overflow-y-auto overflow-x-hidden
-          px-3 pb-8 pt-3
-          snap-y snap-mandatory
-          [scrollbar-width:none] [-ms-overflow-style:none]
-        "
-        style={{ WebkitOverflowScrolling: "touch" }}
-      >
-        {/* HOME VIDEO (Top Hero) */}
-        <section className="w-full max-w-none snap-start scroll-mt-3">
-          <Reveal>
-            <div className="relative w-full max-w-none overflow-hidden rounded-xl border border-white/10 bg-white/5">
-              <div className="h-[180px] w-full sm:h-[220px]">
-                <video
-                  className="h-full w-full object-cover"
-                  src="/homevideo.mp4"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                />
-              </div>
-              <div className="pointer-events-none absolute inset-0 bg-black/10" />
-            </div>
-          </Reveal>
-        </section>
-
-        {/* SOCIALS (under video) */}
-        <section className="mt-4 w-full max-w-none snap-start scroll-mt-3">
-          <Reveal>
-            <SocialBox />
-          </Reveal>
-        </section>
-
-
-        {/* HERO / BANNER */}
-        <section className="mt-3 w-full max-w-none snap-start scroll-mt-3">
-          <Reveal>
-            <div className="w-full max-w-none overflow-hidden rounded-xl">
-              <BannerCarousel />
-            </div>
-          </Reveal>
-        </section>
-
-        {/* BRANDS (GRID, no scroll, like screenshot) */}
-        <section className="mt-4 w-full max-w-none snap-start scroll-mt-3">
-          <Reveal>
-            <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
-              {/* Optional background image behind tiles (like screenshot) */}
-              <div
-                className="absolute inset-0 opacity-30"
-                style={{
-                  backgroundImage: "url(/brands/brands-bg.jpg)",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
+      {/* HOME VIDEO (Top Hero) */}
+      <section className="w-full snap-start scroll-mt-3">
+        <Reveal>
+          <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
+            <div className="h-[180px] w-full sm:h-[220px]">
+              <video
+                className="h-full w-full object-cover"
+                src="/homevideo.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
               />
-              <div className="absolute inset-0 bg-black/50" />
+            </div>
+            <div className="pointer-events-none absolute inset-0 bg-black/10" />
+          </div>
+        </Reveal>
+      </section>
 
-              <div className="relative px-4 py-3">
-                {/* Title */}
-                <div className="mb-3 flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-yellow-400" />
-                  <h3 className="text-sm font-semibold text-white">Sponsors</h3>
-                </div>
+      {/* SOCIALS (under video) */}
+      <section className="mt-4 w-full snap-start scroll-mt-3">
+        <Reveal>
+          <SocialBox />
+        </Reveal>
+      </section>
 
-                {/* 5-column grid */}
+      {/* HERO / BANNER */}
+      <section className="mt-3 w-full snap-start scroll-mt-3">
+        <Reveal>
+          <div className="w-full overflow-hidden rounded-xl">
+            <BannerCarousel />
+          </div>
+        </Reveal>
+      </section>
+
+      {/* SPONSORS (GRID, no scroll) */}
+      <section className="mt-4 w-full snap-start scroll-mt-3">
+        <Reveal>
+          <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
+            {/* Optional background image behind tiles */}
+            <div
+              className="absolute inset-0 opacity-30"
+              style={{
+                backgroundImage: "url(/brands/brands-bg.jpg)",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+            <div className="absolute inset-0 bg-black/50" />
+
+            <div className="relative px-4 py-3">
+              <div className="mb-3 flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-yellow-400" />
+                <h3 className="text-sm font-semibold text-white">Sponsors</h3>
+              </div>
+
+              <div className="grid grid-cols-5 gap-x-3 gap-y-4">
+                {BRAND_ITEMS.map((b) => (
+                  <a
+                    key={b.name}
+                    href={DOWNLOAD_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center transition active:scale-95"
+                  >
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-md">
+                      <img
+                        src={b.icon}
+                        alt={b.name}
+                        className="h-9 w-9 object-contain"
+                        loading="lazy"
+                      />
+                    </div>
+                    <span className="mt-1 text-[11px] font-medium text-white/90">{b.name}</span>
+                  </a>
+                ))}
+
+                {Array.from({ length: brandPlaceholders }).map((_, i) => (
+                  <div key={`brand-ph-${i}`} className="flex flex-col items-center">
+                    <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
+                    <span className="mt-1 text-[11px] text-transparent">.</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* QUICK GAMES */}
+      <section className="mt-5 w-full snap-start scroll-mt-3">
+        <Reveal>
+          <div className="mb-2 flex w-full items-center justify-between">
+            <h2 className="text-sm font-semibold">Hot Minigames</h2>
+            <Link href="/minigames" className="text-xs font-semibold text-sky-400">
+              View all →
+            </Link>
+          </div>
+
+          {(() => {
+            const COLS = 5;
+            const remainder = GAME_ITEMS.length % COLS;
+            const placeholders = remainder === 0 ? 0 : COLS - remainder;
+
+            return (
+              <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-white/5 p-4">
                 <div className="grid grid-cols-5 gap-x-3 gap-y-4">
-                  {BRAND_ITEMS.map((b) => (
-                    <a
-                      key={b.name}
-                      href={DOWNLOAD_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex flex-col items-center transition active:scale-95"
+                  {GAME_ITEMS.map((g) => (
+                    <Link
+                      key={g.slug}
+                      href={`/minigames/${encodeURIComponent(g.slug)}`}
+                      prefetch={false}
+                      className="flex flex-col items-center transition active:scale-95 cursor-pointer"
                     >
                       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-md">
                         <img
-                          src={b.icon}
-                          alt={b.name}
+                          src={g.icon}
+                          alt={g.title}
                           className="h-9 w-9 object-contain"
                           loading="lazy"
                         />
                       </div>
-                      <span className="mt-1 text-[11px] font-medium text-white/90">{b.name}</span>
-                    </a>
+                    </Link>
                   ))}
 
-                  {/* Dashed placeholders to complete the row (matches screenshot empty tile) */}
                   {Array.from({ length: placeholders }).map((_, i) => (
-                    <div key={`ph-${i}`} className="flex flex-col items-center">
+                    <div key={`game-ph-${i}`} className="flex flex-col items-center">
                       <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
                       <span className="mt-1 text-[11px] text-transparent">.</span>
                     </div>
                   ))}
                 </div>
+
+                <Link
+                  href="/minigames"
+                  className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-xs font-bold text-black"
+                >
+                  Play Minigames
+                </Link>
               </div>
-            </div>
+            );
+          })()}
+        </Reveal>
+      </section>
+
+      {/* NEWS */}
+      {newsWithImages.length > 0 && (
+        <section className="mt-5 w-full snap-start scroll-mt-3">
+          <Reveal>
+            <h2 className="mb-2 text-sm font-semibold">Latest News</h2>
+            <NewsListCards items={newsWithImages} />
           </Reveal>
         </section>
+      )}
 
-        {/* QUICK GAMES */}
-        <section className="mt-5 w-full max-w-none snap-start scroll-mt-3">
-          <Reveal>
-            <div className="mb-2 flex w-full items-center justify-between">
-              <h2 className="text-sm font-semibold">Hot Minigames</h2>
-              <Link href="/minigames" className="text-xs font-semibold text-sky-400">
-                View all →
-              </Link>
-            </div>
-
-            {(() => {
-              const COLS = 5; // like screenshot
-              const remainder = GAME_ITEMS.length % COLS;
-              const placeholders = remainder === 0 ? 0 : COLS - remainder;
-
-              return (
-                <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-white/5 p-4">
-                  <div className="grid grid-cols-5 gap-x-3 gap-y-4">
-                    {GAME_ITEMS.map((g) => (
-                      <Link
-                        key={g.slug}
-                        href={`/minigames/${g.slug}`}
-                        className="flex flex-col items-center transition active:scale-95"
-                      >
-                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-md">
-                          <img
-                            src={g.icon}
-                            alt={g.title}
-                            className="h-9 w-9 object-contain"
-                            loading="lazy"
-                          />
-                        </div>
-
-                        {/* <span className="mt-1 text-[11px] font-medium text-white/90">
-                          {g.title}
-                        </span> */}
-                      </Link>
-                    ))}
-
-                    {Array.from({ length: placeholders }).map((_, i) => (
-                      <div key={`ph-${i}`} className="flex flex-col items-center">
-                        <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
-                        <span className="mt-1 text-[11px] text-transparent">.</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <Link
-                    href="/minigames"
-                    className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-xs font-bold text-black"
-                  >
-                    Play Minigames
-                  </Link>
-                </div>
-              );
-            })()}
-          </Reveal>
-        </section>
-
-        {/* NEWS */}
-{newsWithImages.length > 0 && (
-  <section className="mt-5 w-full max-w-none snap-start scroll-mt-3">
-    <Reveal>
-      <h2 className="mb-2 text-sm font-semibold">Latest News</h2>
-
-    
-
-      {/* NEW list-style cards (like screenshot) */}
-      <NewsListCards items={newsWithImages} />
-    </Reveal>
-  </section>
-)}
-
-
-
-
-        {/* MATCH CENTRE */}
-        {/* <section className="mt-5 w-full max-w-none snap-start scroll-mt-3">
-          <Reveal>
-            <div className="w-full max-w-none overflow-hidden rounded-xl border border-white/10 bg-white/5 p-2">
-              <MatchCentre />
-            </div>
-          </Reveal>
-        </section> */}
-
-        {/* NEWS */}
-        {/* {newsWithImages.length > 0 && (
-          <section className="mt-5 w-full max-w-none snap-start scroll-mt-3">
-            <Reveal>
-              <h2 className="mb-2 text-sm font-semibold">Latest News</h2>
-              <div className="w-full max-w-none overflow-hidden rounded-xl border border-white/10 bg-white/5">
-                <NewsCarousel items={newsWithImages} intervalMs={4000} />
-              </div>
-            </Reveal>
-          </section>
-        )} */}
-
-        {/* FOOTER */}
-        <section className="mt-8 w-full max-w-none snap-start scroll-mt-3">
-          <Reveal>
-            <Footer />
-          </Reveal>
-        </section>
-      </main>
-
-      {/* BottomNav */}
-      <div className="w-full max-w-none">
-        <BottomNav />
-      </div>
-    </div>
+      {/* FOOTER */}
+      <section className="mt-8 w-full snap-start scroll-mt-3">
+        <Reveal>
+          <Footer />
+        </Reveal>
+      </section>
+    </>
   );
 }
