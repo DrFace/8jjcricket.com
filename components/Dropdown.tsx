@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { createPortal } from "react-dom";
-import { FiChevronDown } from "react-icons/fi";
+import { FiChevronDown, FiX } from "react-icons/fi";
+
 
 type DropdownItem = {
     key?: string;
@@ -23,6 +24,7 @@ type DropdownModalProps = {
     portalTarget?: Element | null;
     setParentSelectedDate?: (date: string | null) => void;
     fixtures?: { starting_at: string }[];
+    closeOnOutsideClick?: boolean;
 };
 
 /* --- Calendar component and helpers (integrated into the dropdown) --- */
@@ -262,6 +264,7 @@ export default function DropdownModal(props: DropdownModalProps) {
         portalTarget = typeof document !== "undefined" ? document.body : null,
         setParentSelectedDate = () => {},
         fixtures = [],
+        closeOnOutsideClick = false,
     } = props;
 
     const [uncontrolledOpen, setUncontrolledOpen] =
@@ -301,26 +304,30 @@ export default function DropdownModal(props: DropdownModalProps) {
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
     // Close on outside click
-    useEffect(() => {
-        if (!open) return;
+ useEffect(() => {
+  if (!open || !closeOnOutsideClick) return;
 
-        const onDown = (e: MouseEvent | TouchEvent) => {
-            const el = contentRef.current;
-            const trg = triggerRef.current;
-            const target = e.target as Node | null;
-            if (!el) return;
-            if (el.contains(target)) return;
-            if (trg && trg.contains(target)) return;
-            toggleOpen(false);
-        };
+  const onDown = (e: MouseEvent | TouchEvent) => {
+    const el = contentRef.current;
+    const trg = triggerRef.current;
+    const target = e.target as Node | null;
 
-        document.addEventListener("mousedown", onDown);
-        document.addEventListener("touchstart", onDown);
-        return () => {
-            document.removeEventListener("mousedown", onDown);
-            document.removeEventListener("touchstart", onDown);
-        };
-    }, [open]);
+    if (!el) return;
+    if (el.contains(target)) return;
+    if (trg && trg.contains(target)) return;
+
+    toggleOpen(false);
+  };
+
+  document.addEventListener("mousedown", onDown);
+  document.addEventListener("touchstart", onDown);
+
+  return () => {
+    document.removeEventListener("mousedown", onDown);
+    document.removeEventListener("touchstart", onDown);
+  };
+}, [open, closeOnOutsideClick]);
+
 
     // Lock scroll while open
     useEffect(() => {
@@ -357,15 +364,22 @@ export default function DropdownModal(props: DropdownModalProps) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "rgba(0,0,0,0.25)",
+                background: "rgba(0,0,0,0.65)",
+                WebkitBackdropFilter: "blur(6px)",
                 padding: 16,
             }}
         >
             <div
-                ref={contentRef}
-                className="bg-slate-900 rounded-xl p-4 shadow-2xl w-80"
-                role="document"
-            >
+  ref={contentRef}
+  className="relative bg-slate-900 rounded-xl p-4 shadow-2xl w-80"
+>
+  <button
+    type="button"
+    onClick={() => toggleOpen(false)}
+    className="absolute right-3 top-3 rounded-full p-1 text-amber-200 hover:bg-white/10"
+  >
+    <FiX size={16} />
+  </button>
                 <Calendar
                     selectedDate={selectedDate}
                     onSelectDate={handleSelectDate}
