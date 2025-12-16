@@ -6,10 +6,10 @@ export const revalidate = 0
 
 // GET /api/leagues
 // Fetches a list of leagues and tournaments. Each league includes its
-// associated country information. This endpoint powers the Series page.
+// associated country and seasons information. This endpoint powers the Series page and Teams page dropdown.
 export async function GET() {
   try {
-    const json = await smFetch('/leagues?include=country')
+    const json = await smFetch('/leagues?include=country,seasons')
     return NextResponse.json({ data: json?.data ?? [] })
   } catch (err: any) {
     const msg = String(err?.message ?? '')
