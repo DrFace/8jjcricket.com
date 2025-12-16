@@ -22,6 +22,7 @@ type DropdownModalProps = {
     className?: string;
     portalTarget?: Element | null;
     setParentSelectedDate?: (date: string | null) => void;
+    fixtures?: { starting_at: string }[];
 };
 
 /* --- Calendar component and helpers (integrated into the dropdown) --- */
@@ -260,12 +261,32 @@ export default function DropdownModal(props: DropdownModalProps) {
         closeOnSelect = true,
         portalTarget = typeof document !== "undefined" ? document.body : null,
         setParentSelectedDate = () => {},
+        fixtures = [],
     } = props;
 
     const [uncontrolledOpen, setUncontrolledOpen] =
         useState<boolean>(defaultOpen);
     const isControlled = typeof isOpenControlled === "boolean";
     const open = isControlled ? (isOpenControlled as boolean) : uncontrolledOpen;
+
+      const sortedFixtures = useMemo(
+        () =>
+          [...fixtures].sort(
+            (a, b) =>
+              new Date(a.starting_at).getTime() -
+              new Date(b.starting_at).getTime(),
+          ),
+        [fixtures],
+      )
+
+      const minDate =
+    sortedFixtures.length > 0
+      ? sortedFixtures[0].starting_at.slice(0, 10)
+      : undefined
+  const maxDate =
+    sortedFixtures.length > 0
+      ? sortedFixtures[sortedFixtures.length - 1].starting_at.slice(0, 10)
+      : undefined
 
     const toggleOpen = (next?: boolean) => {
         const value = typeof next === "boolean" ? next : !open;
@@ -348,8 +369,8 @@ export default function DropdownModal(props: DropdownModalProps) {
                 <Calendar
                     selectedDate={selectedDate}
                     onSelectDate={handleSelectDate}
-                    minDate={undefined}
-                    maxDate={undefined}
+                    minDate={minDate}
+                    maxDate={maxDate}
                 />
             </div>
         </div>

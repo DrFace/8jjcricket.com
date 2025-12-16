@@ -442,7 +442,7 @@ export default function ArchivePage() {
         {/* RIGHT: calendar / date filter with bet button */}
         <aside className="lg:w-72">
           <div>
-            { data ? <DropdownModal setParentSelectedDate={setSelectedDate} /> : null }
+            { data ? <DropdownModal fixtures={fixtures} setParentSelectedDate={setSelectedDate} /> : null }
             {/* Bet button under the calendar, aligned to the right */}
             <div className="mt-2 flex justify-end border-t border-white/10 pt-3">
               <BetButton />
