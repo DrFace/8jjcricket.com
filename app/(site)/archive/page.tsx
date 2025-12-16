@@ -6,6 +6,7 @@ import type { Fixture } from '@/types/fixture'
 import LiveCard from '@/components/LiveCard'
 import ArchhiveCard from '@/components/ArchhiveCard'
 import BetButton from '@/components/BetButton'
+import { Layout } from 'lucide-react'
 
 // Simple fetcher for SWR; fetches JSON from the given URL.
 const fetcher = (u: string) => fetch(u).then((r) => r.json())

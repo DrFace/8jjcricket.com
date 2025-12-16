@@ -267,7 +267,7 @@ export default function SeriesPage() {
                         Details
                       </Link>
                       <Link
-                        href={`/teams?series=${getLatestSeasonId(league)}`}
+                        href={`/teams?league=${league.id}`}
                         className="flex-1 px-3 py-1.5 text-xs font-medium text-black bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 rounded hover:brightness-110 transition-all shadow-lg"
                       >
                         Teams
