@@ -1,3 +1,4 @@
+// components/HomeVerticalSwiper.tsx
 "use client";
 
 import React, { useEffect, useRef } from "react";
@@ -14,12 +15,10 @@ export default function HomeVerticalSwiper({
   const swiperRef = useRef<SwiperType | null>(null);
 
   useEffect(() => {
-    // Prevent rubber-band bounce at page edges
     document.documentElement.style.overscrollBehavior = "none";
     document.body.style.overscrollBehavior = "none";
     document.body.style.margin = "0";
 
-    // Apply “bounce” easing to the slide transition
     const s = swiperRef.current;
     if (s?.wrapperEl) {
       (s.wrapperEl as HTMLElement).style.transitionTimingFunction =
@@ -31,10 +30,18 @@ export default function HomeVerticalSwiper({
     <Swiper
       direction="vertical"
       slidesPerView={1}
-      mousewheel
       speed={800}
       modules={[Mousewheel]}
       style={{ height: "100vh" }}
+      mousewheel={{
+        forceToAxis: true,
+        releaseOnEdges: true,
+        thresholdDelta: 5,
+      }}
+      // ✅ allow Next <Link> taps/clicks to work reliably
+      preventClicks={false}
+      preventClicksPropagation={false}
+      touchStartPreventDefault={false}
       onSwiper={(s) => {
         swiperRef.current = s;
         (s.wrapperEl as HTMLElement).style.transitionTimingFunction =
