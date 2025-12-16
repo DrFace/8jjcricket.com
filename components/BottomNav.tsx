@@ -3,7 +3,13 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Activity, Gamepad2, Newspaper, CalendarClock } from "lucide-react";
+import {
+    Home,
+    Activity,
+    Gamepad2,
+    Newspaper,
+    UserCircle,
+} from "lucide-react";
 
 type Item = {
     href: string;
@@ -12,11 +18,11 @@ type Item = {
 };
 
 export const navItems: Item[] = [
-    { href: "/", label: "Home", Icon: Home },
-    { href: "/sponsor", label: "Live score", Icon: Activity },
-    { href: "/gameshow", label: "Games", Icon: Gamepad2 },
-    { href: "/feedback", label: "News", Icon: Newspaper },
-    { href: "/account", label: "Upcoming", Icon: CalendarClock },
+    { href: "/moblie", label: "Home", Icon: Home },
+    { href: "/moblie/livescore", label: "Live score", Icon: Activity },
+    { href: "/moblie/games", label: "Games", Icon: Gamepad2 },
+    { href: "/moblie/news", label: "News", Icon: Newspaper },
+    { href: "/account", label: "Profile", Icon: UserCircle },
 ];
 
 export default function BottomNav() {
@@ -34,7 +40,11 @@ export default function BottomNav() {
             <div className="mx-auto max-w-md px-2">
                 <div className="flex items-center justify-between py-2">
                     {navItems.map(({ href, label, Icon }) => {
-                        const active = pathname === href || (href !== "/" && pathname?.startsWith(href));
+                        const isHome = href === "/moblie";
+
+                        const active = isHome
+                            ? pathname === href
+                            : pathname === href || pathname.startsWith(href + "/");
 
                         return (
                             <Link
@@ -42,7 +52,13 @@ export default function BottomNav() {
                                 href={href}
                                 className="flex w-full flex-col items-center justify-center gap-0.5 py-1"
                             >
-                                <Icon className={active ? "h-5 w-5 text-amber-300" : "h-5 w-5 text-white/60"} />
+                                <Icon
+                                    className={
+                                        active
+                                            ? "h-5 w-5 text-amber-300"
+                                            : "h-5 w-5 text-white/60"
+                                    }
+                                />
                                 <span
                                     className={
                                         active
