@@ -35,19 +35,19 @@ export default function MobileSidebar() {
 
     const items: NavItem[] = useMemo(
         () => [
-            { href: "/", label: "Home", Icon: Home },
-            { href: "/search", label: "Search", Icon: Search },
-            { href: "/upcoming", label: "Upcoming", Icon: CalendarClock },
-            { href: "/recent", label: "Recent", Icon: CalendarClock },
-            { href: "/series", label: "Series", Icon: Trophy },
-            { href: "/teams", label: "Teams", Icon: Users },
-            { href: "/players", label: "Players", Icon: Users },
-            { href: "/rankings/t20i", label: "Team Rankings", Icon: BarChart3 },
-            { href: "/archive", label: "Archive", Icon: Archive },
-            { href: "/minigames", label: "Minigames", Icon: Gamepad2 },
-            { href: "/news", label: "News", Icon: Newspaper },
+            { href: "/moblie", label: "Home", Icon: Home },
+            { href: "/moblie/search", label: "Search", Icon: Search },
+            { href: "/moblie/upcoming", label: "Upcoming", Icon: CalendarClock },
+            { href: "/moblie/recent", label: "Recent", Icon: CalendarClock },
+            { href: "/moblie/series", label: "Series", Icon: Trophy },
+            { href: "/moblie/teams", label: "Teams", Icon: Users },
+            { href: "/moblie/players", label: "Players", Icon: Users },
+            { href: "/moblie/rankings/t20i", label: "Team Rankings", Icon: BarChart3 },
+            { href: "/moblie/archive", label: "Archive", Icon: Archive },
+            { href: "/moblie/minigames", label: "Minigames", Icon: Gamepad2 },
+            { href: "/moblie/news", label: "News", Icon: Newspaper },
         ],
-        [],
+        []
     );
 
     useEffect(() => {
@@ -92,15 +92,15 @@ export default function MobileSidebar() {
             <div
                 className={cx(
                     "fixed inset-0 z-[80]",
-                    open ? "pointer-events-auto" : "pointer-events-none",
+                    open ? "pointer-events-auto" : "pointer-events-none"
                 )}
                 aria-hidden={!open}
             >
-                {/* Darker overlay so the menu stands out */}
+                {/* Backdrop */}
                 <div
                     className={cx(
                         "absolute inset-0 bg-black/80 transition-opacity",
-                        open ? "opacity-100" : "opacity-0",
+                        open ? "opacity-100" : "opacity-0"
                     )}
                     onClick={() => setOpen(false)}
                 />
@@ -112,12 +112,10 @@ export default function MobileSidebar() {
                     className={cx(
                         "absolute left-0 top-0 h-full w-[86%] max-w-[360px]",
                         "border-r border-white/10",
-                        // Solid, readable background (no transparency)
                         "bg-black",
-                        // Optional subtle depth
                         "bg-gradient-to-b from-black via-black to-zinc-950",
                         "shadow-2xl transition-transform duration-300 ease-out",
-                        open ? "translate-x-0" : "-translate-x-full",
+                        open ? "translate-x-0" : "-translate-x-full"
                     )}
                 >
                     {/* Header */}
@@ -178,8 +176,11 @@ export default function MobileSidebar() {
                     {/* Nav */}
                     <nav className="px-2 py-3">
                         {items.map(({ href, label, Icon }) => {
-                            const active =
-                                pathname === href || (href !== "/" && pathname?.startsWith(href));
+                            // FIX: Home should only be active on exact match
+                            const isHome = href === "/moblie";
+                            const active = isHome
+                                ? pathname === href
+                                : pathname === href || pathname.startsWith(href + "/");
 
                             return (
                                 <Link
@@ -190,13 +191,13 @@ export default function MobileSidebar() {
                                         "flex items-center gap-3 rounded-xl px-3 py-2.5 transition",
                                         active
                                             ? "bg-amber-950/50 text-amber-300 border border-amber-400/20"
-                                            : "text-white/90 hover:bg-white/5",
+                                            : "text-white/90 hover:bg-white/5"
                                     )}
                                 >
                                     <Icon
                                         className={cx(
                                             "h-5 w-5",
-                                            active ? "text-amber-300" : "text-white/70",
+                                            active ? "text-amber-300" : "text-white/70"
                                         )}
                                     />
                                     <span className="text-sm font-semibold">{label}</span>
@@ -204,8 +205,6 @@ export default function MobileSidebar() {
                             );
                         })}
                     </nav>
-
-                 
                 </aside>
             </div>
         </>

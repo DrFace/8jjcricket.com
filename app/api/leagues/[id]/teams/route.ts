@@ -7,49 +7,49 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const seasonId = params.id
+  const leagueId = params.id
 
-  // Validate season ID
-  if (!seasonId || seasonId === 'null' || seasonId === 'undefined') {
-    console.error('Invalid season ID:', seasonId)
+  // Validate league ID
+  if (!leagueId || leagueId === 'null' || leagueId === 'undefined') {
+    console.error('Invalid league ID:', leagueId)
     return NextResponse.json(
-      { error: 'Invalid season ID', data: [] },
+      { error: 'Invalid league ID', data: [] },
       { status: 422 }
     )
   }
 
   try {
-    const url = `${BASE_URL}/seasons/${seasonId}?api_token=${SPORTMONKS_API_TOKEN}&include=teams`
-    console.log('Fetching teams for season:', seasonId, 'URL:', url.replace(SPORTMONKS_API_TOKEN, 'TOKEN'))
+    const url = `${BASE_URL}/leagues/${leagueId}?api_token=${SPORTMONKS_API_TOKEN}&include=teams`
+    console.log('Fetching teams for league:', leagueId, 'URL:', url.replace(SPORTMONKS_API_TOKEN, 'TOKEN'))
     
     const res = await fetch(url, {
       next: { revalidate: 3600 }, // Cache for 1 hour
     })
 
     if (!res.ok) {
-      console.error('API responded with status:', res.status, 'for season:', seasonId)
+      console.error('API responded with status:', res.status, 'for league:', leagueId)
       return NextResponse.json(
-        { error: 'Failed to fetch season teams', data: [] },
+        { error: 'Failed to fetch league teams', data: [] },
         { status: res.status }
       )
     }
 
     const json = await res.json()
     
-    // Extract teams from the season data
-    const teams = json.data?.teams?.data || []
+    // Extract teams from the league data
+    const teams = json.data?.teams?.data || json.data?.teams || []
     
-    console.log('Found', teams.length, 'teams for season:', seasonId)
+    console.log('Found', teams.length, 'teams for league:', leagueId)
     
     return NextResponse.json({
       data: teams,
       meta: {
-        season_id: seasonId,
+        league_id: leagueId,
         count: teams.length
       }
     })
   } catch (error) {
-    console.error('Error fetching season teams:', error)
+    console.error('Error fetching league teams:', error)
     return NextResponse.json(
       { error: 'Internal server error', data: [] },
       { status: 500 }
