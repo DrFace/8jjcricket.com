@@ -5,6 +5,9 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import useSWR from 'swr'
 import Image from 'next/image'
 import Link from 'next/link'
+import TopNav from '@/components/TopNav'
+import BottomNav from '@/components/BottomNav'
+import Footer from '@/components/Footer'
 
 interface TeamFromAPI {
   id: number
@@ -146,6 +149,10 @@ export default function TeamsPage() {
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
+      
+      <TopNav />
+      <BottomNav />
+      
       <div className="space-y-6 pb-8">
         {/* Header Section with Dark Theme */}
         <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 p-6 md:p-8 shadow-2xl backdrop-blur-xl">
@@ -277,7 +284,7 @@ export default function TeamsPage() {
               </span>
             </div>
             <p className="text-sm text-sky-100/70 mb-5 bg-black/30 border-l-4 border-amber-400/50 pl-4 py-2.5 rounded backdrop-blur-sm">
-              📋 Showing top {domesticLimited.length} domestic teams. Many more available via API.
+              📋 Showing top {domesticLimited.length} domestic teams. Many more available.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {domesticLimited.map((t) => (
@@ -302,6 +309,8 @@ export default function TeamsPage() {
           </>
         ) : null}
       </div>
+      
+      <Footer />
     </>
   )
 }

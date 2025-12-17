@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -31,18 +32,12 @@ type Player = {
   career?: CareerStat[]
 }
 
-/**
- * PlayerDetailPage shows details for a single cricket player. Because this
- * component runs on the client, we cannot define static metadata. Instead
- * we insert `<title>` and `<meta>` tags within the returned JSX. The title
- * updates dynamically based on the loaded player name. See the Next.js
- * documentation for client component metadata rules【744642906249488†L34-L87】.
- */
 export default function PlayerDetailPage() {
   const { id } = useParams()
   const [player, setPlayer] = useState<Player | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
   useEffect(() => {
     if (!id) return
     async function load() {
@@ -59,38 +54,44 @@ export default function PlayerDetailPage() {
     }
     load()
   }, [id])
-  // Loading state
+
   if (loading) {
     return (
       <>
         <title>Loading Player | 8jjcricket</title>
         <meta name="description" content="Loading player profile." />
-        <div className="flex justify-center py-10 text-gray-600">
+        <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
           Loading player details...
+          <div className="mt-4 h-6 w-6 animate-spin rounded-full border-4 border-amber-400 border-t-transparent mx-auto"></div>
         </div>
       </>
     )
   }
-  // Error state
+
   if (error) {
     return (
       <>
         <title>Player Error | 8jjcricket</title>
         <meta name="description" content={error} />
-        <div className="text-center text-red-600 py-10">{error}</div>
+        <div className="rounded-2xl border border-red-500/30 bg-black/70 p-6 text-sm text-red-300 backdrop-blur-xl">
+          {error}
+        </div>
       </>
     )
   }
-  // Player not found
+
   if (!player) {
     return (
       <>
         <title>Player Not Found | 8jjcricket</title>
         <meta name="description" content="Player not found." />
-        <div className="text-center text-gray-500 py-10">Player not found.</div>
+        <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
+          Player not found.
+        </div>
       </>
     )
   }
+
   return (
     <>
       <title>{player.fullname} | Player Profile | 8jjcricket</title>
@@ -98,9 +99,9 @@ export default function PlayerDetailPage() {
         name="description"
         content={`View ${player.fullname}'s player profile, stats and information on 8jjcricket.`}
       />
-      <div className="mx-auto max-w-5xl px-4 py-10">
+      <div className="mx-auto px-4 py-10">
         <div className="flex flex-col md:flex-row gap-8 items-center">
-          <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-gray-100 shadow-md">
+          <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-slate-900 shadow-md">
             <Image
               src={player.image_path || '/placeholder.png'}
               alt={player.fullname}
@@ -109,11 +110,11 @@ export default function PlayerDetailPage() {
             />
           </div>
           <div>
-            <h1 className="text-3xl font-bold">{player.fullname}</h1>
-            <p className="text-gray-600">
+            <h1 className="text-3xl font-bold text-white">{player.fullname}</h1>
+            <p className="text-amber-300">
               {player.country?.name ? player.country.name : 'Unknown Country'}
             </p>
-            <div className="mt-3 space-y-1 text-sm text-gray-700">
+            <div className="mt-3 space-y-1 text-sm text-sky-100/70">
               {player.dateofbirth && (
                 <p>
                   <strong>DOB:</strong> {player.dateofbirth}
@@ -132,13 +133,13 @@ export default function PlayerDetailPage() {
             </div>
           </div>
         </div>
-        {/* Career Stats */}
+
         {player.career && player.career.length > 0 && (
           <div className="mt-10">
-            <h2 className="text-2xl font-semibold mb-4">Career Statistics</h2>
-            <div className="overflow-x-auto rounded-xl border border-gray-200">
-              <table className="min-w-full text-sm text-left">
-                <thead className="bg-gray-100">
+            <h2 className="text-2xl font-semibold mb-4 text-white">Career Statistics</h2>
+            <div className="overflow-x-auto rounded-xl border border-white/15 bg-black/50 backdrop-blur-xl">
+              <table className="min-w-full text-sm text-left text-sky-100/70">
+                <thead className="bg-slate-900/80 text-amber-300">
                   <tr>
                     <th className="px-4 py-2">Format</th>
                     <th className="px-4 py-2">Matches</th>
@@ -153,8 +154,8 @@ export default function PlayerDetailPage() {
                 </thead>
                 <tbody>
                   {player.career.map((c) => (
-                    <tr key={c.type} className="border-t">
-                      <td className="px-4 py-2 font-semibold">{c.type}</td>
+                    <tr key={c.type} className="border-t border-white/10">
+                      <td className="px-4 py-2 font-semibold text-amber-300">{c.type}</td>
                       <td className="px-4 py-2">{c.batting?.matches ?? '-'}</td>
                       <td className="px-4 py-2">{c.batting?.innings ?? '-'}</td>
                       <td className="px-4 py-2">{c.batting?.runs_scored ?? '-'}</td>

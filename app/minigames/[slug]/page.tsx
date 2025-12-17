@@ -1,6 +1,9 @@
 'use client'
+
 import dynamic from 'next/dynamic'
 import { useMemo } from 'react'
+import TopNav from "@/components/TopNav"
+import Footer from "@/components/Footer"
 
 export default function GamePage({ params }: { params: { slug: string } }) {
   const Comp = useMemo(() => {
@@ -18,11 +21,20 @@ export default function GamePage({ params }: { params: { slug: string } }) {
   }, [params.slug])
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold capitalize">{params.slug.replace('-', ' ')}</h1>
-      <div className="card">
-        <Comp />
+    <>
+      <TopNav />
+
+      <div className="space-y-4">
+        <h1 className="text-2xl font-bold capitalize">
+          {params.slug.replace('-', ' ')}
+        </h1>
+
+        <div className="card">
+          <Comp />
+        </div>
       </div>
-    </div>
+
+      <Footer />
+    </>
   )
 }
