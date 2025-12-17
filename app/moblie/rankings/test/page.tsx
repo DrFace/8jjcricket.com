@@ -1,10 +1,7 @@
 "use client"
 
 import useSWR from 'swr'
-import Link from 'next/link'
-import Image from 'next/image'
-import RankingTabBar from '@/components/RankingTabBar'
-import { tr } from 'framer-motion/client'
+import MobileTabBar from '@/components/mobile/MobileTabBar'
 import { groupByGender } from '@/src/utils/groupByGender'
 import { RankingEntry } from '@/types/rankings'
 import RankingTable from '@/components/mobile/RankingTable'
@@ -53,8 +50,8 @@ export default function TestRankingsPage() {
       <title>{title}</title>
       <meta name="description" content={description} />
       <div className="space-y-8">
-        <h1 className="text-2xl font-semibold mb-4">ICC Test Team Rankings</h1>
-        <RankingTabBar tabs={rankingTabs} />
+        <h1 className="text-lg font-extrabold mb-4">ICC Test Team Rankings</h1>
+        <MobileTabBar tabs={rankingTabs} />
          {men.length > 0 ? (
               <RankingTable
                 data={men}

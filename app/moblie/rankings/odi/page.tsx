@@ -1,7 +1,7 @@
 "use client";
 
 import useSWR from "swr";
-import RankingTabBar from "@/components/RankingTabBar";
+import MobileTabBar from "@/components/mobile/MobileTabBar";
 import RankingTable from "@/components/mobile/RankingTable";
 import { groupByGender } from "@/src/utils/groupByGender";
 import { RankingEntry } from "@/types/rankings";
@@ -53,8 +53,8 @@ export default function ODIRankingsPage() {
       <title>{title}</title>
       <meta name="description" content={description} />
       <div className="space-y-8">
-        <h1 className="text-2xl font-semibold mb-4">ICC ODI Team Rankings</h1>
-        <RankingTabBar tabs={rankingTabs} />
+        <h1 className="text-lg font-extrabold mb-4">ICC ODI Team Rankings</h1>
+        <MobileTabBar tabs={rankingTabs} />
         {men.length > 0 ? (
           <RankingTable
             data={men}

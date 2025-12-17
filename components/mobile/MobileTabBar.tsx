@@ -4,7 +4,7 @@ interface TabBarProps {
   tabs: { label: string; href: string; active: boolean }[];
 }
 
-export default function RankingTabBar({ tabs }: TabBarProps) {
+export default function MobileTabBar({ tabs }: TabBarProps) {
   return (
     <div className="flex w-full gap-2 mb-4">
       {tabs.map((tab) => (

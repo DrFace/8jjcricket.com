@@ -10,7 +10,7 @@ type DropdownItem = {
   disabled?: boolean;
 };
 
-type DropdownModalProps = {
+type CalenderModalProps = {
   isOpen?: boolean;
   onClose?: () => void;
   defaultOpen?: boolean;
@@ -262,7 +262,7 @@ function Calendar({
 
 /* --- Dropdown modal that renders the Calendar inside the portal overlay --- */
 
-export default function DropdownModal(props: DropdownModalProps) {
+export default function CalenderModal(props: CalenderModalProps) {
   const {
     isOpen: isOpenControlled,
     onClose,

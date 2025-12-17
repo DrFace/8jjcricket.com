@@ -1,25 +1,26 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { formatDate, cn } from '@/lib/utils';
-import TeamBadge from '@/components/TeamBadge';
-import type { Fixture } from '@/types/fixture';
+import Link from "next/link";
+import { formatDate, cn } from "@/lib/utils";
+import TeamBadge from "@/components/TeamBadge";
+import type { Fixture } from "@/types/fixture";
 
 export default function LiveCard({ f }: { f: Fixture }) {
   const home = f.localteam;
   const away = f.visitorteam;
 
   const homeLabel = home?.short_name || home?.name || `Team ${f.localteam_id}`;
-  const awayLabel = away?.short_name || away?.name || `Team ${f.visitorteam_id}`;
+  const awayLabel =
+    away?.short_name || away?.name || `Team ${f.visitorteam_id}`;
 
-  const metaLine = `${f.round ?? 'Match'} · ${formatDate(f.starting_at)}`;
+  const metaLine = `${f.round ?? "Match"} · ${formatDate(f.starting_at)}`;
 
   return (
     <Link
       href={`/match/${f.id}`}
       className={cn(
-        'group block rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-sm transition',
-        'hover:border-amber-300/30 hover:bg-white/7'
+        "group block rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-sm transition",
+        "hover:border-amber-300/30 hover:bg-white/7"
       )}
     >
       <div className="px-4 py-3">
@@ -39,13 +40,13 @@ export default function LiveCard({ f }: { f: Fixture }) {
 
           <span
             className={cn(
-              'shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide',
+              "shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide",
               f.live
-                ? 'bg-red-500/15 text-red-200 border border-red-500/25'
-                : 'bg-white/10 text-sky-100/70 border border-white/10'
+                ? "bg-red-500/15 text-red-200 border border-red-500/25"
+                : "bg-white/10 text-sky-100/70 border border-white/10"
             )}
           >
-            {f.live ? 'LIVE' : 'SOON'}
+            {f.live ? "LIVE" : "SOON"}
           </span>
         </div>
 
@@ -57,18 +58,19 @@ export default function LiveCard({ f }: { f: Fixture }) {
             <TeamBadge team={home} className="justify-start text-sky-100/90" />
           </div>
 
-          <div className="px-2 text-[11px] text-sky-100/40 uppercase tracking-wide">vs</div>
+          <div className="px-2 text-[11px] text-sky-100/40 uppercase tracking-wide">
+            vs
+          </div>
 
           <div className="flex-1 min-w-0 flex justify-end text-sky-100/90">
-            <TeamBadge team={away} className="justify-end text-right text-sky-100/90" />
+            <TeamBadge
+              team={away}
+              className="justify-end text-right text-sky-100/90"
+            />
           </div>
         </div>
 
-        {f.note && (
-          <p className="mt-2 text-xs text-sky-100/70">
-            {f.note}
-          </p>
-        )}
+        {f.note && <p className="mt-2 text-xs text-sky-100/70">{f.note}</p>}
       </div>
     </Link>
   );
