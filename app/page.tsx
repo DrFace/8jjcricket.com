@@ -1,17 +1,14 @@
 // app/page.tsx
-import Link from "next/link";
 import dynamic from "next/dynamic";
-import BannerCarousel from "@/components/BannerCarousel";
-import NewsCarousel from "@/components/NewsCarousel";
 import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
-import MatchCentre from "@/components/MatchCentre";
 import SmoothScroller from "@/components/SmoothScroller";
 import DesktopOnly from "@/components/DesktopOnly";
 import BottomNav from "@/components/BottomNav";
 import HomeVerticalSwiper from "@/components/HomeVerticalSwiper";
 import HomeGalleryShowcase from "@/components/HomeGalleryShowcase";
 import HomeNewsShowcase from "@/components/HomeNewsShowcase";
+import HomeFeedbackSection from "@/components/HomeFeedbackSection";
 
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), { ssr: false });
@@ -152,13 +149,21 @@ export default async function HomePage() {
 
 
 
+        {/* SLIDE — FEEDBACK */}
+        <section data-snap className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6">
+          <div className="relative h-full w-full flex items-center">
+            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url(/CricketBG.jpg)" }} />
+            <div className="absolute inset-0 bg-black/70" />
+
+            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
+              <HomeFeedbackSection />
+            </div>
+          </div>
+        </section>
 
       
 
-        {/* Footer as last slide */}
-        <div className="relative">
-          <Footer />
-        </div>
+      
       </HomeVerticalSwiper>
     </SmoothScroller>
   );
