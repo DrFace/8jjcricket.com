@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import TopNav from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
 import PlayerCard from "@/components/PlayerCard";
@@ -109,7 +108,6 @@ export default function PlayersPage() {
         content="Browse all cricket players, search by name and filter by country or role."
       />
 
-      <TopNav />
       <BottomNav />
 
       <div className="mx-auto px-4 py-8 md:py-10">
