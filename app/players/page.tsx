@@ -1,8 +1,12 @@
+
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import PlayerCard from '../../components/PlayerCard'
 import { debounce } from '../../lib/debounce'
+import TopNav from '@/components/TopNav'
+import BottomNav from '@/components/BottomNav'
+import Footer from '@/components/Footer'
 
 type Player = {
   id: number
@@ -17,24 +21,18 @@ type Player = {
 type Country = { id: number; name: string }
 type Pagination = { current_page: number; total_pages: number }
 
-const PAGE_SIZE = 20 // show 20 players at a time
+const PAGE_SIZE = 20
 
-/**
- * PlayersPage lists cricket players and provides search and filter controls. It
- * adds a `<title>` and `<meta>` tag at the top of the returned JSX to
- * improve SEO for this client component.
- */
 export default function PlayersPage() {
   const [players, setPlayers] = useState<Player[]>([])
   const [countries, setCountries] = useState<Country[]>([])
   const [pagination, setPagination] = useState<Pagination | null>(null)
   const [loading, setLoading] = useState(true)
   const [err, setErr] = useState<string | null>(null)
-  // filters
+
   const [q, setQ] = useState('')
   const [country, setCountry] = useState('India')
   const [role, setRole] = useState('')
-  // client-side pagination state
   const [page, setPage] = useState(1)
 
   const debouncedSetQ = useRef(
@@ -101,7 +99,6 @@ export default function PlayersPage() {
     })
   }, [players, q, country, role])
 
-  // pagination logic
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
@@ -113,11 +110,14 @@ export default function PlayersPage() {
         content="Browse all cricket players, search by name and filter by country or role."
       />
 
-      <div className="mx-auto max-w-7xl px-4 py-8 md:py-10">
-        {/* Page header – matches simple headings used across the site */}
-        <header className="mb-6 border-b border-neutral-200 pb-4">
-          <h1 className="text-2xl font-semibold tracking-tight">Players</h1>
-          <p className="mt-1 text-sm text-neutral-600">
+      <TopNav />
+      <BottomNav />
+
+      <div className="mx-auto px-4 py-8 md:py-10">
+        {/* Page Header */}
+        <header className="mb-6 rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
+          <h1 className="text-2xl font-bold text-white">Players</h1>
+          <p className="mt-1 text-xs font-semibold tracking-[0.18em] text-amber-400">
             Browse all players. Use search and filters to find them faster.
           </p>
         </header>
@@ -125,23 +125,21 @@ export default function PlayersPage() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
           {/* Sidebar Filters */}
           <aside className="md:col-span-1">
-            <div className="sticky top-4 space-y-4 rounded-2xl border border-neutral-200 bg-white/80 p-4 text-sm">
+            <div className="sticky top-4 space-y-4 rounded-2xl border border-white/15 bg-black/50 p-4 text-sm shadow-2xl backdrop-blur-xl">
               <div className="space-y-1">
-                <label className="font-medium text-neutral-800">
-                  Search by name
-                </label>
+                <label className="font-medium text-amber-200">Search by name</label>
                 <input
                   type="text"
                   placeholder="e.g. Ahmed, Sharma..."
-                  className="mt-1 w-full rounded-xl border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-400"
+                  className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white placeholder:text-slate-400 outline-none focus:border-amber-400/50 focus:ring-amber-400/30"
                   onChange={(e) => debouncedSetQ(e.target.value)}
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="font-medium text-neutral-800">Country</label>
+                <label className="font-medium text-amber-200">Country</label>
                 <select
-                  className="mt-1 w-full rounded-xl border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-400"
+                  className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none focus:border-amber-400/50 focus:ring-amber-400/30"
                   value={country}
                   onChange={(e) => {
                     setCountry(e.target.value)
@@ -154,38 +152,20 @@ export default function PlayersPage() {
                   ))}
                 </select>
               </div>
-
-              {/*
-              <div className="space-y-1">
-                <label className="font-medium text-neutral-800">Role</label>
-                <select
-                  className="mt-1 w-full rounded-xl border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-400"
-                  value={role}
-                  onChange={(e) => {
-                    setRole(e.target.value)
-                    setPage(1)
-                  }}
-                >
-                  <option value="">All</option>
-                  {roleOptions.map((r) => (
-                    <option key={r}>{r}</option>
-                  ))}
-                </select>
-              </div>
-              */}
             </div>
           </aside>
 
           {/* Players Grid */}
           <main className="md:col-span-3">
             {loading && (
-              <div className="rounded-2xl border border-neutral-200 bg-white/80 p-6 text-center text-sm text-neutral-600">
+              <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
                 Loading players…
+                <div className="mt-4 h-6 w-6 animate-spin rounded-full border-4 border-amber-400 border-t-transparent mx-auto"></div>
               </div>
             )}
 
             {err && !loading && (
-              <div className="rounded-2xl border border-red-300 bg-red-50 p-6 text-sm text-red-700">
+              <div className="rounded-2xl border border-red-500/30 bg-black/70 p-6 text-sm text-red-300 backdrop-blur-xl">
                 {err}
               </div>
             )}
@@ -193,14 +173,14 @@ export default function PlayersPage() {
             {!loading && !err && (
               <>
                 {filtered.length === 0 ? (
-                  <div className="rounded-2xl border border-neutral-200 bg-white/80 p-6 text-center text-sm text-neutral-600">
+                  <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
                     No players match your filters.
                   </div>
                 ) : (
                   <>
-                    <div className="mb-3 text-xs text-neutral-500">
-                      Showing <span className="font-medium text-neutral-700">{paged.length}</span> of{' '}
-                      <span className="font-medium text-neutral-700">{filtered.length}</span> players
+                    <div className="mb-3 text-xs text-sky-100/60">
+                      Showing <span className="font-medium text-amber-300">{paged.length}</span> of{' '}
+                      <span className="font-medium text-amber-300">{filtered.length}</span> players
                       {q || country || role ? ' (filtered)' : ''}.
                     </div>
 
@@ -217,23 +197,22 @@ export default function PlayersPage() {
                       ))}
                     </div>
 
-                    {/* Pagination buttons */}
                     {totalPages > 1 && (
                       <div className="mt-6 flex items-center justify-center gap-3 text-sm">
                         <button
                           disabled={page === 1}
                           onClick={() => setPage((p) => Math.max(1, p - 1))}
-                          className="rounded-full border border-neutral-300 px-3 py-1.5 text-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="rounded-full border border-amber-400/30 bg-slate-900/80 px-3 py-1.5 text-amber-200 backdrop-blur-sm hover:bg-slate-800/80 hover:border-amber-400/50 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           Prev
                         </button>
-                        <span className="rounded-full border border-neutral-200 px-3 py-1.5 text-neutral-600">
+                        <span className="rounded-full border border-white/20 bg-black/50 px-3 py-1.5 text-amber-300 backdrop-blur-xl">
                           Page {page} of {totalPages}
                         </span>
                         <button
                           disabled={page === totalPages}
                           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                          className="rounded-full border border-neutral-300 px-3 py-1.5 text-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="rounded-full border border-amber-400/30 bg-slate-900/80 px-3 py-1.5 text-amber-200 backdrop-blur-sm hover:bg-slate-800/80 hover:border-amber-400/50 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           Next
                         </button>
@@ -246,6 +225,8 @@ export default function PlayersPage() {
           </main>
         </div>
       </div>
+
+      <Footer />
     </>
   )
 }
