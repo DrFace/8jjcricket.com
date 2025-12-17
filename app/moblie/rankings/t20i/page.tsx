@@ -5,43 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import RankingTabBar from "@/components/RankingTabBar";
 import RankingTable from "@/components/mobile/RankingTable";
+import { groupByGender } from "@/src/utils/groupByGender";
+import { RankingEntry } from "@/types/rankings";
 
-interface RankingTeam {
-  id: number;
-  name: string;
-  code: string;
-  image_path: string;
-  ranking: {
-    position: number;
-    matches: number;
-    points: number;
-    rating: number;
-  };
-}
-interface RankingEntry {
-  resource: string;
-  type: string;
-  team: RankingTeam[];
-}
+
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
-function groupByGender(rankings: RankingEntry[], targetTypes: string[]) {
-  const result = { men: [] as RankingTeam[], women: [] as RankingTeam[] };
-  for (const entry of rankings) {
-    if (!entry.team) continue;
-    const type = entry.type?.toUpperCase() || "";
-    const matchesType = targetTypes.some((t) => type.includes(t.toUpperCase()));
-    if (!matchesType) continue;
-    const resource = entry.resource?.toLowerCase() || "";
-    const isWomen = resource.includes("women") || resource.includes("female");
-    if (isWomen) {
-      result.women = entry.team;
-    } else {
-      result.men = entry.team;
-    }
-  }
-  return result;
-}
 
 /**
  * T20IRankingsPage displays ICC T20I team rankings for men and women. It uses
@@ -98,7 +67,7 @@ export default function T20IRankingsPage() {
             }
           />
         ) : (
-          <div className="card text-gray-500">No men's rankings available</div>
+          <div className="card text-gray-500 text-center">No men's rankings available</div>
         )}
         {women.length > 0 ? (
           <RankingTable
@@ -109,7 +78,7 @@ export default function T20IRankingsPage() {
             }
           />
         ) : (
-          <div className="card text-gray-500">No women's rankings available</div>
+          <div className="card text-gray-500 text-center">No women's rankings available</div>
         )}
       </div>
     </>

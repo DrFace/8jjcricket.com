@@ -3,42 +3,10 @@
 import useSWR from "swr";
 import RankingTabBar from "@/components/RankingTabBar";
 import RankingTable from "@/components/mobile/RankingTable";
+import { groupByGender } from "@/src/utils/groupByGender";
+import { RankingEntry } from "@/types/rankings";
 
-interface RankingTeam {
-  id: number;
-  name: string;
-  code: string;
-  image_path: string;
-  ranking: {
-    position: number;
-    matches: number;
-    points: number;
-    rating: number;
-  };
-}
-interface RankingEntry {
-  resource: string;
-  type: string;
-  team: RankingTeam[];
-}
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
-
-function groupByGender(rankings: RankingEntry[], targetType: string) {
-  const result = { men: [] as RankingTeam[], women: [] as RankingTeam[] };
-  for (const entry of rankings) {
-    if (!entry.team) continue;
-    const type = entry.type?.toUpperCase() || "";
-    if (!type.includes(targetType.toUpperCase())) continue;
-    const resource = entry.resource?.toLowerCase() || "";
-    const isWomen = resource.includes("women") || resource.includes("female");
-    if (isWomen) {
-      result.women = entry.team;
-    } else {
-      result.men = entry.team;
-    }
-  }
-  return result;
-}
 
 /**
  * ODIRankingsPage shows ICC ODI team rankings for men and women. It includes
@@ -79,7 +47,7 @@ export default function ODIRankingsPage() {
   }
 
   const rankings: RankingEntry[] = data?.data ?? [];
-  const { men, women } = groupByGender(rankings, "ODI");
+  const { men, women } = groupByGender(rankings, ["ODI"]);
   return (
     <>
       <title>{title}</title>
@@ -96,7 +64,7 @@ export default function ODIRankingsPage() {
             }
           />
         ) : (
-          <div className="card text-gray-500">No men's rankings available</div>
+          <div className="card text-gray-500 text-center">No men's rankings available</div>
         )}
 
         {women.length > 0 ? (
