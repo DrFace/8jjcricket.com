@@ -6,7 +6,9 @@ import type { Fixture } from '@/types/fixture'
 import LiveCard from '@/components/LiveCard'
 import ArchhiveCard from '@/components/ArchhiveCard'
 import BetButton from '@/components/BetButton'
-import { Layout } from 'lucide-react'
+import TopNav from '@/components/TopNav'
+import BottomNav from '@/components/BottomNav'
+import Footer from '@/components/Footer'
 
 // Simple fetcher for SWR; fetches JSON from the given URL.
 const fetcher = (u: string) => fetch(u).then((r) => r.json())
@@ -394,6 +396,9 @@ export default function ArchivePage() {
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
+      
+      <TopNav />
+      <BottomNav />
 
       <div className="flex flex-col-reverse gap-6 lg:flex-row">
         {/* LEFT: existing archive header + grid */}
@@ -463,6 +468,8 @@ export default function ArchivePage() {
           </div>
         </aside>
       </div>
+      
+      <Footer />
     </>
   )
 }

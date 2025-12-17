@@ -5,6 +5,9 @@ import useSWR from 'swr'
 import Image from 'next/image'
 import Link from 'next/link'
 import ArchiveCard from '@/components/ArchhiveCard'
+import TopNav from '@/components/TopNav'
+import BottomNav from '@/components/BottomNav'
+import Footer from '@/components/Footer'
 
 interface Season {
   is_current: boolean
@@ -556,6 +559,9 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
       <title>{title}</title>
       <meta name="description" content={description} />
       
+      <TopNav />
+      <BottomNav />
+      
       <div className="space-y-6">
         {/* Series Header */}
         <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 p-6 shadow-2xl backdrop-blur-xl">
@@ -639,26 +645,26 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
                   <p className="text-3xl font-bold text-gray-900 uppercase">{leagueData.code}</p>
                   <p className="text-sm text-gray-600 mt-1">Series Code</p>
                 </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <p className="text-3xl font-bold text-gray-900 capitalize">{leagueData.type}</p>
-                  <p className="text-sm text-gray-600 mt-1">Format</p>
+                <div className="text-center p-4 bg-slate-900/80 border border-white/15 backdrop-blur-xl rounded-lg">
+                  <p className="text-3xl font-bold text-amber-300 capitalize">{leagueData.type}</p>
+                  <p className="text-sm text-sky-100/70 mt-1">Format</p>
                 </div>
               </div>
 
               {/* Current Season Info */}
               {currentSeason && (
-                <div className="border-l-4 border-blue-500 bg-blue-50 p-4 rounded-r-lg">
+                <div className="border-l-4 border-amber-400 bg-slate-900/80 backdrop-blur-xl p-4 rounded-r-lg">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-blue-700 font-medium mb-1">CURRENT SEASON</p>
-                      <p className="text-xl font-bold text-gray-900">{currentSeason.name}</p>
+                      <p className="text-sm text-amber-400 font-medium mb-1">CURRENT SEASON</p>
+                      <p className="text-xl font-bold text-white">{currentSeason.name}</p>
                       {dateRange && (
-                        <p className="text-sm text-gray-600 mt-1">📅 {dateRange}</p>
+                        <p className="text-sm text-sky-100/70 mt-1">📅 {dateRange}</p>
                       )}
                     </div>
                     <Link 
                       href={`#`}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                      className="px-4 py-2 bg-amber-950/60 text-amber-200 border border-amber-400/30 rounded-lg hover:bg-amber-900/60 hover:border-amber-400/50 transition-colors text-sm font-medium"
                     >
                       View Matches
                     </Link>
@@ -669,40 +675,40 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
               {/* News Section */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900">Latest News</h2>
-                  <Link href="/news" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                  <h2 className="text-xl font-semibold text-white">Latest News</h2>
+                  <Link href="/news" className="text-sm text-amber-400 hover:text-amber-300 font-medium">
                     View All →
                   </Link>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* News items would come from your news API */}
-                  <div className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors cursor-pointer">
+                  <div className="bg-slate-900/80 border border-white/15 backdrop-blur-xl rounded-lg p-4 hover:bg-slate-800/80 hover:border-amber-400/30 transition-colors cursor-pointer">
                     <div className="flex gap-4">
-                      <div className="w-24 h-24 bg-gray-200 rounded-lg flex-shrink-0"></div>
+                      <div className="w-24 h-24 bg-slate-800/50 rounded-lg flex-shrink-0"></div>
                       <div className="flex-1">
-                        <h3 className="font-medium text-gray-900 line-clamp-2 mb-2">
+                        <h3 className="font-medium text-white line-clamp-2 mb-2">
                           {leagueData.name} updates and latest news will appear here
                         </h3>
-                        <p className="text-xs text-gray-500">Just now</p>
+                        <p className="text-xs text-sky-100/60">Just now</p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors cursor-pointer">
+                  <div className="bg-slate-900/80 border border-white/15 backdrop-blur-xl rounded-lg p-4 hover:bg-slate-800/80 hover:border-amber-400/30 transition-colors cursor-pointer">
                     <div className="flex gap-4">
-                      <div className="w-24 h-24 bg-gray-200 rounded-lg flex-shrink-0"></div>
+                      <div className="w-24 h-24 bg-slate-800/50 rounded-lg flex-shrink-0"></div>
                       <div className="flex-1">
-                        <h3 className="font-medium text-gray-900 line-clamp-2 mb-2">
+                        <h3 className="font-medium text-white line-clamp-2 mb-2">
                           Team announcements and squad updates
                         </h3>
-                        <p className="text-xs text-gray-500">2 hours ago</p>
+                        <p className="text-xs text-sky-100/60">2 hours ago</p>
                       </div>
                     </div>
                   </div>
                 </div>
                 
-                <p className="text-sm text-gray-500 mt-4 text-center">
+                <p className="text-sm text-sky-100/60 mt-4 text-center">
                   News integration coming soon. Connect your news API to show real articles.
                 </p>
               </div>
@@ -710,23 +716,23 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
               {/* Recent Seasons */}
               {seasons.length > 0 && (
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Seasons</h2>
+                  <h2 className="text-xl font-semibold text-white mb-4">Recent Seasons</h2>
                   <div className="space-y-2">
                     {seasons.slice(0, 5).map((season) => (
                       <div
                         key={season.id}
-                        className="flex items-center justify-between bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors"
+                        className="flex items-center justify-between bg-slate-900/80 border border-white/15 backdrop-blur-xl rounded-lg p-3 hover:bg-slate-800/80 hover:border-amber-400/30 transition-colors"
                       >
                         <div className="flex items-center gap-3">
-                          <p className="font-medium text-gray-900">{season.name}</p>
+                          <p className="font-medium text-white">{season.name}</p>
                           {season.id === currentSeason?.id && (
-                            <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded">
+                            <span className="px-2 py-0.5 bg-amber-950/60 text-amber-300 border border-amber-400/30 text-xs font-medium rounded">
                               Current
                             </span>
                           )}
                         </div>
                         {season.starting_at && (
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-sky-100/70">
                             {new Date(season.starting_at).getFullYear()}
                           </p>
                         )}
@@ -908,16 +914,16 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
           {activeTab === 'news' && (
             <div className="p-6">
               <div className="text-center py-12">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-900/80 border border-white/15 backdrop-blur-xl rounded-full mb-4">
+                  <svg className="w-8 h-8 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">News & Updates</h3>
-                <p className="text-gray-600">
+                <h3 className="text-lg font-medium text-white mb-2">News & Updates</h3>
+                <p className="text-sky-100/80">
                   Latest news, updates and articles about {leagueData.name}
                 </p>
-                <p className="text-sm text-gray-500 mt-4">
+                <p className="text-sm text-sky-100/60 mt-4">
                   News articles will be displayed here
                 </p>
               </div>
@@ -1169,6 +1175,8 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
           )}
         </div>
       </div>
+      
+      <Footer />
     </>
   )
 }
