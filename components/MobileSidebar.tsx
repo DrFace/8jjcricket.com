@@ -123,18 +123,17 @@ export default function MobileSidebar() {
                         <Link
                             href="/"
                             onClick={() => setOpen(false)}
-                            className="flex items-center gap-2"
+                            className="flex items-center justify-between gap-2"
                         >
                             <Image
                                 src="/8jjlogo.png"
                                 alt="8jjcricket logo"
-                                width={36}
-                                height={36}
+                                width={40}
+                                height={40}
                                 priority
                             />
-                            <div className="leading-tight">
+                            <div className="leading-tight flex-1 text-center">
                                 <div className="text-sm font-semibold text-white">8jjcricket</div>
-                                <div className="text-[11px] text-white/60">Mobile Menu</div>
                             </div>
                         </Link>
 
