@@ -56,25 +56,15 @@ export default function ODIRankingsPage() {
         <h1 className="text-lg font-extrabold mb-4">ICC ODI Team Rankings</h1>
         <MobileTabBar tabs={rankingTabs} />
         {men.length > 0 ? (
-          <RankingTable
-            data={men}
-            title="Men Rankings"
-            onViewAll={() =>
-              console.log("View All need to change this function")
-            }
-          />
+          <RankingTable data={men} title="Men Rankings" />
         ) : (
-          <div className="card text-gray-500 text-center">No men's rankings available</div>
+          <div className="card text-gray-500 text-center">
+            No men's rankings available
+          </div>
         )}
 
         {women.length > 0 ? (
-          <RankingTable
-            data={women}
-            title="Women Rankings"
-            onViewAll={() =>
-              console.log("View All need to change this function")
-            }
-          />
+          <RankingTable data={women} title="Women Rankings" />
         ) : (
           <div className="card text-gray-500 text-center">
             No women's rankings available
