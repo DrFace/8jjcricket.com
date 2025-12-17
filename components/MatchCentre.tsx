@@ -136,7 +136,7 @@ export default function MatchCentre() {
 
                             {!recentLoading && !recentError && recentFixtures.length > 0 && (
                                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                                    {recentFixtures.slice(0, 2).map((f) => (
+                                    {recentFixtures.slice(0, 6).map((f) => (
                                         <LiveCard key={f.id} f={f} />
                                     ))}
 
