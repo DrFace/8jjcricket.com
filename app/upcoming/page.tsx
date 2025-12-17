@@ -6,6 +6,9 @@ import TeamBadge from '@/components/TeamBadge'
 import { formatDate } from '@/lib/utils'
 import type { Fixture } from '@/types/fixture'
 import BetButton from '@/components/BetButton'
+import DesktopOnly from '@/components/DesktopOnly'
+import TopNav from '@/components/TopNav'
+import Footer from '@/components/Footer'
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json())
 
@@ -81,8 +84,6 @@ function FixtureCard({ f }: { f: Fixture }) {
             className="col-span-2 justify-self-end text-right"
           />
         </div>
-
-    
       </div>
     </div>
   )
@@ -327,8 +328,7 @@ function Calendar({
 }
 
 /**
- * UpcomingPage lists upcoming cricket fixtures. It adds SEO metadata via
- * in-line `<title>` and `<meta>` tags.
+ * UpcomingPage lists upcoming cricket fixtures.
  */
 export default function UpcomingPage() {
   const { data, error, isLoading } = useSWR('/api/upcoming', fetcher)
@@ -370,120 +370,102 @@ export default function UpcomingPage() {
     )
   }, [sortedFixtures, selectedDate])
 
-  // early-return states (after hooks)
-
-  if (error)
-    return (
-      <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <div className="card">Failed to load upcoming fixtures.</div>
-      </>
-    )
-
-  if (isLoading)
-    return (
-      <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <div className="card space-y-4 animate-pulse">
-          <div className="h-5 w-40 rounded bg-gray-200" />
-          <div className="h-4 w-64 rounded bg-gray-200" />
-          <div className="mt-4 h-20 rounded bg-gray-200" />
-        </div>
-      </>
-    )
-
-  if (!fixtures.length)
-    return (
-      <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <div className="card">No upcoming matches right now.</div>
-      </>
-    )
-
   return (
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
 
-      <div className="flex flex-col-reverse gap-6 lg:flex-row">
-        {/* LEFT: heading + fixtures grid */}
-        <main className="flex-1 space-y-5">
-          {/* Heading + nav pills */}
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold tracking-tight">
-                Upcoming Matches
-              </h1>
-              <p className="mt-1 text-sm text-gray-500">
-                Stay ahead of the action with the next fixtures on 8jjcricket.
-              </p>
+      <TopNav />
+
+      <DesktopOnly>
+        <div className="flex flex-col-reverse gap-6 lg:flex-row">
+          {/* LEFT: heading + fixtures grid */}
+          <main className="flex-1 space-y-5">
+            {/* Heading + nav pills */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h1 className="text-2xl font-semibold tracking-tight">
+                  Upcoming Matches
+                </h1>
+                <p className="mt-1 text-sm text-gray-500">
+                  Stay ahead of the action with the next fixtures on 8jjcricket.
+                </p>
+              </div>
+
+              <div className="inline-flex items-center gap-1 rounded-full bg-white border border-gray-200 px-2 py-1 shadow-sm">
+                <a
+                  href="/"
+                  className="px-3 py-1 text-sm text-gray-600 rounded-full hover:text-blue-600 transition"
+                >
+                  Live
+                </a>
+
+                <span className="px-3 py-1 text-sm font-semibold rounded-full bg-blue-600 text-white shadow">
+                  Upcoming
+                </span>
+
+                <a
+                  href="/recent"
+                  className="px-3 py-1 text-sm text-gray-600 rounded-full hover:text-blue-600 transition"
+                >
+                  Recent
+                </a>
+              </div>
             </div>
 
-            <div className="inline-flex items-center gap-1 rounded-full bg-white border border-gray-200 px-2 py-1 shadow-sm">
-              <a
-                href="/"
-                className="px-3 py-1 text-sm text-gray-600 rounded-full hover:text-blue-600 transition"
-              >
-                Live
-              </a>
+            {/* Fixtures grid */}
+            {error ? (
+              <div className="card">Failed to load upcoming fixtures.</div>
+            ) : isLoading ? (
+              <div className="card space-y-4 animate-pulse">
+                <div className="h-5 w-40 rounded bg-gray-200" />
+                <div className="h-4 w-64 rounded bg-gray-200" />
+                <div className="mt-4 h-20 rounded bg-gray-200" />
+              </div>
+            ) : !fixtures.length ? (
+              <div className="card">No upcoming matches right now.</div>
+            ) : filteredFixtures.length === 0 ? (
+              <div className="card text-sm text-gray-600">
+                No matches found for this date. Try another day or clear the
+                filter.
+              </div>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+                {filteredFixtures.map((f) => (
+                  <FixtureCard key={f.id} f={f} />
+                ))}
+              </div>
+            )}
+          </main>
 
-              <span className="px-3 py-1 text-sm font-semibold rounded-full bg-blue-600 text-white shadow">
-                Upcoming
-              </span>
+          {/* RIGHT: calendar / date filter */}
+          <aside className="lg:w-72">
+            <div className="card space-y-4">
+              <div>
+                <h2 className="text-sm font-semibold tracking-tight">
+                  Filter by date
+                </h2>
+                <p className="mt-1 text-xs text-gray-500">
+                  Pick a day to see matches scheduled on that date.
+                </p>
+              </div>
 
-              <a
-                href="/recent"
-                className="px-3 py-1 text-sm text-gray-600 rounded-full hover:text-blue-600 transition"
-              >
-                Recent
-              </a>
+              <Calendar
+                selectedDate={selectedDate}
+                onSelectDate={setSelectedDate}
+                minDate={minDate}
+                maxDate={maxDate}
+              />
+
+              <div className="mt-2 flex justify-end border-t border-gray-100 pt-3 dark:border-gray-800">
+                <BetButton />
+              </div>
             </div>
-          </div>
+          </aside>
+        </div>
+      </DesktopOnly>
 
-          {/* Fixtures grid */}
-          {filteredFixtures.length === 0 ? (
-            <div className="card text-sm text-gray-600">
-              No matches found for this date. Try another day or clear the
-              filter.
-            </div>
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
-              {filteredFixtures.map((f) => (
-                <FixtureCard key={f.id} f={f} />
-              ))}
-            </div>
-          )}
-        </main>
-
-        {/* RIGHT: calendar / date filter */}
-        <aside className="lg:w-72">
-          <div className="card space-y-4">
-            <div>
-              <h2 className="text-sm font-semibold tracking-tight">
-                Filter by date
-              </h2>
-              <p className="mt-1 text-xs text-gray-500">
-                Pick a day to see matches scheduled on that date.
-              </p>
-            </div>
-
-            <Calendar
-              selectedDate={selectedDate}
-              onSelectDate={setSelectedDate}
-              minDate={minDate}
-              maxDate={maxDate}
-            />
-
-            {/* Bet button under the calendar, aligned to the right */}
-            <div className="mt-2 flex justify-end border-t border-gray-100 pt-3 dark:border-gray-800">
-              <BetButton />
-            </div>
-          </div>
-        </aside>
-      </div>
+      <Footer />
     </>
   )
 }
