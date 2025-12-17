@@ -30,6 +30,7 @@ export default function TopNav() {
 
                     <nav className="hidden gap-6 text-[15px] font-semibold text-sky-100/90 md:flex">
                         <Link href="/" className="hover:text-amber-300">Home</Link>
+                        <Link href="/livescore" className="hover:text-amber-300">Live Score</Link>
                         <Link href="/archive" className="hover:text-amber-300">Archive</Link>
                         <Link href="/series" className="hover:text-amber-300">Series</Link>
                         <Link href="/players" className="hover:text-amber-300">Players</Link>
