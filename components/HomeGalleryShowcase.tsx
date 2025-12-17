@@ -1,5 +1,4 @@
 // components/HomeGalleryShowcase.tsx
-import Link from "next/link";
 import HomeGalleryShowcaseClient from "./HomeGalleryShowcaseClient";
 
 type GalleryPhoto = {
@@ -105,12 +104,12 @@ export default async function HomeGalleryShowcase() {
     // Portraits
     const portraits = photos.filter((p) => p.orientation === "portrait").sort(byNewest);
 
-    // Landscapes for fallback slideshow
-    const landscapes = photos.filter((p) => p.orientation === "landscape").sort(byNewest).slice(0, 5);
+    // Landscapes for slideshow (ALL, not sliced)
+    const landscapes = photos.filter((p) => p.orientation === "landscape").sort(byNewest);
 
     if (!portraits.length && !landscapes.length) return null;
 
-    // Build map: portraitId -> bannerImageUrl
+    // portraitId -> bannerImageUrl (used for LEFT hover image only)
     const bannerByPortraitId: Record<number, string> = {};
     const normalizedBanners = (bannersRaw as any[]).map((b) => {
         const bannerUrl = normalizeImageUrl(b?.banner_image_url) || b?.banner_image_url;
@@ -127,7 +126,6 @@ export default async function HomeGalleryShowcase() {
         <HomeGalleryShowcaseClient
             portraits={portraits.map((p) => ({ id: p.id, image_url: p.image_url }))}
             bannerByPortraitId={bannerByPortraitId}
-            bannersList={normalizedBanners}
             landscapes={landscapes.map((p) => ({ src: p.image_url }))}
             leftDefaultSrc="/AMD.png"
         />
