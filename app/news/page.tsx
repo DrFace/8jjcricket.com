@@ -4,6 +4,10 @@ import { useState } from "react"
 import useSWR from "swr"
 import Link from "next/link"
 
+import DesktopOnly from "@/components/DesktopOnly"
+import TopNav from "@/components/TopNav"
+import Footer from "@/components/Footer"
+
 type Category = {
     id: number
     name: string
@@ -19,23 +23,16 @@ type Article = {
     published_at: string | null
 }
 
-// Same pattern as the single article page
-const SITE_ORIGIN =
-    process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com"
+const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com"
 
-// SWR fetcher – these URLs are relative (e.g. "/api/news")
 const fetcher = (url: string) =>
     fetch(url, { cache: "no-store" }).then((r) => {
-        if (!r.ok) {
-            throw new Error(`Failed to fetch ${url}: ${r.status} ${r.statusText}`)
-        }
+        if (!r.ok) throw new Error(`Failed to fetch ${url}: ${r.status} ${r.statusText}`)
         return r.json()
     })
 
-// Reuse the SAME normalizeImageUrl logic as in [slug]/page.tsx
 function normalizeImageUrl(url: string | null): string | null {
     if (!url) return null
-
     try {
         const u = new URL(url, SITE_ORIGIN)
         let pathname = u.pathname
@@ -55,7 +52,6 @@ function normalizeImageUrl(url: string | null): string | null {
 export default function NewsPage() {
     const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
-    // These hit /api/news on the SAME origin (Next), which your proxy sends to Laravel
     const newsUrl = activeCategory
         ? `/api/news?category=${encodeURIComponent(activeCategory)}`
         : `/api/news`
@@ -63,121 +59,125 @@ export default function NewsPage() {
     const { data: categories } = useSWR("/api/news/categories", fetcher)
     const { data, error, isLoading } = useSWR(newsUrl, fetcher)
 
-    const title = "Latest News | 8jjcricket"
-    const description =
-        "Stay updated with the latest cricket news and articles on 8jjcricket."
-
     const articles: Article[] = (data?.data || []) as Article[]
 
     return (
-        <>
-            {/* If this is an /app route, prefer the metadata API.
-                Leaving this here since you already had it. */}
-            <title>{title}</title>
-            <meta name="description" content={description} />
+        <DesktopOnly>
+            <div className="min-h-screen flex flex-col bg-transparent text-slate-100">
+                <TopNav />
 
-            <main className="min-h-screen bg-gray-50 text-gray-900 px-4 py-10">
-                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-                    {/* LEFT SIDEBAR */}
-                    <aside className="md:col-span-1 bg-white rounded-2xl p-4 border border-gray-200 h-fit sticky top-10">
-                        <h2 className="text-lg font-semibold mb-3">Categories</h2>
+                <main className="flex-1 px-4 py-10">
+                    <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+                        {/* LEFT SIDEBAR */}
+                        <aside className="md:col-span-1 h-fit sticky top-28">
+                            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
+                                <h2 className="text-lg font-semibold mb-3 text-slate-100">Categories</h2>
 
-                        <button
-                            onClick={() => setActiveCategory(null)}
-                            className={`block w-full text-left px-3 py-2 rounded-lg mb-1 ${activeCategory === null
-                                ? "bg-blue-600 text-white"
-                                : "hover:bg-gray-100"
-                                }`}
-                        >
-                            All News
-                        </button>
+                                <button
+                                    onClick={() => setActiveCategory(null)}
+                                    className={`block w-full text-left px-3 py-2 rounded-xl mb-1 transition ${activeCategory === null
+                                        ? "bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 text-white shadow-md shadow-blue-500/20"
+                                        : "text-slate-200 hover:bg-white/5"
+                                        }`}
+                                >
+                                    All News
+                                </button>
 
-                        {categories?.data?.map((cat: Category) => (
-                            <button
-                                key={cat.id}
-                                onClick={() => setActiveCategory(cat.slug)}
-                                className={`block w-full text-left px-3 py-2 rounded-lg mb-1 ${activeCategory === cat.slug
-                                    ? "bg-blue-600 text-white"
-                                    : "hover:bg-gray-100"
-                                    }`}
-                            >
-                                {cat.name}
-                            </button>
-                        ))}
-                    </aside>
-
-                    {/* MAIN CONTENT */}
-                    <section className="md:col-span-3">
-                        <h1 className="text-3xl md:text-4xl font-bold mb-6">
-                            {activeCategory ? `News in "${activeCategory}"` : "Latest News"}
-                        </h1>
-
-                        {error ? (
-                            <p className="text-gray-500">Failed to load news articles.</p>
-                        ) : isLoading ? (
-                            <p className="text-gray-500">Loading news…</p>
-                        ) : articles.length === 0 ? (
-                            <p className="text-gray-500">No news found.</p>
-                        ) : (
-                            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-                                {articles.map((item) => {
-                                    const imgSrc = normalizeImageUrl(item.image_url)
-
-                                    return (
-                                        <article
-                                            key={item.id}
-                                            className="rounded-2xl border border-gray-200 bg-white p-4 hover:border-blue-500 transition"
-                                        >
-                                            {imgSrc && (
-                                                <div className="mb-3 overflow-hidden rounded-xl">
-                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                    <img
-                                                        src={imgSrc}
-                                                        alt={item.title}
-                                                        className="w-full h-40 object-cover"
-                                                    />
-                                                </div>
-                                            )}
-
-                                            <h2 className="text-xl font-semibold mb-2">
-                                                <Link
-                                                    href={`/news/${item.slug}`}
-                                                    className="hover:text-blue-600"
-                                                >
-                                                    {item.title}
-                                                </Link>
-                                            </h2>
-
-                                            {item.published_at && (
-                                                <p className="text-xs text-gray-500 mb-2">
-                                                    {new Date(
-                                                        item.published_at
-                                                    ).toLocaleString()}
-                                                </p>
-                                            )}
-
-                                            {item.excerpt && (
-                                                <p className="text-sm text-gray-700">
-                                                    {item.excerpt}
-                                                </p>
-                                            )}
-
-                                            <div className="mt-4">
-                                                <Link
-                                                    href={`/news/${item.slug}`}
-                                                    className="text-sm font-medium text-blue-600 hover:underline"
-                                                >
-                                                    Read more..
-                                                </Link>
-                                            </div>
-                                        </article>
-                                    )
-                                })}
+                                {categories?.data?.map((cat: Category) => (
+                                    <button
+                                        key={cat.id}
+                                        onClick={() => setActiveCategory(cat.slug)}
+                                        className={`block w-full text-left px-3 py-2 rounded-xl mb-1 transition ${activeCategory === cat.slug
+                                            ? "bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 text-white shadow-md shadow-blue-500/20"
+                                            : "text-slate-200 hover:bg-white/5"
+                                            }`}
+                                    >
+                                        {cat.name}
+                                    </button>
+                                ))}
                             </div>
-                        )}
-                    </section>
-                </div>
-            </main>
-        </>
+                        </aside>
+
+                        {/* MAIN CONTENT */}
+                        <section className="md:col-span-3">
+                            <h1 className="text-3xl md:text-4xl font-bold mb-6 text-slate-100">
+                                {activeCategory ? `News in "${activeCategory}"` : "Latest News"}
+                            </h1>
+
+                            {error ? (
+                                <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 text-slate-300">
+                                    Failed to load news articles.
+                                </div>
+                            ) : isLoading ? (
+                                <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 text-slate-300">
+                                    Loading news…
+                                </div>
+                            ) : articles.length === 0 ? (
+                                <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 text-slate-300">
+                                    No news found.
+                                </div>
+                            ) : (
+                                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+                                    {articles.map((item) => {
+                                        const imgSrc = normalizeImageUrl(item.image_url)
+
+                                        return (
+                                            <article
+                                                key={item.id}
+                                                className="group rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 transition
+                                                           hover:border-blue-400/40 hover:shadow-[0_0_0_1px_rgba(59,130,246,0.25)]"
+                                            >
+                                                {imgSrc && (
+                                                    <div className="mb-3 overflow-hidden rounded-xl border border-white/10">
+                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                        <img
+                                                            src={imgSrc}
+                                                            alt={item.title}
+                                                            className="w-full h-40 object-cover"
+                                                        />
+                                                    </div>
+                                                )}
+
+                                                <h2 className="text-xl font-semibold mb-2 text-slate-100">
+                                                    <Link
+                                                        href={`/news/${item.slug}`}
+                                                        className="hover:text-sky-400 transition"
+                                                    >
+                                                        {item.title}
+                                                    </Link>
+                                                </h2>
+
+                                                {item.published_at && (
+                                                    <p className="text-xs text-slate-400 mb-2">
+                                                        {new Date(item.published_at).toLocaleString()}
+                                                    </p>
+                                                )}
+
+                                                {item.excerpt && (
+                                                    <p className="text-sm text-slate-300">
+                                                        {item.excerpt}
+                                                    </p>
+                                                )}
+
+                                                <div className="mt-4">
+                                                    <Link
+                                                        href={`/news/${item.slug}`}
+                                                        className="text-sm font-medium text-sky-400 hover:underline"
+                                                    >
+                                                        Read more..
+                                                    </Link>
+                                                </div>
+                                            </article>
+                                        )
+                                    })}
+                                </div>
+                            )}
+                        </section>
+                    </div>
+                </main>
+
+                <Footer />
+            </div>
+        </DesktopOnly>
     )
 }

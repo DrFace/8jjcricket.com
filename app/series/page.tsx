@@ -3,6 +3,9 @@
 import { useState } from 'react'
 import useSWR from 'swr'
 import Link from 'next/link'
+import TopNav from '@/components/TopNav'
+import BottomNav from '@/components/BottomNav'
+import Footer from '@/components/Footer'
 
 interface League {
   seasons: any[]
@@ -176,9 +179,13 @@ export default function SeriesPage() {
   }
 
   return (
+   
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
+      
+      <TopNav />
+      <BottomNav />
       
       <div className="space-y-6">
         {/* Tabs */}
@@ -341,6 +348,8 @@ export default function SeriesPage() {
           </div>
         )}
       </div>
+      
+      <Footer />
     </>
   )
 }
