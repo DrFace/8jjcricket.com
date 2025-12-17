@@ -1,6 +1,6 @@
 // components/HomeGalleryShowcase.tsx
 import Link from "next/link";
-import BrandBannerHoverBlock from "./BrandBannerHoverBlock";
+import HomeGalleryShowcaseClient from "./HomeGalleryShowcaseClient";
 
 type GalleryPhoto = {
     id: number;
@@ -111,8 +111,6 @@ export default async function HomeGalleryShowcase() {
     if (!portraits.length && !landscapes.length) return null;
 
     // Build map: portraitId -> bannerImageUrl
-    // API expected item shape:
-    // { banner_image_url: string, portrait_image: { id: number } }
     const bannerByPortraitId: Record<number, string> = {};
     const normalizedBanners = (bannersRaw as any[]).map((b) => {
         const bannerUrl = normalizeImageUrl(b?.banner_image_url) || b?.banner_image_url;
@@ -126,42 +124,12 @@ export default async function HomeGalleryShowcase() {
     }
 
     return (
-        <div className="relative mx-auto h-[80vh] w-full max-w-7xl">
-            {/* Small "Show all" button in top-right */}
-            <div className="absolute right-4 top-4 z-20">
-                <Link
-                    href="/gallery"
-                    className="rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/80 ring-1 ring-white/15 backdrop-blur hover:bg-white/15"
-                >
-                    Show all
-                </Link>
-            </div>
-
-            {/* Background glass layer */}
-            <div className="absolute inset-0 rounded-3xl bg-black/25 backdrop-blur-[2px]" />
-
-            {/* LEFT static image */}
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-[46%]">
-                <div
-                    className="absolute inset-0 bg-contain bg-left-bottom bg-no-repeat opacity-95"
-                    style={{ backgroundImage: "url(/AMD.png)" }}
-                />
-                <div
-                    className="absolute inset-0"
-                    style={{
-                        WebkitMaskImage: "linear-gradient(to right, black 0%, black 75%, transparent 100%)",
-                        maskImage: "linear-gradient(to right, black 0%, black 75%, transparent 100%)",
-                    }}
-                />
-            </div>
-
-            {/* RIGHT content area (1 + 2 controlled together) */}
-            <BrandBannerHoverBlock
-                portraits={portraits.map((p) => ({ id: p.id, image_url: p.image_url }))}
-                bannerByPortraitId={bannerByPortraitId}
-                bannersList={normalizedBanners}
-                landscapes={landscapes.map((p) => ({ src: p.image_url }))}
-            />
-        </div>
+        <HomeGalleryShowcaseClient
+            portraits={portraits.map((p) => ({ id: p.id, image_url: p.image_url }))}
+            bannerByPortraitId={bannerByPortraitId}
+            bannersList={normalizedBanners}
+            landscapes={landscapes.map((p) => ({ src: p.image_url }))}
+            leftDefaultSrc="/AMD.png"
+        />
     );
 }
