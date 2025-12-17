@@ -6,9 +6,7 @@ import RankingTable from "@/components/mobile/RankingTable";
 import { groupByGender } from "@/src/utils/groupByGender";
 import { RankingEntry } from "@/types/rankings";
 
-
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
-
 
 /**
  * T20IRankingsPage displays ICC T20I team rankings for men and women. It uses
@@ -57,26 +55,18 @@ export default function T20IRankingsPage() {
         <h1 className="text-lg font-extrabold mb-4">ICC T20I Team Rankings</h1>
         <MobileTabBar tabs={rankingTabs} />
         {men.length > 0 ? (
-          <RankingTable
-            data={men}
-            title="Men Rankings"
-            onViewAll={() =>
-              console.log("View All need to change this function")
-            }
-          />
+          <RankingTable data={men} title="Men Rankings" />
         ) : (
-          <div className="card text-gray-500 text-center">No men's rankings available</div>
+          <div className="card text-gray-500 text-center">
+            No men's rankings available
+          </div>
         )}
         {women.length > 0 ? (
-          <RankingTable
-            data={women}
-            title="Women Rankings"
-            onViewAll={() =>
-              console.log("View All need to change this function")
-            }
-          />
+          <RankingTable data={women} title="Women Rankings" />
         ) : (
-          <div className="card text-gray-500 text-center">No women's rankings available</div>
+          <div className="card text-gray-500 text-center">
+            No women's rankings available
+          </div>
         )}
       </div>
     </>
