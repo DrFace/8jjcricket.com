@@ -284,7 +284,7 @@ export default function TeamsPage() {
               </span>
             </div>
             <p className="text-sm text-sky-100/70 mb-5 bg-black/30 border-l-4 border-amber-400/50 pl-4 py-2.5 rounded backdrop-blur-sm">
-              📋 Showing top {domesticLimited.length} domestic teams. Many more available via API.
+              📋 Showing top {domesticLimited.length} domestic teams. Many more available.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {domesticLimited.map((t) => (
