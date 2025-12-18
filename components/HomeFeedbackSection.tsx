@@ -97,7 +97,7 @@ export default function HomeFeedbackSection({
                         <li className="flex gap-2">
                             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" />
                             <p>
-                                Our open policy is the guiding compass for the OKVIP Alliance’s
+                                Our open policy is the guiding compass for the 8jjcricket Alliance’s
                                 growth. We put customers at the center and treat customer
                                 satisfaction as the measure of success. We want this openness to
                                 reach every member.
@@ -133,7 +133,7 @@ export default function HomeFeedbackSection({
 
                         <li className="flex gap-2">
                             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" />
-                            <p>OKVIP Alliance sincerely thanks you, valued members.</p>
+                            <p>8jjcricket Alliance sincerely thanks you, valued members.</p>
                         </li>
                     </ul>
                 </div>

@@ -62,7 +62,6 @@ export default function NewsPage() {
     const articles: Article[] = (data?.data || []) as Article[]
 
     return (
-        <DesktopOnly>
             <div className="min-h-screen flex flex-col bg-transparent text-slate-100">
                 <TopNav />
 
@@ -178,6 +177,5 @@ export default function NewsPage() {
 
                 <Footer />
             </div>
-        </DesktopOnly>
     )
 }
