@@ -85,9 +85,14 @@ export default async function ArticlePage({ params }: Props) {
                         <div className="max-w-3xl mx-auto">
                             <Link
                                 href="/news"
-                                className="text-sky-400 hover:underline transition"
+                                className="inline-flex items-center gap-2 rounded-full
+             bg-gradient-to-r from-[#FACC15] via-[#F97316] to-[#EA580C]
+             px-4 py-2 text-sm font-semibold text-black
+             shadow-lg shadow-amber-500/40
+             ring-1 ring-white/20
+             hover:brightness-110 active:scale-95"
                             >
-                                ← Back to news
+                                ← Back to News
                             </Link>
 
                             <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 text-slate-300">

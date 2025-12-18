@@ -1,5 +1,8 @@
 // app/gallery/page.tsx
 import Link from "next/link";
+import TopNav from "@/components/TopNav";
+import Footer from "@/components/Footer";
+import GalleryClient from "./GalleryClient";
 
 type GalleryCategory = {
     id: number;
@@ -79,9 +82,13 @@ async function fetchPhotos(): Promise<GalleryPhoto[]> {
 }
 
 export default async function GalleryPage() {
-    const [categories, albums, photosRaw] = await Promise.all([fetchCategories(), fetchAlbums(), fetchPhotos()]);
+    const [categories, albums, photosRaw] = await Promise.all([
+        fetchCategories(),
+        fetchAlbums(),
+        fetchPhotos(),
+    ]);
 
-    const photos = photosRaw
+    const photos: GalleryPhoto[] = photosRaw
         .map((p) => ({
             ...p,
             image_url: normalizeImageUrl(p.image_url) || p.image_url,
@@ -105,115 +112,71 @@ export default async function GalleryPage() {
         photosByAlbumSlug.get(aslug)!.push(p);
     }
 
+    const totalAlbums = albums.length;
+    const totalPhotos = photos.length;
+
     return (
-        <main className="min-h-screen bg-black text-white">
-            <div className="mx-auto w-full max-w-7xl px-4 py-8">
-                {/* Header */}
-                <div className="flex items-end justify-between gap-4">
-                    <div>
-                        <h1 className="text-2xl font-extrabold tracking-tight">Gallery</h1>
-                        <p className="mt-1 text-sm text-white/60">All images grouped by Categories and Albums</p>
-                    </div>
+        <>
+            <TopNav />
 
-                    <Link
-                        href="/"
-                        className="rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/80 ring-1 ring-white/15 hover:bg-white/15"
-                    >
-                        Back Home
-                    </Link>
-                </div>
+            <main className="min-h-screen bg-black text-white">
+                <div className="mx-auto w-full max-w-7xl px-4 py-8">
+                    {/* HERO */}
+                    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-6 sm:p-10">
+                        <div className="flex items-start justify-between gap-4">
+                            <div>
+                                <p className="text-xs font-semibold tracking-widest text-white/70">
+                                    8JJ SPORTS • GALLERY
+                                </p>
+                                <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">
+                                    Moments. Matches. Memories.
+                                </h1>
+                                <p className="mt-2 max-w-2xl text-sm text-white/65">
+                                    Browse images by category and album. Click any photo to view fullscreen.
+                                </p>
 
-                {/* Category quick links */}
-                {categories.length > 0 && (
-                    <div className="mt-6 flex flex-wrap gap-2">
-                        {categories.map((c) => (
-                            <a
-                                key={c.id}
-                                href={`#cat-${c.slug}`}
-                                className="rounded-full bg-white/5 px-3 py-1.5 text-xs font-semibold ring-1 ring-white/10 hover:bg-white/10"
+                                <div className="mt-5 flex flex-wrap gap-3 text-xs">
+                                    <span className="rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
+                                        {categories.length} Categories
+                                    </span>
+                                    <span className="rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
+                                        {totalAlbums} Albums
+                                    </span>
+                                    <span className="rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
+                                        {totalPhotos} Photos
+                                    </span>
+                                </div>
+                            </div>
+
+                            <Link
+                                href="/"
+                                className="shrink-0 rounded-full bg-white/10 px-4 py-2 text-[11px] font-semibold text-white/85 ring-1 ring-white/15 hover:bg-white/15"
                             >
-                                {c.name}
-                            </a>
-                        ))}
-                    </div>
-                )}
-
-                {/* Content */}
-                <div className="mt-8 space-y-10">
-                    {categories.length === 0 ? (
-                        <div className="rounded-2xl bg-white/5 p-8 text-sm text-white/60 ring-1 ring-white/10">
-                            No categories found.
+                                Back Home
+                            </Link>
                         </div>
-                    ) : (
-                        categories.map((cat) => {
-                            const catAlbums = albumsByCategoryId.get(cat.id) || [];
+                    </div>
 
-                            return (
-                                <section key={cat.id} id={`cat-${cat.slug}`} className="scroll-mt-24">
-                                    {/* Category title */}
-                                    <div className="mb-4 flex items-center justify-between">
-                                        <h2 className="text-lg font-extrabold">{cat.name}</h2>
-                                        <a href="#top" className="text-xs text-white/50 hover:text-white/80">
-                                            Back to top
-                                        </a>
-                                    </div>
-
-                                    {catAlbums.length === 0 ? (
-                                        <div className="rounded-2xl bg-white/5 p-6 text-sm text-white/60 ring-1 ring-white/10">
-                                            No albums in this category.
-                                        </div>
-                                    ) : (
-                                        <div className="space-y-8">
-                                            {catAlbums.map((album) => {
-                                                const albumPhotos = photosByAlbumSlug.get(album.slug) || [];
-
-                                                return (
-                                                    <div key={album.id}>
-                                                        {/* Album heading */}
-                                                        <div className="mb-3 flex items-center justify-between">
-                                                            <h3 className="text-sm font-bold text-white/90">{album.name}</h3>
-                                                            <span className="text-xs text-white/50">{albumPhotos.length} photos</span>
-                                                        </div>
-
-                                                        {albumPhotos.length === 0 ? (
-                                                            <div className="rounded-2xl bg-white/5 p-6 text-sm text-white/60 ring-1 ring-white/10">
-                                                                No photos in this album.
-                                                            </div>
-                                                        ) : (
-                                                            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                                                                {albumPhotos.map((p) => (
-                                                                    <a
-                                                                        key={p.id}
-                                                                        href={p.image_url}
-                                                                        target="_blank"
-                                                                        rel="noreferrer"
-                                                                        className="group relative overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 hover:ring-white/20"
-                                                                        aria-label="Open image"
-                                                                    >
-                                                                        <img
-                                                                            src={p.image_url}
-                                                                            alt=""
-                                                                            className="h-48 w-full object-cover transition group-hover:scale-[1.02]"
-                                                                            loading="lazy"
-                                                                        />
-                                                                    </a>
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    )}
-                                </section>
-                            );
-                        })
-                    )}
+                    {/* BODY */}
+                    <div className="mt-8">
+                        {categories.length === 0 ? (
+                            <div className="rounded-2xl bg-white/5 p-8 text-sm text-white/60 ring-1 ring-white/10">
+                                No categories found.
+                            </div>
+                        ) : (
+                            <GalleryClient
+                                categories={categories}
+                                albumsByCategoryId={Object.fromEntries(
+                                    Array.from(albumsByCategoryId.entries()).map(([k, v]) => [String(k), v])
+                                )}
+                                photosByAlbumSlug={Object.fromEntries(photosByAlbumSlug.entries())}
+                            />
+                        )}
+                    </div>
                 </div>
-            </div>
+            </main>
 
-            {/* anchor for "top" */}
-            <div id="top" />
-        </main>
+            <Footer />
+        </>
     );
 }
