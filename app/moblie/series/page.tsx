@@ -3,7 +3,6 @@
 import { useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
-import TopNav from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
 
@@ -213,7 +212,6 @@ export default function SeriesPage() {
       <title>{title}</title>
       <meta name="description" content={description} />
 
-      <TopNav />
       <BottomNav />
 
       <div className="space-y-6">
@@ -309,13 +307,13 @@ export default function SeriesPage() {
                       {/* Action Buttons */}
                       <div className="flex gap-2 mt-auto w-full">
                         <Link
-                          href={`/series/${league.id}`}
+                          href={`series/${league.id}`}
                           className="flex-1 px-3 py-1.5 text-xs font-medium text-amber-300 border border-amber-400/50 rounded hover:bg-amber-950/40 transition-colors backdrop-blur-sm"
                         >
                           Details
                         </Link>
                         <Link
-                          href={`/teams?league=${league.id}`}
+                          href={`teams?league=${league.id}`}
                           className="flex-1 px-3 py-1.5 text-xs font-medium text-black bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 rounded hover:brightness-110 transition-all shadow-lg"
                         >
                           Teams

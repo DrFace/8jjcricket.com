@@ -4,10 +4,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import NewsTicker from "@/components/NewsTicker";
-import { Megaphone, Zap, VolumeOff, Music2 } from "lucide-react";
+import { Megaphone, VolumeOff, Music2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 
-// --------- GLOBAL AUDIO SINGLETON (persists across route changes) ----------
 let globalAudio: HTMLAudioElement | null = null;
 
 function getGlobalAudio() {
@@ -17,41 +17,67 @@ function getGlobalAudio() {
         globalAudio = new Audio("/music/lastchristmas.mp3");
         globalAudio.loop = true;
         globalAudio.preload = "auto";
-        // Start muted initially to comply with autoplay policies
         globalAudio.muted = true;
     }
     return globalAudio;
 }
-// -------------------------------------------------------------------------
+
+function NavItem({
+    href,
+    label,
+    active,
+}: {
+    href: string;
+    label: string;
+    active: boolean;
+}) {
+    return (
+        <Link
+            href={href}
+            className={[
+                "relative px-1 py-1 transition-colors",
+                active ? "text-amber-300" : "text-sky-100/90 hover:text-amber-300",
+            ].join(" ")}
+            aria-current={active ? "page" : undefined}
+        >
+            {label}
+
+            {/* underline indicator */}
+            <span
+                className={[
+                    "pointer-events-none absolute left-0 right-0 -bottom-1 h-[2px] rounded-full transition-opacity",
+                    active ? "opacity-100 bg-amber-300" : "opacity-0 bg-amber-300",
+                ].join(" ")}
+            />
+        </Link>
+    );
+}
 
 export default function TopNav() {
+    const pathname = usePathname();
+
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [musicEnabled, setMusicEnabled] = useState(true);
     const [hasStarted, setHasStarted] = useState(false);
 
-    // Bind ref to the global audio once on mount
     useEffect(() => {
         const audio = getGlobalAudio();
         if (!audio) return;
         audioRef.current = audio;
 
-        // Attempt muted autoplay on mount (won't recreate audio on navigation)
         audio.muted = true;
 
         if (musicEnabled) {
             audio
                 .play()
                 .then(() => setHasStarted(true))
-                .catch(() => {
-                    // Autoplay may be blocked until user interaction
-                });
+                .catch(() => { });
         } else {
             audio.pause();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // run once
+    }, []);
 
-    // Start on first interaction (tap/click) if needed
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
@@ -75,7 +101,6 @@ export default function TopNav() {
         };
     }, [musicEnabled]);
 
-    // Keep audio in sync with state
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
@@ -100,9 +125,7 @@ export default function TopNav() {
 
         setMusicEnabled((prev) => !prev);
 
-        // Apply immediately for responsiveness
         if (!musicEnabled) {
-            // Turning ON
             audio.muted = false;
             try {
                 await audio.play();
@@ -112,28 +135,26 @@ export default function TopNav() {
                 audio.play().catch(() => { });
             }
         } else {
-            // Turning OFF
             audio.pause();
         }
     };
 
+    // helper: exact match
+    const isActive = (href: string) => pathname === href;
+
     return (
         <>
-            {/* NOTE: no <audio> element here to avoid recreation on route changes */}
-
             <div className="w-full border-b border-white/10 bg-black/40 backdrop-blur-xl">
                 <div className="flex w-full items-center gap-4 px-4 py-2 text-sm text-sky-100">
                     <div className="flex items-center gap-2">
                         <Megaphone className="h-5 w-5 text-amber-400" />
                     </div>
-
                     <div className="flex-1">
                         <NewsTicker />
                     </div>
                 </div>
             </div>
 
-            {/* sticky works inside the same scroll container */}
             <header className="sticky top-0 z-50 border-b border-white/10 bg-black/60 backdrop-blur-xl shadow-lg">
                 <div className="flex w-full items-center justify-between px-4 py-2">
                     <Link href="/" className="flex items-center gap-2 text-xl font-bold text-white">
@@ -141,31 +162,21 @@ export default function TopNav() {
                         <span>8jjcricket</span>
                     </Link>
 
-                    <nav className="hidden gap-6 text-[15px] font-semibold text-sky-100/90 md:flex">
-                        <Link href="/" className="hover:text-amber-300">Home</Link>
-                        <Link href="/livescore" className="hover:text-amber-300">Live Score</Link>
-                        <Link href="/archive" className="hover:text-amber-300">Archive</Link>
-                        <Link href="/series" className="hover:text-amber-300">Series</Link>
-                        <Link href="/players" className="hover:text-amber-300">Players</Link>
-                        <Link href="/minigames" className="hover:text-amber-300">Minigames</Link>
-                        <Link href="/news" className="hover:text-amber-300">News</Link>
+                    <nav className="hidden gap-6 text-[15px] font-semibold md:flex">
+                        <NavItem href="/" label="Home" active={isActive("/")} />
+                        <NavItem href="/livescore" label="Live Score" active={isActive("/livescore")} />
+                        <NavItem href="/archive" label="Archive" active={isActive("/archive")} />
+                        <NavItem href="/series" label="Series" active={isActive("/series")} />
+                        <NavItem href="/players" label="Players" active={isActive("/players")} />
+                        <NavItem href="/minigames" label="Minigames" active={isActive("/minigames")} />
+                        <NavItem href="/news" label="News" active={isActive("/news")} />
                     </nav>
 
                     <div className="flex items-center gap-3">
-                        {/* Music toggle button (left of Play Now) */}
                         <button
                             type="button"
                             onClick={toggleMusic}
-                            className="
-                inline-flex items-center justify-center
-                h-9 w-9
-                rounded-full
-                border border-white/15
-                bg-white/5
-                text-sm font-semibold text-white
-                hover:bg-white/10
-                active:scale-95
-              "
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-sm font-semibold text-white hover:bg-white/10 active:scale-95"
                             aria-label="Toggle music"
                             aria-pressed={musicEnabled}
                         >

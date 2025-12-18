@@ -1,49 +1,92 @@
+
 "use client";
 
-import { useEffect, useState } from "react";
-import MatchCentre from "@/components/MatchCentre";
+import { useState } from "react";
+import useSWR from "swr";
+import ArchhiveCard from "@/components/ArchhiveCard";
+import LiveCard from "@/components/LiveCard";
 
-type LiveScorePayload = {
-    matches: any[]; // Replace with your actual types
-    updatedAt?: string;
-};
+const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
-export default function LiveScoreClient() {
-    const [data, setData] = useState<LiveScorePayload | null>(null);
-    const [error, setError] = useState<string | null>(null);
+export default function DesktopScoreClient() {
+  const [activeTab, setActiveTab] = useState("Live");
+  const { data, error } = useSWR("/api/live", fetcher);
 
-    async function load() {
-        try {
-            setError(null);
-            const res = await fetch("/api/livescore", { cache: "no-store" });
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const json = (await res.json()) as LiveScorePayload;
-            setData(json);
-        } catch (e: any) {
-            setError(e?.message ?? "Failed to load live scores");
-        }
-    }
+  const liveData = data?.data?.live ?? [];
+  const upcomingData = data?.data?.upcoming ?? [];
+  const recentData = data?.data?.recent ?? [];
 
-    useEffect(() => {
-        load();
-        const t = setInterval(load, 15000); // poll every 15s
-        return () => clearInterval(t);
-    }, []);
+  const tabs = ["Live", "Upcoming", "Recent"];
 
-    if (error) {
-        return (
-            <div className="rounded-md border p-4">
-                <p className="font-medium">Live scores unavailable</p>
-                <p className="text-sm opacity-80">{error}</p>
-                <button className="mt-3 rounded-md border px-3 py-2 text-sm" onClick={load}>
-                    Retry
-                </button>
-            </div>
-        );
-    }
+  return (
+    <div className="min-h-screen bg-slate-900 bg-gradient-to-br from-slate-900 to-black/80 pt-4 pb-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8">
+        {/* Tabs */}
+        <div className="flex justify-center gap-4 mb-8">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition ${
+                activeTab === tab
+                  ? "bg-amber-400 text-black shadow"
+                  : "bg-black/40 text-white hover:bg-amber-300/20"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
 
-    if (!data) return <div className="rounded-md border p-4">Loading live scores…</div>;
+        {/* Content */}
+        {error && <div className="text-red-400">Failed to load data.</div>}
+        {!data && !error && <div className="text-amber-300">Loading…</div>}
 
-    // CASE B: pass props into MatchCentre
-    return <MatchCentre />;
+        {activeTab === "Live" && (
+          <div>
+            <h1 className="text-3xl font-extrabold text-amber-400 mb-6">Live Scores</h1>
+            {liveData.length > 0 ? (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {liveData.map((match: any) => (
+                  <ArchhiveCard key={match.id} f={match} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-gray-400">No live matches available.</div>
+            )}
+          </div>
+        )}
+
+        {activeTab === "Upcoming" && (
+          <div>
+            <h1 className="text-3xl font-extrabold text-amber-400 mb-6">Upcoming Matches</h1>
+            {upcomingData.length > 0 ? (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {upcomingData.map((fixture: any) => (
+                  <ArchhiveCard key={fixture.id} f={fixture} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-gray-400">No upcoming matches found.</div>
+            )}
+          </div>
+        )}
+
+        {activeTab === "Recent" && (
+          <div>
+            <h1 className="text-3xl font-extrabold text-amber-400 mb-6">Recent Results</h1>
+            {recentData.length > 0 ? (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+               {recentData.slice(0, 6).map((f: any) => (
+                 <ArchhiveCard key={f.id} f={f} />
+              ))}
+              </div>
+            ) : (
+              <div className="text-gray-400">No recent matches found.</div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+   );
 }
