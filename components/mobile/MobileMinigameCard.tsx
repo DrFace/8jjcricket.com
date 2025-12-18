@@ -12,7 +12,7 @@ type Props = {
 export default function MobileMinigameCard({ slug, title, desc, icon }: Props) {
   return (
     <Link
-      href={`/minigames/${slug}`}
+      href={`minigames/${slug}`}
       className="p-[1px] rounded-2xl bg-gradient-to-b from-[#FFD100]/50 to-transparent hover:-translate-y-0.5 hover:border-3 border-yellow-200 hover:shadow-md hover:border-yellow-400 hover:shadow-yellow-400/50 hover:animate-pulse"
     >
       <div className="bg-[#0B0E14] rounded-2xl p-4 overflow-hidden">
