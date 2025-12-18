@@ -5,7 +5,6 @@ import { useSearchParams, useRouter } from "next/navigation";
 import useSWR from "swr";
 import Image from "next/image";
 import Link from "next/link";
-import TopNav from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
 
@@ -180,7 +179,6 @@ export default function TeamsPage() {
       <title>{title}</title>
       <meta name="description" content={description} />
 
-      <TopNav />
       <BottomNav />
 
       <div className="space-y-6 pb-8">
@@ -342,7 +340,7 @@ export default function TeamsPage() {
                   {national.map((t) => (
                     <Link
                       key={t.id}
-                      href={`/teams/${t.id}`}
+                      href={`teams/${t.id}`}
                       className="flex items-center justify-between gap-3 rounded-xl border border-amber-400/30 bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-xl p-3.5 shadow-xl hover:shadow-[0_10px_40px_rgba(251,191,36,0.25)] hover:border-amber-400/60 transition-all duration-300 cursor-pointer hover:-translate-y-1 group"
                     >
                       <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-amber-400/40 group-hover:ring-amber-400/70 transition-all">
@@ -378,11 +376,11 @@ export default function TeamsPage() {
                   📋 Showing top {domesticLimited.length} domestic teams. Many
                   more available via API.
                 </p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                   {domesticLimited.map((t) => (
                     <Link
                       key={t.id}
-                      href={`/teams/${t.id}`}
+                      href={`teams/${t.id}`}
                       className="flex items-center gap-3 rounded-xl border border-white/20 bg-gradient-to-br from-slate-900/80 via-slate-800/70 to-slate-900/80 backdrop-blur-xl p-3 shadow-lg hover:shadow-[0_8px_30px_rgba(251,191,36,0.2)] hover:border-amber-400/50 transition-all duration-300 cursor-pointer hover:-translate-y-1 group"
                     >
                       <Image
