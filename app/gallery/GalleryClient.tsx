@@ -216,8 +216,12 @@ export default function GalleryClient({
                             </div>
                         </div>
 
-                        <div className="max-h-[80vh] overflow-auto">
-                            <img src={lightbox.image_url} alt="" className="h-auto w-full object-contain" />
+                        <div className="flex h-[80vh] items-center justify-center overflow-hidden">
+                            <img
+                                src={lightbox.image_url}
+                                alt=""
+                                className="max-h-full max-w-full object-contain"
+                            />
                         </div>
                     </div>
                 </div>
