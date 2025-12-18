@@ -5,6 +5,7 @@ import Link from "next/link"
 import DesktopOnly from "@/components/DesktopOnly"
 import TopNav from "@/components/TopNav"
 import Footer from "@/components/Footer"
+import ShareButton from "@/components/ShareButton"
 
 type Article = {
     id: number
@@ -86,11 +87,11 @@ export default async function ArticlePage({ params }: Props) {
                             <Link
                                 href="/news"
                                 className="inline-flex items-center gap-2 rounded-full
-             bg-gradient-to-r from-[#FACC15] via-[#F97316] to-[#EA580C]
-             px-4 py-2 text-sm font-semibold text-black
-             shadow-lg shadow-amber-500/40
-             ring-1 ring-white/20
-             hover:brightness-110 active:scale-95"
+                 bg-gradient-to-r from-[#FACC15] via-[#F97316] to-[#EA580C]
+                 px-4 py-2 text-sm font-semibold text-black
+                 shadow-lg shadow-amber-500/40
+                 ring-1 ring-white/20
+                 hover:brightness-110 active:scale-95"
                             >
                                 ← Back to News
                             </Link>
@@ -116,12 +117,14 @@ export default async function ArticlePage({ params }: Props) {
 
                 <main className="flex-1 px-4 py-10">
                     <div className="max-w-3xl mx-auto">
-                        <Link
-                            href="/news"
-                            className="text-sky-400 hover:underline transition"
-                        >
-                            ← Back to news
-                        </Link>
+                        <div className="flex items-center justify-between gap-3">
+                            <Link href="/news" className="text-sky-400 hover:underline transition">
+                                ← Back to news
+                            </Link>
+
+                            {/* Share button + popup */}
+                            <ShareButton slug={article.slug} title={article.title} />
+                        </div>
 
                         <h1 className="text-3xl md:text-4xl font-bold mt-4 mb-3 text-slate-100">
                             {article.title}
