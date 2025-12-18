@@ -234,7 +234,7 @@ export default function PlayersPage() {
         </div>
       </div>
 
-      <Footer />
+    
     </>
   );
 }

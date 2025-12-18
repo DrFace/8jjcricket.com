@@ -559,7 +559,6 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
       <title>{title}</title>
       <meta name="description" content={description} />
       
-      <TopNav />
       <BottomNav />
       
       <div className="space-y-6">
@@ -1176,7 +1175,7 @@ export default function SeriesDetailPage({ params }: { params: { id: string } })
         </div>
       </div>
       
-      <Footer />
+     
     </>
   )
 }

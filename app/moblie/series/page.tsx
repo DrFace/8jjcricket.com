@@ -460,7 +460,7 @@ export default function SeriesPage() {
         )}
       </div>
 
-      <Footer />
+     
     </>
   );
 }
