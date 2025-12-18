@@ -145,14 +145,14 @@ export default function GalleryClient({
                                 {albumPhotos.length === 0 ? (
                                     <div className="px-5 pb-5 text-sm text-white/55">No photos in this album.</div>
                                 ) : (
-                                    <div className="grid auto-rows-[110px] grid-cols-2 gap-3 px-5 pb-5 sm:grid-cols-3">
+                                    <div className="grid auto-rows-[130px] grid-cols-2 gap-3 px-5 pb-5 sm:grid-cols-3">
                                         {albumPhotos.slice(0, 12).map((p) => (
                                             <button
                                                 key={p.id}
                                                 onClick={() => setLightbox(p)}
                                                 className={[
                                                     "relative overflow-hidden rounded-2xl ring-1 ring-white/10 hover:ring-white/20",
-                                                    p.orientation === "portrait" ? "row-span-2" : "row-span-1",
+                                                    p.orientation === "portrait" ? "row-span-3" : "col-span-2",
                                                 ].join(" ")}
                                                 aria-label="Open image"
                                             >
