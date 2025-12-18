@@ -5,7 +5,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import PlayerCard from '../../components/PlayerCard'
 import { debounce } from '../../lib/debounce'
 import TopNav from '@/components/TopNav'
-import BottomNav from '@/components/BottomNav'
 import Footer from '@/components/Footer'
 
 type Player = {
@@ -111,7 +110,6 @@ export default function PlayersPage() {
       />
 
       <TopNav />
-      <BottomNav />
 
       <div className="mx-auto px-4 py-8 md:py-10">
         {/* Page Header */}

@@ -1,9 +1,10 @@
-
 'use client'
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
+import TopNav from '@/components/TopNav'
+import Footer from '@/components/Footer'
 
 type CareerStat = {
   type: string
@@ -18,6 +19,7 @@ type CareerStat = {
     fifties: number
   }
 }
+
 type Player = {
   id: number
   fullname: string
@@ -60,10 +62,17 @@ export default function PlayerDetailPage() {
       <>
         <title>Loading Player | 8jjcricket</title>
         <meta name="description" content="Loading player profile." />
-        <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
-          Loading player details...
-          <div className="mt-4 h-6 w-6 animate-spin rounded-full border-4 border-amber-400 border-t-transparent mx-auto"></div>
+
+        <TopNav />
+
+        <div className="mx-auto px-4 py-10">
+          <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
+            Loading player details...
+            <div className="mt-4 h-6 w-6 animate-spin rounded-full border-4 border-amber-400 border-t-transparent mx-auto"></div>
+          </div>
         </div>
+
+        <Footer />
       </>
     )
   }
@@ -73,9 +82,16 @@ export default function PlayerDetailPage() {
       <>
         <title>Player Error | 8jjcricket</title>
         <meta name="description" content={error} />
-        <div className="rounded-2xl border border-red-500/30 bg-black/70 p-6 text-sm text-red-300 backdrop-blur-xl">
-          {error}
+
+        <TopNav />
+
+        <div className="mx-auto px-4 py-10">
+          <div className="rounded-2xl border border-red-500/30 bg-black/70 p-6 text-sm text-red-300 backdrop-blur-xl">
+            {error}
+          </div>
         </div>
+
+        <Footer />
       </>
     )
   }
@@ -85,9 +101,16 @@ export default function PlayerDetailPage() {
       <>
         <title>Player Not Found | 8jjcricket</title>
         <meta name="description" content="Player not found." />
-        <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
-          Player not found.
+
+        <TopNav />
+
+        <div className="mx-auto px-4 py-10">
+          <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
+            Player not found.
+          </div>
         </div>
+
+        <Footer />
       </>
     )
   }
@@ -99,6 +122,9 @@ export default function PlayerDetailPage() {
         name="description"
         content={`View ${player.fullname}'s player profile, stats and information on 8jjcricket.`}
       />
+
+      <TopNav />
+
       <div className="mx-auto px-4 py-10">
         <div className="flex flex-col md:flex-row gap-8 items-center">
           <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-slate-900 shadow-md">
@@ -109,11 +135,13 @@ export default function PlayerDetailPage() {
               className="object-contain"
             />
           </div>
+
           <div>
             <h1 className="text-3xl font-bold text-white">{player.fullname}</h1>
             <p className="text-amber-300">
-              {player.country?.name ? player.country.name : 'Unknown Country'}
+              {player.country?.name ?? 'Unknown Country'}
             </p>
+
             <div className="mt-3 space-y-1 text-sm text-sky-100/70">
               {player.dateofbirth && (
                 <p>
@@ -136,7 +164,10 @@ export default function PlayerDetailPage() {
 
         {player.career && player.career.length > 0 && (
           <div className="mt-10">
-            <h2 className="text-2xl font-semibold mb-4 text-white">Career Statistics</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-white">
+              Career Statistics
+            </h2>
+
             <div className="overflow-x-auto rounded-xl border border-white/15 bg-black/50 backdrop-blur-xl">
               <table className="min-w-full text-sm text-left text-sky-100/70">
                 <thead className="bg-slate-900/80 text-amber-300">
@@ -155,11 +186,15 @@ export default function PlayerDetailPage() {
                 <tbody>
                   {player.career.map((c) => (
                     <tr key={c.type} className="border-t border-white/10">
-                      <td className="px-4 py-2 font-semibold text-amber-300">{c.type}</td>
+                      <td className="px-4 py-2 font-semibold text-amber-300">
+                        {c.type}
+                      </td>
                       <td className="px-4 py-2">{c.batting?.matches ?? '-'}</td>
                       <td className="px-4 py-2">{c.batting?.innings ?? '-'}</td>
                       <td className="px-4 py-2">{c.batting?.runs_scored ?? '-'}</td>
-                      <td className="px-4 py-2">{c.batting?.highest_inning_score ?? '-'}</td>
+                      <td className="px-4 py-2">
+                        {c.batting?.highest_inning_score ?? '-'}
+                      </td>
                       <td className="px-4 py-2">{c.batting?.average ?? '-'}</td>
                       <td className="px-4 py-2">{c.batting?.strike_rate ?? '-'}</td>
                       <td className="px-4 py-2">{c.batting?.hundreds ?? '-'}</td>
@@ -172,6 +207,8 @@ export default function PlayerDetailPage() {
           </div>
         )}
       </div>
+
+      <Footer />
     </>
   )
 }
