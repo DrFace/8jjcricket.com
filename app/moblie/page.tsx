@@ -249,12 +249,7 @@ export default async function MobileHomePage() {
         </section>
       )}
 
-      {/* FOOTER */}
-      <section className="mt-8 w-full snap-start scroll-mt-3">
-        <Reveal>
-          <Footer />
-        </Reveal>
-      </section>
+    
     </>
   );
 }

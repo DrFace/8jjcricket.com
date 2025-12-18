@@ -21,10 +21,12 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
   alternates: { canonical: "/" },
+
+  // ✅ favicon added (ONLY change)
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: [{ url: "/8jjlogo.png", type: "image/png" }],
+    shortcut: "/8jjlogo.png",
+    apple: "/8jjlogo.png",
   },
 };
 

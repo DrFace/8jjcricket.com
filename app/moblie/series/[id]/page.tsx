@@ -194,7 +194,6 @@ export default function SeriesDetailPage({
     }
   }, [activeTab, sortedFixtures, selectedDate]);
 
-  // Debug fixtures data
   useEffect(() => {
     if (fixturesData) {
       console.log("🏏 Fixtures data received:", fixturesData);
@@ -413,7 +412,6 @@ export default function SeriesDetailPage({
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
-
       <BottomNav />
 
       <div className="space-y-6">
@@ -1209,8 +1207,6 @@ export default function SeriesDetailPage({
           )}
         </div>
       </div>
-
-      <Footer />
     </>
   );
 }

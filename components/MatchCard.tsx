@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 
 type Team = {
@@ -45,12 +44,10 @@ export default function MatchCard({ match, href = "/live-score-page" }: Props) {
     const leagueName = match.league?.name || String(match.league_id || "");
     const round = match.round || "";
     const heading = [round, leagueName].filter(Boolean).join(" • ");
-
     const format = match.league?.code || match.note || "Match";
 
     const local = match.localteam;
     const visitor = match.visitorteam;
-
     const runs = match.runs || [];
 
     const getScore = (teamId?: number) => {
@@ -106,103 +103,22 @@ export default function MatchCard({ match, href = "/live-score-page" }: Props) {
     return (
         <Link
             href={href}
-            className="block rounded-2xl border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition"
+            className="rounded-2xl border border-amber-400 bg-black/50 backdrop-blur-xl p-4 shadow-lg hover:border-amber-400/80 hover:shadow-[0_20px_50px_rgba(251,191,36,0.3)] hover:scale-105 hover:brightness-110 transition-all"
         >
-            {/* HEADER */}
-            <div className="mb-2 flex items-center justify-between">
-                <div className="truncate text-xs font-semibold text-gray-600">
-                    {heading}
-                </div>
-
+            <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium text-amber-300">{statusLine}</span>
+                <span className="text-xs text-sky-100/90">{startIST}</span>
+            </div>
+            <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                    {isLive && (
-                        <span className="text-red-600 text-[11px] font-bold flex items-center gap-1">
-                            <span className="h-2 w-2 rounded-full bg-red-600 animate-pulse"></span>
-                            LIVE
-                        </span>
-                    )}
-                    <span className="bg-gray-100 text-gray-700 text-[11px] font-semibold px-2 py-0.5 rounded-full uppercase">
-                        {format}
-                    </span>
+                    <span className="text-lg font-bold text-amber-300">{local?.name || ""}</span>
+                </div>
+                <span className="text-sm font-medium text-amber-400">vs</span>
+                <div className="flex items-center gap-2">
+                    <span className="text-lg font-bold text-amber-300">{visitor?.name || ""}</span>
                 </div>
             </div>
-
-            {/* BODY */}
-            <div className="space-y-3">
-                {/* LOCAL TEAM */}
-                <div className="flex items-center gap-3">
-                    <div className="relative h-10 w-10 rounded-full bg-gray-50 overflow-hidden">
-                        {local?.image_path ? (
-                            <img
-                                src={local?.image_path || ""}
-                                alt={`${local?.name || ""} logo`}
-                                className="h-full w-full object-contain p-1"
-                            />
-                        ) : (
-                            <div className="h-full w-full flex items-center justify-center text-[10px] text-gray-400">
-                                No Logo
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                        <div className="flex justify-between">
-                            <div className="truncate text-sm font-semibold text-gray-900">
-                                {local?.name || ""}
-                            </div>
-                            <div className="text-sm font-bold text-gray-900 tabular-nums">
-                                {localScore || ""}
-                            </div>
-                        </div>
-                        <div className="text-xs text-gray-500">{startIST}</div>
-                    </div>
-                </div>
-
-                {/* VISITOR TEAM */}
-                <div className="flex items-center gap-3">
-                    <div className="relative h-10 w-10 rounded-full bg-gray-50 overflow-hidden">
-                        {visitor?.image_path ? (
-                            <img
-                                src={local?.image_path || ""}
-                                alt={`${local?.name || ""} logo`}
-                                className="h-full w-full object-contain p-1"
-                            />
-
-                        ) : (
-                            <div className="h-full w-full flex items-center justify-center text-[10px] text-gray-400">
-                                No Logo
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                        <div className="flex justify-between">
-                            <div className="truncate text-sm font-semibold text-gray-900">
-                                {visitor?.name || ""}
-                            </div>
-                            <div className="text-sm font-bold text-gray-900 tabular-nums">
-                                {visitorScore || ""}
-                            </div>
-                        </div>
-                        <div className="text-xs text-gray-500">
-                            {startUTC ? `UTC: ${startUTC}` : ""}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* STATUS */}
-            {statusLine && (
-                <div className="mt-3 text-xs font-medium text-gray-700">
-                    {statusLine}
-                </div>
-            )}
-
-            {/* FOOTER */}
-            <div className="mt-3 flex items-center justify-between text-xs font-semibold text-blue-600">
-                <span>View More</span>
-                <span className="text-base">&rsaquo;</span>
-            </div>
+            <div className="mt-2 text-sm text-sky-100/90">{startUTC ? `UTC: ${startUTC}` : ""}</div>
         </Link>
     );
 }

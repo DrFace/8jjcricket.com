@@ -402,7 +402,7 @@ export default function TeamsPage() {
         ) : null}
       </div>
 
-      <Footer />
+     
     </>
   );
 }
