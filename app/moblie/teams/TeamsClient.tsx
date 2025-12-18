@@ -180,7 +180,6 @@ export default function TeamsPage() {
       <title>{title}</title>
       <meta name="description" content={description} />
 
-      <TopNav />
       <BottomNav />
 
       <div className="space-y-6 pb-8">
@@ -404,7 +403,7 @@ export default function TeamsPage() {
         ) : null}
       </div>
 
-      <Footer />
+     
     </>
   );
 }
