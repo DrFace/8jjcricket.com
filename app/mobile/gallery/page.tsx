@@ -1,15 +1,16 @@
 // app/gallery/mobile/page.tsx
 import Link from "next/link";
-
 import GalleryMobileClient from "./GalleryClient";
 
 type GalleryCategory = { id: number; name: string; slug: string };
+
 type GalleryAlbum = {
     id: number;
     name: string;
     slug: string;
     category?: { id: number; name: string; slug: string } | null;
 };
+
 type GalleryPhoto = {
     id: number;
     name: string;
@@ -35,8 +36,9 @@ function normalizeImageUrl(url: string | null): string | null {
     try {
         const u = new URL(url, SITE_ORIGIN);
         let pathname = u.pathname;
-        if (!pathname.startsWith("/storage/"))
+        if (!pathname.startsWith("/storage/")) {
             pathname = `/storage/${pathname.replace(/^\/+/, "")}`;
+        }
         return `${SITE_ORIGIN}${pathname}${u.search}`;
     } catch {
         return `${SITE_ORIGIN}/storage/${String(url).replace(/^\/+/, "")}`;
@@ -93,6 +95,7 @@ export default async function GalleryMobilePage() {
         }))
         .filter((p) => !!p.image_url);
 
+    // Build maps
     const albumsByCategoryId = new Map<number, GalleryAlbum[]>();
     for (const a of albums) {
         const cid = a.category?.id;
@@ -116,53 +119,57 @@ export default async function GalleryMobilePage() {
         <>
 
             <main className="min-h-screen bg-black text-white">
-                <div className="mx-auto w-full max-w-2xl px-4 py-6">
-                    {/* MOBILE HERO */}
-                    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-5">
-                        <div className="space-y-3">
-                            <p className="text-[11px] font-semibold tracking-widest text-white/70">
-                                8JJ SPORTS • GALLERY (MOBILE)
-                            </p>
+                <div className="mx-auto w-full max-w-2xl px-0 py-5">
+                    {/* Mobile hero */}
+                    <div className="px-4">
+                        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-5">
+                            <div className="space-y-3">
+                                <p className="text-[11px] font-semibold tracking-widest text-white/70">
+                                    8JJ SPORTS • GALLERY
+                                </p>
 
-                            <h1 className="text-2xl font-extrabold tracking-tight">
-                                Moments. Matches. Memories.
-                            </h1>
+                                <h1 className="text-2xl font-extrabold tracking-tight">
+                                    Moments. Matches. Memories.
+                                </h1>
 
-                            <p className="text-sm text-white/65">
-                                Browse by category and album. Tap any photo to view fullscreen.
-                            </p>
+                                <p className="text-sm text-white/65">
+                                    Browse by category and album. Tap any photo to view fullscreen.
+                                </p>
 
-                            <div className="flex flex-wrap gap-2 text-[11px]">
-                                <span className="rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
-                                    {categories.length} Categories
-                                </span>
-                                <span className="rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
-                                    {totalAlbums} Albums
-                                </span>
-                                <span className="rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
-                                    {totalPhotos} Photos
-                                </span>
-                            </div>
+                                <div className="flex flex-wrap gap-2 text-[11px]">
+                                    <span className="rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
+                                        {categories.length} Categories
+                                    </span>
+                                    <span className="rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
+                                        {totalAlbums} Albums
+                                    </span>
+                                    <span className="rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
+                                        {totalPhotos} Photos
+                                    </span>
+                                </div>
 
-                            <div className="pt-1">
-                                <Link
-                                    href="/"
-                                    className="inline-flex rounded-full bg-white/10 px-4 py-2 text-[11px] font-semibold text-white/85 ring-1 ring-white/15 hover:bg-white/15"
-                                >
-                                    Back Home
-                                </Link>
+                                <div className="pt-1">
+                                    <Link
+                                        href="/"
+                                        className="inline-flex rounded-full bg-white/10 px-4 py-2 text-[11px] font-semibold text-white/85 ring-1 ring-white/15 hover:bg-white/15"
+                                    >
+                                        Back Home
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* BODY */}
-                    <div className="mt-6">
+                    {/* Body */}
+                    <div className="mt-4">
                         {categories.length === 0 ? (
-                            <div className="rounded-2xl bg-white/5 p-6 text-sm text-white/60 ring-1 ring-white/10">
-                                No categories found.
+                            <div className="px-4">
+                                <div className="rounded-2xl bg-white/5 p-6 text-sm text-white/60 ring-1 ring-white/10">
+                                    No categories found.
+                                </div>
                             </div>
                         ) : (
-                                <GalleryMobileClient
+                            <GalleryMobileClient
                                 categories={categories}
                                 albumsByCategoryId={Object.fromEntries(
                                     Array.from(albumsByCategoryId.entries()).map(([k, v]) => [
@@ -177,6 +184,7 @@ export default async function GalleryMobilePage() {
                 </div>
             </main>
 
+        
         </>
     );
 }
