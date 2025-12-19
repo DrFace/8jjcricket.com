@@ -164,7 +164,7 @@ export default function MobileSidebar() {
           {/* Primary action */}
           <div className="px-4 pt-4">
             <Link
-              href="/minigames"
+              href="/mobile/minigames"
               onClick={() => setOpen(false)}
               className="
                 inline-flex w-full items-center justify-center

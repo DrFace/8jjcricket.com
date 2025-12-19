@@ -188,7 +188,7 @@ export default async function MobileHomePage() {
         <Reveal>
           <div className="mb-2 flex w-full items-center justify-between">
             <h2 className="text-sm font-semibold">Hot Minigames</h2>
-            <Link href="/minigames" className="text-xs font-semibold text-sky-400">
+            <Link href="/mobile/minigames" className="text-xs font-semibold text-sky-400">
               View all →
             </Link>
           </div>
@@ -228,7 +228,7 @@ export default async function MobileHomePage() {
                 </div>
 
                 <Link
-                  href="/minigames"
+                  href="/mobile/minigames"
                   className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-xs font-bold text-black"
                 >
                   Play Minigames
