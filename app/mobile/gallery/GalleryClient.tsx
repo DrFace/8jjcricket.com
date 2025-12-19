@@ -82,7 +82,7 @@ export default function GalleryMobileClient({
   return (
     <div className="space-y-5">
       {/* Sticky search only (stable on mobile) */}
-      <div className="sticky top-0 z-20 bg-black px-4 py-3">
+      <div className=" top-0 z-20 bg-black px-4 py-3">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
