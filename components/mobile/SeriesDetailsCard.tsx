@@ -34,7 +34,7 @@ export default function SeriesDetailsCard({ f }: { f: Fixture }) {
       />
 
       <Link
-        href={`match/${f.id}`}
+        href={`/mobile/match/${f.id}`}
         className="relative z-10 block rounded-xl px-2 sm:px-3 py-3 transition"
       >
         {/* Top row: title + status */}

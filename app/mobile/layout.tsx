@@ -1,4 +1,4 @@
-// app/moblie/layout.tsx
+// app/mobile/layout.tsx
 "use client";
 
 import type { ReactNode } from "react";
@@ -135,7 +135,7 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
             <MobileSidebar />
 
             <Link
-              href="/moblie"
+              href="/mobile"
               className="flex items-center gap-2 relative active:scale-95"
               aria-label="Go to Home"
             >

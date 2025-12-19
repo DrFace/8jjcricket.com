@@ -3,7 +3,6 @@
 import React, { useMemo, useState } from "react";
 import useSWR from "swr";
 import type { Fixture } from "@/types/fixture";
-import LiveCard from "@/components/LiveCard";
 import BetButton from "@/components/BetButton";
 import MobileTabBar from "@/components/mobile/MobileTabBar";
 import CalenderModal from "@/components/mobile/CalenderModal";

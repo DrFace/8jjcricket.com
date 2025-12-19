@@ -4,10 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
 import Image from "next/image";
 import Link from "next/link";
-import ArchiveCard from "@/components/ArchhiveCard";
 import BottomNav from "@/components/BottomNav";
-import Footer from "@/components/Footer";
-import { SeriesCalender } from "@/components/mobile/SeriesCalender";
 import SeriesCalenderModal from "@/components/mobile/SeriesCalenderModal";
 import SeriesDetailsCard from "@/components/mobile/SeriesDetailsCard";
 
