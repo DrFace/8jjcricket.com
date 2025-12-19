@@ -296,7 +296,7 @@ export default function MobileScoreboard({ id }: { id: string }) {
                                 <td className="py-1 px-2">
                                   {pid ? (
                                     <Link
-                                      href={`players/${pid}`}
+                                      href={`/mobile/players/${pid}`}
                                       className="text-white  hover:underline"
                                     >
                                       {label}
