@@ -20,7 +20,7 @@ export default function PlayerCard({
 }: Props) {
   return (
     <Link
-      href={`players/${id}`}
+      href={`/mobile/players/${id}`}
       className="group block rounded-2xl border border-white/20 bg-black/50 p-4 shadow-xl backdrop-blur-xl transition hover:border-amber-400 hover:shadow-amber-400/30"
     >
       <div className="flex items-center gap-4">

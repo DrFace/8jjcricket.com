@@ -17,7 +17,7 @@ export default function MobileLiveCard({ f }: { f: Fixture }) {
 
   return (
     <Link
-      href={`/match/${f.id}`}
+      href={`/mobile/match/${f.id}`}
       className={cn(
         "p-[1px] rounded-2xl bg-gradient-to-b from-[#FFD100]/50 to-transparent",
         "hover:border-amber-300/30 hover:bg-white/7"

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
-import PlayerCard from "@/components/PlayerCard";
+import PlayerCard from "@/components/games/PlayerCard";
 import { debounce } from "@/lib/debounce";
 
 type Player = {
