@@ -80,6 +80,25 @@ export default function TeamsClient() {
       <div className="space-y-8 pb-8">
         {/* Header */}
         <div className="rounded-3xl border border-amber-400/40 bg-slate-900/90 p-6 shadow-2xl">
+          <button
+            onClick={() => window.history.back()}
+            className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 text-sm font-medium mb-6 transition-colors"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            Back to Teams{" "}
+          </button>
           <h1 className="text-3xl font-bold text-white">Cricket Teams</h1>
           <p className="text-sky-200 mt-1">
             Browse teams by series and leagues
@@ -139,7 +158,7 @@ export default function TeamsClient() {
               Domestic Teams ({domestic.length})
             </h2>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {domestic.map((t) => (
                 <div
                   key={t.id}
