@@ -40,6 +40,7 @@ export default function GalleryMobileClient({
   const [query, setQuery] = useState("");
   const [lightbox, setLightbox] = useState<GalleryPhoto | null>(null);
 
+  // Close lightbox on ESC
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setLightbox(null);
@@ -47,6 +48,17 @@ export default function GalleryMobileClient({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  // Prevent background scroll when lightbox is open (mobile scroll fix)
+  useEffect(() => {
+    if (lightbox) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [lightbox]);
 
   const filteredCategories = useMemo(() => {
     if (!query.trim()) return categories;
@@ -68,12 +80,21 @@ export default function GalleryMobileClient({
   }, [activeCategory, albumsByCategoryId, query]);
 
   return (
-    <div className="space-y-6">
-      {/* Sticky tools (mobile-first) */}
-      <div className="sticky top-0 z-20 -mx-4 bg-black/85 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-black/55">
-        {/* Category chip scroller */}
-        <div className="-mx-4 overflow-x-auto px-4 pb-2">
-          <div className="flex w-max items-center gap-2">
+    <div className="space-y-5">
+      {/* Sticky search only (stable on mobile) */}
+      <div className="sticky top-0 z-20 bg-black px-4 py-3">
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search categories / albums..."
+          className="w-full rounded-2xl bg-white/5 px-4 py-2.5 text-sm text-white/90 ring-1 ring-white/10 placeholder:text-white/40 focus:outline-none focus:ring-white/25"
+        />
+      </div>
+
+      {/* Category chips OUTSIDE sticky (prevents scroll jitter) */}
+      <div className="px-4">
+        <div className="overflow-x-auto">
+          <div className="flex w-max items-center gap-2 pb-2">
             {filteredCategories.map((c) => {
               const isActive = c.slug === activeCat;
               return (
@@ -93,113 +114,101 @@ export default function GalleryMobileClient({
             })}
           </div>
         </div>
-
-        {/* Search (full width) */}
-        <div className="mt-2">
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search categories / albums..."
-            className="w-full rounded-2xl bg-white/5 px-4 py-2.5 text-sm text-white/90 ring-1 ring-white/10 placeholder:text-white/40 focus:outline-none focus:ring-white/25"
-          />
-        </div>
       </div>
 
-      {/* Active Category header */}
+      {/* Active Category Header */}
       {activeCategory && (
-        <div className="space-y-1">
+        <div className="px-4">
           <h2 className="text-lg font-extrabold tracking-tight">
             {activeCategory.name}
           </h2>
-          <p className="text-sm text-white/55">
+          <p className="mt-1 text-sm text-white/55">
             Albums and photos inside this category.
           </p>
         </div>
       )}
 
-      {/* Albums (single column, mobile cards) */}
-      {activeAlbums.length === 0 ? (
-        <div className="rounded-2xl bg-white/5 p-6 text-sm text-white/60 ring-1 ring-white/10">
-          No albums found for this category.
-        </div>
-      ) : (
-        <div className="space-y-5">
-          {activeAlbums.map((album) => {
-            const albumPhotos = photosByAlbumSlug[album.slug] || [];
+      {/* Albums (mobile cards) */}
+      <div className="px-4">
+        {activeAlbums.length === 0 ? (
+          <div className="rounded-2xl bg-white/5 p-6 text-sm text-white/60 ring-1 ring-white/10">
+            No albums found for this category.
+          </div>
+        ) : (
+          <div className="space-y-5">
+            {activeAlbums.map((album) => {
+              const albumPhotos = photosByAlbumSlug[album.slug] || [];
+              return (
+                <section
+                  key={album.id}
+                  className="overflow-hidden rounded-3xl border border-white/10 bg-white/5"
+                >
+                  {/* Album header */}
+                  <div className="flex items-center justify-between gap-3 p-4">
+                    <div className="min-w-0">
+                      <h3 className="truncate text-sm font-extrabold text-white/90">
+                        {album.name}
+                      </h3>
+                      <p className="mt-1 text-xs text-white/55">
+                        {albumPhotos.length} photos
+                      </p>
+                    </div>
 
-            return (
-              <section
-                key={album.id}
-                className="overflow-hidden rounded-3xl border border-white/10 bg-white/5"
-              >
-                {/* Album header */}
-                <div className="flex items-center justify-between gap-3 p-4">
-                  <div className="min-w-0">
-                    <h3 className="truncate text-sm font-extrabold text-white/90">
-                      {album.name}
-                    </h3>
-                    <p className="mt-1 text-xs text-white/55">
-                      {albumPhotos.length} photos
-                    </p>
+                    <span className="shrink-0 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-white/75 ring-1 ring-white/10">
+                      View
+                    </span>
                   </div>
 
-                  {/* Optional small count chip */}
-                  <span className="shrink-0 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-white/75 ring-1 ring-white/10">
-                    View
-                  </span>
-                </div>
-
-                {/* Photo grid (bigger touch targets, 2 cols) */}
-                {albumPhotos.length === 0 ? (
-                  <div className="px-4 pb-4 text-sm text-white/55">
-                    No photos in this album.
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-3 px-4 pb-4">
-                    {albumPhotos.slice(0, 8).map((p) => (
-                      <button
-                        key={p.id}
-                        onClick={() => setLightbox(p)}
-                        className="relative overflow-hidden rounded-2xl ring-1 ring-white/10 hover:ring-white/20"
-                        aria-label="Open image"
-                      >
-                        {/* Use fixed aspect for mobile consistency */}
-                        <div
-                          className={[
-                            "w-full",
-                            p.orientation === "portrait"
-                              ? "aspect-[3/4]"
-                              : "aspect-[4/3]",
-                          ].join(" ")}
+                  {/* Photo grid */}
+                  {albumPhotos.length === 0 ? (
+                    <div className="px-4 pb-4 text-sm text-white/55">
+                      No photos in this album.
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3 px-4 pb-4 touch-pan-y">
+                      {albumPhotos.slice(0, 8).map((p) => (
+                        <button
+                          key={p.id}
+                          onClick={() => setLightbox(p)}
+                          className="relative overflow-hidden rounded-2xl ring-1 ring-white/10 hover:ring-white/20"
+                          aria-label="Open image"
                         >
-                          <img
-                            src={p.image_url}
-                            alt={p.name || ""}
-                            className="h-full w-full object-cover transition hover:scale-[1.02]"
-                            loading="lazy"
-                          />
+                          <div
+                            className={[
+                              "w-full",
+                              p.orientation === "portrait"
+                                ? "aspect-[3/4]"
+                                : "aspect-[4/3]",
+                            ].join(" ")}
+                          >
+                            <img
+                              src={p.image_url}
+                              alt={p.name || ""}
+                              className="h-full w-full object-cover transition hover:scale-[1.02]"
+                              loading="lazy"
+                            />
+                          </div>
+                        </button>
+                      ))}
+
+                      {albumPhotos.length > 8 && (
+                        <div className="col-span-2 rounded-2xl bg-white/5 p-4 text-center text-xs text-white/60 ring-1 ring-white/10">
+                          Showing 8 of {albumPhotos.length}.
                         </div>
-                      </button>
-                    ))}
+                      )}
+                    </div>
+                  )}
+                </section>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
-                    {albumPhotos.length > 8 && (
-                      <div className="col-span-2 rounded-2xl bg-white/5 p-4 text-center text-xs text-white/60 ring-1 ring-white/10">
-                        Showing 8 of {albumPhotos.length}. Open more on desktop if
-                        needed.
-                      </div>
-                    )}
-                  </div>
-                )}
-              </section>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Lightbox (mobile-safe) */}
+      {/* Lightbox */}
       {lightbox && (
         <div
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur"
+          className="fixed inset-0 z-50 bg-black/90"
           onClick={() => setLightbox(null)}
           role="dialog"
           aria-modal="true"
@@ -209,7 +218,7 @@ export default function GalleryMobileClient({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Top bar */}
-            <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-white/10 bg-black/70 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-black/50">
+            <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-white/10 bg-black px-4 py-3">
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-white/90">
                   {lightbox.name || "Photo"}
@@ -234,7 +243,7 @@ export default function GalleryMobileClient({
               </div>
             </div>
 
-            {/* Image area */}
+            {/* Image */}
             <div className="flex flex-1 items-center justify-center p-3">
               <img
                 src={lightbox.image_url}
