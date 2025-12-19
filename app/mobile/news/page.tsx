@@ -3,6 +3,7 @@
 import { useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
+import MobileShareButton from "@/components/mobile/MobileShareButton";
 
 type Category = {
   id: number;
@@ -47,6 +48,13 @@ function normalizeImageUrl(url: string | null): string | null {
     const clean = String(url).replace(/^\/+/, "");
     return `${SITE_ORIGIN}/storage/${clean}`;
   }
+}
+
+function formatPublishedAt(published_at: string | null) {
+  if (!published_at) return null;
+  const d = new Date(published_at);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleString();
 }
 
 export default function MobileNewsPage() {
@@ -117,6 +125,7 @@ export default function MobileNewsPage() {
         <div className="space-y-4">
           {articles.map((item) => {
             const imgSrc = normalizeImageUrl(item.image_url);
+            const publishedLabel = formatPublishedAt(item.published_at);
 
             return (
               <article
@@ -124,18 +133,22 @@ export default function MobileNewsPage() {
                 className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden"
               >
                 {imgSrc && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={imgSrc}
-                    alt={item.title}
-                    className="w-full h-44 object-cover"
-                  />
+                  <div className="relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={imgSrc}
+                      alt={item.title}
+                      className="w-full h-44 object-cover"
+                      loading="lazy"
+                    />
+
+               
+                  </div>
                 )}
 
                 <div className="p-4">
                   <h2 className="text-lg font-semibold leading-snug">
                     <Link
-                      // NOTE: your routes use /mobile, not /mobile
                       href={`/mobile/news/${item.slug}`}
                       className="hover:text-amber-300 transition"
                     >
@@ -143,9 +156,9 @@ export default function MobileNewsPage() {
                     </Link>
                   </h2>
 
-                  {item.published_at && (
+                  {publishedLabel && (
                     <p className="text-xs text-white/50 mt-1">
-                      {new Date(item.published_at).toLocaleString()}
+                      {publishedLabel}
                     </p>
                   )}
 
@@ -155,13 +168,16 @@ export default function MobileNewsPage() {
                     </p>
                   )}
 
-                  <div className="mt-3">
+                  <div className="mt-3 flex items-center justify-between gap-3">
                     <Link
                       href={`/mobile/news/${item.slug}`}
                       className="text-sm font-medium text-amber-300 hover:underline"
                     >
                       Read more
                     </Link>
+
+                    {/* Main share button */}
+                    <MobileShareButton slug={item.slug} title={item.title} />
                   </div>
                 </div>
               </article>

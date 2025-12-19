@@ -1,6 +1,7 @@
 // app/mobile/news/[slug]/page.tsx
 
 import Link from "next/link";
+import MobileShareButton from "@/components/mobile/MobileShareButton";
 
 type Article = {
   id: number;
@@ -43,7 +44,6 @@ async function getArticle(slug: string): Promise<Article | null> {
   const url = `${base}/news/${encodeURIComponent(slug)}`;
 
   const res = await fetch(url, { cache: "no-store" });
-
   if (!res.ok) return null;
 
   const json = await res.json();
@@ -83,9 +83,15 @@ export default async function MobileArticlePage({ params }: Props) {
   return (
     <main className="min-h-screen bg-black text-white px-4 pt-6 pb-24">
       <div className="mx-auto max-w-md">
-        <Link href="/mobile/news" className="text-amber-300 hover:underline">
-          ← Back to news
-        </Link>
+        {/* Top row: Back + Share */}
+        <div className="flex items-center justify-between gap-3">
+          <Link href="/mobile/news" className="text-amber-300 hover:underline">
+            ← Back to news
+          </Link>
+
+          {/* Share button (same style as your list page) */}
+          <MobileShareButton slug={article.slug} title={article.title} />
+        </div>
 
         <h1 className="text-2xl font-bold mt-4 mb-2 leading-snug">
           {article.title}
