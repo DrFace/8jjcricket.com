@@ -14,7 +14,7 @@ type Item = {
 export const navItems: Item[] = [
   { href: "/mobile", label: "Home", Icon: Home },
   { href: "/mobile/livescore", label: "Live score", Icon: Activity },
-  { href: "/mobile/games", label: "Games", Icon: Gamepad2 },
+  { href: "/mobile/minigames", label: "Games", Icon: Gamepad2 },
   { href: "/mobile/news", label: "News", Icon: Newspaper },
   { href: "/account", label: "Profile", Icon: UserCircle },
 ];
