@@ -1,4 +1,4 @@
-// app/gallery/mobile/GalleryMobileClient.tsx
+// app/mobile/gallery/GalleryClient.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -81,8 +81,8 @@ export default function GalleryMobileClient({
 
   return (
     <div className="space-y-5">
-      {/* Sticky search only (stable on mobile) */}
-      <div className=" top-0 z-20 bg-black px-4 py-3">
+      {/* Search */}
+      <div className="top-0 z-20 bg-black px-4 py-3">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -91,7 +91,7 @@ export default function GalleryMobileClient({
         />
       </div>
 
-      {/* Category chips OUTSIDE sticky (prevents scroll jitter) */}
+      {/* Category chips */}
       <div className="px-4">
         <div className="overflow-x-auto">
           <div className="flex w-max items-center gap-2 pb-2">
@@ -128,7 +128,7 @@ export default function GalleryMobileClient({
         </div>
       )}
 
-      {/* Albums (mobile cards) */}
+      {/* Albums */}
       <div className="px-4">
         {activeAlbums.length === 0 ? (
           <div className="rounded-2xl bg-white/5 p-6 text-sm text-white/60 ring-1 ring-white/10">
@@ -138,6 +138,7 @@ export default function GalleryMobileClient({
           <div className="space-y-5">
             {activeAlbums.map((album) => {
               const albumPhotos = photosByAlbumSlug[album.slug] || [];
+
               return (
                 <section
                   key={album.id}
@@ -154,9 +155,7 @@ export default function GalleryMobileClient({
                       </p>
                     </div>
 
-                    <span className="shrink-0 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-white/75 ring-1 ring-white/10">
-                      View
-                    </span>
+                    
                   </div>
 
                   {/* Photo grid */}
@@ -166,30 +165,35 @@ export default function GalleryMobileClient({
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-3 px-4 pb-4 touch-pan-y">
-                      {albumPhotos.slice(0, 8).map((p) => (
-                        <button
-                          key={p.id}
-                          onClick={() => setLightbox(p)}
-                          className="relative overflow-hidden rounded-2xl ring-1 ring-white/10 hover:ring-white/20"
-                          aria-label="Open image"
-                        >
-                          <div
+                      {albumPhotos.slice(0, 8).map((p) => {
+                        const isPortrait = p.orientation === "portrait";
+
+                        return (
+                          <button
+                            key={p.id}
+                            onClick={() => setLightbox(p)}
                             className={[
-                              "w-full",
-                              p.orientation === "portrait"
-                                ? "aspect-[3/4]"
-                                : "aspect-[4/3]",
+                              "relative overflow-hidden rounded-2xl ring-1 ring-white/10 hover:ring-white/20",
+                              isPortrait ? "col-span-1" : "col-span-2",
                             ].join(" ")}
+                            aria-label="Open image"
                           >
-                            <img
-                              src={p.image_url}
-                              alt={p.name || ""}
-                              className="h-full w-full object-cover transition hover:scale-[1.02]"
-                              loading="lazy"
-                            />
-                          </div>
-                        </button>
-                      ))}
+                            <div
+                              className={[
+                                "w-full",
+                                isPortrait ? "aspect-[3/4]" : "aspect-[16/9]",
+                              ].join(" ")}
+                            >
+                              <img
+                                src={p.image_url}
+                                alt={p.name || ""}
+                                className="h-full w-full object-cover transition hover:scale-[1.02]"
+                                loading="lazy"
+                              />
+                            </div>
+                          </button>
+                        );
+                      })}
 
                       {albumPhotos.length > 8 && (
                         <div className="col-span-2 rounded-2xl bg-white/5 p-4 text-center text-xs text-white/60 ring-1 ring-white/10">
