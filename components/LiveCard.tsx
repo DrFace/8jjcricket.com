@@ -17,7 +17,7 @@ export default function LiveCard({ f }: { f: Fixture }) {
 
   return (
     <Link
-      href={`/mobile/match/${f.id}`}
+      href={`/match/${f.id}`}
       className={cn(
         "group block rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-sm transition",
         "hover:border-amber-300/30 hover:bg-white/7"
