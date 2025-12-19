@@ -16,7 +16,7 @@ export default function NewsListCards({ items }: { items: NewsItem[] }) {
             {items.map((n) => (
                 <Link
                     key={n.id}
-                    href={`/moblie/news/${n.slug}`}
+                    href={`/mobile/news/${n.slug}`}
                     className="flex items-center gap-3 rounded-xl bg-white/5 p-3 transition hover:bg-white/10"
                 >
                     {/* Thumbnail */}
