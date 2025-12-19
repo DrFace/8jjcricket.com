@@ -1,59 +1,59 @@
+"use client";
 
-'use client'
-
-import { useEffect, useState } from 'react'
-import Image from 'next/image'
-import { useParams } from 'next/navigation'
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import MobileBackButton from "@/components/mobile/MobileBackButton";
 
 type CareerStat = {
-  type: string
+  type: string;
   batting?: {
-    matches: number
-    innings: number
-    runs_scored: number
-    highest_inning_score: number
-    strike_rate: number
-    average: number
-    hundreds: number
-    fifties: number
-  }
-}
+    matches: number;
+    innings: number;
+    runs_scored: number;
+    highest_inning_score: number;
+    strike_rate: number;
+    average: number;
+    hundreds: number;
+    fifties: number;
+  };
+};
 type Player = {
-  id: number
-  fullname: string
-  firstname: string
-  lastname: string
-  image_path: string
-  country?: { name: string }
-  dateofbirth?: string
-  gender?: string
-  battingstyle?: string
-  bowlingstyle?: string
-  career?: CareerStat[]
-}
+  id: number;
+  fullname: string;
+  firstname: string;
+  lastname: string;
+  image_path: string;
+  country?: { name: string };
+  dateofbirth?: string;
+  gender?: string;
+  battingstyle?: string;
+  bowlingstyle?: string;
+  career?: CareerStat[];
+};
 
 export default function PlayerDetailPage() {
-  const { id } = useParams()
-  const [player, setPlayer] = useState<Player | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { id } = useParams();
+  const [player, setPlayer] = useState<Player | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) return
+    if (!id) return;
     async function load() {
       try {
-        const res = await fetch(`/api/players/${id}`)
-        if (!res.ok) throw new Error('Failed to fetch player')
-        const json = await res.json()
-        setPlayer(json.data)
+        const res = await fetch(`/api/players/${id}`);
+        if (!res.ok) throw new Error("Failed to fetch player");
+        const json = await res.json();
+        setPlayer(json.data);
       } catch (e: any) {
-        setError(e.message)
+        setError(e.message);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
-    load()
-  }, [id])
+    load();
+  }, [id]);
 
   if (loading) {
     return (
@@ -65,7 +65,7 @@ export default function PlayerDetailPage() {
           <div className="mt-4 h-6 w-6 animate-spin rounded-full border-4 border-amber-400 border-t-transparent mx-auto"></div>
         </div>
       </>
-    )
+    );
   }
 
   if (error) {
@@ -77,7 +77,7 @@ export default function PlayerDetailPage() {
           {error}
         </div>
       </>
-    )
+    );
   }
 
   if (!player) {
@@ -89,7 +89,7 @@ export default function PlayerDetailPage() {
           Player not found.
         </div>
       </>
-    )
+    );
   }
 
   return (
@@ -99,11 +99,12 @@ export default function PlayerDetailPage() {
         name="description"
         content={`View ${player.fullname}'s player profile, stats and information on 8jjcricket.`}
       />
-      <div className="mx-auto px-4 py-10">
+      <div className="mx-auto px-4 pb-5 max-w-3xl">
+        <MobileBackButton />
         <div className="flex flex-col md:flex-row gap-8 items-center">
-          <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-slate-900 shadow-md">
+          <div className="relative h-40 w-40 overflow-hidden rounded-full bg-slate-900 shadow-md bg-amber-300/10 border border-amber-400/30 flex-shrink-0">
             <Image
-              src={player.image_path || '/placeholder.png'}
+              src={player.image_path || "/placeholder.png"}
               alt={player.fullname}
               fill
               className="object-contain"
@@ -111,19 +112,25 @@ export default function PlayerDetailPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-white">{player.fullname}</h1>
-            <p className="text-amber-300">
-              {player.country?.name ? player.country.name : 'Unknown Country'}
+            <p className="text-amber-300 text-right">
+              {player.country?.name ? player.country.name : "Unknown Country"}
             </p>
-            <div className="mt-3 space-y-1 text-sm text-sky-100/70">
+            <div className="mt-3 space-y-1 text-sm text-sky-100/70 mt-3">
               {player.dateofbirth && (
-                <p>
-                  <strong>DOB:</strong> {player.dateofbirth}
-                </p>
+                <div className="flex items-center justify-between">
+                  <p>
+                    <strong>DOB:</strong>
+                  </p>
+                  <p>{player.dateofbirth}</p>
+                </div>
               )}
               {player.battingstyle && (
-                <p>
-                  <strong>Batting Style:</strong> {player.battingstyle}
-                </p>
+                <div className="flex items-center justify-between">
+                  <p>
+                    <strong>Batting Style:</strong>
+                  </p>
+                  <p>{player.battingstyle}</p>
+                </div>
               )}
               {player.bowlingstyle && (
                 <p>
@@ -136,7 +143,9 @@ export default function PlayerDetailPage() {
 
         {player.career && player.career.length > 0 && (
           <div className="mt-10">
-            <h2 className="text-2xl font-semibold mb-4 text-white">Career Statistics</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-white">
+              Career Statistics
+            </h2>
             <div className="overflow-x-auto rounded-xl border border-white/15 bg-black/50 backdrop-blur-xl">
               <table className="min-w-full text-sm text-left text-sky-100/70">
                 <thead className="bg-slate-900/80 text-amber-300">
@@ -155,15 +164,25 @@ export default function PlayerDetailPage() {
                 <tbody>
                   {player.career.map((c) => (
                     <tr key={c.type} className="border-t border-white/10">
-                      <td className="px-4 py-2 font-semibold text-amber-300">{c.type}</td>
-                      <td className="px-4 py-2">{c.batting?.matches ?? '-'}</td>
-                      <td className="px-4 py-2">{c.batting?.innings ?? '-'}</td>
-                      <td className="px-4 py-2">{c.batting?.runs_scored ?? '-'}</td>
-                      <td className="px-4 py-2">{c.batting?.highest_inning_score ?? '-'}</td>
-                      <td className="px-4 py-2">{c.batting?.average ?? '-'}</td>
-                      <td className="px-4 py-2">{c.batting?.strike_rate ?? '-'}</td>
-                      <td className="px-4 py-2">{c.batting?.hundreds ?? '-'}</td>
-                      <td className="px-4 py-2">{c.batting?.fifties ?? '-'}</td>
+                      <td className="px-4 py-2 font-semibold text-amber-300">
+                        {c.type}
+                      </td>
+                      <td className="px-4 py-2">{c.batting?.matches ?? "-"}</td>
+                      <td className="px-4 py-2">{c.batting?.innings ?? "-"}</td>
+                      <td className="px-4 py-2">
+                        {c.batting?.runs_scored ?? "-"}
+                      </td>
+                      <td className="px-4 py-2">
+                        {c.batting?.highest_inning_score ?? "-"}
+                      </td>
+                      <td className="px-4 py-2">{c.batting?.average ?? "-"}</td>
+                      <td className="px-4 py-2">
+                        {c.batting?.strike_rate ?? "-"}
+                      </td>
+                      <td className="px-4 py-2">
+                        {c.batting?.hundreds ?? "-"}
+                      </td>
+                      <td className="px-4 py-2">{c.batting?.fifties ?? "-"}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -173,5 +192,5 @@ export default function PlayerDetailPage() {
         )}
       </div>
     </>
-  )
+  );
 }
