@@ -15,11 +15,11 @@ export default function MobileBackButton({ className = "" }: BackButtonProps) {
     <button
       onClick={handleBack}
       aria-label="Go back"
-      className={`flex items-center justify-center w-10 h-10
+      className={`flex items-center justify-center w-10 
         bg-black/40 hover:bg-amber-950/60
         border border-amber-400/30 rounded-full
         transition-all duration-300 hover:scale-110
-        group shadow-lg backdrop-blur-sm flex-shrink-0 mr-4
+        group shadow-lg backdrop-blur-sm flex-shrink-0 mr-4 h-10
         ${className}`}
     >
       <svg

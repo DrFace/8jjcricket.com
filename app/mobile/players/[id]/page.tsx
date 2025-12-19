@@ -99,10 +99,10 @@ export default function PlayerDetailPage() {
         name="description"
         content={`View ${player.fullname}'s player profile, stats and information on 8jjcricket.`}
       />
-      <div className="mx-auto px-4 py-10">
+      <div className="mx-auto px-4 pb-5 max-w-3xl">
         <MobileBackButton />
         <div className="flex flex-col md:flex-row gap-8 items-center">
-          <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-slate-900 shadow-md">
+          <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-slate-900 shadow-md bg-amber-300/10 border border-amber-400/30">
             <Image
               src={player.image_path || "/placeholder.png"}
               alt={player.fullname}
