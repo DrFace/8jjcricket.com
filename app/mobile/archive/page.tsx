@@ -3,10 +3,10 @@
 import React, { useMemo, useState } from "react";
 import useSWR from "swr";
 import type { Fixture } from "@/types/fixture";
-import ArchhiveCard from "@/components/ArchhiveCard";
 import BetButton from "@/components/BetButton";
 import CalenderModal from "@/components/mobile/CalenderModal";
 import BottomNav from "@/components/BottomNav";
+import MobileArchhiveCard from "@/components/mobile/MobileArchhiveCard";
 
 // Simple fetcher for SWR; fetches JSON from the given URL.
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
@@ -194,7 +194,7 @@ export default function ArchivePage() {
                 key={f.id}
                 className="rounded-2xl border border-white/15 bg-black/50 backdrop-blur-xl p-2 shadow-2xl hover:border-amber-400/50 hover:shadow-[0_20px_50px_rgba(251,191,36,0.15)] transition-all"
               >
-                <ArchhiveCard f={f} />
+                <MobileArchhiveCard f={f} />
               </div>
             ))}
           </div>

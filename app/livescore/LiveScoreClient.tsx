@@ -1,10 +1,8 @@
-
 "use client";
 
 import { useState } from "react";
 import useSWR from "swr";
 import ArchhiveCard from "@/components/ArchhiveCard";
-import LiveCard from "@/components/LiveCard";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -44,7 +42,9 @@ export default function DesktopScoreClient() {
 
         {activeTab === "Live" && (
           <div>
-            <h1 className="text-3xl font-extrabold text-amber-400 mb-6">Live Scores</h1>
+            <h1 className="text-3xl font-extrabold text-amber-400 mb-6">
+              Live Scores
+            </h1>
             {liveData.length > 0 ? (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {liveData.map((match: any) => (
@@ -59,7 +59,9 @@ export default function DesktopScoreClient() {
 
         {activeTab === "Upcoming" && (
           <div>
-            <h1 className="text-3xl font-extrabold text-amber-400 mb-6">Upcoming Matches</h1>
+            <h1 className="text-3xl font-extrabold text-amber-400 mb-6">
+              Upcoming Matches
+            </h1>
             {upcomingData.length > 0 ? (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {upcomingData.map((fixture: any) => (
@@ -74,12 +76,14 @@ export default function DesktopScoreClient() {
 
         {activeTab === "Recent" && (
           <div>
-            <h1 className="text-3xl font-extrabold text-amber-400 mb-6">Recent Results</h1>
+            <h1 className="text-3xl font-extrabold text-amber-400 mb-6">
+              Recent Results
+            </h1>
             {recentData.length > 0 ? (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-               {recentData.slice(0, 6).map((f: any) => (
-                 <ArchhiveCard key={f.id} f={f} />
-              ))}
+                {recentData.slice(0, 6).map((f: any) => (
+                  <ArchhiveCard key={f.id} f={f} />
+                ))}
               </div>
             ) : (
               <div className="text-gray-400">No recent matches found.</div>
@@ -88,5 +92,5 @@ export default function DesktopScoreClient() {
         )}
       </div>
     </div>
-   );
+  );
 }
