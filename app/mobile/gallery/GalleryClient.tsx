@@ -218,37 +218,51 @@ export default function GalleryMobileClient({
           aria-modal="true"
         >
           <div
-            className="flex h-full flex-col"
+            className="relative h-full w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Top bar */}
-            <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-white/10 bg-black px-4 py-3">
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-white/90">
-                  {lightbox.name || "Photo"}
-                </p>
-                <p className="text-xs text-white/50">{lightbox.orientation}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <a
-                  href={lightbox.image_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/85 ring-1 ring-white/15 hover:bg-white/15"
-                >
-                  Original
-                </a>
-                <button
-                  onClick={() => setLightbox(null)}
-                  className="rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/85 ring-1 ring-white/15 hover:bg-white/15"
-                >
-                  Close
-                </button>
+            {/* Fixed top bar (safe-area aware) */}
+            <div
+              className="fixed left-0 right-0 top-0 z-[60] border-b border-white/10 bg-black px-4 py-3"
+              style={{
+                paddingTop: "calc(env(safe-area-inset-top) + 12px)",
+              }}
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-white/90">
+                    {lightbox.name || "Photo"}
+                  </p>
+                  <p className="text-xs text-white/50">{lightbox.orientation}</p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <a
+                    href={lightbox.image_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/85 ring-1 ring-white/15 hover:bg-white/15"
+                  >
+                    Original
+                  </a>
+
+                  <button
+                    onClick={() => setLightbox(null)}
+                    className="rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/85 ring-1 ring-white/15 hover:bg-white/15"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* Image */}
-            <div className="flex flex-1 items-center justify-center p-3">
+            {/* Image area (push down under fixed header) */}
+            <div
+              className="flex h-full items-center justify-center p-3"
+              style={{
+                paddingTop: "calc(env(safe-area-inset-top) + 70px)",
+              }}
+            >
               <img
                 src={lightbox.image_url}
                 alt={lightbox.name || ""}
@@ -258,6 +272,7 @@ export default function GalleryMobileClient({
           </div>
         </div>
       )}
+
     </div>
   );
 }
