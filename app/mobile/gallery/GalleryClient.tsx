@@ -227,7 +227,7 @@ export default function GalleryMobileClient({
               aria-label="Close"
               className="fixed z-[60] flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-white ring-1 ring-white/20 hover:bg-black"
               style={{
-                top: "calc(env(safe-area-inset-top) + 12px)",
+                top: "calc(env(safe-area-inset-top) + 60px)",
                 right: "12px",
               }}
             >
