@@ -433,7 +433,7 @@ export default function SeriesDetailPage({
                   d="M15 19l-7-7 7-7"
                 />
               </svg>
-            </button>
+            </button>{" "}
             <div className="">
               {leagueData.image_path && (
                 <Image
@@ -447,7 +447,7 @@ export default function SeriesDetailPage({
             </div>
             {/* Teams Button */}
             <Link
-              href={`/teams?league=${leagueData.id}`}
+              href={`/mobile/teams?league=${leagueData.id}`}
               className="flex items-center gap-2 px-4 h-10 bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-bold rounded-2xl rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-xl flex-shrink-0"
             >
               <svg

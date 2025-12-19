@@ -1,4 +1,5 @@
 "use client";
+import MobileBackButton from "@/components/mobile/MobileBackButton";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
 
@@ -42,9 +43,12 @@ export default function GamePage({ params }: { params: { slug: string } }) {
 
   return (
     <div className="space-y-4 ">
-      <h1 className="text-2xl font-bold capitalize">
-        {params.slug.replace("-", " ")}
-      </h1>
+      <div className="flex items-center">
+        <MobileBackButton />
+        <h1 className="text-2xl font-bold capitalize">
+          {params.slug.replace("-", " ")}
+        </h1>
+      </div>
       <div className="card">
         <Comp />
       </div>
