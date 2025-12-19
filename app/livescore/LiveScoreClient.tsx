@@ -69,6 +69,7 @@ function Calendar({ selectedDate, onSelectDate, minDate, maxDate }: any) {
             setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1))
           }
         >
+            
           ›
         </button>
       </div>
