@@ -73,8 +73,11 @@ export default function PlayerDetailPage() {
       <>
         <title>Player Error | 8jjcricket</title>
         <meta name="description" content={error} />
-        <div className="rounded-2xl border border-red-500/30 bg-black/70 p-6 text-sm text-red-300 backdrop-blur-xl">
-          {error}
+        <div>
+          <MobileBackButton />
+          <div className="rounded-2xl border border-red-500/30 bg-black/70 p-6 text-sm text-red-300 backdrop-blur-xl mt-6 jsustify-center text-center">
+            {error}
+          </div>
         </div>
       </>
     );
