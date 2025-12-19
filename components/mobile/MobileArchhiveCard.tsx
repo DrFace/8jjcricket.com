@@ -5,7 +5,7 @@ import { formatDate, cn } from "@/lib/utils";
 import TeamBadge from "@/components/TeamBadge";
 import type { Fixture } from "@/types/fixture";
 
-export default function ArchhiveCard({ f }: { f: Fixture }) {
+export default function MobileArchhiveCard({ f }: { f: Fixture }) {
   const home = f.localteam;
   const away = f.visitorteam;
 
@@ -34,7 +34,7 @@ export default function ArchhiveCard({ f }: { f: Fixture }) {
       />
 
       <Link
-        href={`/match/${f.id}`}
+        href={`/mobile/match/${f.id}`}
         className="relative z-10 block rounded-xl px-2 sm:px-3 py-3 transition"
       >
         {/* Top row: title + status */}
