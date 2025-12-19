@@ -1,59 +1,64 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from 'react'
-import useSWR from 'swr'
-import Image from 'next/image'
-import Link from 'next/link'
+import { useState, useEffect } from "react";
+import useSWR from "swr";
+import Image from "next/image";
+import Link from "next/link";
 
 interface Country {
-  id: number
-  name: string
-  image_path?: string
+  id: number;
+  name: string;
+  image_path?: string;
 }
 
 interface Player {
-  id: number
-  fullname: string
-  image_path?: string
+  id: number;
+  fullname: string;
+  image_path?: string;
   position?: {
-    name: string
-  }
-  dateofbirth?: string
-  battingstyle?: string
-  bowlingstyle?: string
+    name: string;
+  };
+  dateofbirth?: string;
+  battingstyle?: string;
+  bowlingstyle?: string;
 }
 
 interface Team {
-  id: number
-  name: string
-  code: string
-  image_path?: string
-  national_team: boolean
-  country?: Country
+  id: number;
+  name: string;
+  code: string;
+  image_path?: string;
+  national_team: boolean;
+  country?: Country;
   squad?: {
-    data?: Player[]
-  }
-  updated_at?: string
+    data?: Player[];
+  };
+  updated_at?: string;
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json())
+const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export default function TeamDetailPage({ params }: { params: { id: string } }) {
-  const { data, error, isLoading } = useSWR(`/api/teams/${params.id}`, fetcher)
-  
-  const teamData: Team = data?.data
+  const { data, error, isLoading } = useSWR(`/api/teams/${params.id}`, fetcher);
+
+  const teamData: Team = data?.data;
 
   if (error) {
     return (
       <div className="space-y-4">
-        <Link href="/teams" className="text-amber-400 hover:text-amber-300 text-sm font-medium">
+        <button
+          onClick={() => window.history.back()}
+          className="text-amber-400 hover:text-amber-300 text-sm font-medium"
+        >
           ← Back to Teams
-        </Link>
+        </button>
         <div className="rounded-2xl border border-red-500/30 bg-black/50 backdrop-blur-xl p-6 shadow-2xl">
-          <p className="text-red-300 font-medium">Failed to load team details. Please try again later.</p>
+          <p className="text-red-300 font-medium">
+            Failed to load team details. Please try again later.
+          </p>
         </div>
       </div>
-    )
+    );
   }
 
   if (isLoading) {
@@ -65,36 +70,49 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
           <div className="h-64 bg-slate-900/80 border border-white/20 rounded-2xl backdrop-blur-xl"></div>
         </div>
       </div>
-    )
+    );
   }
 
   if (!teamData) {
     return (
       <div className="space-y-4">
-        <Link href="/teams" className="text-amber-400 hover:text-amber-300 text-sm font-medium">
+        <button
+          onClick={() => window.history.back()}
+          className="text-amber-400 hover:text-amber-300 text-sm font-medium"
+        >
           ← Back to Teams
-        </Link>
+        </button>
         <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-6 shadow-2xl">
           <p className="text-white">Team not found</p>
         </div>
       </div>
-    )
+    );
   }
 
-  const squad = teamData.squad?.data || []
+  const squad = teamData.squad?.data || [];
 
   return (
     <>
       {/* Back Button */}
-      <Link 
-        href="/teams" 
+      <button
+        onClick={() => window.history.back()}
         className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 text-sm font-medium mb-6 transition-colors"
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 19l-7-7 7-7"
+          />
         </svg>
         Back to Teams
-      </Link>
+      </button>
 
       {/* Team Header */}
       <div className="bg-gradient-to-r from-slate-800/90 via-slate-900/90 to-slate-800/90 rounded-3xl border border-amber-400/30 p-8 mb-6 backdrop-blur-xl shadow-2xl">
@@ -130,7 +148,7 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
                 </span>
               )}
             </div>
-            
+
             {teamData.country && (
               <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
                 {teamData.country.image_path && (
@@ -142,9 +160,7 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
                     className="rounded"
                   />
                 )}
-                <p className="text-sky-200 text-lg">
-                  {teamData.country.name}
-                </p>
+                <p className="text-sky-200 text-lg">{teamData.country.name}</p>
               </div>
             )}
 
@@ -156,7 +172,9 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
               {squad.length > 0 && (
                 <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/10">
                   <span className="text-amber-300 font-semibold">Squad: </span>
-                  <span className="text-white font-bold">{squad.length} Players</span>
+                  <span className="text-white font-bold">
+                    {squad.length} Players
+                  </span>
                 </div>
               )}
             </div>
@@ -172,11 +190,25 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
 
         {squad.length === 0 ? (
           <div className="p-12 text-center">
-            <svg className="w-16 h-16 text-amber-300/50 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            <svg
+              className="w-16 h-16 text-amber-300/50 mx-auto mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              />
             </svg>
-            <p className="text-white font-medium">No squad information available</p>
-            <p className="text-sm text-sky-100/70 mt-2">Squad details will appear here when available</p>
+            <p className="text-white font-medium">
+              No squad information available
+            </p>
+            <p className="text-sm text-sky-100/70 mt-2">
+              Squad details will appear here when available
+            </p>
           </div>
         ) : (
           <div className="p-6">
@@ -200,7 +232,12 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
                         />
                       ) : (
                         <span className="text-2xl font-black text-slate-900">
-                          {player.fullname.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                          {player.fullname
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .substring(0, 2)
+                            .toUpperCase()}{" "}
                         </span>
                       )}
                     </div>
@@ -236,5 +273,5 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
         )}
       </div>
     </>
-  )
+  );
 }

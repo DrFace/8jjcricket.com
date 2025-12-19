@@ -5,7 +5,7 @@ import { formatDate, cn } from "@/lib/utils";
 import TeamBadge from "@/components/TeamBadge";
 import type { Fixture } from "@/types/fixture";
 
-export default function LiveCard({ f }: { f: Fixture }) {
+export default function SeriesDetailsCard({ f }: { f: Fixture }) {
   const home = f.localteam;
   const away = f.visitorteam;
 
@@ -17,7 +17,7 @@ export default function LiveCard({ f }: { f: Fixture }) {
   const dateLine = formatDate(f.starting_at);
 
   return (
-    <div className="relative group">
+    <div className="relative group w-80 ">
       {/* Base card with dark glassmorphism and visible border */}
       <div className="absolute inset-0 rounded-xl border-2 border-white/20 bg-slate-900/80 backdrop-blur-sm shadow-xl group-hover:border-amber-400/60 group-hover:shadow-2xl transition-all" />
 
@@ -34,7 +34,7 @@ export default function LiveCard({ f }: { f: Fixture }) {
       />
 
       <Link
-        href={`/match/${f.id}`}
+        href={`match/${f.id}`}
         className="relative z-10 block rounded-xl px-2 sm:px-3 py-3 transition"
       >
         {/* Top row: title + status */}
