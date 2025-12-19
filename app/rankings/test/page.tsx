@@ -1,6 +1,8 @@
 "use client";
 
 import useSWR from "swr";
+import TopNav from "@/components/TopNav";
+import Footer from "@/components/Footer";
 import MobileTabBar from "@/components/mobile/MobileTabBar";
 import { groupByGender } from "@/src/utils/groupByGender";
 import { RankingEntry } from "@/types/rankings";
@@ -28,31 +30,45 @@ export default function TestRankingsPage() {
       <>
         <title>{title}</title>
         <meta name="description" content={description} />
+        <TopNav />
         <div className="card">
           Failed to load team rankings.
           {typeof error === "string" ? ` ${error}` : ""}
         </div>
+        <Footer />
       </>
     );
   }
+
   if (isLoading) {
     return (
       <>
         <title>{title}</title>
         <meta name="description" content={description} />
+        <TopNav />
         <div className="card animate-pulse">Loading rankings…</div>
+        <Footer />
       </>
     );
   }
+
   const rankings: RankingEntry[] = data?.data ?? [];
   const { men, women } = groupByGender(rankings, ["TEST"]);
+
   return (
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
+
+      <TopNav />
+
       <div className="space-y-8">
-        <h1 className="text-lg font-extrabold mb-4">ICC Test Team Rankings</h1>
+        <h1 className="text-lg font-extrabold mb-4">
+          ICC Test Team Rankings
+        </h1>
+
         <MobileTabBar tabs={rankingTabs} />
+
         {men.length > 0 ? (
           <RankingTable data={men} title="Men Rankings" />
         ) : (
@@ -60,6 +76,7 @@ export default function TestRankingsPage() {
             No men's rankings available
           </div>
         )}
+
         {women.length > 0 ? (
           <RankingTable data={women} title="Women Rankings" />
         ) : (
@@ -68,6 +85,8 @@ export default function TestRankingsPage() {
           </div>
         )}
       </div>
+
+      <Footer />
     </>
   );
 }

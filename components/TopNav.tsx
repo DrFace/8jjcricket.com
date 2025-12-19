@@ -167,9 +167,11 @@ export default function TopNav() {
                         <NavItem href="/livescore" label="Live Score" active={isActive("/livescore")} />
                         <NavItem href="/archive" label="Archive" active={isActive("/archive")} />
                         <NavItem href="/series" label="Series" active={isActive("/series")} />
+                        <NavItem href="/rankings/t20i" label="Team Rankings" active={isActive("/rankings/t20i")} />
                         <NavItem href="/players" label="Players" active={isActive("/players")} />
-                        <NavItem href="/minigames" label="Minigames" active={isActive("/minigames")} />
+                        <NavItem href="/minigames" label="Mini Games" active={isActive("/minigames")} />
                         <NavItem href="/news" label="News" active={isActive("/news")} />
+                        <NavItem href="/gallery" label="Gallery" active={isActive("/gallery")} />
                     </nav>
 
                     <div className="flex items-center gap-3">
