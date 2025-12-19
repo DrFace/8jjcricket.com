@@ -91,8 +91,8 @@ export default function TeamsClient() {
               const value = e.target.value;
               setSelectedLeague(value);
               value === "all"
-                ? router.push("/moblie/teams")
-                : router.push(`/moblie/teams?league=${value}`);
+                ? router.push("/mobile/teams")
+                : router.push(`/mobile/teams?league=${value}`);
             }}
             className="mt-4 w-full md:w-80 bg-black/40 border border-white/20 rounded-lg px-4 py-3 text-amber-200"
           >
