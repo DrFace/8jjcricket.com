@@ -37,7 +37,7 @@ export default function MobileSidebar() {
   const items: NavItem[] = useMemo(
     () => [
       { href: "/mobile", label: "Home", Icon: Home },
-      { href: "/mobile/search", label: "Search", Icon: Search },
+      // { href: "/mobile/search", label: "Search", Icon: Search },
       { href: "/mobile/upcoming", label: "Upcoming", Icon: CalendarClock },
       { href: "/mobile/recent", label: "Recent", Icon: CalendarClock },
       { href: "/mobile/series", label: "Series", Icon: Trophy },
