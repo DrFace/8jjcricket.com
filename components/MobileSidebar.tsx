@@ -14,6 +14,7 @@ import {
   Users,
   Gamepad2,
   Newspaper,
+  Images,
   Search,
   CalendarClock,
   BarChart3,
@@ -42,6 +43,7 @@ export default function MobileSidebar() {
       { href: "/mobile/series", label: "Series", Icon: Trophy },
       { href: "/mobile/teams", label: "Teams", Icon: Users },
       { href: "/mobile/players", label: "Players", Icon: Users },
+      { href: "/mobile/gallery", label: "Gallery", Icon: Images},
       {
         href: "/mobile/rankings/t20i",
         label: "Team Rankings",
