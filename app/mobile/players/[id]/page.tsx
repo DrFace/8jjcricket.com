@@ -102,7 +102,7 @@ export default function PlayerDetailPage() {
       <div className="mx-auto px-4 pb-5 max-w-3xl">
         <MobileBackButton />
         <div className="flex flex-col md:flex-row gap-8 items-center">
-          <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-slate-900 shadow-md bg-amber-300/10 border border-amber-400/30">
+          <div className="relative h-40 w-40 overflow-hidden rounded-full bg-slate-900 shadow-md bg-amber-300/10 border border-amber-400/30 flex-shrink-0">
             <Image
               src={player.image_path || "/placeholder.png"}
               alt={player.fullname}
@@ -112,19 +112,25 @@ export default function PlayerDetailPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-white">{player.fullname}</h1>
-            <p className="text-amber-300">
+            <p className="text-amber-300 text-right">
               {player.country?.name ? player.country.name : "Unknown Country"}
             </p>
-            <div className="mt-3 space-y-1 text-sm text-sky-100/70">
+            <div className="mt-3 space-y-1 text-sm text-sky-100/70 mt-3">
               {player.dateofbirth && (
-                <p>
-                  <strong>DOB:</strong> {player.dateofbirth}
-                </p>
+                <div className="flex items-center justify-between">
+                  <p>
+                    <strong>DOB:</strong>
+                  </p>
+                  <p>{player.dateofbirth}</p>
+                </div>
               )}
               {player.battingstyle && (
-                <p>
-                  <strong>Batting Style:</strong> {player.battingstyle}
-                </p>
+                <div className="flex items-center justify-between">
+                  <p>
+                    <strong>Batting Style:</strong>
+                  </p>
+                  <p>{player.battingstyle}</p>
+                </div>
               )}
               {player.bowlingstyle && (
                 <p>
