@@ -221,52 +221,25 @@ export default function GalleryMobileClient({
             className="relative h-full w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Fixed top bar (safe-area aware) */}
-            <div
-              className="fixed left-0 right-0 top-0 z-[60] border-b border-white/10 bg-black px-4 py-3"
+            {/* TOP-RIGHT CLOSE (X) BUTTON */}
+            <button
+              onClick={() => setLightbox(null)}
+              aria-label="Close"
+              className="fixed z-[60] flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-white ring-1 ring-white/20 hover:bg-black"
               style={{
-                paddingTop: "calc(env(safe-area-inset-top) + 12px)",
+                top: "calc(env(safe-area-inset-top) + 12px)",
+                right: "12px",
               }}
             >
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-white/90">
-                    {lightbox.name || "Photo"}
-                  </p>
-                  <p className="text-xs text-white/50">{lightbox.orientation}</p>
-                </div>
+              ✕
+            </button>
 
-                <div className="flex items-center gap-2">
-                  <a
-                    href={lightbox.image_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/85 ring-1 ring-white/15 hover:bg-white/15"
-                  >
-                    Original
-                  </a>
-
-                  <button
-                    onClick={() => setLightbox(null)}
-                    className="rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/85 ring-1 ring-white/15 hover:bg-white/15"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Image area (push down under fixed header) */}
-            <div
-              className="flex h-full items-center justify-center p-3"
-              style={{
-                paddingTop: "calc(env(safe-area-inset-top) + 70px)",
-              }}
-            >
+            {/* Image */}
+            <div className="flex h-full items-center justify-center p-3">
               <img
                 src={lightbox.image_url}
                 alt={lightbox.name || ""}
-                className="max-h-[85vh] w-auto max-w-full object-contain"
+                className="max-h-[90vh] w-auto max-w-full object-contain"
               />
             </div>
           </div>
