@@ -6,7 +6,9 @@ import Reveal from "@/components/Reveal";
 import NewsListCards from "@/components/NewsListCards";
 import SocialBox from "@/components/SocialBox";
 
-const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), { ssr: false });
+const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
+  ssr: false,
+});
 
 type Article = {
   id: number;
@@ -17,12 +19,21 @@ type Article = {
 };
 
 const GAME_ITEMS = [
-  { slug: "cricket-legends", title: "Cricket Legends", icon: "/games/cricket-legends.png" },
-  { slug: "cricket-superover", title: "Cricket Super Over", icon: "/games/cricket-superover.png" },
+  {
+    slug: "cricket-legends",
+    title: "Cricket Legends",
+    icon: "/games/cricket-legends.png",
+  },
+  {
+    slug: "cricket-superover",
+    title: "Cricket Super Over",
+    icon: "/games/cricket-superover.png",
+  },
 ] as const;
 
 const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
-const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
+const SITE_ORIGIN =
+  process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
 
 /**
  * Place files like:
@@ -79,14 +90,22 @@ export default async function MobileHomePage() {
       slug: a.slug,
       title: a.title,
       imgSrc: normalizeImageUrl(a.image_url),
-      date: a.created_at ? new Date(a.created_at).toISOString().slice(0, 10) : "",
+      date: a.created_at
+        ? new Date(a.created_at).toISOString().slice(0, 10)
+        : "",
     }))
-    .filter((a) => a.imgSrc) as { id: number; slug: string; title: string; imgSrc: string }[];
+    .filter((a) => a.imgSrc) as {
+    id: number;
+    slug: string;
+    title: string;
+    imgSrc: string;
+  }[];
 
   // Sponsors: 5 columns; add placeholders to complete the last row
   const BRAND_COLS = 5;
   const brandRemainder = BRAND_ITEMS.length % BRAND_COLS;
-  const brandPlaceholders = brandRemainder === 0 ? 0 : BRAND_COLS - brandRemainder;
+  const brandPlaceholders =
+    brandRemainder === 0 ? 0 : BRAND_COLS - brandRemainder;
 
   return (
     <>
@@ -167,12 +186,17 @@ export default async function MobileHomePage() {
                         loading="lazy"
                       />
                     </div>
-                    <span className="mt-1 text-[11px] font-medium text-white/90">{b.name}</span>
+                    <span className="mt-1 text-[11px] font-medium text-white/90">
+                      {b.name}
+                    </span>
                   </a>
                 ))}
 
                 {Array.from({ length: brandPlaceholders }).map((_, i) => (
-                  <div key={`brand-ph-${i}`} className="flex flex-col items-center">
+                  <div
+                    key={`brand-ph-${i}`}
+                    className="flex flex-col items-center"
+                  >
                     <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
                     <span className="mt-1 text-[11px] text-transparent">.</span>
                   </div>
@@ -187,8 +211,15 @@ export default async function MobileHomePage() {
       <section className="mt-5 w-full snap-start scroll-mt-3">
         <Reveal>
           <div className="mb-2 flex w-full items-center justify-between">
-            <h2 className="text-sm font-semibold">Hot Minigames</h2>
-            <Link href="/mobile/minigames" className="text-xs font-semibold text-sky-400">
+            <div className="mb-3 flex items-center gap-2 pl-4">
+              <span className="h-2 w-2 rounded-full bg-yellow-400" />
+              <h2 className="text-sm font-semibold">Hot Minigames</h2>
+            </div>
+
+            <Link
+              href="/mobile/minigames"
+              className="text-xs font-semibold text-sky-400"
+            >
               View all →
             </Link>
           </div>
@@ -220,9 +251,14 @@ export default async function MobileHomePage() {
                   ))}
 
                   {Array.from({ length: placeholders }).map((_, i) => (
-                    <div key={`game-ph-${i}`} className="flex flex-col items-center">
+                    <div
+                      key={`game-ph-${i}`}
+                      className="flex flex-col items-center"
+                    >
                       <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
-                      <span className="mt-1 text-[11px] text-transparent">.</span>
+                      <span className="mt-1 text-[11px] text-transparent">
+                        .
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -248,8 +284,6 @@ export default async function MobileHomePage() {
           </Reveal>
         </section>
       )}
-
-    
     </>
   );
 }
