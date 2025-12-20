@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import BottomNav from "@/components/BottomNav";
-import Footer from "@/components/Footer";
 import PlayerCard from "@/components/games/PlayerCard";
 import { debounce } from "@/lib/debounce";
 
@@ -121,38 +120,40 @@ export default function PlayersPage() {
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
           {/* Sidebar Filters */}
-          <aside className="md:col-span-1">
-            <div className="sticky top-4 space-y-4 rounded-2xl border border-white/15 bg-black/50 p-4 text-sm shadow-2xl backdrop-blur-xl">
-              <div className="space-y-1">
-                <label className="font-medium text-amber-200">
-                  Search by name
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Ahmed, Sharma..."
-                  className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white placeholder:text-slate-400 outline-none focus:border-amber-400/50 focus:ring-amber-400/30"
-                  onChange={(e) => debouncedSetQ(e.target.value)}
-                />
-              </div>
+          {loading ? null : (
+            <aside className="md:col-span-1">
+              <div className="sticky top-4 space-y-4 rounded-2xl border border-white/15 bg-black/50 p-4 text-sm shadow-2xl backdrop-blur-xl">
+                <div className="space-y-1">
+                  <label className="font-medium text-amber-200">
+                    Search by name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Ahmed, Sharma..."
+                    className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white placeholder:text-slate-400 outline-none focus:border-amber-400/50 focus:ring-amber-400/30"
+                    onChange={(e) => debouncedSetQ(e.target.value)}
+                  />
+                </div>
 
-              <div className="space-y-1">
-                <label className="font-medium text-amber-200">Country</label>
-                <select
-                  className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none focus:border-amber-400/50 focus:ring-amber-400/30"
-                  value={country}
-                  onChange={(e) => {
-                    setCountry(e.target.value);
-                    setPage(1);
-                  }}
-                >
-                  <option value="">All</option>
-                  {countryOptions.map((c) => (
-                    <option key={c}>{c}</option>
-                  ))}
-                </select>
+                <div className="space-y-1">
+                  <label className="font-medium text-amber-200">Country</label>
+                  <select
+                    className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none focus:border-amber-400/50 focus:ring-amber-400/30"
+                    value={country}
+                    onChange={(e) => {
+                      setCountry(e.target.value);
+                      setPage(1);
+                    }}
+                  >
+                    <option value="">All</option>
+                    {countryOptions.map((c) => (
+                      <option key={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
-            </div>
-          </aside>
+            </aside>
+          )}
 
           {/* Players Grid */}
           <main className="md:col-span-3">
@@ -233,8 +234,6 @@ export default function PlayersPage() {
           </main>
         </div>
       </div>
-
-    
     </>
   );
 }

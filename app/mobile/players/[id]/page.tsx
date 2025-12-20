@@ -104,7 +104,7 @@ export default function PlayerDetailPage() {
       />
       <div className="mx-auto px-4 pb-5 max-w-3xl">
         <MobileBackButton />
-        <div className="flex flex-col md:flex-row gap-8 items-center">
+        <div className="flex flex-col md:flex-row gap-8 items-center w-full">
           <div className="relative h-40 w-40 overflow-hidden rounded-full bg-slate-900 shadow-md bg-amber-300/10 border border-amber-400/30 flex-shrink-0">
             <Image
               src={player.image_path || "/placeholder.png"}
@@ -113,9 +113,9 @@ export default function PlayerDetailPage() {
               className="object-contain"
             />
           </div>
-          <div>
+          <div className="w-full">
             <h1 className="text-3xl font-bold text-white">{player.fullname}</h1>
-            <p className="text-amber-300 text-right">
+            <p className="text-amber-300 ">
               {player.country?.name ? player.country.name : "Unknown Country"}
             </p>
             <div className="mt-3 space-y-1 text-sm text-sky-100/70 mt-3">
@@ -136,9 +136,12 @@ export default function PlayerDetailPage() {
                 </div>
               )}
               {player.bowlingstyle && (
-                <p>
-                  <strong>Bowling Style:</strong> {player.bowlingstyle}
-                </p>
+                <div className="flex items-center justify-between">
+                  <p>
+                    <strong>Bowling Style:</strong>
+                  </p>
+                  <p>{player.bowlingstyle}</p>
+                </div>
               )}
             </div>
           </div>
