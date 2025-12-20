@@ -266,7 +266,7 @@ export default function SeriesPage() {
                   return (
                     <div
                       key={league.id}
-                      className={`rounded-lg border p-6 hover:shadow-[0_20px_50px_rgba(251,191,36,0.2)] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center group relative cursor-pointer backdrop-blur-xl ${
+                      className={`rounded-2xl border p-6 hover:shadow-[0_20px_50px_rgba(251,191,36,0.2)] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center group relative cursor-pointer backdrop-blur-xl ${
                         isActive
                           ? "border-amber-400/60 bg-slate-900/90 ring-2 ring-amber-400/20"
                           : "border-white/20 bg-slate-900/80 hover:border-amber-400/40"
@@ -308,13 +308,13 @@ export default function SeriesPage() {
                       <div className="flex gap-2 mt-auto w-full">
                         <Link
                           href={`series/${league.id}`}
-                          className="flex-1 px-3 py-1.5 text-xs font-medium text-amber-300 border border-amber-400/50 rounded hover:bg-amber-950/40 transition-colors backdrop-blur-sm"
+                          className="flex-1 px-3 py-1.5 text-xs font-medium text-amber-300 border border-amber-400/50 rounded-xl hover:bg-amber-950/40 transition-colors backdrop-blur-sm"
                         >
                           Details
                         </Link>
                         <Link
                           href={`teams?league=${league.id}`}
-                          className="flex-1 px-3 py-1.5 text-xs font-medium text-black bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 rounded hover:brightness-110 transition-all shadow-lg"
+                          className="flex-1 px-3 py-1.5 text-xs font-medium text-black bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 rounded-xl hover:brightness-110 transition-all shadow-lg"
                         >
                           Teams
                         </Link>
@@ -459,8 +459,6 @@ export default function SeriesPage() {
           </div>
         )}
       </div>
-
-     
     </>
   );
 }

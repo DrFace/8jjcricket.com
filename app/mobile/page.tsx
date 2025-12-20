@@ -210,8 +210,8 @@ export default async function MobileHomePage() {
       {/* QUICK GAMES */}
       <section className="mt-5 w-full snap-start scroll-mt-3">
         <Reveal>
-          <div className="mb-2 flex w-full items-center justify-between">
-            <div className="mb-3 flex items-center gap-2 pl-4">
+          <div className="mb-2 flex w-full items-center justify-between px-4">
+            <div className="mb-3 flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-yellow-400" />
               <h2 className="text-sm font-semibold">Hot Minigames</h2>
             </div>
