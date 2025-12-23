@@ -23,8 +23,6 @@ type Video = {
   title: string;
   slug: string;
   video_path: string;
-  created_at?: string;
-  updateed_at?: string;
 };
 
 const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
@@ -91,6 +89,22 @@ function normalizeImageUrl(url: string | null): string | null {
   }
 }
 
+function normalizeVideoUrl(url: string | null): string | null {
+  if (!url) return null;
+  // Remove '/api' from backend_url if present
+  let backend_url = apiBase().replace(/\/api$/, "");
+  try {
+    const u = new URL(url, backend_url);
+    let pathname = u.pathname;
+    if (!pathname.startsWith("/storage/")) {
+      pathname = `/storage/${pathname.replace(/^\/+/, "")}`;
+    }
+    return `${backend_url}${pathname}${u.search}`;
+  } catch {
+    return `${backend_url}/storage/${String(url).replace(/^\/+/, "")}`;
+  }
+}
+
 async function getNewsPreview(): Promise<Article[]> {
   const base = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE;
   const url = `${base.replace(/\/+$/, "")}/news`;
@@ -109,12 +123,14 @@ export default async function MobileHomePage() {
   const news = await getNewsPreview();
   const [videosRaw] = await Promise.all([fetchVideos()]);
 
-  const videos: Video[] = videosRaw.map((v) => ({
-    ...v,
-    created_at: v.created_at
-      ? new Date(v.created_at).toISOString().slice(0, 10)
-      : "",
-  }));
+  const videos: Video[] = (videosRaw || [])
+    .map((p: any) => {
+      return {
+        ...p,
+        video_path: normalizeVideoUrl(p.video_path) || p.video_path,
+      } as Video;
+    })
+    .filter((p) => !!p.video_path);
 
   const newsWithImages = news
     .map((a: any) => ({
@@ -127,11 +143,11 @@ export default async function MobileHomePage() {
         : "",
     }))
     .filter((a) => a.imgSrc) as {
-      id: number;
-      slug: string;
-      title: string;
-      imgSrc: string;
-    }[];
+    id: number;
+    slug: string;
+    title: string;
+    imgSrc: string;
+  }[];
 
   async function fetchVideos(): Promise<Video[]> {
     const url = `${apiBase()}/home-videos`;
@@ -176,9 +192,10 @@ export default async function MobileHomePage() {
         <Reveal>
           <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
             <div className="h-[180px] w-full sm:h-[220px]">
+              <h1>{`${videos[0].video_path}`}</h1>
               <video
                 className="h-full w-full object-cover"
-                src={`${apiBaseVideo()}/${videos[0].video_path}`}
+                src={`${videos[0].video_path}`}
                 autoPlay
                 muted
                 loop
@@ -300,7 +317,9 @@ export default async function MobileHomePage() {
                       {hotGames.map((g) => (
                         <Link
                           key={g.slug}
-                          href={`/mobile/minigames/${encodeURIComponent(g.slug)}`}
+                          href={`/mobile/minigames/${encodeURIComponent(
+                            g.slug
+                          )}`}
                           prefetch={false}
                           className="flex flex-col items-center transition active:scale-95 cursor-pointer"
                         >
