@@ -192,7 +192,6 @@ export default async function MobileHomePage() {
         <Reveal>
           <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
             <div className="h-[180px] w-full sm:h-[220px]">
-              <h1>{`${videos[0].video_path}`}</h1>
               <video
                 className="h-full w-full object-cover"
                 src={`${videos[0].video_path}`}
