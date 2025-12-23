@@ -387,6 +387,7 @@ export default function NewsPage() {
                             ))}
                         </div>
                     </aside>
+                    <iframe width="1060" height="650" src="https://www.onlinegames.io/games/2022/unity/tap-tap-dunk/index.html"  ></iframe>
 
                     {/* MAIN CONTENT */}
                     <section className="md:col-span-3">
