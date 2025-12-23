@@ -1,10 +1,10 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import BannerCarousel from "@/components/BannerCarousel";
-import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
 import NewsListCards from "@/components/NewsListCards";
 import SocialBox from "@/components/SocialBox";
+import { fetchGames, toMinigameCards } from "@/lib/games-api";
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
   ssr: false,
@@ -95,17 +95,32 @@ export default async function MobileHomePage() {
         : "",
     }))
     .filter((a) => a.imgSrc) as {
-    id: number;
-    slug: string;
-    title: string;
-    imgSrc: string;
-  }[];
+      id: number;
+      slug: string;
+      title: string;
+      imgSrc: string;
+    }[];
 
   // Sponsors: 5 columns; add placeholders to complete the last row
   const BRAND_COLS = 5;
   const brandRemainder = BRAND_ITEMS.length % BRAND_COLS;
   const brandPlaceholders =
     brandRemainder === 0 ? 0 : BRAND_COLS - brandRemainder;
+
+  // ✅ ONLY CHANGE: Fetch hot minigames from API (first 10)
+  let hotGames: { slug: string; title: string; icon: string }[] = [];
+  try {
+    const apiGames = await fetchGames();
+    const cards = toMinigameCards(apiGames);
+
+    hotGames = cards.slice(0, 10).map((g) => ({
+      slug: g.slug,
+      title: g.title,
+      icon: g.icon,
+    }));
+  } catch {
+    hotGames = [];
+  }
 
   return (
     <>
@@ -226,49 +241,57 @@ export default async function MobileHomePage() {
 
           {(() => {
             const COLS = 5;
-            const remainder = GAME_ITEMS.length % COLS;
+            const remainder = hotGames.length % COLS;
             const placeholders = remainder === 0 ? 0 : COLS - remainder;
 
             return (
               <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-white/5 p-4">
-                <div className="grid grid-cols-5 gap-x-3 gap-y-4">
-                  {GAME_ITEMS.map((g) => (
-                    <Link
-                      key={g.slug}
-                      href={`/minigames/${encodeURIComponent(g.slug)}`}
-                      prefetch={false}
-                      className="flex flex-col items-center transition active:scale-95 cursor-pointer"
-                    >
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-md">
-                        <img
-                          src={g.icon}
-                          alt={g.title}
-                          className="h-9 w-9 object-contain"
-                          loading="lazy"
-                        />
-                      </div>
-                    </Link>
-                  ))}
+                {hotGames.length === 0 ? (
+                  <div className="text-sm text-white/70">
+                    No minigames available right now.
+                  </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-5 gap-x-3 gap-y-4">
+                      {hotGames.map((g) => (
+                        <Link
+                          key={g.slug}
+                          href={`/mobile/minigames/${encodeURIComponent(g.slug)}`}
+                          prefetch={false}
+                          className="flex flex-col items-center transition active:scale-95 cursor-pointer"
+                        >
+                          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-md">
+                            <img
+                              src={g.icon}
+                              alt={g.title}
+                              className="h-9 w-9 object-contain"
+                              loading="lazy"
+                            />
+                          </div>
+                        </Link>
+                      ))}
 
-                  {Array.from({ length: placeholders }).map((_, i) => (
-                    <div
-                      key={`game-ph-${i}`}
-                      className="flex flex-col items-center"
-                    >
-                      <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
-                      <span className="mt-1 text-[11px] text-transparent">
-                        .
-                      </span>
+                      {Array.from({ length: placeholders }).map((_, i) => (
+                        <div
+                          key={`game-ph-${i}`}
+                          className="flex flex-col items-center"
+                        >
+                          <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
+                          <span className="mt-1 text-[11px] text-transparent">
+                            .
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
 
-                <Link
-                  href="/mobile/minigames"
-                  className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-xs font-bold text-black"
-                >
-                  Play Minigames
-                </Link>
+                    <Link
+                      href="/mobile/minigames"
+                      className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-xs font-bold text-black"
+                    >
+                      Play Minigames
+                    </Link>
+                  </>
+                )}
               </div>
             );
           })()}
