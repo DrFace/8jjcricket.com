@@ -406,19 +406,19 @@ export default function CalenderModal(props: CalenderModalProps) {
         aria-expanded={open}
         className="rounded-2xl border border-white/15 bg-black/50 backdrop-blur-xl p-4 shadow-2xl flex items-center justify-between w-full"
       >
-        <div>
+        <div className="w-full">
           <div className="flex items-center justify-between w-full">
-            <h2 className="text-sm font-semibold tracking-tight text-amber-200 text-left">
+            <h2 className="text-sm font-semibold tracking-tight text-amber-200 text-left w-full">
               Filter by date
             </h2>
-            <span className="ml-4 flex items-center">
-              <span className="text-xs font-medium text-amber-100/90">
+            <span className="ml-4 flex justify-end w-full">
+              <span className="text-xs font-medium text-amber-100/90 text-right">
                 {selectedDate ?? toDateString(new Date())}
               </span>
             </span>
           </div>
 
-          <p className="mt-1 text-xs text-sky-100/70">
+          <p className="mt-1 text-xs text-sky-100/70 text-left">
             Pick a day to see matches scheduled on that date.
           </p>
         </div>

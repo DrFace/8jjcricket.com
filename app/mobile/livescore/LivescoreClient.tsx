@@ -3,11 +3,11 @@
 import { useState } from "react";
 import useSWR from "swr";
 
-import LiveGrid from "@/components/LiveGrid";
-import LiveCard from "@/components/LiveCard";
 import BetButton from "@/components/BetButton";
 import type { Fixture } from "@/types/fixture";
 import MobileTabBar from "@/components/mobile/MobileTabBar";
+import MobileLiveGrid from "@/components/mobile/MobileLiveGrid";
+import MobileLiveCard from "@/components/mobile/MobileLiveCard";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -78,7 +78,7 @@ export default function LivescoreClient() {
         </div>
 
         <div className="px-4 py-4">
-          <LiveGrid filter={selected} />
+          <MobileLiveGrid filter={selected} />
         </div>
       </div>
 
@@ -117,7 +117,7 @@ export default function LivescoreClient() {
           {!recentLoading && !recentError && recentFixtures.length > 0 && (
             <div className="space-y-2">
               {recentFixtures.slice(0, 5).map((f) => (
-                <LiveCard key={f.id} f={f} />
+                <MobileLiveCard key={f.id} f={f} />
               ))}
             </div>
           )}

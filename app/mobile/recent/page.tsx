@@ -130,7 +130,7 @@ export default function RecentPage() {
           </aside>
           {/* Fixtures grid */}
           {filteredFixtures.length === 0 ? (
-            <div className="card text-sm text-gray-600">
+            <div className="card text-sm text-gray-600 text-center">
               No matches found for this date. Try another day or clear the
               filter.
             </div>
