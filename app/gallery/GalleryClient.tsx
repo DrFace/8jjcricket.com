@@ -130,6 +130,8 @@ export default function GalleryClient({
           {activeAlbums.map((album) => {
             const albumPhotos = photosByAlbumSlug[album.slug] || [];
             const cover = albumPhotos[0]?.image_url;
+            console.log("ccc", cover);
+
             return (
               <section
                 key={album.id}
@@ -170,7 +172,9 @@ export default function GalleryClient({
                         onClick={() => setLightbox(p)}
                         className={[
                           "relative overflow-hidden rounded-2xl ring-1 ring-white/10 hover:ring-white/20",
-                          p.orientation === "portrait" ? "row-span-2" : "col-span-1",
+                          p.orientation === "portrait"
+                            ? "row-span-2"
+                            : "col-span-1",
                         ].join(" ")}
                         aria-label="Open image"
                       >

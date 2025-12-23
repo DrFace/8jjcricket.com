@@ -1,7 +1,6 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import BannerCarousel from "@/components/BannerCarousel";
-import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
 import NewsListCards from "@/components/NewsListCards";
 import SocialBox from "@/components/SocialBox";
@@ -18,6 +17,31 @@ type Article = {
   created_at?: string;
 };
 
+type Video = {
+  id: number;
+  title: string;
+  slug: string;
+  video_path: string;
+  created_at?: string;
+  updateed_at?: string;
+};
+
+const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
+const DEFAULT_API_BASE_VIDEO = "http://72.60.107.98:8001/storage";
+
+function apiBase() {
+  return (process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE).replace(
+    /\/+$/,
+    ""
+  );
+}
+
+function apiBaseVideo() {
+  return (
+    process.env.NEXT_PUBLIC_API_BASE_URL_VIDEO || DEFAULT_API_BASE_VIDEO
+  ).replace(/\/+$/, "");
+}
+
 const GAME_ITEMS = [
   {
     slug: "cricket-legends",
@@ -31,7 +55,6 @@ const GAME_ITEMS = [
   },
 ] as const;
 
-const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
 const SITE_ORIGIN =
   process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
 
@@ -83,6 +106,14 @@ async function getNewsPreview(): Promise<Article[]> {
 
 export default async function MobileHomePage() {
   const news = await getNewsPreview();
+  const [videosRaw] = await Promise.all([fetchVideos()]);
+
+  const videos: Video[] = videosRaw.map((v) => ({
+    ...v,
+    created_at: v.created_at
+      ? new Date(v.created_at).toISOString().slice(0, 10)
+      : "",
+  }));
 
   const newsWithImages = news
     .map((a: any) => ({
@@ -100,6 +131,18 @@ export default async function MobileHomePage() {
     title: string;
     imgSrc: string;
   }[];
+
+  async function fetchVideos(): Promise<Video[]> {
+    const url = `${apiBase()}/home-videos`;
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) return [];
+      const json = await res.json();
+      return Array.isArray(json) ? json : json.data || [];
+    } catch {
+      return [];
+    }
+  }
 
   // Sponsors: 5 columns; add placeholders to complete the last row
   const BRAND_COLS = 5;
@@ -119,7 +162,7 @@ export default async function MobileHomePage() {
             <div className="h-[180px] w-full sm:h-[220px]">
               <video
                 className="h-full w-full object-cover"
-                src="/homevideo.mp4"
+                src={`${apiBaseVideo()}/${videos[0].video_path}`}
                 autoPlay
                 muted
                 loop
