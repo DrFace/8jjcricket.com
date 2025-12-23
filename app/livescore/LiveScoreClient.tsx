@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useMemo } from "react";
@@ -61,7 +60,9 @@ function Calendar({ selectedDate, onSelectDate, minDate, maxDate }: any) {
         >
           ‹
         </button>
-        <div>{viewMonth.toLocaleString("default", { month: "short" })} {viewMonth.getFullYear()}</div>
+        <div>
+          {viewMonth.toLocaleString("default", { month: "short" })} {viewMonth.getFullYear()}
+        </div>
         <button
           type="button"
           className="rounded-md px-2 py-1 text-gray-500 hover:bg-gray-100"
@@ -69,7 +70,6 @@ function Calendar({ selectedDate, onSelectDate, minDate, maxDate }: any) {
             setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1))
           }
         >
-            
           ›
         </button>
       </div>
@@ -107,10 +107,39 @@ export default function LiveScoreHome() {
   const [activeTab, setActiveTab] = useState("Live");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
+  // ✅ Category Filter State
+  const categories = ["International", "T20", "ODI", "Test", "Leagues", "All"];
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  // ✅ Filter Recent Matches
   const filteredRecent = useMemo(() => {
-    if (!selectedDate) return recentData.slice(0, 6);
-    return recentData.filter((f: any) => f.starting_at.slice(0, 10) === selectedDate);
-  }, [recentData, selectedDate]);
+    let data = recentData;
+    if (selectedDate) {
+      data = data.filter((f: any) => f.starting_at.slice(0, 10) === selectedDate);
+    }
+    if (selectedCategory !== "All") {
+      data = data.filter((f: any) => f.category === selectedCategory); // Adjust based on API
+    }
+    return data.slice(0, 6);
+  }, [recentData, selectedDate, selectedCategory]);
+
+  // ✅ Filter Live Matches
+  const filteredLive = useMemo(() => {
+    let data = liveData;
+    if (selectedCategory !== "All") {
+      data = data.filter((f: any) => f.category === selectedCategory);
+    }
+    return data;
+  }, [liveData, selectedCategory]);
+
+  // ✅ Filter Upcoming Matches
+  const filteredUpcoming = useMemo(() => {
+    let data = upcomingData;
+    if (selectedCategory !== "All") {
+      data = data.filter((f: any) => f.category === selectedCategory);
+    }
+    return data;
+  }, [upcomingData, selectedCategory]);
 
   const minDate = recentData.length ? recentData[recentData.length - 1].starting_at.slice(0, 10) : undefined;
   const maxDate = recentData.length ? recentData[0].starting_at.slice(0, 10) : undefined;
@@ -135,17 +164,39 @@ export default function LiveScoreHome() {
           ))}
         </div>
 
+        {/* Filters */}
+        <div className="flex justify-center gap-2 mb-6">
+          {categories.map((cat) => {
+            const active = selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setSelectedCategory(cat)}
+                className={[
+                  "rounded-full px-3 py-1 text-[11px] font-semibold transition",
+                  "border backdrop-blur",
+                  active
+                    ? "border-amber-300/60 bg-amber-300/15 text-amber-200 shadow"
+                    : "border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100",
+                ].join(" ")}
+              >
+                {cat}
+              </button>
+            );
+          })}
+        </div>
+
         {error && <div className="text-red-500">Failed to load data.</div>}
         {!error && (
           <>
             {activeTab === "Live" && (
               <>
                 <h1 className="text-3xl font-bold text-white mb-6">Live Scores</h1>
-                {/* Live Matches */}
                 <div className="mb-8">
-                  {liveData.length > 0 ? (
+                  {filteredLive.length > 0 ? (
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {liveData.map((match: any) => (
+                      {filteredLive.map((match: any) => (
                         <ArchhiveCard key={match.id} f={match} />
                       ))}
                     </div>
@@ -154,7 +205,7 @@ export default function LiveScoreHome() {
                   )}
                 </div>
 
-                {/* Recent Matches */}
+                {/* Recent Matches with Calendar */}
                 <div className="flex gap-6">
                   <main className="flex-1">
                     <h2 className="text-xl font-semibold text-white mb-4">Recent Matches</h2>
@@ -183,9 +234,9 @@ export default function LiveScoreHome() {
             {activeTab === "Upcoming" && (
               <>
                 <h1 className="text-3xl font-bold text-white mb-6">Upcoming Matches</h1>
-                {upcomingData.length > 0 ? (
+                {filteredUpcoming.length > 0 ? (
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {upcomingData.map((match: any) => (
+                    {filteredUpcoming.map((match: any) => (
                       <ArchhiveCard key={match.id} f={match} />
                     ))}
                   </div>
@@ -195,22 +246,20 @@ export default function LiveScoreHome() {
               </>
             )}
 
-
-{activeTab === "Recent" && (
-  <>
-    <h1 className="text-3xl font-bold text-white mb-6">Recent Matches</h1>
-    {recentData.length > 0 ? (
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {recentData.slice(0, 30).map((f: any) => (
-          <LiveCard key={f.id} f={f} />
-        ))}
-      </div>
-    ) : (
-      <div className="text-gray-400">No recent matches found.</div>
-    )}
-  </>
-)}
-
+            {activeTab === "Recent" && (
+              <>
+                <h1 className="text-3xl font-bold text-white mb-6">Recent Matches</h1>
+                {filteredRecent.length > 0 ? (
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filteredRecent.slice(0, 30).map((f: any) => (
+                      <LiveCard key={f.id} f={f} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-gray-400">No recent matches found.</div>
+                )}
+              </>
+            )}
           </>
         )}
       </div>
