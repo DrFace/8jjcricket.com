@@ -13,45 +13,57 @@ export default function MobileMinigameCard({ slug, title, desc, icon }: Props) {
   return (
     <Link
       href={`minigames/${slug}`}
-      className="p-[1px] rounded-2xl bg-gradient-to-b from-[#FFD100]/50 to-transparent hover:-translate-y-0.5 hover:border-3 border-yellow-200 hover:shadow-md hover:border-yellow-400 hover:shadow-yellow-400/50 hover:animate-pulse"
+      // The outer div acts as the "border". bg-gradient creates the border color.
+      className="group relative block rounded-2xl bg-gradient-to-b from-yellow-200 via-yellow-500 to-yellow-700 p-[1px] transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(255,208,0,0.3)]"
     >
-      <div className="bg-[#0B0E14] rounded-2xl p-4 overflow-hidden">
-        <div className="flex items-start justify-between gap-2 w-full  h-full">
-          <div className="flex items-start justify-between gap-2 w-full  h-full pt-1">
-            <div className="w-3/5  h-full">
-              <h3 className="text-base font-semibold text-white group-hover:text-yellow-600">
-                {title}
-              </h3>
-              <p className="mt-1 text-sm text-yellow-100">{desc}</p>
-              <div className="">
-                <p className="mt-3 inline-flex text-xs font-semibold text-yellow-400 group-hover:text-fuchsia-500">
-                  Start Game
-                  <svg
-                    className="ml-1 h-5 w-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </p>
-              </div>
+      {/* The inner div provides the solid dark background */}
+      <div className="h-full w-full rounded-[calc(1rem-1px)] bg-[#0B0E14] p-4">
+        <div className="flex items-center justify-between gap-4">
+          {/* Left Content */}
+          <div className="w-3/5">
+            <h3 className="text-lg font-bold text-white group-hover:text-yellow-400">
+              {title}
+            </h3>
+            <p className="mt-1 text-xs text-yellow-100/70 line-clamp-2">
+              {desc}
+            </p>
+
+            <div className="mt-3">
+              <p className="inline-flex items-center text-xs font-bold uppercase tracking-wider text-yellow-400">
+                Start Game
+                <svg
+                  className="ml-1 h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </p>
             </div>
-            <div className="w-2/5 h-full flex items-center justify-end">
-              <div className="flex h-full items-center justify-end animate-pulse">
-                <Image src={icon} alt={title} width={150} height={150} />
-              </div>
+          </div>
+
+          {/* Right Image */}
+          <div className="w-2/5 flex justify-end">
+            <div className="relative rounded-2xl transform transition-transform group-hover:scale-110">
+              <Image
+                src={icon}
+                alt={title}
+                width={120}
+                height={120}
+                className="drop-shadow-[0_0_10px_rgba(255,208,0,0.4)] rounded-2xl"
+              />
             </div>
           </div>
         </div>
