@@ -2,7 +2,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import BannerCarousel from "@/components/BannerCarousel";
 import Reveal from "@/components/Reveal";
-import NewsListCards from "@/components/NewsListCards";
+import MobileNewsListCards from "@/components/MobileNewsListCards";
 import SocialBox from "@/components/SocialBox";
 import { fetchGames, toMinigameCards } from "@/lib/games-api";
 
@@ -303,7 +303,7 @@ export default async function MobileHomePage() {
         <section className="mt-5 w-full snap-start scroll-mt-3">
           <Reveal>
             <h2 className="mb-2 text-sm font-semibold">Latest News</h2>
-            <NewsListCards items={newsWithImages} />
+            <MobileNewsListCards items={newsWithImages} />
           </Reveal>
         </section>
       )}
