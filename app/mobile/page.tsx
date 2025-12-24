@@ -194,7 +194,9 @@ export default async function MobileHomePage() {
             <div className="h-[180px] w-full sm:h-[220px]">
               <video
                 className="h-full w-full object-cover"
-                src={`${videos[0].video_path}`}
+                src={`${
+                  videos && videos[0] ? videos[0].video_path : "/homevideo.mp4"
+                }`}
                 autoPlay
                 muted
                 loop
