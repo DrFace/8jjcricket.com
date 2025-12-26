@@ -57,14 +57,23 @@ function normalizeImageUrl(url: string | null): string | null {
 }
 
 async function getNewsPreview(): Promise<Article[]> {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE;
+  const base = process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_BASE;
   const url = `${base.replace(/\/+$/, "")}/news`;
+
   try {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) return [];
+    const res = await fetch(url, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      console.error("API Error:", res.status, res.statusText);
+      return [];
+    }
+
     const json = await res.json();
     return ((json.data || []) as Article[]).slice(0, 5);
-  } catch {
+  } catch (error) {
+    console.error("Fetch failed:", error);
     return [];
   }
 }
@@ -200,7 +209,10 @@ export default async function HomePage() {
               // If backend returns full URL with the IP + port over http
               // e.g. http://72.60.107.98:8001/storage/home_videos/xxx.mp4
               if (input.startsWith("http://72.60.107.98:8001/")) {
-                return input.replace("http://72.60.107.98:8001", "https://8jjcricket.com");
+                return input.replace(
+                  "http://72.60.107.98:8001",
+                  "https://8jjcricket.com"
+                );
               }
 
               // If any other http URL, try to remap just the /storage/... portion to your HTTPS domain
@@ -225,7 +237,6 @@ export default async function HomePage() {
 
             return (
               <>
-               
                 <video
                   src={safeSrc}
                   autoPlay
@@ -256,7 +267,6 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
-
 
         {/* SLIDE — GALLERY SHOWCASE */}
         <section
