@@ -181,25 +181,64 @@ export default async function MobileHomePage() {
       {/* Welcome Popup (client-only) */}
       <WelcomePopup />
 
-      {/* HOME VIDEO (Top Hero) */}
       <section className="w-full snap-start scroll-mt-3">
         <Reveal>
           <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
             <div className="h-[180px] w-full sm:h-[220px]">
-              <video
-                className="h-full w-full object-cover"
-                src={`${videos && videos[0] ? videos[0].video_path : ""}`}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-              />
+              {(() => {
+                const raw = videos?.[0]?.video_path ?? "";
+
+                const getSafeVideoUrl = (input: string) => {
+                  if (!input) return "";
+
+                  // Relative storage path → HTTPS domain
+                  if (input.startsWith("/")) {
+                    return `https://8jjcricket.com${input}`;
+                  }
+
+                  // IP-based HTTP URL → HTTPS domain
+                  if (input.startsWith("http://72.60.107.98:8001/")) {
+                    return input.replace(
+                      "http://72.60.107.98:8001",
+                      "https://8jjcricket.com"
+                    );
+                  }
+
+                  // Any other http://storage/... → force HTTPS on main domain
+                  if (input.startsWith("http://")) {
+                    try {
+                      const u = new URL(input);
+                      if (u.pathname.startsWith("/storage/")) {
+                        return `https://8jjcricket.com${u.pathname}${u.search}`;
+                      }
+                    } catch { }
+                  }
+
+                  // Already https or unknown format
+                  return input;
+                };
+
+                const safeSrc = getSafeVideoUrl(raw);
+
+                return (
+                  <video
+                    className="h-full w-full object-cover"
+                    src={safeSrc}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                  />
+                );
+              })()}
             </div>
+
             <div className="pointer-events-none absolute inset-0 bg-black/10" />
           </div>
         </Reveal>
       </section>
+
 
       {/* SOCIALS (under video) */}
       <section className="mt-4 w-full snap-start scroll-mt-3">
