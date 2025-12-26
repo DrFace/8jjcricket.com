@@ -180,20 +180,67 @@ export default async function HomePage() {
 
       {/* Swiper vertical scroll effect wrapper (no content changes inside) */}
       <HomeVerticalSwiper>
-        {/* SLIDE 1 — VIDEO (NO BG IMAGE) */}
         <section
           data-snap
           className="SectionScroll sticky top-0 Sh-screen w-full overflow-hidden"
         >
-          <h1>{videos[0]?.video_path} HHHk</h1>
-          <video
-            src={`${videos && videos[0] ? videos[0].video_path : ""}`}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 h-full w-full bg-black object-contain sm:object-cover"
-          />
+          {/* Build a safe HTTPS URL for the video without changing backend/env */}
+          {(() => {
+            const raw = videos?.[0]?.video_path ?? "";
+
+            // Convert IP-based HTTP storage URLs to your HTTPS domain storage URL
+            const getSafeVideoUrl = (input: string) => {
+              if (!input) return "";
+
+              // If backend returns a relative path like "/storage/....mp4"
+              if (input.startsWith("/")) {
+                return `https://8jjcricket.com${input}`;
+              }
+
+              // If backend returns full URL with the IP + port over http
+              // e.g. http://72.60.107.98:8001/storage/home_videos/xxx.mp4
+              if (input.startsWith("http://72.60.107.98:8001/")) {
+                return input.replace("http://72.60.107.98:8001", "https://8jjcricket.com");
+              }
+
+              // If any other http URL, try to remap just the /storage/... portion to your HTTPS domain
+              if (input.startsWith("http://")) {
+                try {
+                  const u = new URL(input);
+                  if (u.pathname.startsWith("/storage/")) {
+                    return `https://8jjcricket.com${u.pathname}${u.search}`;
+                  }
+                  // If it's some other path, still force https on same host (best effort)
+                  return `https://${u.host}${u.pathname}${u.search}`;
+                } catch {
+                  return input;
+                }
+              }
+
+              // Already https or something else
+              return input;
+            };
+
+            const safeSrc = getSafeVideoUrl(raw);
+
+            return (
+              <>
+                <h1 className="relative z-30 text-white">
+                  {safeSrc}
+                </h1>
+
+                <video
+                  src={safeSrc}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 h-full w-full bg-black object-contain sm:object-cover"
+                />
+              </>
+            );
+          })()}
+
           <div className="absolute inset-0 bg-black/60" />
 
           <div className="pointer-events-auto absolute bottom-4 left-0 right-0 z-20 flex justify-center px-4">
@@ -212,6 +259,7 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
 
         {/* SLIDE — GALLERY SHOWCASE */}
         <section
