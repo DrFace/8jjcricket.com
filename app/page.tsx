@@ -57,14 +57,23 @@ function normalizeImageUrl(url: string | null): string | null {
 }
 
 async function getNewsPreview(): Promise<Article[]> {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE;
+  const base = process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_BASE;
   const url = `${base.replace(/\/+$/, "")}/news`;
+
   try {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) return [];
+    const res = await fetch(url, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      console.error("API Error:", res.status, res.statusText);
+      return [];
+    }
+
     const json = await res.json();
     return ((json.data || []) as Article[]).slice(0, 5);
-  } catch {
+  } catch (error) {
+    console.error("Fetch failed:", error);
     return [];
   }
 }
@@ -185,7 +194,6 @@ export default async function HomePage() {
           data-snap
           className="SectionScroll sticky top-0 Sh-screen w-full overflow-hidden"
         >
-          <h1>{videos[0]?.video_path} HHHk</h1>
           <video
             src={`${videos && videos[0] ? videos[0].video_path : ""}`}
             autoPlay

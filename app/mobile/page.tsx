@@ -5,6 +5,7 @@ import Reveal from "@/components/Reveal";
 import MobileNewsListCards from "@/components/MobileNewsListCards";
 import SocialBox from "@/components/SocialBox";
 import { fetchGames, toMinigameCards } from "@/lib/games-api";
+import MobileBannerCarousel from "@/components/mobile/MobileBannerCarousel";
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
   ssr: false,
@@ -211,7 +212,7 @@ export default async function MobileHomePage() {
       <section className="mt-3 w-full snap-start scroll-mt-3">
         <Reveal>
           <div className="w-full overflow-hidden rounded-xl">
-            <BannerCarousel />
+            <MobileBannerCarousel />
           </div>
         </Reveal>
       </section>
