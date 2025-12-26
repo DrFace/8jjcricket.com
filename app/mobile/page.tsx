@@ -18,6 +18,29 @@ type Article = {
   created_at?: string;
 };
 
+type Video = {
+  id: number;
+  title: string;
+  slug: string;
+  video_path: string;
+};
+
+const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
+const DEFAULT_API_BASE_VIDEO = "http://72.60.107.98:8001/storage";
+
+function apiBase() {
+  return (process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE).replace(
+    /\/+$/,
+    ""
+  );
+}
+
+function apiBaseVideo() {
+  return (
+    process.env.NEXT_PUBLIC_API_BASE_URL_VIDEO || DEFAULT_API_BASE_VIDEO
+  ).replace(/\/+$/, "");
+}
+
 const GAME_ITEMS = [
   {
     slug: "cricket-legends",
@@ -31,7 +54,6 @@ const GAME_ITEMS = [
   },
 ] as const;
 
-const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
 const SITE_ORIGIN =
   process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
 
@@ -67,6 +89,22 @@ function normalizeImageUrl(url: string | null): string | null {
   }
 }
 
+function normalizeVideoUrl(url: string | null): string | null {
+  if (!url) return null;
+  // Remove '/api' from backend_url if present
+  let backend_url = apiBase().replace(/\/api$/, "");
+  try {
+    const u = new URL(url, backend_url);
+    let pathname = u.pathname;
+    if (!pathname.startsWith("/storage/")) {
+      pathname = `/storage/${pathname.replace(/^\/+/, "")}`;
+    }
+    return `${backend_url}${pathname}${u.search}`;
+  } catch {
+    return `${backend_url}/storage/${String(url).replace(/^\/+/, "")}`;
+  }
+}
+
 async function getNewsPreview(): Promise<Article[]> {
   const base = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE;
   const url = `${base.replace(/\/+$/, "")}/news`;
@@ -83,6 +121,16 @@ async function getNewsPreview(): Promise<Article[]> {
 
 export default async function MobileHomePage() {
   const news = await getNewsPreview();
+  const [videosRaw] = await Promise.all([fetchVideos()]);
+
+  const videos: Video[] = (videosRaw || [])
+    .map((p: any) => {
+      return {
+        ...p,
+        video_path: normalizeVideoUrl(p.video_path) || p.video_path,
+      } as Video;
+    })
+    .filter((p) => !!p.video_path);
 
   const newsWithImages = news
     .map((a: any) => ({
@@ -95,11 +143,23 @@ export default async function MobileHomePage() {
         : "",
     }))
     .filter((a) => a.imgSrc) as {
-      id: number;
-      slug: string;
-      title: string;
-      imgSrc: string;
-    }[];
+    id: number;
+    slug: string;
+    title: string;
+    imgSrc: string;
+  }[];
+
+  async function fetchVideos(): Promise<Video[]> {
+    const url = `${apiBase()}/home-videos`;
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) return [];
+      const json = await res.json();
+      return Array.isArray(json) ? json : json.data || [];
+    } catch {
+      return [];
+    }
+  }
 
   // Sponsors: 5 columns; add placeholders to complete the last row
   const BRAND_COLS = 5;
@@ -134,7 +194,9 @@ export default async function MobileHomePage() {
             <div className="h-[180px] w-full sm:h-[220px]">
               <video
                 className="h-full w-full object-cover"
-                src="/homevideo.mp4"
+                src={`${
+                  videos && videos[0] ? videos[0].video_path : "/homevideo.mp4"
+                }`}
                 autoPlay
                 muted
                 loop
@@ -256,7 +318,9 @@ export default async function MobileHomePage() {
                       {hotGames.map((g) => (
                         <Link
                           key={g.slug}
-                          href={`/mobile/minigames/${encodeURIComponent(g.slug)}`}
+                          href={`/mobile/minigames/${encodeURIComponent(
+                            g.slug
+                          )}`}
                           prefetch={false}
                           className="flex flex-col items-center transition active:scale-95 cursor-pointer"
                         >

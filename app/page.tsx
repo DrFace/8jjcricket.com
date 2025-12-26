@@ -10,9 +10,12 @@ import HomeGalleryShowcase from "@/components/HomeGalleryShowcase";
 import HomeNewsShowcase from "@/components/HomeNewsShowcase";
 import HomeFeedbackSection from "@/components/HomeFeedbackSection";
 
-
-const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), { ssr: false });
-const AnimatedText = dynamic(() => import("@/components/AnimatedText"), { ssr: false });
+const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
+  ssr: false,
+});
+const AnimatedText = dynamic(() => import("@/components/AnimatedText"), {
+  ssr: false,
+});
 
 type Article = {
   id: number;
@@ -24,14 +27,16 @@ type Article = {
 };
 
 const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
-const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
+const SITE_ORIGIN =
+  process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
 
 function normalizeImageUrl(url: string | null): string | null {
   if (!url) return null;
   try {
     const u = new URL(url, SITE_ORIGIN);
     let pathname = u.pathname;
-    if (!pathname.startsWith("/storage/")) pathname = `/storage/${pathname.replace(/^\/+/, "")}`;
+    if (!pathname.startsWith("/storage/"))
+      pathname = `/storage/${pathname.replace(/^\/+/, "")}`;
     return `${SITE_ORIGIN}${pathname}${u.search}`;
   } catch {
     return `${SITE_ORIGIN}/storage/${String(url).replace(/^\/+/, "")}`;
@@ -52,8 +57,16 @@ async function getNewsPreview(): Promise<Article[]> {
 }
 
 const latest: { slug: string; title: string; desc: string }[] = [
-  { slug: "cricket-legends", title: "Cricket Legends", desc: "Career mode with levels & characters." },
-  { slug: "cricket-superover", title: "Cricket Super Over", desc: "6 balls, pure timing — hit for 6s!" },
+  {
+    slug: "cricket-legends",
+    title: "Cricket Legends",
+    desc: "Career mode with levels & characters.",
+  },
+  {
+    slug: "cricket-superover",
+    title: "Cricket Super Over",
+    desc: "6 balls, pure timing — hit for 6s!",
+  },
   { slug: "tictactoe", title: "Tic Tac Toe", desc: "Classic 3×3 duel." },
   { slug: "flappysquare", title: "Flappy Square", desc: "Click to fly!" },
 ];
@@ -68,19 +81,39 @@ function gameInitials(title: string) {
 }
 
 const DOWNLOAD_URL = "https://download.9ipl.vip/normal/";
-const BRAND_ITEMS = ["MB66", "OK9", "78win", "QQ88", "F168", "FLY88", "CM88", "OK8386", "SC88", "C168", "iP88"];
+const BRAND_ITEMS = [
+  "MB66",
+  "OK9",
+  "78win",
+  "QQ88",
+  "F168",
+  "FLY88",
+  "CM88",
+  "OK8386",
+  "SC88",
+  "C168",
+  "iP88",
+];
 
 export default async function HomePage() {
   const news = await getNewsPreview();
 
   const newsWithImages = news
-    .map((a: Article) => ({ id: a.id, slug: a.slug, title: a.title, imgSrc: normalizeImageUrl(a.image_url) }))
-    .filter((a: { id: number; slug: string; title: string; imgSrc: string | null }) => a.imgSrc) as {
-      id: number;
-      slug: string;
-      title: string;
-      imgSrc: string;
-    }[];
+    .map((a: Article) => ({
+      id: a.id,
+      slug: a.slug,
+      title: a.title,
+      imgSrc: normalizeImageUrl(a.image_url),
+    }))
+    .filter(
+      (a: { id: number; slug: string; title: string; imgSrc: string | null }) =>
+        a.imgSrc
+    ) as {
+    id: number;
+    slug: string;
+    title: string;
+    imgSrc: string;
+  }[];
 
   return (
     <SmoothScroller>
@@ -94,7 +127,10 @@ export default async function HomePage() {
       {/* Swiper vertical scroll effect wrapper (no content changes inside) */}
       <HomeVerticalSwiper>
         {/* SLIDE 1 — VIDEO (NO BG IMAGE) */}
-        <section data-snap className="SectionScroll sticky top-0 Sh-screen w-full overflow-hidden">
+        <section
+          data-snap
+          className="SectionScroll sticky top-0 Sh-screen w-full overflow-hidden"
+        >
           <video
             src="/homevideo.mp4"
             autoPlay
@@ -122,11 +158,16 @@ export default async function HomePage() {
           </div>
         </section>
 
-        
         {/* SLIDE — GALLERY SHOWCASE */}
-        <section data-snap className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6">
+        <section
+          data-snap
+          className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
+        >
           <div className="relative h-full w-full flex items-center">
-            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url(/CricketBG.jpg)" }} />
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
+            />
             <div className="absolute inset-0 bg-black/70" />
 
             <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
@@ -136,9 +177,15 @@ export default async function HomePage() {
         </section>
 
         {/* SLIDE — NEWS */}
-        <section data-snap className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6">
+        <section
+          data-snap
+          className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
+        >
           <div className="relative h-full w-full flex items-center">
-            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url(/CricketBG.jpg)" }} />
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
+            />
             <div className="absolute inset-0 bg-black/70" />
 
             <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
@@ -147,12 +194,16 @@ export default async function HomePage() {
           </div>
         </section>
 
-
-
         {/* SLIDE — FEEDBACK */}
-        <section data-snap className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6">
+        <section
+          data-snap
+          className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
+        >
           <div className="relative h-full w-full flex items-center">
-            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url(/CricketBG.jpg)" }} />
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
+            />
             <div className="absolute inset-0 bg-black/70" />
 
             <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
@@ -160,10 +211,6 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
-
-      
-
-      
       </HomeVerticalSwiper>
     </SmoothScroller>
   );
