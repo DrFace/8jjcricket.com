@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 
 export type PortraitItem = {
   id: number;
+  slug: string;
   image_url: string;
 };
 
@@ -57,7 +58,9 @@ export default function PortraitPager({ portraits, onPortraitHover }: Props) {
         {visible.map((p) => (
           <Link
             key={p.id}
-            href="/gallery"
+            href={`/portraits/${encodeURIComponent(p.slug)}`}
+            target="_blank"
+            rel="noreferrer"
             onMouseEnter={() => onPortraitHover?.(p.id)}
             className="group relative overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/10"
           >

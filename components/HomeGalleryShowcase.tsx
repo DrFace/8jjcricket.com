@@ -124,10 +124,11 @@ export default async function HomeGalleryShowcase() {
 
     return (
         <HomeGalleryShowcaseClient
-            portraits={portraits.map((p) => ({ id: p.id, image_url: p.image_url }))}
+            portraits={portraits.map((p) => ({ id: p.id, slug: p.slug, image_url: p.image_url }))}
             bannerByPortraitId={bannerByPortraitId}
             landscapes={landscapes.map((p) => ({ src: p.image_url }))}
             leftDefaultSrc="/AMD.png"
         />
     );
+
 }

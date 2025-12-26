@@ -26,19 +26,12 @@ type Video = {
 };
 
 const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
-const DEFAULT_API_BASE_VIDEO = "http://72.60.107.98:8001/storage";
 
 function apiBase() {
   return (process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE).replace(
     /\/+$/,
     ""
   );
-}
-
-function apiBaseVideo() {
-  return (
-    process.env.NEXT_PUBLIC_API_BASE_URL_VIDEO || DEFAULT_API_BASE_VIDEO
-  ).replace(/\/+$/, "");
 }
 
 const GAME_ITEMS = [
@@ -194,9 +187,7 @@ export default async function MobileHomePage() {
             <div className="h-[180px] w-full sm:h-[220px]">
               <video
                 className="h-full w-full object-cover"
-                src={`${
-                  videos && videos[0] ? videos[0].video_path : "/homevideo.mp4"
-                }`}
+                src={`${videos && videos[0] ? videos[0].video_path : ""}`}
                 autoPlay
                 muted
                 loop

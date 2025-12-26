@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
 import PortraitPager from "./PortraitPager";
 
-type PortraitItem = { id: number; image_url: string };
+type PortraitItem = { id: number; slug: string; image_url: string };
 
 /** Slideshow WITHOUT titles/names (works for any items.length >= 2) */
 function Slideshow({ items }: { items: { src: string }[] }) {

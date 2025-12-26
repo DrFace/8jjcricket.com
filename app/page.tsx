@@ -1,7 +1,6 @@
 // app/page.tsx
 import dynamic from "next/dynamic";
 import TopNav from "@/components/TopNav";
-import Footer from "@/components/Footer";
 import SmoothScroller from "@/components/SmoothScroller";
 import DesktopOnly from "@/components/DesktopOnly";
 import BottomNav from "@/components/BottomNav";
@@ -26,9 +25,23 @@ type Article = {
   published_at: string | null;
 };
 
+type Video = {
+  id: number;
+  title: string;
+  slug: string;
+  video_path: string;
+};
+
 const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
 const SITE_ORIGIN =
   process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
+
+function apiBase() {
+  return (process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE).replace(
+    /\/+$/,
+    ""
+  );
+}
 
 function normalizeImageUrl(url: string | null): string | null {
   if (!url) return null;
@@ -97,6 +110,16 @@ const BRAND_ITEMS = [
 
 export default async function HomePage() {
   const news = await getNewsPreview();
+  const [videosRaw] = await Promise.all([fetchVideos()]);
+
+  const videos: Video[] = (videosRaw || [])
+    .map((p: any) => {
+      return {
+        ...p,
+        video_path: normalizeVideoUrl(p.video_path) || p.video_path,
+      } as Video;
+    })
+    .filter((p) => !!p.video_path);
 
   const newsWithImages = news
     .map((a: Article) => ({
@@ -115,6 +138,37 @@ export default async function HomePage() {
     imgSrc: string;
   }[];
 
+  function normalizeVideoUrl(url: string | null): string | null {
+    if (!url) return null;
+    // Remove '/api' from backend_url if present
+    let backend_url = apiBase().replace(/\/api$/, "");
+    try {
+      const u = new URL(url, backend_url);
+      let pathname = u.pathname;
+      if (!pathname.startsWith("/storage/")) {
+        pathname = `/storage/${pathname.replace(/^\/+/, "")}`;
+      }
+
+      return `${backend_url}${pathname}${u.search}`;
+    } catch {
+      return `${backend_url}/storage/${String(url).replace(/^\/+/, "")}`;
+    }
+  }
+
+  async function fetchVideos(): Promise<Video[]> {
+    const url = `${apiBase()}/home-videos`;
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+
+      if (!res.ok) return [];
+      const json = await res.json();
+
+      return Array.isArray(json) ? json : json.data || [];
+    } catch {
+      return [];
+    }
+  }
+
   return (
     <SmoothScroller>
       <DesktopOnly>
@@ -131,8 +185,9 @@ export default async function HomePage() {
           data-snap
           className="SectionScroll sticky top-0 Sh-screen w-full overflow-hidden"
         >
+          <h1>{videos[0]?.video_path} HHHk</h1>
           <video
-            src="/homevideo.mp4"
+            src={`${videos && videos[0] ? videos[0].video_path : ""}`}
             autoPlay
             loop
             muted
