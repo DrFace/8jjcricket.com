@@ -17,7 +17,7 @@ function getGlobalAudio() {
         globalAudio = new Audio("/music/lastchristmas.mp3");
         globalAudio.loop = true;
         globalAudio.preload = "auto";
-        globalAudio.muted = true;
+        globalAudio.muted = true; // start muted (autoplay policies)
     }
     return globalAudio;
 }
@@ -41,8 +41,6 @@ function NavItem({
             aria-current={active ? "page" : undefined}
         >
             {label}
-
-            {/* underline indicator */}
             <span
                 className={[
                     "pointer-events-none absolute left-0 right-0 -bottom-1 h-[2px] rounded-full transition-opacity",
@@ -55,52 +53,72 @@ function NavItem({
 
 export default function TopNav() {
     const pathname = usePathname();
-
     const audioRef = useRef<HTMLAudioElement | null>(null);
-    const [musicEnabled, setMusicEnabled] = useState(true);
-    const [hasStarted, setHasStarted] = useState(false);
 
+    const MUSIC_KEY = "musicEnabled";
+
+    // IMPORTANT:
+    // Do NOT read localStorage in the useState initializer (SSR hydration mismatch risk).
+    // Keep a stable default for SSR + first client render.
+    const [mounted, setMounted] = useState(false);
+    const [musicEnabled, setMusicEnabled] = useState(true);
+    const [hasInteracted, setHasInteracted] = useState(false);
+
+    // 1) Mount: set up audio + load saved preference AFTER mount
     useEffect(() => {
+        setMounted(true);
+
         const audio = getGlobalAudio();
         if (!audio) return;
         audioRef.current = audio;
 
+        // Ensure known baseline
+        audio.loop = true;
+        audio.preload = "auto";
         audio.muted = true;
 
-        if (musicEnabled) {
-            audio
-                .play()
-                .then(() => setHasStarted(true))
-                .catch(() => { });
-        } else {
-            audio.pause();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // Load preference after mount to avoid hydration mismatch
+        const saved = window.localStorage.getItem(MUSIC_KEY);
+        if (saved !== null) setMusicEnabled(saved === "true");
     }, []);
 
+    // 2) Persist preference (only after mounted)
+    useEffect(() => {
+        if (!mounted) return;
+        window.localStorage.setItem(MUSIC_KEY, String(musicEnabled));
+    }, [musicEnabled, mounted]);
+
+    // 3) Detect first user interaction (needed to unmute reliably)
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
 
-        const startOnFirstInteraction = () => {
+        const onFirstInteraction = async () => {
+            setHasInteracted(true);
+
+            // If user wants music enabled, try to start it now
             if (musicEnabled) {
                 audio.muted = false;
-                audio
-                    .play()
-                    .then(() => setHasStarted(true))
-                    .catch(() => { });
+                try {
+                    await audio.play();
+                } catch {
+                    // If play still fails, keep muted to avoid noise/errors
+                    audio.muted = true;
+                    audio.play().catch(() => { });
+                }
             }
         };
 
-        window.addEventListener("touchstart", startOnFirstInteraction, { once: true });
-        window.addEventListener("click", startOnFirstInteraction, { once: true });
+        window.addEventListener("touchstart", onFirstInteraction, { once: true });
+        window.addEventListener("click", onFirstInteraction, { once: true });
 
         return () => {
-            window.removeEventListener("touchstart", startOnFirstInteraction);
-            window.removeEventListener("click", startOnFirstInteraction);
+            window.removeEventListener("touchstart", onFirstInteraction);
+            window.removeEventListener("click", onFirstInteraction);
         };
     }, [musicEnabled]);
 
+    // 4) Keep audio state in sync with musicEnabled + interaction state
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
@@ -110,36 +128,45 @@ export default function TopNav() {
             return;
         }
 
-        if (hasStarted) {
+        // musicEnabled === true
+        // If user interacted, unmute and play; otherwise try muted play (may or may not succeed)
+        if (hasInteracted) {
             audio.muted = false;
             audio.play().catch(() => { });
         } else {
             audio.muted = true;
             audio.play().catch(() => { });
         }
-    }, [musicEnabled, hasStarted]);
+    }, [musicEnabled, hasInteracted]);
 
+    // 5) Toggle handler (use next value, not stale state)
     const toggleMusic = async () => {
         const audio = audioRef.current;
         if (!audio) return;
 
-        setMusicEnabled((prev) => !prev);
+        const nextEnabled = !musicEnabled;
+        setMusicEnabled(nextEnabled);
 
-        if (!musicEnabled) {
-            audio.muted = false;
-            try {
-                await audio.play();
-                setHasStarted(true);
-            } catch {
-                audio.muted = true;
-                audio.play().catch(() => { });
-            }
-        } else {
+        if (!nextEnabled) {
             audio.pause();
+            return;
+        }
+
+        // Turning ON
+        // Respect autoplay rules: if no interaction yet, keep muted
+        audio.muted = !hasInteracted;
+
+        try {
+            await audio.play();
+            // If we successfully played and user has interacted, ensure unmuted
+            if (hasInteracted) audio.muted = false;
+        } catch {
+            // Fallback: muted play attempt
+            audio.muted = true;
+            audio.play().catch(() => { });
         }
     };
 
-    // helper: exact match
     const isActive = (href: string) => pathname === href;
 
     return (
@@ -182,7 +209,14 @@ export default function TopNav() {
                             aria-label="Toggle music"
                             aria-pressed={musicEnabled}
                         >
-                            {musicEnabled ? <Music2 size={18} /> : <VolumeOff size={18} />}
+                            {/* Avoid hydration mismatch: do not swap SVGs until mounted */}
+                            {!mounted ? (
+                                <span className="inline-block h-[18px] w-[18px]" />
+                            ) : musicEnabled ? (
+                                <Music2 size={18} />
+                            ) : (
+                                <VolumeOff size={18} />
+                            )}
                         </button>
 
                         <Link

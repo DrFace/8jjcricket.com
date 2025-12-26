@@ -8,6 +8,7 @@ import HomeVerticalSwiper from "@/components/HomeVerticalSwiper";
 import HomeGalleryShowcase from "@/components/HomeGalleryShowcase";
 import HomeNewsShowcase from "@/components/HomeNewsShowcase";
 import HomeFeedbackSection from "@/components/HomeFeedbackSection";
+import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
   ssr: false,
@@ -256,7 +257,22 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+        {/* <section
+          data-snap
+          className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
+        >
+          <div className="relative h-full w-full flex items-center">
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
+            />
+            <div className="absolute inset-0 bg-black/70" />
 
+            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
+              <PortraitShowcaseSection />
+            </div>
+          </div>
+        </section> */}
 
         {/* SLIDE — GALLERY SHOWCASE */}
         <section

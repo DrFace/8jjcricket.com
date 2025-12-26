@@ -17,7 +17,13 @@ export function MusicProvider({
     src?: string;
 }) {
     const audioRef = useRef<HTMLAudioElement | null>(null);
-    const [musicEnabled, setMusicEnabled] = useState(true);
+    const MUSIC_KEY = "musicEnabled";
+
+    const [musicEnabled, setMusicEnabled] = useState<boolean>(() => {
+        if (typeof window === "undefined") return true;
+        const saved = window.localStorage.getItem(MUSIC_KEY);
+        return saved === null ? true : saved === "true";
+    });
     const [hasStarted, setHasStarted] = useState(false);
 
     // Create audio once (provider stays mounted across route changes if placed in layout)

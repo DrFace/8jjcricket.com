@@ -11,65 +11,58 @@ import { VolumeOff, Music2 } from "lucide-react";
 export default function MoblieLayout({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // User preference: whether music should be playing
+  const MUSIC_KEY = "musicEnabled";
+
+  // Keep SSR + first client render stable (avoid localStorage in initializer).
+  const [mounted, setMounted] = useState(false);
   const [musicEnabled, setMusicEnabled] = useState(true);
 
-  // Tracks whether we have successfully started playback at least once
-  // (useful for iOS/mobile autoplay restrictions)
-  const [hasStarted, setHasStarted] = useState(false);
+  // Track if the user has interacted (mobile autoplay/unmute rules).
+  const [hasInteracted, setHasInteracted] = useState(false);
 
-  // 1) Attempt to start audio as early as possible (muted autoplay is allowed)
+  // 1) Mount: mark mounted, load saved preference AFTER mount
+  useEffect(() => {
+    setMounted(true);
+
+    const saved = window.localStorage.getItem(MUSIC_KEY);
+    if (saved !== null) setMusicEnabled(saved === "true");
+  }, []);
+
+  // 2) Persist preference (only after mounted)
+  useEffect(() => {
+    if (!mounted) return;
+    window.localStorage.setItem(MUSIC_KEY, String(musicEnabled));
+  }, [musicEnabled, mounted]);
+
+  // 3) On first interaction, if enabled, attempt to unmute and play
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    // Start muted to satisfy autoplay policies
-    audio.muted = true;
+    const onFirstInteraction = async () => {
+      setHasInteracted(true);
 
-    // If user preference is enabled, try to start immediately (muted)
-    if (musicEnabled) {
-      audio
-        .play()
-        .then(() => setHasStarted(true))
-        .catch(() => {
-          // Autoplay with sound is blocked; muted play usually works,
-          // but if it still fails, we'll start on first interaction.
-        });
-    } else {
-      audio.pause();
-    }
-  }, []); // run once on mount
-
-  // 2) If autoplay fails, start on first user interaction (tap/click) and unmute if enabled
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const startOnFirstInteraction = () => {
-      // If user wants music, try to play and unmute
       if (musicEnabled) {
         audio.muted = false;
-        audio
-          .play()
-          .then(() => setHasStarted(true))
-          .catch(() => {
-            // If still blocked, user can use the button; usually this won't happen.
-          });
+        try {
+          await audio.play();
+        } catch {
+          audio.muted = true;
+          audio.play().catch(() => { });
+        }
       }
     };
 
-    window.addEventListener("touchstart", startOnFirstInteraction, {
-      once: true,
-    });
-    window.addEventListener("click", startOnFirstInteraction, { once: true });
+    window.addEventListener("touchstart", onFirstInteraction, { once: true });
+    window.addEventListener("click", onFirstInteraction, { once: true });
 
     return () => {
-      window.removeEventListener("touchstart", startOnFirstInteraction);
-      window.removeEventListener("click", startOnFirstInteraction);
+      window.removeEventListener("touchstart", onFirstInteraction);
+      window.removeEventListener("click", onFirstInteraction);
     };
   }, [musicEnabled]);
 
-  // 3) Keep audio in sync with musicEnabled changes
+  // 4) Keep audio in sync with preference + interaction state
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -79,39 +72,34 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
       return;
     }
 
-    // If enabled, attempt to play.
-    // If we already started once, we can keep it unmuted.
-    // If not started yet, start muted (safer) and then unmute after interaction.
-    if (hasStarted) {
-      audio.muted = false;
-      audio.play().catch(() => {});
-    } else {
-      audio.muted = true;
-      audio.play().catch(() => {});
-    }
-  }, [musicEnabled, hasStarted]);
+    // Enabled:
+    // If user interacted, unmute; otherwise keep muted.
+    audio.muted = !hasInteracted;
+    audio.play().catch(() => { });
+  }, [musicEnabled, hasInteracted]);
 
   const toggleMusic = async () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    setMusicEnabled((prev) => !prev);
+    const nextEnabled = !musicEnabled;
+    setMusicEnabled(nextEnabled);
 
-    // Apply immediately for better responsiveness
-    if (!musicEnabled) {
-      // Turning ON
-      audio.muted = false; // user clicked, so unmute is allowed
-      try {
-        await audio.play();
-        setHasStarted(true);
-      } catch {
-        // If blocked (rare after click), fallback to muted play
-        audio.muted = true;
-        audio.play().catch(() => {});
-      }
-    } else {
-      // Turning OFF
+    if (!nextEnabled) {
       audio.pause();
+      return;
+    }
+
+    // Turning ON: if user clicked, unmute is typically allowed
+    // but on some devices it is safer to respect hasInteracted.
+    audio.muted = !hasInteracted ? true : false;
+
+    try {
+      await audio.play();
+      if (hasInteracted) audio.muted = false;
+    } catch {
+      audio.muted = true;
+      audio.play().catch(() => { });
     }
   };
 
@@ -187,7 +175,14 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
             aria-label="Toggle music"
             aria-pressed={musicEnabled}
           >
-            {musicEnabled ? <Music2 size={16} /> : <VolumeOff size={16} />}
+            {/* Avoid hydration mismatch: don't swap lucide SVGs until mounted */}
+            {!mounted ? (
+              <span className="inline-block h-[16px] w-[16px]" />
+            ) : musicEnabled ? (
+              <Music2 size={16} />
+            ) : (
+              <VolumeOff size={16} />
+            )}
           </button>
         </div>
       </header>
