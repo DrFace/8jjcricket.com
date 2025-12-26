@@ -11,8 +11,12 @@ export const metadata: Metadata = {
 
 export default async function MinigamesPage() {
   // If backend is down, do not crash the whole page
-  let cards: Array<{ slug: string; title: string; desc: string; icon: string }> =
-    [];
+  let cards: Array<{
+    slug: string;
+    title: string;
+    desc: string;
+    icon: string;
+  }> = [];
 
   try {
     const games = await fetchGames();

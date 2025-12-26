@@ -7,7 +7,7 @@ export const revalidate = 0
 const DEFAULT_API_BASE = "https://8jjcricket.com/api"
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
+  const { searchParams } = new URL(request.url) 
   const category = searchParams.get("category")
 
   // Allow override in dev if you want
