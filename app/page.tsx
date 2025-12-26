@@ -225,10 +225,7 @@ export default async function HomePage() {
 
             return (
               <>
-                <h1 className="relative z-30 text-white">
-                  {safeSrc}
-                </h1>
-
+               
                 <video
                   src={safeSrc}
                   autoPlay
