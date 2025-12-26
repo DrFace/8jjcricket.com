@@ -1,4 +1,12 @@
+import { formatDate } from "@/lib/utils";
 // lib/games-api.ts
+
+export type CategoryType = {
+  id: number;
+  name: string;
+  slug: string;
+};
+
 export type ApiGame = {
   id: number;
   title: string;
@@ -13,7 +21,7 @@ export type ApiGame = {
   description: string | null;
   tags: string[];
 
-  category?: { id: number; name: string; slug: string } | null;
+  category?: CategoryType | null;
   game_category_id?: number | null;
 };
 
@@ -22,6 +30,7 @@ export type MinigameCardModel = {
   title: string;
   desc: string;
   icon: string;
+  category: CategoryType | null;
 };
 
 function normalizeApiBase(raw?: string) {
@@ -42,10 +51,14 @@ export async function fetchGames(): Promise<ApiGame[]> {
   if (!API_BASE) throw new Error("NEXT_PUBLIC_API_BASE_URL is not set");
 
   // Laravel resource collection shape is typically { data: [...] }
-  const res = await fetch(`${API_BASE}/games?paginate=0`, { cache: "no-store" });
+  const res = await fetch(`${API_BASE}/games?paginate=0`, {
+    cache: "no-store",
+  });
+
   if (!res.ok) throw new Error(`Failed to fetch games: ${res.status}`);
 
   const json = await res.json();
+
   return json.data ?? [];
 }
 
@@ -69,5 +82,6 @@ export function toMinigameCards(games: ApiGame[]): MinigameCardModel[] {
     title: g.title,
     desc: (g.description || "Tap to play.").trim(),
     icon: g.image || "/games/default-game.png",
+    category: g.category ?? null, // ✅ FIX
   }));
 }

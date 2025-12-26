@@ -1,42 +1,33 @@
-import MobileMinigameCard from "@/components/mobile/MobileMinigameCard";
-import type { Metadata } from "next";
+import MobileMinigamesClient from "@/components/mobile/MobileMinigamesClient";
+import { fetchGameCategories } from "@/lib/game-category-api";
 import { fetchGames, toMinigameCards } from "@/lib/games-api";
 
-export const metadata: Metadata = {
-  title: "Minigames",
-  description: "Play casual minigames while you follow live cricket.",
-};
-
 export default async function MinigamesPage() {
-  let cards: Array<{
-    slug: string;
-    title: string;
-    desc: string;
-    icon: string;
-  }> = [];
+  let cards: any = [];
+  let gamesCategories: any = [];
 
   try {
+    const categoryData = await fetchGameCategories();
     const apiGames = await fetchGames();
+
     cards = toMinigameCards(apiGames);
+    gamesCategories = categoryData.map((cat) => ({
+      slug: cat.slug,
+      name: cat.name,
+      id: cat.id,
+    }));
   } catch {
     cards = [];
   }
 
   return (
-    <div className="space-y-4 m-1">
-      <h1 className="text-2xl font-bold">Minigames</h1>
+    <div className="min-h-screen flex flex-col ">
+      {/* Header (unchanged) */}
 
-      {cards.length === 0 ? (
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/80">
-          No games found. Please add games in the backend admin panel.
-        </div>
-      ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {cards.map((g) => (
-            <MobileMinigameCard key={g.slug} {...g} />
-          ))}
-        </div>
-      )}
+      <main className="flex-1 w-full max-w-2xl px-2">
+        <h1 className="text-2xl font-bold mb-5">Minigames</h1>
+        <MobileMinigamesClient cards={cards} categories={gamesCategories} />
+      </main>
     </div>
   );
 }
