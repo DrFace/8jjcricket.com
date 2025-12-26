@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type ComponentProps } from "react";
 import PortraitPager from "./PortraitPager";
 
-type PortraitItem = { id: number; image_url: string };
+// Derive the exact item type that PortraitPager expects (prevents mismatched local types)
+type PortraitItem = ComponentProps<typeof PortraitPager>["portraits"][number];
 
 function bySortOrNewest(a: any, b: any) {
     const sa = typeof a?.sort_order === "number" ? a.sort_order : 0;
@@ -64,7 +65,10 @@ function Slideshow({ items }: { items: { src: string }[] }) {
             >
                 {items.map((it, idx) => (
                     <div key={idx} className="relative h-full" style={{ width: `${100 / len}%` }}>
-                        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${it.src})` }} />
+                        <div
+                            className="absolute inset-0 bg-cover bg-center"
+                            style={{ backgroundImage: `url(${it.src})` }}
+                        />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
                     </div>
                 ))}
@@ -86,7 +90,10 @@ function BannerPanel({
     if (activeBannerUrl) {
         return (
             <div className="relative h-full w-full overflow-hidden rounded-2xl">
-                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${activeBannerUrl})` }} />
+                <div
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ backgroundImage: `url(${activeBannerUrl})` }}
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
             </div>
         );
@@ -97,11 +104,7 @@ function BannerPanel({
         return <Slideshow items={fallbackLandscapes} />;
     }
 
-    return (
-        <div className="flex h-full items-center justify-center text-sm text-white/60">
-            No images
-        </div>
-    );
+    return <div className="flex h-full items-center justify-center text-sm text-white/60">No images</div>;
 }
 
 export default function BrandBannerHoverBlock({
