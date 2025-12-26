@@ -50,6 +50,17 @@ export async function GET() {
 
     const [liveJ, upcomingJ, recentJ] = await Promise.all([liveP, upcomingP, recentP]);
 
+    // Helper to determine category from league name
+    function getCategory(leagueName: string | undefined): string {
+      if (!leagueName) return "Leagues";
+      const name = leagueName.toLowerCase();
+      if (name.includes("test")) return "Test";
+      if (name.includes("one day") || name.includes("odi")) return "ODI";
+      if (name.includes("t20")) return "T20";
+      if (name.includes("international")) return "International";
+      return "Leagues";
+    }
+
     const mapFx = (x: any): any => ({
       id: x.id,
       round: x.round ?? null,
@@ -64,6 +75,7 @@ export async function GET() {
       localteam: mapTeam(x.localteam),
       visitorteam: mapTeam(x.visitorteam),
       runs: x.runs ?? [],
+      category: getCategory(x.league?.name),
     });
 
     // Sort and map upcoming fixtures

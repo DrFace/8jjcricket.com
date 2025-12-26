@@ -111,6 +111,30 @@ export default function LiveScoreHome() {
   const categories = ["International", "T20", "ODI", "Test", "Leagues", "All"];
   const [selectedCategory, setSelectedCategory] = useState("All");
 
+  // ✅ Improved Category Filter Logic
+  function matchCategory(item: any, category: string) {
+    if (!item.category) return false;
+    const cat = item.category.toLowerCase();
+    if (category === "All") return true;
+    if (category === "Leagues") {
+      // Leagues: not International, ODI, T20, Test
+      return !["international", "odi", "t20", "test"].some((c) => cat.includes(c));
+    }
+    if (category === "International") {
+      return cat.includes("international");
+    }
+    if (category === "T20") {
+      return cat.includes("t20");
+    }
+    if (category === "ODI") {
+      return cat.includes("odi");
+    }
+    if (category === "Test") {
+      return cat.includes("test");
+    }
+    return false;
+  }
+
   // ✅ Filter Recent Matches
   const filteredRecent = useMemo(() => {
     let data = recentData;
@@ -118,7 +142,7 @@ export default function LiveScoreHome() {
       data = data.filter((f: any) => f.starting_at.slice(0, 10) === selectedDate);
     }
     if (selectedCategory !== "All") {
-      data = data.filter((f: any) => f.category === selectedCategory); // Adjust based on API
+      data = data.filter((f: any) => matchCategory(f, selectedCategory));
     }
     return data.slice(0, 6);
   }, [recentData, selectedDate, selectedCategory]);
@@ -127,7 +151,7 @@ export default function LiveScoreHome() {
   const filteredLive = useMemo(() => {
     let data = liveData;
     if (selectedCategory !== "All") {
-      data = data.filter((f: any) => f.category === selectedCategory);
+      data = data.filter((f: any) => matchCategory(f, selectedCategory));
     }
     return data;
   }, [liveData, selectedCategory]);
@@ -136,7 +160,7 @@ export default function LiveScoreHome() {
   const filteredUpcoming = useMemo(() => {
     let data = upcomingData;
     if (selectedCategory !== "All") {
-      data = data.filter((f: any) => f.category === selectedCategory);
+      data = data.filter((f: any) => matchCategory(f, selectedCategory));
     }
     return data;
   }, [upcomingData, selectedCategory]);
