@@ -50,6 +50,24 @@ async function getArticle(slug: string): Promise<Article | null> {
   return (json.data || null) as Article | null;
 }
 
+/**
+ * Minimal sanitizer (no external libs):
+ * - removes <script> blocks
+ * - removes inline on* handlers (onclick, onerror, etc.)
+ * - removes javascript: URLs
+ */
+function sanitizeHtml(input: string): string {
+  if (!input) return "";
+
+  let html = String(input);
+
+  html = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
+  html = html.replace(/\son\w+\s*=\s*(".*?"|'.*?'|[^\s>]+)/gi, "");
+  html = html.replace(/\s(href|src)\s*=\s*(['"])\s*javascript:[^'"]*\2/gi, " $1=$2#$2");
+
+  return html;
+}
+
 type Props = { params: { slug: string } };
 
 export async function generateMetadata({ params }: Props) {
@@ -79,6 +97,7 @@ export default async function MobileArticlePage({ params }: Props) {
   }
 
   const imgSrc = normalizeImageUrl(article.image_url);
+  const safeBodyHtml = sanitizeHtml(article.body);
 
   return (
     <main className="min-h-screen bg-black text-white px-4 pt-6 pb-24">
@@ -114,20 +133,11 @@ export default async function MobileArticlePage({ params }: Props) {
           </div>
         )}
 
-        {/* Option A (safe): render body as plain text */}
-        <div className="text-sm text-white/80 leading-6 whitespace-pre-line">
-          {article.body}
-        </div>
-
-        {/*
-          Option B (if Laravel returns HTML in `body`):
-          Replace Option A with this:
-
-          <div
-            className="prose prose-invert max-w-none"
-            dangerouslySetInnerHTML={{ __html: article.body }}
-          />
-        */}
+        {/* FIX: render HTML body */}
+        <div
+          className="prose prose-invert max-w-none text-white/80"
+          dangerouslySetInnerHTML={{ __html: safeBodyHtml }}
+        />
       </div>
     </main>
   );

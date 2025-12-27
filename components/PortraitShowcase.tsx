@@ -17,9 +17,16 @@ type PortraitPage = {
   portrait_image_url?: string | null;
 };
 
-const BACKEND_ORIGIN = (
-  process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "http://72.60.107.98:8001"
-).replace(/\/+$/, "");
+type CarouselItem = {
+    id: number;
+    image_url: string | null;
+    created_at?: string;
+};
+
+const BACKEND_ORIGIN = (process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "http://72.60.107.98:8001").replace(
+    /\/+$/,
+    ""
+);
 
 function pickFirst<T>(...vals: (T | null | undefined)[]) {
   for (const v of vals)
@@ -32,6 +39,16 @@ function toStorageUrl(pathOrUrl: string | null): string | null {
   if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
   const clean = String(pathOrUrl).replaceAll("\\", "/").replace(/^\/+/, "");
   return `${BACKEND_ORIGIN}/storage/${clean}`;
+}
+
+/**
+ * Some APIs may return absolute URLs using a different host/domain.
+ * If it's already http(s), keep it. If it's relative, convert to /storage/.
+ */
+function normalizeCarouselUrl(url: string | null): string | null {
+    if (!url) return null;
+    if (/^https?:\/\//i.test(url)) return url;
+    return toStorageUrl(url);
 }
 
 function getHero(p: PortraitPage) {

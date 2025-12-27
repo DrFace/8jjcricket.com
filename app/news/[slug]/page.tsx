@@ -60,6 +60,29 @@ async function getArticle(slug: string): Promise<Article | null> {
 
 type Props = { params: { slug: string } }
 
+/**
+ * Minimal sanitizer (no external libs):
+ * - removes <script> blocks
+ * - removes inline on* handlers (onclick, onerror, etc.)
+ * - removes javascript: URLs
+ */
+function sanitizeHtml(input: string): string {
+    if (!input) return ""
+
+    let html = String(input)
+
+    // Remove script tags + content
+    html = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+
+    // Remove inline event handlers: onClick="...", onerror='...'
+    html = html.replace(/\son\w+\s*=\s*(".*?"|'.*?'|[^\s>]+)/gi, "")
+
+    // Remove javascript: from href/src
+    html = html.replace(/\s(href|src)\s*=\s*(['"])\s*javascript:[^'"]*\2/gi, " $1=$2#$2")
+
+    return html
+}
+
 export async function generateMetadata({ params }: Props) {
     const article = await getArticle(params.slug)
 
@@ -109,6 +132,7 @@ export default async function ArticlePage({ params }: Props) {
     }
 
     const imgSrc = normalizeImageUrl(article.image_url)
+    const safeBodyHtml = sanitizeHtml(article.body)
 
     return (
         <DesktopOnly>
@@ -147,11 +171,12 @@ export default async function ArticlePage({ params }: Props) {
                             </div>
                         )}
 
-                        {/* If body is HTML from Laravel, use dangerouslySetInnerHTML instead */}
                         <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-6">
-                            <div className="prose prose-invert max-w-none whitespace-pre-line prose-p:text-slate-300 prose-headings:text-slate-100 prose-a:text-sky-400">
-                                {article.body}
-                            </div>
+                            {/* FIX: render HTML body */}
+                            <div
+                                className="prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-slate-100 prose-a:text-sky-400"
+                                dangerouslySetInnerHTML={{ __html: safeBodyHtml }}
+                            />
                         </div>
                     </div>
                 </main>
