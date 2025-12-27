@@ -175,7 +175,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
     pageIndex * PAGE_SIZE + PAGE_SIZE
   );
 
-  // ✅ STOP page from scrolling while cursor is over this showcase
+  // STOP page from scrolling while cursor is over this showcase
   const lockScrollRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const el = lockScrollRef.current;
@@ -205,28 +205,28 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
         ref={lockScrollRef}
         className="relative mx-auto h-[85vh] min-h-[700px] w-full max-w-[1600px]"
       >
-        {/* ✅ Removed main card background (only keep a subtle outline if you want) */}
+        {/* Removed main card background (only keep a subtle outline if you want) */}
         <div className="pointer-events-none absolute inset-0 rounded-[2.5rem] ring-1 ring-white/10" />
 
-        {/* LEFT */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-[46%] overflow-hidden rounded-l-[2.5rem]">
-          <div
-            className="absolute inset-0 bg-contain bg-left-bottom bg-no-repeat transition-all duration-700 ease-out"
-            style={{
-              backgroundImage: `url(${leftImage})`,
-              filter:
-                "drop-shadow(0 10px 60px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 40px rgba(0, 0, 0, 0.3))",
-            }}
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(to right, transparent 0%, transparent 55%, rgba(0, 0, 0, 0.3) 80%, rgba(0, 0, 0, 0.95) 100%)",
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-blue-600/5 via-transparent to-transparent" />
-        </div>
+{/* LEFT */}
+<div className="pointer-events-none absolute inset-y-0 left-0 w-[46%] overflow-hidden rounded-l-[2.5rem]">
+  <div
+    className="absolute inset-0 bg-contain bg-left-bottom bg-no-repeat transition-all duration-700 ease-out"
+    style={{
+      backgroundImage: `url(${leftImage})`,
+      filter: "drop-shadow(0 4px 18px rgba(0, 0, 0, 0.18))",
+    }}
+  />
+
+  {/* Ultra-light edge fade (barely visible) */}
+  <div
+    className="absolute inset-0"
+    style={{
+      background:
+        "linear-gradient(to right, transparent 0%, transparent 94%, rgba(0,0,0,0.06) 100%)",
+    }}
+  />
+</div>
 
         {/* RIGHT */}
         <div className="relative ml-[46%] flex h-full flex-col gap-7 p-8 pt-16">
