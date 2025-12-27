@@ -268,7 +268,7 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
-        {/* <section
+        <section
           data-snap
           className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
         >
@@ -283,7 +283,7 @@ export default async function HomePage() {
               <PortraitShowcaseSection />
             </div>
           </div>
-        </section> */}
+        </section> 
 
         {/* SLIDE — GALLERY SHOWCASE */}
         <section
