@@ -18,15 +18,14 @@ type PortraitPage = {
 };
 
 type CarouselItem = {
-    id: number;
-    image_url: string | null;
-    created_at?: string;
+  id: number;
+  image_url: string | null;
+  created_at?: string;
 };
 
-const BACKEND_ORIGIN = (process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "http://72.60.107.98:8001").replace(
-    /\/+$/,
-    ""
-);
+const BACKEND_ORIGIN = (
+  process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "http://72.60.107.98:8001"
+).replace(/\/+$/, "");
 
 function pickFirst<T>(...vals: (T | null | undefined)[]) {
   for (const v of vals)
@@ -34,10 +33,17 @@ function pickFirst<T>(...vals: (T | null | undefined)[]) {
   return null;
 }
 
+/* ✅ ONLY FIX: prevent /storage/storage duplication */
 function toStorageUrl(pathOrUrl: string | null): string | null {
   if (!pathOrUrl) return null;
   if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
-  const clean = String(pathOrUrl).replaceAll("\\", "/").replace(/^\/+/, "");
+
+  const raw = String(pathOrUrl).replaceAll("\\", "/").trim();
+
+  // If API sends "/storage/xxx" or "storage/xxx", keep single storage prefix
+  const clean = raw.replace(/^\/+/, "");
+  if (clean.startsWith("storage/")) return `${BACKEND_ORIGIN}/${clean}`;
+
   return `${BACKEND_ORIGIN}/storage/${clean}`;
 }
 
@@ -46,9 +52,9 @@ function toStorageUrl(pathOrUrl: string | null): string | null {
  * If it's already http(s), keep it. If it's relative, convert to /storage/.
  */
 function normalizeCarouselUrl(url: string | null): string | null {
-    if (!url) return null;
-    if (/^https?:\/\//i.test(url)) return url;
-    return toStorageUrl(url);
+  if (!url) return null;
+  if (/^https?:\/\//i.test(url)) return url;
+  return toStorageUrl(url);
 }
 
 function getHero(p: PortraitPage) {
@@ -83,8 +89,12 @@ function Slideshow({ items }: { items: { src: string }[] }) {
       const t0 = i * segment;
       const tHold = t0 + hold;
       css += `
-        ${t0.toFixed(4)}% { transform: translateX(-${(i * step).toFixed(6)}%); }
-        ${tHold.toFixed(4)}% { transform: translateX(-${(i * step).toFixed(6)}%); }
+        ${t0.toFixed(4)}% { transform: translateX(-${(i * step).toFixed(
+        6
+      )}%); }
+        ${tHold.toFixed(4)}% { transform: translateX(-${(i * step).toFixed(
+        6
+      )}%); }
       `;
       if (i < len - 1) {
         const tNext = (i + 1) * segment;
@@ -208,25 +218,25 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
         {/* Removed main card background (only keep a subtle outline if you want) */}
         <div className="pointer-events-none absolute inset-0 rounded-[2.5rem] ring-1 ring-white/10" />
 
-{/* LEFT */}
-<div className="pointer-events-none absolute inset-y-0 left-0 w-[46%] overflow-hidden rounded-l-[2.5rem]">
-  <div
-    className="absolute inset-0 bg-contain bg-left-bottom bg-no-repeat transition-all duration-700 ease-out"
-    style={{
-      backgroundImage: `url(${leftImage})`,
-      filter: "drop-shadow(0 4px 18px rgba(0, 0, 0, 0.18))",
-    }}
-  />
+        {/* LEFT */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-[46%] overflow-hidden rounded-l-[2.5rem]">
+          <div
+            className="absolute inset-0 bg-contain bg-left-bottom bg-no-repeat transition-all duration-700 ease-out"
+            style={{
+              backgroundImage: `url(${leftImage})`,
+              filter: "drop-shadow(0 4px 18px rgba(0, 0, 0, 0.18))",
+            }}
+          />
 
-  {/* Ultra-light edge fade (barely visible) */}
-  <div
-    className="absolute inset-0"
-    style={{
-      background:
-        "linear-gradient(to right, transparent 0%, transparent 94%, rgba(0,0,0,0.06) 100%)",
-    }}
-  />
-</div>
+          {/* Ultra-light edge fade (barely visible) */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to right, transparent 0%, transparent 94%, rgba(0,0,0,0.06) 100%)",
+            }}
+          />
+        </div>
 
         {/* RIGHT */}
         <div className="relative ml-[46%] flex h-full flex-col gap-7 p-8 pt-16">
@@ -258,11 +268,10 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     onMouseLeave={onPortraitLeave}
                   >
                     <div
-                      className={`absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${
-                        isHovered
+                      className={`absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${isHovered
                           ? "ring-[3px] ring-blue-400/70 shadow-lg shadow-blue-400/40"
                           : "ring-1 ring-black/5"
-                      }`}
+                        }`}
                     />
 
                     <div className="relative h-full w-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-gray-100 to-gray-50">
@@ -287,11 +296,10 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
               <button
                 onClick={() => setPageIndex((p) => Math.max(0, p - 1))}
                 disabled={!canPrev}
-                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${
-                  canPrev
+                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${canPrev
                     ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
                     : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
-                }`}
+                  }`}
               >
                 <svg
                   className="absolute inset-0 m-auto h-6 w-6 text-white"
@@ -309,15 +317,12 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
               </button>
 
               <button
-                onClick={() =>
-                  setPageIndex((p) => Math.min(pageCount - 1, p + 1))
-                }
+                onClick={() => setPageIndex((p) => Math.min(pageCount - 1, p + 1))}
                 disabled={!canNext}
-                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${
-                  canNext
+                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${canNext
                     ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
                     : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
-                }`}
+                  }`}
               >
                 <svg
                   className="absolute inset-0 m-auto h-6 w-6 text-white"
