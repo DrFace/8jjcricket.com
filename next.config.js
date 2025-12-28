@@ -5,16 +5,23 @@ const nextConfig = {
   images: {
     remotePatterns: [
       // ✅ EXISTING (UNCHANGED)
-      { protocol: 'https', hostname: 'cdn.sportmonks.com' },
+      { protocol: "https", hostname: "cdn.sportmonks.com" },
 
       // ✅ ADDED (for games images)
-      { protocol: 'https', hostname: 'www.onlinegames.io' },
-      { protocol: 'https', hostname: 'cloud.onlinegames.io' },
+      { protocol: "https", hostname: "www.onlinegames.io" },
+      { protocol: "https", hostname: "cloud.onlinegames.io" },
+      // ✅ LOCAL API for carousel images
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "8000",
+        pathname: "/storage/**",
+      },
     ],
   },
 
   experimental: {
-    optimizePackageImports: ['lucide-react'],
+    optimizePackageImports: ["lucide-react"],
   },
 };
 
