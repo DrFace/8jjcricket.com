@@ -17,20 +17,16 @@ type PortraitPage = {
   portrait_image_url?: string | null;
 };
 
-type CarouselItem = {
-    id: number;
-    image_url: string | null;
-    created_at?: string;
-};
+const BACKEND_ORIGIN = (
+  process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "http://72.60.107.98:8001"
+).replace(/\/+$/, "");
 
-const BACKEND_ORIGIN = (process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "http://72.60.107.98:8001").replace(
-    /\/+$/,
-    ""
-);
+const DEFAULT_LEFT_IMAGE = "/AMD.png";
 
 function pickFirst<T>(...vals: (T | null | undefined)[]) {
-  for (const v of vals)
+  for (const v of vals) {
     if (v !== null && v !== undefined && String(v).trim() !== "") return v;
+  }
   return null;
 }
 
@@ -39,16 +35,6 @@ function toStorageUrl(pathOrUrl: string | null): string | null {
   if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
   const clean = String(pathOrUrl).replaceAll("\\", "/").replace(/^\/+/, "");
   return `${BACKEND_ORIGIN}/storage/${clean}`;
-}
-
-/**
- * Some APIs may return absolute URLs using a different host/domain.
- * If it's already http(s), keep it. If it's relative, convert to /storage/.
- */
-function normalizeCarouselUrl(url: string | null): string | null {
-    if (!url) return null;
-    if (/^https?:\/\//i.test(url)) return url;
-    return toStorageUrl(url);
 }
 
 function getHero(p: PortraitPage) {
@@ -132,15 +118,12 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
     [pages]
   );
 
-  const defaultBig = useMemo(() => {
-    const first = cleanPages[0];
-    if (!first) return null;
-    return getHero(first) || getHover(first) || getMainPortrait(first);
-  }, [cleanPages]);
-
+  // ✅ hover-only state (default comes from DEFAULT_LEFT_IMAGE)
   const [activeLeftUrl, setActiveLeftUrl] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
-  const leftImage = activeLeftUrl || defaultBig || "/AMD.png";
+
+  // ✅ ALWAYS show AMD.png when not hovering
+  const leftImage = activeLeftUrl || DEFAULT_LEFT_IMAGE;
 
   const slideshowItems = useMemo(() => {
     const items = cleanPages
@@ -175,18 +158,14 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
     pageIndex * PAGE_SIZE + PAGE_SIZE
   );
 
-  // STOP page from scrolling while cursor is over this showcase
+  // STOP page scrolling while mouse over showcase (optional)
   const lockScrollRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const el = lockScrollRef.current;
     if (!el) return;
 
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-    };
-    const onTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-    };
+    const onWheel = (e: WheelEvent) => e.preventDefault();
+    const onTouchMove = (e: TouchEvent) => e.preventDefault();
 
     el.addEventListener("wheel", onWheel, { passive: false });
     el.addEventListener("touchmove", onTouchMove, { passive: false });
@@ -205,28 +184,28 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
         ref={lockScrollRef}
         className="relative mx-auto h-[85vh] min-h-[700px] w-full max-w-[1600px]"
       >
-        {/* Removed main card background (only keep a subtle outline if you want) */}
+        {/* subtle outline only */}
         <div className="pointer-events-none absolute inset-0 rounded-[2.5rem] ring-1 ring-white/10" />
 
-{/* LEFT */}
-<div className="pointer-events-none absolute inset-y-0 left-0 w-[46%] overflow-hidden rounded-l-[2.5rem]">
-  <div
-    className="absolute inset-0 bg-contain bg-left-bottom bg-no-repeat transition-all duration-700 ease-out"
-    style={{
-      backgroundImage: `url(${leftImage})`,
-      filter: "drop-shadow(0 4px 18px rgba(0, 0, 0, 0.18))",
-    }}
-  />
+        {/* ✅ LEFT IMAGE (default AMD.png + hover override) */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-[46%] overflow-hidden rounded-l-[2.5rem]">
+          <div
+            className="absolute inset-0 bg-contain bg-left-bottom bg-no-repeat transition-all duration-700"
+            style={{
+              backgroundImage: `url(${leftImage})`,
+              filter: "drop-shadow(0 4px 18px rgba(0,0,0,0.18))",
+            }}
+          />
 
-  {/* Ultra-light edge fade (barely visible) */}
-  <div
-    className="absolute inset-0"
-    style={{
-      background:
-        "linear-gradient(to right, transparent 0%, transparent 94%, rgba(0,0,0,0.06) 100%)",
-    }}
-  />
-</div>
+          {/* Ultra-light edge fade */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to right, transparent 0%, transparent 94%, rgba(0,0,0,0.06) 100%)",
+            }}
+          />
+        </div>
 
         {/* RIGHT */}
         <div className="relative ml-[46%] flex h-full flex-col gap-7 p-8 pt-16">
@@ -253,9 +232,12 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                   <a
                     key={p.id}
                     href={`/portraits/${p.slug}`}
+                    target="_blank"
+                    rel="noreferrer"
                     className="group relative h-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-white via-gray-50 to-white shadow-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-blue-500/30"
                     onMouseEnter={() => onPortraitHover(p)}
                     onMouseLeave={onPortraitLeave}
+                    title={p.title}
                   >
                     <div
                       className={`absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${
@@ -267,6 +249,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
 
                     <div className="relative h-full w-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-gray-100 to-gray-50">
                       {thumb ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={thumb}
                           alt={p.title}
@@ -292,6 +275,8 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
                     : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
                 }`}
+                type="button"
+                aria-label="Previous"
               >
                 <svg
                   className="absolute inset-0 m-auto h-6 w-6 text-white"
@@ -309,15 +294,15 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
               </button>
 
               <button
-                onClick={() =>
-                  setPageIndex((p) => Math.min(pageCount - 1, p + 1))
-                }
+                onClick={() => setPageIndex((p) => Math.min(pageCount - 1, p + 1))}
                 disabled={!canNext}
                 className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${
                   canNext
                     ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
                     : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
                 }`}
+                type="button"
+                aria-label="Next"
               >
                 <svg
                   className="absolute inset-0 m-auto h-6 w-6 text-white"
@@ -337,9 +322,9 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
           </div>
         </div>
 
-        {/* Ambient glows */}
-        <div className="pointer-events-none absolute -left-20 top-20 h-64 w-64 rounded-full bg-blue-0/20 blur-[100px]" />
-        <div className="pointer-events-none absolute -right-20 bottom-20 h-64 w-64 rounded-full bg-purple-0/20 blur-[100px]" />
+        {/* Ambient glows off */}
+        <div className="pointer-events-none absolute -left-20 top-20 h-64 w-64 rounded-full bg-blue-500/0 blur-[100px]" />
+        <div className="pointer-events-none absolute -right-20 bottom-20 h-64 w-64 rounded-full bg-purple-500/0 blur-[100px]" />
       </div>
     </section>
   );
