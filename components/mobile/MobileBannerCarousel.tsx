@@ -11,19 +11,24 @@ export default function MobileBannerCarousel() {
   const len = images.length;
 
   const fetchImages = async () => {
-    const apiBase = ApiBase();
+    try {
+      const apiBase = ApiBase();
 
-    const res = await fetch(`${apiBase}/carousels`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+      const res = await fetch(`${apiBase}/carousels`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    if (!res.ok) throw new Error("Failed to load images");
+      if (!res.ok) throw new Error("Failed to load images");
 
-    const data = await res.json();
-    return data.map((item: { image: string }) => item.image);
+      const data = await res.json();
+      return data.map((item: { image: string }) => item.image);
+    } catch (error) {
+      console.error("Error fetching images:", error);
+      return [];
+    }
   };
 
   const urlNormalize = (url: string) => {
