@@ -22,7 +22,7 @@ const nextConfig = {
     return [
       {
         source: "/backend/:path*",
-        destination: "http://72.60.107.98:8001/:path*",
+        destination: "http://8jjcricket.com/:path*",
       },
     ];
   },
