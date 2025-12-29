@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 
 const BACKEND_ORIGIN = (
-  process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "http://72.60.107.98:8001"
+  process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "https://8jjcricket.com"
 ).replace(/\/+$/, "");
 
 function pickFirst<T>(...vals: (T | null | undefined)[]) {
