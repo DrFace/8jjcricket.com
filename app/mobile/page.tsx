@@ -1,11 +1,12 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import BannerCarousel from "@/components/BannerCarousel";
 import Reveal from "@/components/Reveal";
 import MobileNewsListCards from "@/components/MobileNewsListCards";
 import SocialBox from "@/components/SocialBox";
 import { fetchGames, toMinigameCards } from "@/lib/games-api";
 import MobileBannerCarousel from "@/components/mobile/MobileBannerCarousel";
+import { ApiBase } from "@/lib/utils";
+import { DEFAULT_API_BASE } from "@/lib/constant";
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
   ssr: false,
@@ -25,15 +26,6 @@ type Video = {
   slug: string;
   video_path: string;
 };
-
-const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
-
-function apiBase() {
-  return (process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE).replace(
-    /\/+$/,
-    ""
-  );
-}
 
 const GAME_ITEMS = [
   {
@@ -86,7 +78,7 @@ function normalizeImageUrl(url: string | null): string | null {
 function normalizeVideoUrl(url: string | null): string | null {
   if (!url) return null;
   // Remove '/api' from backend_url if present
-  let backend_url = apiBase().replace(/\/api$/, "");
+  let backend_url = ApiBase().replace(/\/api$/, "");
   try {
     const u = new URL(url, backend_url);
     let pathname = u.pathname;
@@ -144,7 +136,7 @@ export default async function MobileHomePage() {
   }[];
 
   async function fetchVideos(): Promise<Video[]> {
-    const url = `${apiBase()}/home-videos`;
+    const url = `${ApiBase()}/home-videos`;
     try {
       const res = await fetch(url, { cache: "no-store" });
       if (!res.ok) return [];
@@ -211,7 +203,7 @@ export default async function MobileHomePage() {
                       if (u.pathname.startsWith("/storage/")) {
                         return `https://8jjcricket.com${u.pathname}${u.search}`;
                       }
-                    } catch { }
+                    } catch {}
                   }
 
                   // Already https or unknown format
@@ -238,7 +230,6 @@ export default async function MobileHomePage() {
           </div>
         </Reveal>
       </section>
-
 
       {/* SOCIALS (under video) */}
       <section className="mt-4 w-full snap-start scroll-mt-3">

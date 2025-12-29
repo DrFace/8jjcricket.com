@@ -24,12 +24,15 @@ type CarouselItem = {
 };
 
 const BACKEND_ORIGIN = (
-  process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "http://72.60.107.98:8001"
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://72.60.107.98:8001"
 ).replace(/\/+$/, "");
 
+const DEFAULT_LEFT_IMAGE = `${BACKEND_ORIGIN}/storage/images/AMD.png`;
+
 function pickFirst<T>(...vals: (T | null | undefined)[]) {
-  for (const v of vals)
+  for (const v of vals) {
     if (v !== null && v !== undefined && String(v).trim() !== "") return v;
+  }
   return null;
 }
 
@@ -89,9 +92,7 @@ function Slideshow({ items }: { items: { src: string }[] }) {
       const t0 = i * segment;
       const tHold = t0 + hold;
       css += `
-        ${t0.toFixed(4)}% { transform: translateX(-${(i * step).toFixed(
-        6
-      )}%); }
+        ${t0.toFixed(4)}% { transform: translateX(-${(i * step).toFixed(6)}%); }
         ${tHold.toFixed(4)}% { transform: translateX(-${(i * step).toFixed(
         6
       )}%); }
@@ -99,7 +100,8 @@ function Slideshow({ items }: { items: { src: string }[] }) {
       if (i < len - 1) {
         const tNext = (i + 1) * segment;
         css += `${tNext.toFixed(4)}% { transform: translateX(-${(
-          (i + 1) * step
+          (i + 1) *
+          step
         ).toFixed(6)}%); }`;
       }
     }
@@ -114,7 +116,9 @@ function Slideshow({ items }: { items: { src: string }[] }) {
         style={{
           width: `${len * 100}%`,
           animation:
-            len > 1 ? `${animName} ${len * 6}s ease-in-out infinite` : undefined,
+            len > 1
+              ? `${animName} ${len * 6}s ease-in-out infinite`
+              : undefined,
         }}
       >
         {items.map((it, idx) => (
@@ -142,15 +146,12 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
     [pages]
   );
 
-  const defaultBig = useMemo(() => {
-    const first = cleanPages[0];
-    if (!first) return null;
-    return getHero(first) || getHover(first) || getMainPortrait(first);
-  }, [cleanPages]);
-
+  // ✅ hover-only state (default comes from DEFAULT_LEFT_IMAGE)
   const [activeLeftUrl, setActiveLeftUrl] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
-  const leftImage = activeLeftUrl || defaultBig || "/AMD.png";
+
+  // ✅ ALWAYS show AMD.png when not hovering
+  const leftImage = activeLeftUrl || DEFAULT_LEFT_IMAGE;
 
   const slideshowItems = useMemo(() => {
     const items = cleanPages
@@ -185,18 +186,14 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
     pageIndex * PAGE_SIZE + PAGE_SIZE
   );
 
-  // STOP page from scrolling while cursor is over this showcase
+  // STOP page scrolling while mouse over showcase (optional)
   const lockScrollRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const el = lockScrollRef.current;
     if (!el) return;
 
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-    };
-    const onTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-    };
+    const onWheel = (e: WheelEvent) => e.preventDefault();
+    const onTouchMove = (e: TouchEvent) => e.preventDefault();
 
     el.addEventListener("wheel", onWheel, { passive: false });
     el.addEventListener("touchmove", onTouchMove, { passive: false });
@@ -215,7 +212,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
         ref={lockScrollRef}
         className="relative mx-auto h-[85vh] min-h-[700px] w-full max-w-[1600px]"
       >
-        {/* Removed main card background (only keep a subtle outline if you want) */}
+        {/* subtle outline only */}
         <div className="pointer-events-none absolute inset-0 rounded-[2.5rem] ring-1 ring-white/10" />
 
         {/* LEFT */}
@@ -263,9 +260,12 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                   <a
                     key={p.id}
                     href={`/portraits/${p.slug}`}
+                    target="_blank"
+                    rel="noreferrer"
                     className="group relative h-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-white via-gray-50 to-white shadow-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-blue-500/30"
                     onMouseEnter={() => onPortraitHover(p)}
                     onMouseLeave={onPortraitLeave}
+                    title={p.title}
                   >
                     <div
                       className={`absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${isHovered
@@ -276,6 +276,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
 
                     <div className="relative h-full w-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-gray-100 to-gray-50">
                       {thumb ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={thumb}
                           alt={p.title}
@@ -300,6 +301,8 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
                     : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
                   }`}
+                type="button"
+                aria-label="Previous"
               >
                 <svg
                   className="absolute inset-0 m-auto h-6 w-6 text-white"
@@ -323,6 +326,8 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
                     : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
                   }`}
+                type="button"
+                aria-label="Next"
               >
                 <svg
                   className="absolute inset-0 m-auto h-6 w-6 text-white"
@@ -342,9 +347,9 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
           </div>
         </div>
 
-        {/* Ambient glows */}
-        <div className="pointer-events-none absolute -left-20 top-20 h-64 w-64 rounded-full bg-blue-0/20 blur-[100px]" />
-        <div className="pointer-events-none absolute -right-20 bottom-20 h-64 w-64 rounded-full bg-purple-0/20 blur-[100px]" />
+        {/* Ambient glows off */}
+        <div className="pointer-events-none absolute -left-20 top-20 h-64 w-64 rounded-full bg-blue-500/0 blur-[100px]" />
+        <div className="pointer-events-none absolute -right-20 bottom-20 h-64 w-64 rounded-full bg-purple-500/0 blur-[100px]" />
       </div>
     </section>
   );
