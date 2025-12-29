@@ -4,7 +4,7 @@ import Reveal from "@/components/Reveal";
 import MobileNewsListCards from "@/components/MobileNewsListCards";
 import SocialBox from "@/components/SocialBox";
 import { fetchGames, toMinigameCards } from "@/lib/games-api";
-import MobileBannerCarousel from "@/components/MobileBannerCarousel";
+import MobileBannerCarousel from "@/components/mobile/MobileBannerCarousel";
 import { ApiBase } from "@/lib/utils";
 import { DEFAULT_API_BASE } from "@/lib/constant";
 
