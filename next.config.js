@@ -23,6 +23,14 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
+      async rewrites() {
+    return [
+      {
+        source: "/backend/:path*",
+        destination: "http://72.60.107.98:8001/:path*",
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
