@@ -2,17 +2,65 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-
-const sources = [
-  { src: "/banner002.png", alt: "banner002" },
-  { src: "/banner003.png", alt: "banner003" },
-  { src: "/banner004.png", alt: "banner004" },
-];
+import { ApiBase } from "@/lib/utils";
 
 export default function MobileBannerCarousel() {
   const [index, setIndex] = useState(0);
+  const [images, setImages] = useState<string[]>([]);
   const timer = useRef<number | null>(null);
-  const len = sources.length;
+  const len = images.length;
+
+  const fetchImages = async () => {
+    try {
+      const apiBase = ApiBase();
+
+      const res = await fetch(`${apiBase}/carousels`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) throw new Error("Failed to load images");
+
+      const data = await res.json();
+      return data.map((item: { image: string }) => item.image);
+    } catch (error) {
+      console.error("Error fetching images:", error);
+      return [];
+    }
+  };
+
+  const urlNormalize = (url: string) => {
+    if (!url) return "";
+
+    // If URL is already absolute, return as-is
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      return url;
+    }
+
+    const apiBase = ApiBase(); // e.g., http://127.0.0.1:8000/api
+
+    // Remove trailing slash from apiBase
+    const cleanApiBase = apiBase.replace(/\/$/, "");
+
+    // Remove leading slash from url
+    const cleanUrl = url.replace(/^\/+/, "");
+
+    // If the URL comes from API endpoint (like carousel/...), map to storage
+    // e.g., carousel/abc.png -> /storage/carousel/abc.png
+    const storagePath = cleanUrl.startsWith("carousel/")
+      ? `/storage/${cleanUrl}`
+      : `/${cleanUrl}`;
+
+    return `${cleanApiBase.replace(/\/api$/, "")}${storagePath}`;
+  };
+
+  useEffect(() => {
+    fetchImages()
+      .then(setImages)
+      .catch((err) => console.error(err));
+  }, []);
 
   // Auto slide
   useEffect(() => {
@@ -22,9 +70,11 @@ export default function MobileBannerCarousel() {
 
   const start = () => {
     stop();
-    timer.current = window.setTimeout(() => {
-      setIndex((i) => (i + 1) % len);
-    }, 4000);
+    if (len > 0) {
+      timer.current = window.setTimeout(() => {
+        setIndex((i) => (i + 1) % len);
+      }, 4000);
+    }
   };
 
   const stop = () => {
@@ -70,15 +120,15 @@ export default function MobileBannerCarousel() {
           className="flex h-full w-full transition-transform duration-700 ease-out"
           style={{ transform: `translateX(-${index * 100}%)` }}
         >
-          {sources.map(({ src, alt }) => (
-            <div key={src} className="relative h-full w-full flex-shrink-0">
+          {images.map((imageUrl, i) => (
+            <div key={i} className="relative h-full w-full flex-shrink-0">
               <Image
-                src={src}
-                alt={alt}
+                src={urlNormalize(imageUrl)}
+                alt={`Slide ${i}`}
                 fill
                 sizes="100vw"
                 className="object-cover"
-                priority
+                priority={i === 0} // Only prioritize the first image
               />
             </div>
           ))}
@@ -123,7 +173,7 @@ export default function MobileBannerCarousel() {
 
       {/* Dots */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
-        {sources.map((_, i) => (
+        {images.map((_, i) => (
           <button
             key={i}
             onClick={() => setIndex(i)}

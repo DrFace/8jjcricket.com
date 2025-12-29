@@ -24,7 +24,7 @@ type CarouselItem = {
 };
 
 const BACKEND_ORIGIN = (
-  process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "http://72.60.107.98:8001"
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://72.60.107.98:8001"
 ).replace(/\/+$/, "");
 
 function pickFirst<T>(...vals: (T | null | undefined)[]) {
@@ -89,9 +89,7 @@ function Slideshow({ items }: { items: { src: string }[] }) {
       const t0 = i * segment;
       const tHold = t0 + hold;
       css += `
-        ${t0.toFixed(4)}% { transform: translateX(-${(i * step).toFixed(
-        6
-      )}%); }
+        ${t0.toFixed(4)}% { transform: translateX(-${(i * step).toFixed(6)}%); }
         ${tHold.toFixed(4)}% { transform: translateX(-${(i * step).toFixed(
         6
       )}%); }
@@ -99,7 +97,8 @@ function Slideshow({ items }: { items: { src: string }[] }) {
       if (i < len - 1) {
         const tNext = (i + 1) * segment;
         css += `${tNext.toFixed(4)}% { transform: translateX(-${(
-          (i + 1) * step
+          (i + 1) *
+          step
         ).toFixed(6)}%); }`;
       }
     }
@@ -114,7 +113,9 @@ function Slideshow({ items }: { items: { src: string }[] }) {
         style={{
           width: `${len * 100}%`,
           animation:
-            len > 1 ? `${animName} ${len * 6}s ease-in-out infinite` : undefined,
+            len > 1
+              ? `${animName} ${len * 6}s ease-in-out infinite`
+              : undefined,
         }}
       >
         {items.map((it, idx) => (
@@ -268,10 +269,11 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     onMouseLeave={onPortraitLeave}
                   >
                     <div
-                      className={`absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${isHovered
+                      className={`absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${
+                        isHovered
                           ? "ring-[3px] ring-blue-400/70 shadow-lg shadow-blue-400/40"
                           : "ring-1 ring-black/5"
-                        }`}
+                      }`}
                     />
 
                     <div className="relative h-full w-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-gray-100 to-gray-50">
@@ -296,10 +298,11 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
               <button
                 onClick={() => setPageIndex((p) => Math.max(0, p - 1))}
                 disabled={!canPrev}
-                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${canPrev
+                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${
+                  canPrev
                     ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
                     : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
-                  }`}
+                }`}
               >
                 <svg
                   className="absolute inset-0 m-auto h-6 w-6 text-white"
@@ -317,12 +320,15 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
               </button>
 
               <button
-                onClick={() => setPageIndex((p) => Math.min(pageCount - 1, p + 1))}
+                onClick={() =>
+                  setPageIndex((p) => Math.min(pageCount - 1, p + 1))
+                }
                 disabled={!canNext}
-                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${canNext
+                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${
+                  canNext
                     ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
                     : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
-                  }`}
+                }`}
               >
                 <svg
                   className="absolute inset-0 m-auto h-6 w-6 text-white"
