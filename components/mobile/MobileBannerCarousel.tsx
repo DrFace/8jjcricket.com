@@ -34,26 +34,41 @@ export default function MobileBannerCarousel() {
   const urlNormalize = (url: string) => {
     if (!url) return "";
 
-    // If URL is already absolute, return as-is
+    // Always serve images from the same origin as the website (prevents mixed content)
+    const siteOrigin =
+      typeof window !== "undefined" ? window.location.origin : "https://8jjcricket.com";
+
+    // If API returns absolute URL, normalize bad hosts/schemes to site origin
     if (url.startsWith("http://") || url.startsWith("https://")) {
-      return url;
+      try {
+        const u = new URL(url);
+
+        // If it points to backend IP/localhost/127.0.0.1, rewrite to site origin
+        const badHosts = new Set(["72.60.107.98", "127.0.0.1", "localhost"]);
+        if (badHosts.has(u.hostname) || u.port === "8001") {
+          return `${siteOrigin}${u.pathname}`;
+        }
+
+        // If it's already https and correct host, keep it; if http on https page, rewrite to site origin
+        if (u.protocol === "http:") {
+          return `${siteOrigin}${u.pathname}`;
+        }
+
+        return url;
+      } catch {
+        // fall through to relative handling
+      }
     }
 
-    const apiBase = ApiBase(); // e.g., http://127.0.0.1:8000/api
-
-    // Remove trailing slash from apiBase
-    const cleanApiBase = apiBase.replace(/\/$/, "");
-
-    // Remove leading slash from url
+    // Relative/path-based URLs:
     const cleanUrl = url.replace(/^\/+/, "");
 
-    // If the URL comes from API endpoint (like carousel/...), map to storage
-    // e.g., carousel/abc.png -> /storage/carousel/abc.png
+    // Map "carousel/abc.png" -> "/storage/carousel/abc.png"
     const storagePath = cleanUrl.startsWith("carousel/")
       ? `/storage/${cleanUrl}`
       : `/${cleanUrl}`;
 
-    return `${cleanApiBase.replace(/\/api$/, "")}${storagePath}`;
+    return `${siteOrigin}${storagePath}`;
   };
 
   useEffect(() => {
@@ -66,7 +81,7 @@ export default function MobileBannerCarousel() {
   useEffect(() => {
     start();
     return stop;
-  }, [index]);
+  }, [index, len]);
 
   const start = () => {
     stop();
@@ -128,7 +143,7 @@ export default function MobileBannerCarousel() {
                 fill
                 sizes="100vw"
                 className="object-cover"
-                priority={i === 0} // Only prioritize the first image
+                priority={i === 0}
               />
             </div>
           ))}
@@ -178,11 +193,8 @@ export default function MobileBannerCarousel() {
             key={i}
             onClick={() => setIndex(i)}
             aria-label={`go to slide ${i + 1}`}
-            className={`h-2.5 w-2.5 rounded-full transition-all ${
-              i === index
-                ? "scale-110 bg-white"
-                : "bg-white/50 hover:bg-white/80"
-            }`}
+            className={`h-2.5 w-2.5 rounded-full transition-all ${i === index ? "scale-110 bg-white" : "bg-white/50 hover:bg-white/80"
+              }`}
           />
         ))}
       </div>
