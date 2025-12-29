@@ -321,7 +321,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
             </div>
           </div>
         </div>
-
+{/* hi hi */}
         {/* Ambient glows off */}
         <div className="pointer-events-none absolute -left-20 top-20 h-64 w-64 rounded-full bg-blue-500/0 blur-[100px]" />
         <div className="pointer-events-none absolute -right-20 bottom-20 h-64 w-64 rounded-full bg-purple-500/0 blur-[100px]" />
