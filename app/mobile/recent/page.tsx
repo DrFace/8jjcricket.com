@@ -21,9 +21,12 @@ export default function RecentPage() {
     "See the most recent cricket matches and results on 8jjcricket.";
 
   const fixtures: Fixture[] = data?.data ?? [];
-
   // Hooks must be before any early returns
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  // ✅ Category Filter State
+  const categories = ["International", "T20", "ODI", "Test", "Leagues", "All"];
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   const navTabs = [
     { label: "Live", href: "livescore", active: false },
@@ -51,16 +54,44 @@ export default function RecentPage() {
       ? sortedFixtures[sortedFixtures.length - 1].starting_at.slice(0, 10)
       : undefined;
 
-  // fixtures filtered by selected date
+  // fixtures filtered by selected date and category
   const filteredFixtures = useMemo(() => {
-    if (!selectedDate) return sortedFixtures;
-    return sortedFixtures.filter(
-      (f) => f.starting_at.slice(0, 10) === selectedDate
-    );
-  }, [sortedFixtures, selectedDate]);
+    let data = sortedFixtures;
+
+    // 🗓 Date filter
+    if (selectedDate) {
+      data = data.filter((f) => f.starting_at.slice(0, 10) === selectedDate);
+    }
+    // 🏷 Category filter
+    if (selectedCategory !== "All") {
+      data = data.filter((f: any) => matchCategory(f, selectedCategory));
+    }
+
+    return data;
+  }, [sortedFixtures, selectedDate, selectedCategory]);
+
+  function matchCategory(item: any, category: string) {
+    const type = item.type?.toLowerCase() || "";
+    const leagueName = item.league?.name?.toLowerCase() || "";
+
+    if (category === "All") return true;
+
+    if (category === "T20") return type === "t20";
+    if (category === "ODI") return type === "odi";
+    if (category === "Test") return type === "test";
+
+    if (category === "International") {
+      return leagueName.includes("international");
+    }
+
+    if (category === "Leagues") {
+      return !["t20", "odi", "test"].includes(type);
+    }
+
+    return true;
+  }
 
   // early returns
-
   if (error)
     return (
       <>
@@ -112,8 +143,31 @@ export default function RecentPage() {
           <div>
             <MobileTabBar tabs={navTabs} />
           </div>
-          {/* RIGHT: calendar / date filter */}
 
+          {/* Filters */}
+          <div className="flex flex-wrap gap-1">
+            {categories.map((cat) => {
+              const active = selectedCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat)}
+                  className={[
+                    "rounded-full px-3 py-1 text-[11px] font-semibold transition",
+                    "border backdrop-blur",
+                    active
+                      ? "border-amber-300/60 bg-amber-300/15 text-amber-200 shadow"
+                      : "border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100",
+                  ].join(" ")}
+                >
+                  {cat}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* RIGHT: calendar / date filter */}
           <aside className="lg:w-72">
             <div>
               {data ? (

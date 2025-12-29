@@ -7,18 +7,52 @@ import Link from "next/link";
 import MobileSidebar from "@/components/MobileSidebar";
 import BottomNav from "@/components/BottomNav";
 import { VolumeOff, Music2 } from "lucide-react";
+import { ApiBase, URLNormalize } from "@/lib/utils";
+import { GetGlobalAudio } from "@/lib/audio";
 
 export default function MoblieLayout({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const MUSIC_KEY = "musicEnabled";
-
+  const [audioData, setAudioData] = useState<any>(null);
   // Keep SSR + first client render stable (avoid localStorage in initializer).
   const [mounted, setMounted] = useState(false);
   const [musicEnabled, setMusicEnabled] = useState(true);
-
   // Track if the user has interacted (mobile autoplay/unmute rules).
   const [hasInteracted, setHasInteracted] = useState(false);
+  const MUSIC_KEY = "musicEnabled";
+
+  useEffect(() => {
+    setMounted(true);
+
+    const loadAudio = async () => {
+      try {
+        const apiBase = ApiBase();
+        const res = await fetch(`${apiBase}/audios`);
+        const data = await res.json();
+
+        if (data && data.length > 0) {
+          setAudioData(data[0]);
+          const audio = GetGlobalAudio(data[0]);
+
+          if (audioRef.current) {
+            const audio = audioRef.current;
+            audio.src = URLNormalize(data[0].file_path, "audios");
+            audio.load();
+
+            audio.loop = true;
+
+            const saved = window.localStorage.getItem(MUSIC_KEY);
+            const isEnabled = saved === null ? true : saved === "true";
+            setMusicEnabled(isEnabled);
+            audio.muted = !isEnabled;
+          }
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    loadAudio();
+  }, []);
 
   // 1) Mount: mark mounted, load saved preference AFTER mount
   useEffect(() => {
@@ -48,7 +82,7 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
           await audio.play();
         } catch {
           audio.muted = true;
-          audio.play().catch(() => { });
+          audio.play().catch(() => {});
         }
       }
     };
@@ -75,7 +109,7 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
     // Enabled:
     // If user interacted, unmute; otherwise keep muted.
     audio.muted = !hasInteracted;
-    audio.play().catch(() => { });
+    audio.play().catch(() => {});
   }, [musicEnabled, hasInteracted]);
 
   const toggleMusic = async () => {
@@ -99,21 +133,14 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
       if (hasInteracted) audio.muted = false;
     } catch {
       audio.muted = true;
-      audio.play().catch(() => { });
+      audio.play().catch(() => {});
     }
   };
 
   return (
     <div className="min-h-screen w-screen max-w-none overflow-x-hidden bg-black text-white">
       {/* Hidden audio player */}
-      <audio
-        ref={audioRef}
-        src="/music/lastchristmas.mp3"
-        loop
-        preload="auto"
-        playsInline
-        muted
-      />
+      <audio ref={audioRef} loop preload="auto" playsInline />
 
       {/* TOP NAV BAR (GLOBAL) */}
       <header className="sticky top-0 z-[70] w-full border-b border-white/10 bg-black">
