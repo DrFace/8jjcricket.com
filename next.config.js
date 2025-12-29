@@ -4,24 +4,27 @@ const nextConfig = {
 
   images: {
     remotePatterns: [
-      // ✅ EXISTING (UNCHANGED)
       { protocol: "https", hostname: "cdn.sportmonks.com" },
-
-      // ✅ ADDED (for games images)
       { protocol: "https", hostname: "www.onlinegames.io" },
       { protocol: "https", hostname: "cloud.onlinegames.io" },
-      // ✅ LOCAL API for carousel images
-      {
-        protocol: "http",
-        hostname: "127.0.0.1",
-        port: "8000",
-        pathname: "/storage/**",
-      },
+
+      // Allow your own domain if backend ever returns absolute URLs
+      { protocol: "https", hostname: "8jjcricket.com", pathname: "/storage/**" },
+      { protocol: "https", hostname: "www.8jjcricket.com", pathname: "/storage/**" },
     ],
   },
 
   experimental: {
     optimizePackageImports: ["lucide-react"],
+  },
+
+  async rewrites() {
+    return [
+      {
+        source: "/backend/:path*",
+        destination: "http://8jjcricket.com/:path*",
+      },
+    ];
   },
 };
 
