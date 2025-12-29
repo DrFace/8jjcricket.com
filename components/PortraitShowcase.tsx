@@ -27,6 +27,8 @@ const BACKEND_ORIGIN = (
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://72.60.107.98:8001"
 ).replace(/\/+$/, "");
 
+const DEFAULT_LEFT_IMAGE = `${BACKEND_ORIGIN}/storage/images/AMD.png`;
+
 function pickFirst<T>(...vals: (T | null | undefined)[]) {
   for (const v of vals) {
     if (v !== null && v !== undefined && String(v).trim() !== "") return v;
@@ -266,11 +268,10 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     title={p.title}
                   >
                     <div
-                      className={`absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${
-                        isHovered
+                      className={`absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${isHovered
                           ? "ring-[3px] ring-blue-400/70 shadow-lg shadow-blue-400/40"
                           : "ring-1 ring-black/5"
-                      }`}
+                        }`}
                     />
 
                     <div className="relative h-full w-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-gray-100 to-gray-50">
@@ -296,11 +297,10 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
               <button
                 onClick={() => setPageIndex((p) => Math.max(0, p - 1))}
                 disabled={!canPrev}
-                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${
-                  canPrev
+                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${canPrev
                     ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
                     : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
-                }`}
+                  }`}
                 type="button"
                 aria-label="Previous"
               >
@@ -322,11 +322,10 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
               <button
                 onClick={() => setPageIndex((p) => Math.min(pageCount - 1, p + 1))}
                 disabled={!canNext}
-                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${
-                  canNext
+                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${canNext
                     ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
                     : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
-                }`}
+                  }`}
                 type="button"
                 aria-label="Next"
               >
