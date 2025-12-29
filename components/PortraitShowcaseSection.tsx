@@ -2,7 +2,7 @@
 import PortraitShowcase from "./PortraitShowcase";
 
 const BACKEND_ORIGIN =
-    (process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "http://72.60.107.98:8001").replace(/\/+$/, "");
+    (process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "https://8jjcricket.com/api").replace(/\/+$/, "");
 
 async function fetchPortraitPages() {
     const url = `${BACKEND_ORIGIN}/api/portrait-pages`;

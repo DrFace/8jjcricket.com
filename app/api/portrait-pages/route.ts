@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const DEFAULT_BACKEND = "http://72.60.107.98:8001"; // backend host (no /api)
+const DEFAULT_BACKEND = "https://8jjcricket.com/api"; // backend host (no /api)
 
 export async function GET() {
   const backend = (process.env.NEXT_PUBLIC_BACKEND_ORIGIN || DEFAULT_BACKEND).replace(/\/+$/, "");
