@@ -18,7 +18,7 @@ type PortraitPage = {
 };
 
 const BACKEND_ORIGIN = (
-  process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "https://72.60.107.98:8001"
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://8jjcricket.com/api"
 ).replace(/\/+$/, "");
 
 const DEFAULT_LEFT_IMAGE = "/AMD.png";
