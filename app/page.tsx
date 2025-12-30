@@ -250,7 +250,7 @@ export default async function HomePage() {
             );
           })()}
 
-          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-transparent" />
 
           <div className="pointer-events-auto absolute bottom-4 left-0 right-0 z-20 flex justify-center px-4">
             <div className="inline-flex min-w-0 max-w-full items-center justify-center gap-2 overflow-x-auto rounded-full border border-white/20 bg-black/70 px-3 py-2 shadow-2xl backdrop-blur-xl">
