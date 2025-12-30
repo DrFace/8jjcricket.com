@@ -17,8 +17,17 @@ type PortraitPage = {
   portrait_image_url?: string | null;
 };
 
-const BACKEND_ORIGIN = (
-  process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "https://8jjcricket.com/api"
+// IMPORTANT:
+// - API_BASE is your Next public API base: https://8jjcricket.com/api
+// - SITE_ORIGIN is for serving storage assets: https://8jjcricket.com (NO /api)
+const API_BASE = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://8jjcricket.com/api").replace(
+  /\/+$/,
+  ""
+);
+
+const SITE_ORIGIN = (
+  process.env.NEXT_PUBLIC_SITE_ORIGIN ||
+  (typeof window !== "undefined" ? window.location.origin : "https://8jjcricket.com")
 ).replace(/\/+$/, "");
 
 const DEFAULT_LEFT_IMAGE = "/AMD.png";
@@ -32,9 +41,13 @@ function pickFirst<T>(...vals: (T | null | undefined)[]) {
 
 function toStorageUrl(pathOrUrl: string | null): string | null {
   if (!pathOrUrl) return null;
+
+  // If backend returns absolute URLs, keep them
   if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
+
+  // Otherwise treat as a storage path
   const clean = String(pathOrUrl).replaceAll("\\", "/").replace(/^\/+/, "");
-  return `${BACKEND_ORIGIN}/storage/${clean}`;
+  return `${SITE_ORIGIN}/storage/${clean}`;
 }
 
 function getHero(p: PortraitPage) {
@@ -45,12 +58,7 @@ function getHover(p: PortraitPage) {
 }
 function getMainPortrait(p: PortraitPage) {
   return toStorageUrl(
-    pickFirst(
-      p.main_portrait_url,
-      p.main_portrait_path,
-      p.portrait_image_url,
-      p.portrait_image_path
-    )
+    pickFirst(p.main_portrait_url, p.main_portrait_path, p.portrait_image_url, p.portrait_image_path)
   );
 }
 
@@ -74,9 +82,9 @@ function Slideshow({ items }: { items: { src: string }[] }) {
       `;
       if (i < len - 1) {
         const tNext = (i + 1) * segment;
-        css += `${tNext.toFixed(4)}% { transform: translateX(-${(
-          (i + 1) * step
-        ).toFixed(6)}%); }`;
+        css += `${tNext.toFixed(4)}% { transform: translateX(-${(((i + 1) * step) as number).toFixed(
+          6
+        )}%); }`;
       }
     }
     css += `100% { transform: translateX(0%); }}`;
@@ -89,16 +97,11 @@ function Slideshow({ items }: { items: { src: string }[] }) {
         className="flex h-full w-full will-change-transform"
         style={{
           width: `${len * 100}%`,
-          animation:
-            len > 1 ? `${animName} ${len * 6}s ease-in-out infinite` : undefined,
+          animation: len > 1 ? `${animName} ${len * 6}s ease-in-out infinite` : undefined,
         }}
       >
         {items.map((it, idx) => (
-          <div
-            key={idx}
-            className="relative h-full"
-            style={{ width: `${100 / len}%` }}
-          >
+          <div key={idx} className="relative h-full" style={{ width: `${100 / len}%` }}>
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-1000"
               style={{ backgroundImage: `url(${it.src})` }}
@@ -113,16 +116,11 @@ function Slideshow({ items }: { items: { src: string }[] }) {
 }
 
 export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
-  const cleanPages = useMemo(
-    () => (pages || []).filter((p) => !!p?.slug && !!p?.title),
-    [pages]
-  );
+  const cleanPages = useMemo(() => (pages || []).filter((p) => !!p?.slug && !!p?.title), [pages]);
 
-  // ✅ hover-only state (default comes from DEFAULT_LEFT_IMAGE)
   const [activeLeftUrl, setActiveLeftUrl] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
-  // ✅ ALWAYS show AMD.png when not hovering
   const leftImage = activeLeftUrl || DEFAULT_LEFT_IMAGE;
 
   const slideshowItems = useMemo(() => {
@@ -153,12 +151,8 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
   const canPrev = pageIndex > 0;
   const canNext = pageIndex < pageCount - 1;
 
-  const visiblePages = cleanPages.slice(
-    pageIndex * PAGE_SIZE,
-    pageIndex * PAGE_SIZE + PAGE_SIZE
-  );
+  const visiblePages = cleanPages.slice(pageIndex * PAGE_SIZE, pageIndex * PAGE_SIZE + PAGE_SIZE);
 
-  // STOP page scrolling while mouse over showcase (optional)
   const lockScrollRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const el = lockScrollRef.current;
@@ -180,14 +174,9 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
 
   return (
     <section className="w-full px-6 py-8">
-      <div
-        ref={lockScrollRef}
-        className="relative mx-auto h-[85vh] min-h-[700px] w-full max-w-[1600px]"
-      >
-        {/* subtle outline only */}
+      <div ref={lockScrollRef} className="relative mx-auto h-[85vh] min-h-[700px] w-full max-w-[1600px]">
         <div className="pointer-events-none absolute inset-0 rounded-[2.5rem] ring-1 ring-white/10" />
 
-        {/* ✅ LEFT IMAGE (default AMD.png + hover override) */}
         <div className="pointer-events-none absolute inset-y-0 left-0 w-[46%] overflow-hidden rounded-l-[2.5rem]">
           <div
             className="absolute inset-0 bg-contain bg-left-bottom bg-no-repeat transition-all duration-700"
@@ -196,8 +185,6 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
               filter: "drop-shadow(0 4px 18px rgba(0,0,0,0.18))",
             }}
           />
-
-          {/* Ultra-light edge fade */}
           <div
             className="absolute inset-0"
             style={{
@@ -207,9 +194,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
           />
         </div>
 
-        {/* RIGHT */}
         <div className="relative ml-[46%] flex h-full flex-col gap-7 p-8 pt-16">
-          {/* Top slideshow */}
           <div className="group relative h-[60%] overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-white/20 transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/30">
             {slideshowItems.length ? (
               <Slideshow items={slideshowItems} />
@@ -221,7 +206,6 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </div>
 
-          {/* Bottom grid */}
           <div className="relative h-[40%] overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-800/30 to-slate-900/30 shadow-xl ring-1 ring-white/10 backdrop-blur-sm">
             <div className="grid h-full grid-cols-4 gap-6 p-6 pr-24">
               {visiblePages.map((p) => {
@@ -240,11 +224,10 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     title={p.title}
                   >
                     <div
-                      className={`absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${
-                        isHovered
+                      className={`absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${isHovered
                           ? "ring-[3px] ring-blue-400/70 shadow-lg shadow-blue-400/40"
                           : "ring-1 ring-black/5"
-                      }`}
+                        }`}
                     />
 
                     <div className="relative h-full w-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-gray-100 to-gray-50">
@@ -265,64 +248,40 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
               })}
             </div>
 
-            {/* Arrows */}
             <div className="absolute right-6 top-1/2 z-20 -translate-y-1/2 flex flex-col gap-4">
               <button
                 onClick={() => setPageIndex((p) => Math.max(0, p - 1))}
                 disabled={!canPrev}
-                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${
-                  canPrev
+                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${canPrev
                     ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
                     : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
-                }`}
+                  }`}
                 type="button"
                 aria-label="Previous"
               >
-                <svg
-                  className="absolute inset-0 m-auto h-6 w-6 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M5 15l7-7 7 7"
-                  />
+                <svg className="absolute inset-0 m-auto h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
                 </svg>
               </button>
 
               <button
                 onClick={() => setPageIndex((p) => Math.min(pageCount - 1, p + 1))}
                 disabled={!canNext}
-                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${
-                  canNext
+                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${canNext
                     ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
                     : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
-                }`}
+                  }`}
                 type="button"
                 aria-label="Next"
               >
-                <svg
-                  className="absolute inset-0 m-auto h-6 w-6 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M19 9l-7 7-7-7"
-                  />
+                <svg className="absolute inset-0 m-auto h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
             </div>
           </div>
         </div>
-{/* hi hi */}
-        {/* Ambient glows off */}
+
         <div className="pointer-events-none absolute -left-20 top-20 h-64 w-64 rounded-full bg-blue-500/0 blur-[100px]" />
         <div className="pointer-events-none absolute -right-20 bottom-20 h-64 w-64 rounded-full bg-purple-500/0 blur-[100px]" />
       </div>

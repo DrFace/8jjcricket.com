@@ -3,8 +3,20 @@ import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 
-const BACKEND_ORIGIN = (
-  process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "https://8jjcricket.com"
+/**
+ * IMPORTANT:
+ * - API_BASE is used ONLY to fetch JSON (must include /api)
+ * - SITE_ORIGIN is used ONLY to serve storage assets (/storage/...) and should be HTTPS in production
+ *
+ * This matches the working pattern used in the home page PortraitShowcase.
+ */
+
+const API_BASE = (
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://8jjcricket.com/api"
+).replace(/\/+$/, "");
+
+const SITE_ORIGIN = (
+  process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com"
 ).replace(/\/+$/, "");
 
 function pickFirst<T>(...vals: (T | null | undefined)[]) {
@@ -16,16 +28,16 @@ function pickFirst<T>(...vals: (T | null | undefined)[]) {
 function toStorageUrl(pathOrUrl: string | null): string | null {
   if (!pathOrUrl) return null;
   if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
+
   const clean = String(pathOrUrl).replaceAll("\\", "/").replace(/^\/+/, "");
-  return `${BACKEND_ORIGIN}/storage/${clean}`;
+  return `${SITE_ORIGIN}/storage/${clean}`;
 }
 
 async function fetchPortrait(slug: string) {
-  console.log("Fetching portrait for slug:", slug);
-  const url = `${BACKEND_ORIGIN}/api/portraits/${encodeURIComponent(slug)}`;
+  const url = `${API_BASE}/portraits/${encodeURIComponent(slug)}`;
   const res = await fetch(url, { cache: "no-store" });
-  console.log("Fetch response status:", res.status);
   if (!res.ok) return null;
+
   const json = await res.json();
   return (json?.data ?? json) as any;
 }
@@ -37,7 +49,6 @@ export default async function PortraitDetailsPage({
 }) {
   const data = await fetchPortrait(params.slug);
 
-  console.log("Portrait data:");
   if (!data) {
     return (
       <>
@@ -298,7 +309,6 @@ export default async function PortraitDetailsPage({
                         "scroll-smooth overscroll-x-contain",
                         "[-webkit-overflow-scrolling:touch]",
                         "scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20",
-                        // keeps glow/shadow from getting clipped a bit
                         "-mx-1 px-1",
                       ].join(" ")}
                     >
@@ -311,8 +321,8 @@ export default async function PortraitDetailsPage({
                           <div
                             key={idx}
                             className={[
-                              "flex-none snap-start", 
-                              "w-[280px] sm:w-[320px]", 
+                              "flex-none snap-start",
+                              "w-[280px] sm:w-[320px]",
                               "overflow-hidden rounded-[1.75rem]",
                               "bg-gradient-to-br from-slate-900/60 to-slate-800/60",
                               "ring-1 ring-white/20 backdrop-blur-xl shadow-xl",
@@ -379,7 +389,6 @@ export default async function PortraitDetailsPage({
                                 className="h-full w-full object-contain bg-gradient-to-br from-slate-800/50 to-slate-900/50 p-2 transition-transform duration-700 group-hover:scale-110"
                                 loading="lazy"
                               />
-                              {/* Shine effect */}
                               <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-[100%]" />
                             </>
                           ) : (
@@ -475,7 +484,6 @@ export default async function PortraitDetailsPage({
                                 loading="lazy"
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                              {/* Shine effect */}
                               <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-[100%]" />
                             </div>
                           ) : (
