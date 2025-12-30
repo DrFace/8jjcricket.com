@@ -14,6 +14,11 @@ const nextConfig = {
         hostname: "8jjcricket.com",
         pathname: "/storage/**",
       },
+      {
+        protocol: "https",
+        hostname: "www.8jjcricket.com",
+        pathname: "/storage/**",
+      },
     ],
   },
 
