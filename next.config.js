@@ -9,8 +9,11 @@ const nextConfig = {
       { protocol: "https", hostname: "cloud.onlinegames.io" },
 
       // Allow your own domain if backend ever returns absolute URLs
-      { protocol: "https", hostname: "8jjcricket.com", pathname: "/storage/**" },
-      { protocol: "https", hostname: "www.8jjcricket.com", pathname: "/storage/**" },
+      {
+        protocol: "https",
+        hostname: "8jjcricket.com",
+        pathname: "/storage/**",
+      },
     ],
   },
 

@@ -7,113 +7,166 @@ import Link from "next/link";
 import MobileSidebar from "@/components/MobileSidebar";
 import BottomNav from "@/components/BottomNav";
 import { VolumeOff, Music2 } from "lucide-react";
+import { ApiBase, URLNormalize } from "@/lib/utils";
+import { GetGlobalAudio } from "@/lib/audio";
 
 export default function MoblieLayout({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const MUSIC_KEY = "musicEnabled";
-
-  // Keep SSR + first client render stable (avoid localStorage in initializer).
+  const [audioData, setAudioData] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
   const [musicEnabled, setMusicEnabled] = useState(true);
-
-  // Track if the user has interacted (mobile autoplay/unmute rules).
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [audioReady, setAudioReady] = useState(false);
+  const MUSIC_KEY = "musicEnabled";
 
-  // 1) Mount: mark mounted, load saved preference AFTER mount
+  // 1) Mount and load audio data
   useEffect(() => {
     setMounted(true);
 
-    const saved = window.localStorage.getItem(MUSIC_KEY);
-    if (saved !== null) setMusicEnabled(saved === "true");
+    const loadAudio = async () => {
+      try {
+        const apiBase = ApiBase().replace(/\/+$/, "");
+        const res = await fetch(`${apiBase}/audios`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+        });
+
+        if (!res.ok) throw new Error(`Failed to load audio: ${res.status}`);
+
+        const data = await res.json();
+
+        if (data && data.length > 0) {
+          setAudioData(data[0]);
+
+          if (audioRef.current) {
+            const audio = audioRef.current;
+            audio.src = URLNormalize(data[0].file_path, "audios");
+            audio.loop = true;
+
+            // Load the audio
+            audio.load();
+
+            // Wait for audio to be ready
+            audio.addEventListener(
+              "canplaythrough",
+              () => {
+                setAudioReady(true);
+              },
+              { once: true }
+            );
+
+            // Load saved preference
+            const saved = window.localStorage.getItem(MUSIC_KEY);
+            const isEnabled = saved === null ? true : saved === "true";
+            setMusicEnabled(isEnabled);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading audio:", error);
+      }
+    };
+
+    loadAudio();
   }, []);
 
-  // 2) Persist preference (only after mounted)
+  // 2) Persist preference
   useEffect(() => {
     if (!mounted) return;
     window.localStorage.setItem(MUSIC_KEY, String(musicEnabled));
   }, [musicEnabled, mounted]);
 
-  // 3) On first interaction, if enabled, attempt to unmute and play
+  // 3) Set up interaction listener
+  useEffect(() => {
+    const onFirstInteraction = () => {
+      setHasInteracted(true);
+    };
+
+    // Listen for any user interaction
+    const events = ["touchstart", "click", "keydown"];
+    events.forEach((event) => {
+      window.addEventListener(event, onFirstInteraction, {
+        once: true,
+        passive: true,
+      });
+    });
+
+    return () => {
+      events.forEach((event) => {
+        window.removeEventListener(event, onFirstInteraction);
+      });
+    };
+  }, []);
+
+  // 4) Handle audio playback when conditions change
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio || !audioReady) return;
 
-    const onFirstInteraction = async () => {
-      setHasInteracted(true);
+    const attemptPlay = async () => {
+      if (!musicEnabled) {
+        audio.pause();
+        audio.muted = true;
+        return;
+      }
 
-      if (musicEnabled) {
+      // Music is enabled
+      if (hasInteracted) {
+        // User has interacted - safe to unmute and play
         audio.muted = false;
         try {
           await audio.play();
-        } catch {
+        } catch (err) {
+          console.log("Playback failed:", err);
+          // Fallback: try muted
           audio.muted = true;
-          audio.play().catch(() => { });
+          audio.play().catch(() => {});
         }
+      } else {
+        // No interaction yet - try to play muted
+        audio.muted = true;
+        audio.play().catch(() => {
+          // Autoplay blocked - will play after interaction
+        });
       }
     };
 
-    window.addEventListener("touchstart", onFirstInteraction, { once: true });
-    window.addEventListener("click", onFirstInteraction, { once: true });
-
-    return () => {
-      window.removeEventListener("touchstart", onFirstInteraction);
-      window.removeEventListener("click", onFirstInteraction);
-    };
-  }, [musicEnabled]);
-
-  // 4) Keep audio in sync with preference + interaction state
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (!musicEnabled) {
-      audio.pause();
-      return;
-    }
-
-    // Enabled:
-    // If user interacted, unmute; otherwise keep muted.
-    audio.muted = !hasInteracted;
-    audio.play().catch(() => { });
-  }, [musicEnabled, hasInteracted]);
+    attemptPlay();
+  }, [musicEnabled, hasInteracted, audioReady]);
 
   const toggleMusic = async () => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio || !audioReady) return;
 
     const nextEnabled = !musicEnabled;
     setMusicEnabled(nextEnabled);
 
-    if (!nextEnabled) {
-      audio.pause();
-      return;
+    // This click counts as an interaction
+    if (!hasInteracted) {
+      setHasInteracted(true);
     }
 
-    // Turning ON: if user clicked, unmute is typically allowed
-    // but on some devices it is safer to respect hasInteracted.
-    audio.muted = !hasInteracted ? true : false;
-
-    try {
-      await audio.play();
-      if (hasInteracted) audio.muted = false;
-    } catch {
+    if (!nextEnabled) {
+      audio.pause();
       audio.muted = true;
-      audio.play().catch(() => { });
+    } else {
+      // Turning on - unmute and play
+      audio.muted = false;
+      try {
+        await audio.play();
+      } catch (err) {
+        console.log("Toggle play failed:", err);
+        // Try muted as fallback
+        audio.muted = true;
+        audio.play().catch(() => {});
+      }
     }
   };
 
   return (
     <div className="min-h-screen w-screen max-w-none overflow-x-hidden bg-black text-white">
       {/* Hidden audio player */}
-      <audio
-        ref={audioRef}
-        src="/music/lastchristmas.mp3"
-        loop
-        preload="auto"
-        playsInline
-        muted
-      />
+      <audio ref={audioRef} loop preload="auto" playsInline />
 
       {/* TOP NAV BAR (GLOBAL) */}
       <header className="sticky top-0 z-[70] w-full border-b border-white/10 bg-black">
@@ -175,7 +228,6 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
             aria-label="Toggle music"
             aria-pressed={musicEnabled}
           >
-            {/* Avoid hydration mismatch: don't swap lucide SVGs until mounted */}
             {!mounted ? (
               <span className="inline-block h-[16px] w-[16px]" />
             ) : musicEnabled ? (
@@ -200,7 +252,6 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
       >
         {children}
       </main>
-
       {/* BOTTOM NAV (GLOBAL) */}
       <BottomNav />
     </div>
