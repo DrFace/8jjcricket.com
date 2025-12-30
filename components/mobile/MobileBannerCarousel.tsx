@@ -2,42 +2,25 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { ApiBase } from "@/lib/utils";
 
 type CarouselItem = { image?: string | null };
 
 const SITE_ORIGIN =
   process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
 
-/**
- * Always return a SAME-ORIGIN https URL pointing to Laravel public storage.
- *
- * Backend commonly stores: "carousel/abc.jpg"
- * Public URL should be:    https://8jjcricket.com/storage/carousel/abc.jpg
- */
 function normalizeCarouselUrl(input: string): string {
   if (!input) return "";
 
-  const origin =
-    typeof window !== "undefined" ? window.location.origin : SITE_ORIGIN;
+  // FORCE production origin — images are NOT on localhost
+  const origin = "https://8jjcricket.com";
 
-  // Build a URL relative to the site origin (this also handles absolute input URLs)
-  let pathname = "";
+  // Fix Windows-style backslashes returned by API
+  const fixed = String(input).replace(/\\/g, "/").replace(/^\/+/, "");
 
-  try {
-    const u = new URL(input, origin);
-    pathname = u.pathname;
-  } catch {
-    pathname = input;
-  }
-
-  // Remove accidental leading slashes
-  const clean = String(pathname).replace(/^\/+/, "");
-
-  // If already storage/..., keep it; else force /storage/<clean>
-  const finalPath = clean.startsWith("storage/")
-    ? `/${clean}`
-    : `/storage/${clean}`;
+  // Ensure storage prefix
+  const finalPath = fixed.startsWith("storage/")
+    ? `/${fixed}`
+    : `/storage/${fixed}`;
 
   return `${origin}${finalPath}`;
 }
@@ -51,10 +34,10 @@ export default function MobileBannerCarousel() {
 
   async function fetchImages(): Promise<string[]> {
     try {
-      const apiBase = ApiBase().replace(/\/+$/, ""); // should be https://8jjcricket.com/api
-      const res = await fetch(`${apiBase}/carousels`, {
+      // ✅ Same-origin request to Next.js API proxy (no CORS issues)
+      const res = await fetch(`/api/carousels`, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: { Accept: "application/json" },
         cache: "no-store",
       });
 
@@ -62,12 +45,11 @@ export default function MobileBannerCarousel() {
 
       const json = await res.json();
 
-      // Support both: [] and { data: [] }
       const arr: CarouselItem[] = Array.isArray(json)
         ? json
         : Array.isArray(json?.data)
-          ? json.data
-          : [];
+        ? json.data
+        : [];
 
       return arr
         .map((item) => (item?.image ? String(item.image) : ""))
@@ -78,7 +60,6 @@ export default function MobileBannerCarousel() {
     }
   }
 
-  // Initial load
   useEffect(() => {
     fetchImages()
       .then((urls) => {
@@ -86,10 +67,8 @@ export default function MobileBannerCarousel() {
         setIndex(0);
       })
       .catch((err) => console.error(err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Auto slide
   useEffect(() => {
     const stop = () => {
       if (timer.current) {
@@ -111,7 +90,6 @@ export default function MobileBannerCarousel() {
     return stop;
   }, [index, len]);
 
-  // Swipe support
   const touchX = useRef<number | null>(null);
 
   const onTouchStart = (e: React.TouchEvent) => {
@@ -172,7 +150,6 @@ export default function MobileBannerCarousel() {
         </div>
       </div>
 
-      {/* Controls only if > 1 */}
       {len > 1 && (
         <>
           <button
@@ -215,10 +192,11 @@ export default function MobileBannerCarousel() {
                 key={i}
                 onClick={() => setIndex(i)}
                 aria-label={`go to slide ${i + 1}`}
-                className={`h-2.5 w-2.5 rounded-full transition-all ${i === index
+                className={`h-2.5 w-2.5 rounded-full transition-all ${
+                  i === index
                     ? "scale-110 bg-white"
                     : "bg-white/50 hover:bg-white/80"
-                  }`}
+                }`}
               />
             ))}
           </div>
