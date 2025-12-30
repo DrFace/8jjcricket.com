@@ -26,7 +26,8 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
     const loadAudio = async () => {
       try {
         const apiBase = ApiBase().replace(/\/+$/, "");
-        const res = await fetch(`${apiBase}/audios`, {
+
+        const res = await fetch(`api/audios`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
           cache: "no-store",
@@ -117,7 +118,6 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
         try {
           await audio.play();
         } catch (err) {
-          console.log("Playback failed:", err);
           // Fallback: try muted
           audio.muted = true;
           audio.play().catch(() => {});
@@ -154,8 +154,7 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
       audio.muted = false;
       try {
         await audio.play();
-      } catch (err) {
-        console.log("Toggle play failed:", err);
+      } catch {
         // Try muted as fallback
         audio.muted = true;
         audio.play().catch(() => {});

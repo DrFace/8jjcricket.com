@@ -59,11 +59,8 @@ export default function TopNav() {
     const loadAudio: () => Promise<void> = async () => {
       try {
         const apiBase = ApiBase();
-        console.log("apiBase", `${apiBase}/audios`);
-
-        const res = await fetch(`${apiBase}/audios`);
+        const res = await fetch(`api/audios`);
         const data = await res.json();
-        console.log("data audios", data);
 
         if (data && data.length > 0) {
           setAudioData(data[0]);
