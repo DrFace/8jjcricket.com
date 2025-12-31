@@ -8,8 +8,7 @@ import { Megaphone, VolumeOff, Music2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { ApiBase } from "@/lib/utils";
-
-let globalAudio: HTMLAudioElement | null = null;
+import { GetGlobalAudio } from "@/lib/audio";
 
 function NavItem({
   href,
@@ -54,76 +53,29 @@ export default function TopNav() {
   const [musicEnabled, setMusicEnabled] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
 
-  const urlNormalize = (url: string) => {
-    if (!url) return "";
-
-    // If URL is already absolute, return as-is
-    if (url.startsWith("http://") || url.startsWith("https://")) {
-      return url;
-    }
-
-    const apiBase = ApiBase(); // e.g., http://127.0.0.1:8000/api
-
-    // Remove trailing slash from apiBase
-    const cleanApiBase = apiBase.replace(/\/$/, "");
-
-    // Remove leading slash from url
-    const cleanUrl = url.replace(/^\/+/, "");
-
-    // If the URL comes from API endpoint (like audios/...), map to storage
-    // e.g., audios/abc.png -> /storage/audios/abc.png
-    const storagePath = cleanUrl.startsWith("audios/")
-      ? `/storage/${cleanUrl}`
-      : `/${cleanUrl}`;
-
-    return `${cleanApiBase.replace(/\/api$/, "")}${storagePath}`;
-  };
-
-  function getGlobalAudio(audioDataParam?: any) {
-    if (typeof window === "undefined") return null;
-
-    // 1. Get the URL (it might be empty string if data isn't ready)
-    const audioUrl = audioDataParam?.file_path
-      ? urlNormalize(audioDataParam.file_path)
-      : "";
-
-    // 2. Create the object if it doesn't exist
-    if (!globalAudio) {
-      globalAudio = new Audio(); // Create empty first
-      globalAudio.loop = true;
-      globalAudio.preload = "auto";
-      globalAudio.muted = true;
-    }
-
-    // 3. CRITICAL: Update the source only if we have a valid URL
-    if (audioUrl && globalAudio.src !== audioUrl) {
-      globalAudio.src = audioUrl;
-      globalAudio.load(); // Tell the browser to load the new file
-    }
-
-    return globalAudio;
-  }
-
   useEffect(() => {
     setMounted(true);
 
-    const loadAudio = async () => {
+    const loadAudio: () => Promise<void> = async () => {
       try {
         const apiBase = ApiBase();
-        const res = await fetch(`${apiBase}/audios`);
+        const res = await fetch(`api/audios`);
         const data = await res.json();
 
         if (data && data.length > 0) {
           setAudioData(data[0]);
-          const audio = getGlobalAudio(data[0]);
+
+          const audio = GetGlobalAudio(data[0]);
 
           if (audio) {
             audioRef.current = audio;
             audio.loop = true;
             audio.preload = "auto";
-            // Check localStorage inside here after we have the audio object
+
+            // Check localStorage after we have the audio object
             const saved = window.localStorage.getItem(MUSIC_KEY);
             const isEnabled = saved === null ? true : saved === "true";
+
             setMusicEnabled(isEnabled);
             audio.muted = !isEnabled;
           }
@@ -140,7 +92,7 @@ export default function TopNav() {
   useEffect(() => {
     setMounted(true);
 
-    const audio = getGlobalAudio();
+    const audio = GetGlobalAudio();
     if (!audio) return;
     audioRef.current = audio;
 

@@ -5,7 +5,6 @@ import SmoothScroller from "@/components/SmoothScroller";
 import DesktopOnly from "@/components/DesktopOnly";
 import BottomNav from "@/components/BottomNav";
 import HomeVerticalSwiper from "@/components/HomeVerticalSwiper";
-import HomeGalleryShowcase from "@/components/HomeGalleryShowcase";
 import HomeNewsShowcase from "@/components/HomeNewsShowcase";
 import HomeFeedbackSection from "@/components/HomeFeedbackSection";
 import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
@@ -283,7 +282,7 @@ export default async function HomePage() {
               <PortraitShowcaseSection />
             </div>
           </div>
-        </section> 
+        </section>
 
         {/* SLIDE — GALLERY SHOWCASE */}
         {/* <section
