@@ -144,7 +144,7 @@ export default function BannerCarouselNew() {
                 src={normalizeCarouselUrl(imageUrl)}
                 alt={`Slide ${i + 1}`}
                 fill
-                className="object-contain rounded-2xl"
+                className="object-cover rounded-2xl"
                 priority={i === 0}
               />
             </div>
