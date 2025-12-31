@@ -22,7 +22,11 @@ function Calendar({ selectedDate, onSelectDate, minDate, maxDate }: any) {
   const max = maxDate ? new Date(maxDate) : undefined;
 
   const weeks = useMemo(() => {
-    const startOfMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), 1);
+    const startOfMonth = new Date(
+      viewMonth.getFullYear(),
+      viewMonth.getMonth(),
+      1
+    );
     const startDay = startOfMonth.getDay();
     const gridStart = new Date(startOfMonth);
     gridStart.setDate(startOfMonth.getDate() - startDay);
@@ -55,19 +59,24 @@ function Calendar({ selectedDate, onSelectDate, minDate, maxDate }: any) {
           type="button"
           className="rounded-md px-2 py-1 text-gray-500 hover:bg-gray-100"
           onClick={() =>
-            setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1))
+            setViewMonth(
+              new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1)
+            )
           }
         >
           ‹
         </button>
         <div>
-          {viewMonth.toLocaleString("default", { month: "short" })} {viewMonth.getFullYear()}
+          {viewMonth.toLocaleString("default", { month: "short" })}{" "}
+          {viewMonth.getFullYear()}
         </div>
         <button
           type="button"
           className="rounded-md px-2 py-1 text-gray-500 hover:bg-gray-100"
           onClick={() =>
-            setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1))
+            setViewMonth(
+              new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1)
+            )
           }
         >
           ›
@@ -86,7 +95,7 @@ function Calendar({ selectedDate, onSelectDate, minDate, maxDate }: any) {
               className={[
                 "h-7 w-7 rounded-md text-center leading-7 transition",
                 selected ? "bg-blue-600 text-white" : "hover:bg-gray-100",
-                disabled && "opacity-50 cursor-not-allowed"
+                disabled && "opacity-50 cursor-not-allowed",
               ].join(" ")}
             >
               {day.getDate()}
@@ -118,7 +127,9 @@ export default function LiveScoreHome() {
     if (category === "All") return true;
     if (category === "Leagues") {
       // Leagues: not International, ODI, T20, Test
-      return !["international", "odi", "t20", "test"].some((c) => cat.includes(c));
+      return !["international", "odi", "t20", "test"].some((c) =>
+        cat.includes(c)
+      );
     }
     if (category === "International") {
       return cat.includes("international");
@@ -139,7 +150,9 @@ export default function LiveScoreHome() {
   const filteredRecent = useMemo(() => {
     let data = recentData;
     if (selectedDate) {
-      data = data.filter((f: any) => f.starting_at.slice(0, 10) === selectedDate);
+      data = data.filter(
+        (f: any) => f.starting_at.slice(0, 10) === selectedDate
+      );
     }
     if (selectedCategory !== "All") {
       data = data.filter((f: any) => matchCategory(f, selectedCategory));
@@ -165,8 +178,12 @@ export default function LiveScoreHome() {
     return data;
   }, [upcomingData, selectedCategory]);
 
-  const minDate = recentData.length ? recentData[recentData.length - 1].starting_at.slice(0, 10) : undefined;
-  const maxDate = recentData.length ? recentData[0].starting_at.slice(0, 10) : undefined;
+  const minDate = recentData.length
+    ? recentData[recentData.length - 1].starting_at.slice(0, 10)
+    : undefined;
+  const maxDate = recentData.length
+    ? recentData[0].starting_at.slice(0, 10)
+    : undefined;
 
   return (
     <DesktopOnly>
@@ -189,7 +206,7 @@ export default function LiveScoreHome() {
         </div>
 
         {/* Filters */}
-        <div className="flex justify-center gap-2 mb-6">
+        <div className="flex justify-center gap-1 mb-6">
           {categories.map((cat) => {
             const active = selectedCategory === cat;
             return (
@@ -216,7 +233,9 @@ export default function LiveScoreHome() {
           <>
             {activeTab === "Live" && (
               <>
-                <h1 className="text-3xl font-bold text-white mb-6">Live Scores</h1>
+                <h1 className="text-3xl font-bold text-white mb-6">
+                  Live Scores
+                </h1>
                 <div className="mb-8">
                   {filteredLive.length > 0 ? (
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -225,16 +244,22 @@ export default function LiveScoreHome() {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-gray-400">No live matches available.</div>
+                    <div className="text-gray-400">
+                      No live matches available.
+                    </div>
                   )}
                 </div>
 
                 {/* Recent Matches with Calendar */}
                 <div className="flex gap-6">
                   <main className="flex-1">
-                    <h2 className="text-xl font-semibold text-white mb-4">Recent Matches</h2>
+                    <h2 className="text-xl font-semibold text-white mb-4">
+                      Recent Matches
+                    </h2>
                     {filteredRecent.length === 0 ? (
-                      <div className="text-gray-400">No matches found for this date.</div>
+                      <div className="text-gray-400">
+                        No matches found for this date.
+                      </div>
                     ) : (
                       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filteredRecent.map((f: any) => (
@@ -257,7 +282,9 @@ export default function LiveScoreHome() {
 
             {activeTab === "Upcoming" && (
               <>
-                <h1 className="text-3xl font-bold text-white mb-6">Upcoming Matches</h1>
+                <h1 className="text-3xl font-bold text-white mb-6">
+                  Upcoming Matches
+                </h1>
                 {filteredUpcoming.length > 0 ? (
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredUpcoming.map((match: any) => (
@@ -265,14 +292,18 @@ export default function LiveScoreHome() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-gray-400">No upcoming matches available.</div>
+                  <div className="text-gray-400">
+                    No upcoming matches available.
+                  </div>
                 )}
               </>
             )}
 
             {activeTab === "Recent" && (
               <>
-                <h1 className="text-3xl font-bold text-white mb-6">Recent Matches</h1>
+                <h1 className="text-3xl font-bold text-white mb-6">
+                  Recent Matches
+                </h1>
                 {filteredRecent.length > 0 ? (
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredRecent.slice(0, 30).map((f: any) => (
