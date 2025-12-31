@@ -97,56 +97,70 @@ export default async function HomeNewsShowcase() {
   }));
 
   return (
-    <div className="mx-auto w-full max-w-7xl">
-      <div className="grid gap-6 lg:grid-cols-[1.15fr,0.85fr]">
+    <div className="mx-auto w-full max-w-[1480px]">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-[1.25fr,0.75fr]">
         {/* LEFT — Featured */}
-        <div className="relative overflow-hidden rounded-3xl bg-white/5 ring-1 ring-white/10 shadow-2xl">
+        <Link
+          href={`/news/${featured.slug}`}
+          className="group relative overflow-hidden rounded-3xl bg-white/5 ring-1 ring-white/10 shadow-2xl transition
+                     hover:bg-white/7 hover:ring-white/15"
+        >
+          {/* Image */}
           <div
-            className="relative w-full 
-                h-[19.8vw] 
-                max-h-[270px] 
-                min-h-[180px]"
+            className="relative w-full h-[22vw] max-h-[340px] min-h-[220px]
+                       overflow-hidden"
           >
             <div
-              className="absolute inset-0 bg-contain bg-top bg-no-repeat h-full"
-              style={{
-                backgroundImage: `url(${featured.image_url})`,
-              }}
+              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out
+                         group-hover:scale-[1.03]"
+              style={{ backgroundImage: `url(${featured.image_url})` }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+
+            {/* subtle shine */}
+            <div
+              className="pointer-events-none absolute -inset-x-24 -top-24 h-48 rotate-12 bg-white/10 blur-2xl opacity-0
+                         transition-opacity duration-700 group-hover:opacity-100"
+            />
           </div>
 
-          <div className="p-6">
-            <div className="text-sm text-white/60">
-              {formatDate(featured.published_at)}
-            </div>
+          {/* Content */}
+          <div className="p-6 lg:p-7">
+            <div className="text-sm text-white/60">{formatDate(featured.published_at)}</div>
 
-            <h3 className="mt-3 line-clamp-2 text-2xl font-extrabold text-white">
+            <h3 className="mt-3 line-clamp-2 text-2xl lg:text-[28px] font-extrabold text-white">
               {featured.title}
             </h3>
 
             <p className="mt-2 line-clamp-2 text-sm text-white/60">
               {featured.excerpt || featured.title}
             </p>
+
+            {/* CTA */}
+            <div className="mt-5">
+              <div
+                className="block w-full rounded-xl bg-amber-400/15 py-3 text-center text-sm font-semibold text-amber-200
+                           ring-1 ring-amber-300/20 transition
+                           hover:bg-amber-400/20"
+              >
+                Read more
+              </div>
+            </div>
           </div>
 
-          <div className="px-6 pb-6">
-            <Link
-              href={`/news/${featured.slug}`}
-              className="block w-full rounded-xl bg-amber-400/15 py-3 text-center text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20 hover:bg-amber-400/20"
-            >
-              Read more
-            </Link>
-          </div>
-        </div>
+          {/* lift on hover */}
+          <div className="pointer-events-none absolute inset-0 transition-transform duration-300 ease-out group-hover:-translate-y-[1px]" />
+        </Link>
 
         {/* RIGHT — List */}
         <div className="flex flex-col">
-        
           <NewsListCards items={listItems} />
+
           <Link
             href="/news"
-            className="mt-4 flex items-center justify-center rounded-2xl bg-white/5 py-4 text-sm font-semibold text-white/70 ring-1 ring-white/10 hover:bg-white/10"
+            className="mt-4 flex items-center justify-center rounded-2xl bg-white/5 py-4 text-sm font-semibold text-white/70
+                       ring-1 ring-white/10 transition
+                       hover:bg-white/10 hover:ring-white/15 hover:-translate-y-[1px] active:translate-y-0"
           >
             View more →
           </Link>

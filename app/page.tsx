@@ -314,7 +314,7 @@ export default async function HomePage() {
             />
             <div className="absolute inset-0 bg-black/70" />
 
-            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
+            <div className="relative w-full max-w-[1480px] mx-auto rounded-2xl border border-white/15 bg-slate-900/70 p-6 shadow-2xl backdrop-blur-2xl">
               <HomeNewsShowcase />
             </div>
           </div>
