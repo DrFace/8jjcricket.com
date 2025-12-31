@@ -2,42 +2,25 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { ApiBase } from "@/lib/utils";
 
 type CarouselItem = { image?: string | null };
 
 const SITE_ORIGIN =
   process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
 
-/**
- * Always return a SAME-ORIGIN https URL pointing to Laravel public storage.
- *
- * Backend commonly stores: "carousel/abc.jpg"
- * Public URL should be:    https://8jjcricket.com/storage/carousel/abc.jpg
- */
 function normalizeCarouselUrl(input: string): string {
   if (!input) return "";
 
-  const origin =
-    typeof window !== "undefined" ? window.location.origin : SITE_ORIGIN;
+  // FORCE production origin — images are NOT on localhost
+  const origin = "https://8jjcricket.com";
 
-  // Build a URL relative to the site origin (this also handles absolute input URLs)
-  let pathname = "";
+  // Fix Windows-style backslashes returned by API
+  const fixed = String(input).replace(/\\/g, "/").replace(/^\/+/, "");
 
-  try {
-    const u = new URL(input, origin);
-    pathname = u.pathname;
-  } catch {
-    pathname = input;
-  }
-
-  // Remove accidental leading slashes
-  const clean = String(pathname).replace(/^\/+/, "");
-
-  // If already storage/..., keep it; else force /storage/<clean>
-  const finalPath = clean.startsWith("storage/")
-    ? `/${clean}`
-    : `/storage/${clean}`;
+  // Ensure storage prefix
+  const finalPath = fixed.startsWith("storage/")
+    ? `/${fixed}`
+    : `/storage/${fixed}`;
 
   return `${origin}${finalPath}`;
 }
@@ -51,10 +34,10 @@ export default function BannerCarouselNew() {
 
   async function fetchImages(): Promise<string[]> {
     try {
-      const apiBase = ApiBase().replace(/\/+$/, ""); // should be https://8jjcricket.com/api
-      const res = await fetch(`${apiBase}/carousels`, {
+      // ✅ Same-origin request to Next.js API proxy (no CORS issues)
+      const res = await fetch(`/api/carousels`, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: { Accept: "application/json" },
         cache: "no-store",
       });
 
@@ -62,12 +45,11 @@ export default function BannerCarouselNew() {
 
       const json = await res.json();
 
-      // Support both: [] and { data: [] }
       const arr: CarouselItem[] = Array.isArray(json)
         ? json
         : Array.isArray(json?.data)
-          ? json.data
-          : [];
+        ? json.data
+        : [];
 
       return arr
         .map((item) => (item?.image ? String(item.image) : ""))
@@ -78,7 +60,6 @@ export default function BannerCarouselNew() {
     }
   }
 
-  // Initial load
   useEffect(() => {
     fetchImages()
       .then((urls) => {
@@ -86,10 +67,8 @@ export default function BannerCarouselNew() {
         setIndex(0);
       })
       .catch((err) => console.error(err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Auto slide
   useEffect(() => {
     const stop = () => {
       if (timer.current) {
@@ -111,7 +90,6 @@ export default function BannerCarouselNew() {
     return stop;
   }, [index, len]);
 
-  // Swipe support
   const touchX = useRef<number | null>(null);
 
   const onTouchStart = (e: React.TouchEvent) => {
@@ -135,7 +113,7 @@ export default function BannerCarouselNew() {
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-2xl shadow h-[150px] sm:h-[190px] md:h-[230px] lg:h-[270px]"
+      className="relative w-full overflow-hidden rounded-2xl shadow h-full"
       onMouseEnter={() => {
         if (timer.current) {
           clearTimeout(timer.current);
@@ -152,19 +130,21 @@ export default function BannerCarouselNew() {
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      <div className="relative h-full">
+      <div className="relative w-full h-full rounded-2xl overflow-hidden">
         <div
-          className="flex h-full w-full transition-transform duration-700 ease-out"
+          className="flex h-full w-full transition-transform duration-700 ease-out rounded-2xl"
           style={{ transform: `translateX(-${index * 100}%)` }}
         >
           {images.map((imageUrl, i) => (
-            <div key={i} className="relative h-full w-full flex-shrink-0">
+            <div
+              key={i}
+              className="relative h-full w-full flex-shrink-0 rounded-2xl"
+            >
               <Image
                 src={normalizeCarouselUrl(imageUrl)}
                 alt={`Slide ${i + 1}`}
                 fill
-                sizes="100vw"
-                className="object-cover"
+                className="object-contain rounded-2xl"
                 priority={i === 0}
               />
             </div>
@@ -172,13 +152,12 @@ export default function BannerCarouselNew() {
         </div>
       </div>
 
-      {/* Controls only if > 1 */}
       {len > 1 && (
         <>
           <button
             aria-label="previous"
             onClick={() => setIndex((i) => (i - 1 + len) % len)}
-            className="absolute left-2 top-1/2 -translate-y-1/2 grid place-items-center h-9 w-9 rounded-full bg-black/40 hover:bg-black/55 backdrop-blur active:scale-95"
+            className="absolute left-10 top-1/2 -translate-y-1/2 grid place-items-center h-9 w-9 rounded-full bg-black/40 hover:bg-black/55 backdrop-blur active:scale-95"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5 text-white">
               <path
@@ -195,7 +174,7 @@ export default function BannerCarouselNew() {
           <button
             aria-label="next"
             onClick={() => setIndex((i) => (i + 1) % len)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 grid place-items-center h-9 w-9 rounded-full bg-black/40 hover:bg-black/55 backdrop-blur active:scale-95"
+            className="absolute right-10 top-1/2 -translate-y-1/2 grid place-items-center h-9 w-9 rounded-full bg-black/40 hover:bg-black/55 backdrop-blur active:scale-95"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5 text-white">
               <path
@@ -209,16 +188,17 @@ export default function BannerCarouselNew() {
             </svg>
           </button>
 
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
             {images.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setIndex(i)}
                 aria-label={`go to slide ${i + 1}`}
-                className={`h-2.5 w-2.5 rounded-full transition-all ${i === index
+                className={`h-2.5 w-2.5 rounded-full transition-all ${
+                  i === index
                     ? "scale-110 bg-white"
                     : "bg-white/50 hover:bg-white/80"
-                  }`}
+                }`}
               />
             ))}
           </div>
