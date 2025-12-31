@@ -58,7 +58,7 @@ export default function ArchhiveCard({ f }: { f: Fixture }) {
                   : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
               )}
             >
-              {f.live ? "LIVE" : "Finished"}
+              {f.live ? "LIVE" : "Soon"}
             </span>
 
             {f.status && (
