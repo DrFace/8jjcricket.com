@@ -41,14 +41,12 @@ async function fetchPortrait(slug: string) {
   const json = await res.json();
   return (json?.data ?? json) as any;
 }
-
 export default async function PortraitDetailsPage({
   params,
 }: {
   params: { slug: string };
 }) {
   const data = await fetchPortrait(params.slug);
-
   if (!data) {
     return (
       <>
@@ -220,7 +218,6 @@ export default async function PortraitDetailsPage({
             {/* LEFT STICKY */}
             <aside className="lg:sticky lg:top-6 lg:self-start">
               <div className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900/60 to-slate-800/60 ring-1 ring-white/20 backdrop-blur-xl shadow-2xl">
-
                 {mainPortrait ? (
                   <div className="relative group/portrait">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -304,48 +301,50 @@ export default async function PortraitDetailsPage({
                         "-mx-1 px-1",
                       ].join(" ")}
                     >
-                    {slider_images.map((s: any, idx: number) => {
-                      const img = toStorageUrl(pickFirst(s?.url, s?.path, s?.image_url));
+                      {slider_images.map((s: any, idx: number) => {
+                        const img = toStorageUrl(
+                          pickFirst(s?.url, s?.path, s?.image_url)
+                        );
 
-                      return (
-                        <a
-                          key={idx}
-                          href="https://8jjcricket.com/news"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={[
-                            "flex-none snap-start",
-                            "w-[280px] sm:w-[320px]",
-                            "overflow-hidden rounded-[1.75rem]",
-                            "bg-gradient-to-br from-slate-900/60 to-slate-800/60",
-                            "ring-1 ring-white/20 backdrop-blur-xl shadow-xl",
-                            "transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20",
-                          ].join(" ")}
-                        >
-                          {img ? (
-                            <div className="relative overflow-hidden">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img
-                                src={img}
-                                alt={s?.alt || ""}
-                                className="h-44 w-full object-cover transition-transform duration-700 hover:scale-110"
-                                loading="lazy"
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                              <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 hover:translate-x-[100%]" />
-                            </div>
-                          ) : (
-                            <div className="h-44 w-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
-                          )}
+                        return (
+                          <a
+                            key={idx}
+                            href="https://8jjcricket.com/news"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={[
+                              "flex-none snap-start",
+                              "w-[280px] sm:w-[320px]",
+                              "overflow-hidden rounded-[1.75rem]",
+                              "bg-gradient-to-br from-slate-900/60 to-slate-800/60",
+                              "ring-1 ring-white/20 backdrop-blur-xl shadow-xl",
+                              "transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20",
+                            ].join(" ")}
+                          >
+                            {img ? (
+                              <div className="relative overflow-hidden">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={img}
+                                  alt={s?.alt || ""}
+                                  className="h-44 w-full object-cover transition-transform duration-700 hover:scale-110"
+                                  loading="lazy"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 hover:translate-x-[100%]" />
+                              </div>
+                            ) : (
+                              <div className="h-44 w-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
+                            )}
 
-                          <div className="p-4">
-                            <div className="text-sm font-bold text-white/90">
-                              {s?.alt || `Highlight ${idx + 1}`}
+                            <div className="p-4">
+                              <div className="text-sm font-bold text-white/90">
+                                {s?.alt || `Highlight ${idx + 1}`}
+                              </div>
                             </div>
-                          </div>
-                        </a>
-                      );
-                    })}
+                          </a>
+                        );
+                      })}
                     </div>
                   </div>
                 </section>
@@ -516,21 +515,20 @@ export default async function PortraitDetailsPage({
                   </div>
                 </section>
               ) : null}
-             
-            </div> 
-          </section> 
+            </div>
+          </section>
 
           {/* FOOTER BANNER */}
           <section className="mt-8 group relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20">
-          {footerBanner ? (
-            <div
-              className="h-[42vh] min-h-[280px] w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.02]"
-              style={{ backgroundImage: `url(${footerBanner})` }}
-            />
-          ) : (
-            <div className="h-[42vh] min-h-[280px] w-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
-          )}
-        </section> 
+            {footerBanner ? (
+              <div
+                className="h-[42vh] min-h-[280px] w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.02]"
+                style={{ backgroundImage: `url(${footerBanner})` }}
+              />
+            ) : (
+              <div className="h-[42vh] min-h-[280px] w-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
+            )}
+          </section>
         </div>
       </main>
 
