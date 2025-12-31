@@ -219,15 +219,23 @@ export default async function PortraitDetailsPage({
           <section className="mt-10 grid gap-8 lg:grid-cols-[360px,1fr]">
             {/* LEFT STICKY */}
             <aside className="lg:sticky lg:top-6 lg:self-start">
+              
               <div className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900/60 to-slate-800/60 ring-1 ring-white/20 backdrop-blur-xl shadow-2xl">
+                                    
+                {/* Background banner */}
+                <img
+                  src="/bg.png"
+                  className="absolute inset-0 h-full w-full object-cover opacity-60"
+                />
 
                 {mainPortrait ? (
-                  <div className="relative group/portrait">
+                  <div className="relative group/portrait z-10">
+                    
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={mainPortrait}
                       alt={title || "Portrait"}
-                      className="h-[420px] w-full bg-gradient-to-br from-slate-800/50 to-slate-900/50 object-cover transition-transform duration-700 group-hover/portrait:scale-105"
+                      className="h-[500px] w-full object-contain transition-transform duration-800 group-hover/portrait:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover/portrait:opacity-100" />
                   </div>
