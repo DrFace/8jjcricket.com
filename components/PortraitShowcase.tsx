@@ -220,9 +220,9 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
         </div>
 
         <div className="relative ml-[46%] flex h-full flex-col gap-7 p-8 pt-16">
-          <div className="group relative h-[60%] overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-white/20 transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/30">
+          <div className="group relative rounded-2xl aspect-[16/9] lg:aspect-[1.5/1.4] md:aspect-[1.5/0.9] max-h-[59vh] overflow-hidden shadow-2xl transition-all duration-500">
             <BannerCarouselNew />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div className=" absolute inset-0 bg-gradient-to-t  via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </div>
 
           <div className="relative h-[40%] overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-800/30 to-slate-900/30 shadow-xl ring-1 ring-white/10 backdrop-blur-sm">
