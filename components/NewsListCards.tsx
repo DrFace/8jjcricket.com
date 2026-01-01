@@ -17,24 +17,31 @@ export default function NewsListCards({ items }: { items: NewsItem[] }) {
         <Link
           key={n.id}
           href={`/news/${n.slug}`}
-          className="flex items-center gap-3 rounded-xl bg-white/5 p-3 transition hover:bg-white/10"
+          className="group flex items-center gap-4 rounded-2xl bg-white/5 p-3.5 ring-1 ring-white/10
+                     transition-all duration-200
+                     hover:bg-white/10 hover:ring-white/15 hover:-translate-y-[1px]"
         >
           {/* Thumbnail */}
-          <div className="relative w-24 flex-shrink-0 overflow-hidden rounded-lg bg-black/40 rounded-2xl">
+          <div className="relative h-[64px] w-[96px] flex-shrink-0 overflow-hidden rounded-2xl bg-black/40 ring-1 ring-white/10">
             <img
               src={n.imgSrc}
               alt={n.title}
-              className="w-full h-full object-contain object-top rounded-xl"
+              className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.03]"
               loading="lazy"
             />
           </div>
 
           {/* Text */}
-          <div className="flex min-w-0 flex-col justify-between">
+          <div className="min-w-0 flex-1">
             <p className="line-clamp-2 text-sm font-semibold text-white">
               {n.title}
             </p>
-            <span className="mt-1 text-xs text-white/60">{n.date ?? ""}</span>
+            <span className="mt-1 block text-xs text-white/60">{n.date ?? ""}</span>
+          </div>
+
+          {/* Arrow hint */}
+          <div className="shrink-0 text-white/35 transition group-hover:text-white/55">
+            →
           </div>
         </Link>
       ))}
