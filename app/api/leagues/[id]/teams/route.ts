@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const SPORTMONKS_API_TOKEN = process.env.SPORTMONKS_API_TOKEN || ''
-const BASE_URL = 'https://cricket.sportmonks.com/api/v2.0'
+const BASE_URL = 'http://72.60.107.98:8001/api'
 
 export async function GET(
   request: NextRequest,

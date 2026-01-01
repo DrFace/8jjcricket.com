@@ -13,7 +13,7 @@
  * https://docs.sportmonks.com for more details on rate limits.
  */
 
-const BASE = 'https://cricket.sportmonks.com/api/v2.0';
+const BASE = 'http://72.60.107.98:8001/api';
 
 /**
  * Safely fetch data from the SportMonks API. Append the API token and

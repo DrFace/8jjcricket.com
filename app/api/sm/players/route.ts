@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-const API = 'https://cricket.sportmonks.com/api/v2.0'
+const API = 'http://72.60.107.98:8001/api'
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
