@@ -200,7 +200,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
         ref={lockScrollRef}
         className="relative mx-auto h-[85vh] min-h-[700px] w-full max-w-[1600px]"
       >
-        <div className="pointer-events-none absolute inset-0 rounded-[2.5rem] ring-1 ring-white/10" />
+        <div className="pointer-events-none absolute inset-0 rounded-[2.5rem]" />
 
         <div className="pointer-events-none absolute inset-y-0 left-0 w-[46%] overflow-hidden rounded-l-[2.5rem]">
           <div
@@ -220,14 +220,14 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
         </div>
 
         <div className="relative ml-[46%] flex h-full flex-col gap-7 p-8 pt-16">
-          <div className="group relative rounded-2xl aspect-[16/9] lg:aspect-[1.5/1.4] md:aspect-[1.5/0.9] max-h-[59vh] overflow-hidden shadow-2xl transition-all duration-500">
+          <div className="group relative h-[40%] overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-white/20 transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/30">
             <BannerCarouselNew />
-            <div className=" absolute inset-0 bg-gradient-to-t  via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </div>
 
-          <div className="relative h-[40%] overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-800/30 to-slate-900/30 shadow-xl ring-1 ring-white/10 backdrop-blur-sm">
-            <div className="grid h-full grid-cols-4 gap-6 p-6 pr-24">
-              {visiblePages.map((p) => {
+          <div className="relative h-[45%] overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-800/30 to-slate-900/30 shadow-xl ring-1 ring-white/10 backdrop-blur-sm mt-8 bg-white-500">
+            <div className="grid h-full grid-cols-4 gap-2 p-6 pr-24 bg-white-500 w-full">
+              {[...visiblePages].reverse().map((p) => {
                 const thumb = getMainPortrait(p) || getHero(p) || getHover(p);
                 const isHovered = hoveredId === p.id;
 
@@ -237,20 +237,19 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     href={`/portraits/${p.slug}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="group relative h-full overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-gray-100 to-gray-50 shadow-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-blue-500/30"
+                    className="group relative h-full w-full max-w-[460px] mx-auto overflow-hidden rounded-[1.75rem]  shadow-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-blue-500/30"
                     onMouseEnter={() => onPortraitHover(p)}
                     onMouseLeave={onPortraitLeave}
                     title={p.title}
                   >
                     {/* ring */}
                     <div
-                      className={`pointer-events-none absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${
+                      className={`w-full pointer-events-none absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${
                         isHovered
                           ? "ring-[3px] ring-blue-400/70 shadow-lg shadow-blue-400/40"
                           : "ring-1 ring-black/5"
                       }`}
                     />
-
                     {/* image fills FULL tile */}
                     {thumb ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -263,7 +262,6 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     ) : (
                       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50" />
                     )}
-
                     {/* subtle overlay for consistency */}
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                   </a>

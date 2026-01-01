@@ -20,11 +20,10 @@ export default function PlayerCard({
 }: Props) {
   return (
     <Link
-      href={`players/${id}`}
+      href={`/players/${id}`}
       className="group block rounded-2xl border border-white/20 bg-black/50 p-4 shadow-xl backdrop-blur-xl transition hover:border-amber-400 hover:shadow-amber-400/30"
     >
       <div className="flex items-center gap-4">
-        {/* Player Image */}
         <div className="relative h-20 w-20 overflow-hidden rounded-xl border border-white/10 bg-slate-900">
           {image_path ? (
             <Image
@@ -41,7 +40,6 @@ export default function PlayerCard({
           )}
         </div>
 
-        {/* Player Details */}
         <div className="min-w-0">
           <div className="truncate text-lg font-semibold text-amber-300 drop-shadow">
             {fullname}

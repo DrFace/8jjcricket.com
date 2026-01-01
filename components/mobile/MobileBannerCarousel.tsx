@@ -113,7 +113,7 @@ export default function MobileBannerCarousel() {
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-2xl shadow h-[150px] sm:h-[190px] md:h-[230px] lg:h-[270px]"
+      className="relative w-full overflow-hidden rounded-2xl shadow h-[120px]"
       onMouseEnter={() => {
         if (timer.current) {
           clearTimeout(timer.current);
