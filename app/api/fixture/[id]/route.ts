@@ -4,7 +4,7 @@ const TOKEN =
   process.env.SPORTMONKS_TOKEN ||
   '5UQRUKnTvsE96yL1DirHmacieacUoJ5D9KgzuUmDbvHSpTecnYUcsLwatoVd'
 
-const BASE = 'http://72.60.107.98:8001/api'
+const BASE = 'https://cricket.sportmonks.com/api/v2.0'
 
 async function fetchJson(url: string) {
   const res = await fetch(url, { headers: { Accept: 'application/json' }, cache: 'no-store' })
