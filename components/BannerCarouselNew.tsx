@@ -151,59 +151,6 @@ export default function BannerCarouselNew() {
           ))}
         </div>
       </div>
-
-      {len > 1 && (
-        <>
-          <button
-            aria-label="previous"
-            onClick={() => setIndex((i) => (i - 1 + len) % len)}
-            className="absolute left-10 top-1/2 -translate-y-1/2 grid place-items-center h-9 w-9 rounded-full bg-black/40 hover:bg-black/55 backdrop-blur active:scale-95"
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5 text-white">
-              <path
-                d="M15 18l-6-6 6-6"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-
-          <button
-            aria-label="next"
-            onClick={() => setIndex((i) => (i + 1) % len)}
-            className="absolute right-10 top-1/2 -translate-y-1/2 grid place-items-center h-9 w-9 rounded-full bg-black/40 hover:bg-black/55 backdrop-blur active:scale-95"
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5 text-white">
-              <path
-                d="M9 6l6 6-6 6"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
-            {images.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setIndex(i)}
-                aria-label={`go to slide ${i + 1}`}
-                className={`h-2.5 w-2.5 rounded-full transition-all ${
-                  i === index
-                    ? "scale-110 bg-white"
-                    : "bg-white/50 hover:bg-white/80"
-                }`}
-              />
-            ))}
-          </div>
-        </>
-      )}
     </div>
   );
 }
