@@ -33,7 +33,11 @@ function Calendar({
   const max = maxDate ? new Date(maxDate) : undefined;
 
   const weeks = useMemo(() => {
-    const startOfMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), 1);
+    const startOfMonth = new Date(
+      viewMonth.getFullYear(),
+      viewMonth.getMonth(),
+      1
+    );
     const startDay = startOfMonth.getDay();
     const gridStart = new Date(startOfMonth);
     gridStart.setDate(startOfMonth.getDate() - startDay);
@@ -64,19 +68,24 @@ function Calendar({
           type="button"
           className="rounded-md px-2 py-1 text-white/70 hover:bg-white/10"
           onClick={() =>
-            setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1))
+            setViewMonth(
+              new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1)
+            )
           }
         >
           ‹
         </button>
         <div>
-          {viewMonth.toLocaleString("default", { month: "short" })} {viewMonth.getFullYear()}
+          {viewMonth.toLocaleString("default", { month: "short" })}{" "}
+          {viewMonth.getFullYear()}
         </div>
         <button
           type="button"
           className="rounded-md px-2 py-1 text-white/70 hover:bg-white/10"
           onClick={() =>
-            setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1))
+            setViewMonth(
+              new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1)
+            )
           }
         >
           ›
@@ -96,8 +105,13 @@ function Calendar({
               onClick={() => onSelectDate(selected ? null : dayStr)}
               className={[
                 "h-7 w-7 rounded-md text-center leading-7 transition",
+<<<<<<< HEAD
+                selected ? "bg-blue-600 text-white" : "hover:bg-gray-100",
+                disabled && "opacity-50 cursor-not-allowed",
+=======
                 selected ? "bg-amber-400 text-black font-bold" : "text-white/80 hover:bg-white/10",
                 disabled && "opacity-40 cursor-not-allowed hover:bg-transparent",
+>>>>>>> 355f989a0b175d5b1541cb0d1acc6c9ac6a5f4e2
               ].join(" ")}
             >
               {day.getDate()}
@@ -328,7 +342,9 @@ export default function LiveScoreHome() {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-gray-400">No live matches available.</div>
+                    <div className="text-gray-400">
+                      No live matches available.
+                    </div>
                   )}
                 </div>
 

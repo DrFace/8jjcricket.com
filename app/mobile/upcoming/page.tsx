@@ -7,6 +7,8 @@ import BetButton from "@/components/BetButton";
 import MobileTabBar from "@/components/mobile/MobileTabBar";
 import CalenderModal from "@/components/mobile/CalenderModal";
 import MobileFixtureCard from "@/components/mobile/MobileFixtureCard";
+import { CRICKET_CATEGORIES } from "@/lib/constant";
+import { MatchCategory } from "@/lib/match-category";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -16,12 +18,11 @@ const fetcher = (u: string) => fetch(u).then((r) => r.json());
  */
 export default function UpcomingPage() {
   const { data, error, isLoading } = useSWR("/api/upcoming", fetcher);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const title = "Upcoming Matches | 8jjcricket";
   const description =
     "Check the upcoming cricket fixtures and schedule on 8jjcricket.";
-
   const fixtures: Fixture[] = data?.data ?? [];
-
   // Hooks must be before any early returns
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
@@ -41,25 +42,21 @@ export default function UpcomingPage() {
     { label: "Recent", href: "recent", active: false },
   ];
 
-  // date bounds for the picker (YYYY-MM-DD)
-  const minDate =
-    sortedFixtures.length > 0
-      ? sortedFixtures[0].starting_at.slice(0, 10)
-      : undefined;
-  const maxDate =
-    sortedFixtures.length > 0
-      ? sortedFixtures[sortedFixtures.length - 1].starting_at.slice(0, 10)
-      : undefined;
-
-  // fixtures filtered by selected date
+  // fixtures filtered by selected date and category
   const filteredFixtures = useMemo(() => {
-    if (!selectedDate) return sortedFixtures;
-    return sortedFixtures.filter(
-      (f) => f.starting_at.slice(0, 10) === selectedDate
-    );
-  }, [sortedFixtures, selectedDate]);
+    let data = sortedFixtures;
 
-  // early-return states (after hooks)
+    // 🗓 Date filter
+    if (selectedDate) {
+      data = data.filter((f) => f.starting_at.slice(0, 10) === selectedDate);
+    }
+    // 🏷 Category filter
+    if (selectedCategory !== "All") {
+      data = data.filter((f: any) => MatchCategory(f, selectedCategory));
+    }
+
+    return data;
+  }, [sortedFixtures, selectedDate, selectedCategory]);
 
   if (error)
     return (
@@ -113,6 +110,30 @@ export default function UpcomingPage() {
           <div>
             <MobileTabBar tabs={navTabs} />
           </div>
+
+          {/* Filters */}
+          <div className="flex flex-wrap gap-1">
+            {CRICKET_CATEGORIES.map((cat) => {
+              const active = selectedCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat)}
+                  className={[
+                    "rounded-full px-3 py-1 text-[11px] font-semibold transition",
+                    "border backdrop-blur",
+                    active
+                      ? "border-amber-300/60 bg-amber-300/15 text-amber-200 shadow"
+                      : "border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100",
+                  ].join(" ")}
+                >
+                  {cat}
+                </button>
+              );
+            })}
+          </div>
+
           {/* RIGHT: calendar / date filter */}
 
           <aside className="lg:w-72">
