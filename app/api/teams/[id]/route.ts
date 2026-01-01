@@ -19,7 +19,7 @@ export async function GET(
     }
 
     // Fetch team details with all includes
-    const teamUrl = `http://72.60.107.98:8001/api/teams/${id}?api_token=${SPORTMONKS_API_TOKEN}&include=country,squad`
+    const teamUrl = `https://cricket.sportmonks.com/api/v2.0/teams/${id}?api_token=${SPORTMONKS_API_TOKEN}&include=country,squad`
     console.log('📡 Fetching team from:', teamUrl.replace(SPORTMONKS_API_TOKEN, 'TOKEN'))
     
     const teamResponse = await fetch(teamUrl, {
