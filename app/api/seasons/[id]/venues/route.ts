@@ -17,7 +17,7 @@ export async function GET(
     }
 
     const response = await fetch(
-      `http://72.60.107.98:8001/api/seasons/${id}?api_token=${SPORTMONKS_API_TOKEN}&include=venues`,
+      `https://cricket.sportmonks.com/api/v2.0/seasons/${id}?api_token=${SPORTMONKS_API_TOKEN}&include=venues`,
       {
         next: { revalidate: 3600 }, // Cache for 1 hour (venues don't change often)
       }

@@ -19,7 +19,7 @@ export async function GET(
     }
 
     // First, get the league to find its current/latest season
-    const leagueUrl = `http://72.60.107.98:8001/api/leagues/${id}?api_token=${SPORTMONKS_API_TOKEN}&include=seasons`
+    const leagueUrl = `https://cricket.sportmonks.com/api/v2.0/leagues/${id}?api_token=${SPORTMONKS_API_TOKEN}&include=seasons`
     console.log('📡 Fetching league from:', leagueUrl.replace(SPORTMONKS_API_TOKEN, 'TOKEN'))
     
     const leagueResponse = await fetch(leagueUrl, {
@@ -54,7 +54,7 @@ export async function GET(
     console.log('🎯 Latest season found:', latestSeason.id, latestSeason.name)
 
     // Try to fetch fixtures for the latest season first
-    const seasonFixturesUrl = `http://72.60.107.98:8001/api/seasons/${latestSeason.id}?api_token=${SPORTMONKS_API_TOKEN}&include=fixtures.localteam,fixtures.visitorteam,fixtures.venue,fixtures.runs`
+    const seasonFixturesUrl = `https://cricket.sportmonks.com/api/v2.0/seasons/${latestSeason.id}?api_token=${SPORTMONKS_API_TOKEN}&include=fixtures.localteam,fixtures.visitorteam,fixtures.venue,fixtures.runs`
     console.log('📡 Trying season fixtures endpoint:', seasonFixturesUrl.replace(SPORTMONKS_API_TOKEN, 'TOKEN'))
     
     let fixturesResponse = await fetch(seasonFixturesUrl, {
@@ -86,7 +86,7 @@ export async function GET(
       console.log('📅 Fetching fixtures from', startDate, 'to', endDate)
 
       // Fetch fixtures with date range filter
-      const fixturesUrl = `http://72.60.107.98:8001/api/fixtures?api_token=${SPORTMONKS_API_TOKEN}&include=localteam,visitorteam,venue,runs&filter[league_id]=${id}&filter[starts_between]=${startDate},${endDate}`
+      const fixturesUrl = `https://cricket.sportmonks.com/api/v2.0/fixtures?api_token=${SPORTMONKS_API_TOKEN}&include=localteam,visitorteam,venue,runs&filter[league_id]=${id}&filter[starts_between]=${startDate},${endDate}`
       console.log('📡 Fetching fixtures from general endpoint:', fixturesUrl.replace(SPORTMONKS_API_TOKEN, 'TOKEN'))
       
       fixturesResponse = await fetch(fixturesUrl, {
