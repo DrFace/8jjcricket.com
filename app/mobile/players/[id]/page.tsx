@@ -120,7 +120,7 @@ export default function PlayerDetailPage() {
         setLoading(false);
       }
     }
-    
+    //new
 
     load();
   }, [slug]);
