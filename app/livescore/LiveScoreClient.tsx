@@ -50,7 +50,8 @@ function Calendar({
     }
 
     const weekRows: Date[][] = [];
-    for (let i = 0; i < days.length; i += 7) weekRows.push(days.slice(i, i + 7));
+    for (let i = 0; i < days.length; i += 7)
+      weekRows.push(days.slice(i, i + 7));
 
     return { weekRows };
   }, [viewMonth]);
@@ -105,13 +106,11 @@ function Calendar({
               onClick={() => onSelectDate(selected ? null : dayStr)}
               className={[
                 "h-7 w-7 rounded-md text-center leading-7 transition",
-<<<<<<< HEAD
-                selected ? "bg-blue-600 text-white" : "hover:bg-gray-100",
-                disabled && "opacity-50 cursor-not-allowed",
-=======
-                selected ? "bg-amber-400 text-black font-bold" : "text-white/80 hover:bg-white/10",
-                disabled && "opacity-40 cursor-not-allowed hover:bg-transparent",
->>>>>>> 355f989a0b175d5b1541cb0d1acc6c9ac6a5f4e2
+                selected
+                  ? "bg-amber-400 text-black font-bold"
+                  : "text-white/80 hover:bg-white/10",
+                disabled &&
+                  "opacity-40 cursor-not-allowed hover:bg-transparent",
               ].join(" ")}
             >
               {day.getDate()}
@@ -154,7 +153,8 @@ function Pagination({
         Prev
       </button>
       <div className="text-xs text-white/70">
-        Page <span className="text-white/90 font-semibold">{page}</span> / {totalPages}
+        Page <span className="text-white/90 font-semibold">{page}</span> /{" "}
+        {totalPages}
       </div>
       <button
         type="button"
@@ -178,16 +178,23 @@ export default function LiveScoreHome() {
   const recentMatches = recentRes.data?.data ?? [];
   const upcomingMatches = upcomingRes.data?.data ?? [];
 
-  const loading = liveRes.isLoading || recentRes.isLoading || upcomingRes.isLoading;
+  const loading =
+    liveRes.isLoading || recentRes.isLoading || upcomingRes.isLoading;
   const error = liveRes.error || recentRes.error || upcomingRes.error;
 
-  const [activeTab, setActiveTab] = useState<"Live" | "Upcoming" | "Recent">("Live");
+  const [activeTab, setActiveTab] = useState<"Live" | "Upcoming" | "Recent">(
+    "Live"
+  );
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   // ✅ Calendar for ALL tabs
   const [selectedDateLive, setSelectedDateLive] = useState<string | null>(null);
-  const [selectedDateRecent, setSelectedDateRecent] = useState<string | null>(null);
-  const [selectedDateUpcoming, setSelectedDateUpcoming] = useState<string | null>(null);
+  const [selectedDateRecent, setSelectedDateRecent] = useState<string | null>(
+    null
+  );
+  const [selectedDateUpcoming, setSelectedDateUpcoming] = useState<
+    string | null
+  >(null);
 
   // ✅ Pagination
   const RECENT_PAGE_SIZE = 30;
@@ -203,7 +210,9 @@ export default function LiveScoreHome() {
     if (!cat) return false;
 
     if (category === "Leagues") {
-      return !["international", "odi", "t20", "test"].some((c) => cat.includes(c));
+      return !["international", "odi", "t20", "test"].some((c) =>
+        cat.includes(c)
+      );
     }
     if (category === "International") return cat.includes("international");
     if (category === "T20") return cat.includes("t20");
@@ -226,27 +235,39 @@ export default function LiveScoreHome() {
 
   const filteredLive = useMemo(() => {
     let data = [...liveMatches];
-    if (selectedCategory !== "All") data = data.filter((m: any) => matchCategory(m, selectedCategory));
+    if (selectedCategory !== "All")
+      data = data.filter((m: any) => matchCategory(m, selectedCategory));
     return data;
   }, [liveMatches, selectedCategory]);
 
   // ✅ Live tab recent 6 -> use RecentMatchCard
   const liveTabRecent6 = useMemo(() => {
     let data = [...recentSorted];
-    if (selectedDateLive) data = data.filter((m: any) => String(m.starting_at).slice(0, 10) === selectedDateLive);
-    if (selectedCategory !== "All") data = data.filter((m: any) => matchCategory(m, selectedCategory));
+    if (selectedDateLive)
+      data = data.filter(
+        (m: any) => String(m.starting_at).slice(0, 10) === selectedDateLive
+      );
+    if (selectedCategory !== "All")
+      data = data.filter((m: any) => matchCategory(m, selectedCategory));
     return data.slice(0, 6);
   }, [recentSorted, selectedDateLive, selectedCategory]);
 
   // ✅ Recent tab (pagination + calendar) -> use RecentMatchCard
   const filteredRecentAll = useMemo(() => {
     let data = [...recentSorted];
-    if (selectedDateRecent) data = data.filter((m: any) => String(m.starting_at).slice(0, 10) === selectedDateRecent);
-    if (selectedCategory !== "All") data = data.filter((m: any) => matchCategory(m, selectedCategory));
+    if (selectedDateRecent)
+      data = data.filter(
+        (m: any) => String(m.starting_at).slice(0, 10) === selectedDateRecent
+      );
+    if (selectedCategory !== "All")
+      data = data.filter((m: any) => matchCategory(m, selectedCategory));
     return data;
   }, [recentSorted, selectedDateRecent, selectedCategory]);
 
-  const recentTotalPages = Math.max(1, Math.ceil(filteredRecentAll.length / RECENT_PAGE_SIZE));
+  const recentTotalPages = Math.max(
+    1,
+    Math.ceil(filteredRecentAll.length / RECENT_PAGE_SIZE)
+  );
   const recentPaged = useMemo(() => {
     const start = (recentPage - 1) * RECENT_PAGE_SIZE;
     return filteredRecentAll.slice(start, start + RECENT_PAGE_SIZE);
@@ -255,12 +276,19 @@ export default function LiveScoreHome() {
   // ✅ Upcoming tab (pagination + calendar) -> use UpcomingMatchCard
   const filteredUpcomingAll = useMemo(() => {
     let data = [...upcomingSorted];
-    if (selectedDateUpcoming) data = data.filter((m: any) => String(m.starting_at).slice(0, 10) === selectedDateUpcoming);
-    if (selectedCategory !== "All") data = data.filter((m: any) => matchCategory(m, selectedCategory));
+    if (selectedDateUpcoming)
+      data = data.filter(
+        (m: any) => String(m.starting_at).slice(0, 10) === selectedDateUpcoming
+      );
+    if (selectedCategory !== "All")
+      data = data.filter((m: any) => matchCategory(m, selectedCategory));
     return data;
   }, [upcomingSorted, selectedDateUpcoming, selectedCategory]);
 
-  const upcomingTotalPages = Math.max(1, Math.ceil(filteredUpcomingAll.length / UPCOMING_PAGE_SIZE));
+  const upcomingTotalPages = Math.max(
+    1,
+    Math.ceil(filteredUpcomingAll.length / UPCOMING_PAGE_SIZE)
+  );
   const upcomingPaged = useMemo(() => {
     const start = (upcomingPage - 1) * UPCOMING_PAGE_SIZE;
     return filteredUpcomingAll.slice(start, start + UPCOMING_PAGE_SIZE);
@@ -270,9 +298,13 @@ export default function LiveScoreHome() {
   const recentMinDate = recentSorted.length
     ? String(recentSorted[recentSorted.length - 1].starting_at).slice(0, 10)
     : undefined;
-  const recentMaxDate = recentSorted.length ? String(recentSorted[0].starting_at).slice(0, 10) : undefined;
+  const recentMaxDate = recentSorted.length
+    ? String(recentSorted[0].starting_at).slice(0, 10)
+    : undefined;
 
-  const upcomingMinDate = upcomingSorted.length ? String(upcomingSorted[0].starting_at).slice(0, 10) : undefined;
+  const upcomingMinDate = upcomingSorted.length
+    ? String(upcomingSorted[0].starting_at).slice(0, 10)
+    : undefined;
   const upcomingMaxDate = upcomingSorted.length
     ? String(upcomingSorted[upcomingSorted.length - 1].starting_at).slice(0, 10)
     : undefined;
@@ -332,7 +364,9 @@ export default function LiveScoreHome() {
             {/* LIVE TAB */}
             {activeTab === "Live" && (
               <>
-                <h1 className="text-3xl font-bold text-white mb-6">Live Scores</h1>
+                <h1 className="text-3xl font-bold text-white mb-6">
+                  Live Scores
+                </h1>
 
                 <div className="mb-10">
                   {filteredLive.length > 0 ? (
@@ -352,14 +386,20 @@ export default function LiveScoreHome() {
                 <div className="flex gap-6">
                   <main className="flex-1">
                     <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-xl font-semibold text-white">Recent Matches</h2>
+                      <h2 className="text-xl font-semibold text-white">
+                        Recent Matches
+                      </h2>
                       <div className="text-xs text-white/60">
-                        Showing <span className="text-white/80 font-semibold">6</span> latest
+                        Showing{" "}
+                        <span className="text-white/80 font-semibold">6</span>{" "}
+                        latest
                       </div>
                     </div>
 
                     {liveTabRecent6.length === 0 ? (
-                      <div className="text-gray-400">No recent matches found for this date/filter.</div>
+                      <div className="text-gray-400">
+                        No recent matches found for this date/filter.
+                      </div>
                     ) : (
                       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {liveTabRecent6.map((f: any) => (
@@ -387,7 +427,9 @@ export default function LiveScoreHome() {
             {/* UPCOMING TAB */}
             {activeTab === "Upcoming" && (
               <>
-                <h1 className="text-3xl font-bold text-white mb-6">Upcoming Matches</h1>
+                <h1 className="text-3xl font-bold text-white mb-6">
+                  Upcoming Matches
+                </h1>
 
                 <div className="flex gap-6">
                   <main className="flex-1">
@@ -402,12 +444,20 @@ export default function LiveScoreHome() {
                         <Pagination
                           page={upcomingPage}
                           totalPages={upcomingTotalPages}
-                          onPrev={() => setUpcomingPage((p) => Math.max(1, p - 1))}
-                          onNext={() => setUpcomingPage((p) => Math.min(upcomingTotalPages, p + 1))}
+                          onPrev={() =>
+                            setUpcomingPage((p) => Math.max(1, p - 1))
+                          }
+                          onNext={() =>
+                            setUpcomingPage((p) =>
+                              Math.min(upcomingTotalPages, p + 1)
+                            )
+                          }
                         />
                       </>
                     ) : (
-                      <div className="text-gray-400">No upcoming matches found for this date/filter.</div>
+                      <div className="text-gray-400">
+                        No upcoming matches found for this date/filter.
+                      </div>
                     )}
                   </main>
 
@@ -429,7 +479,9 @@ export default function LiveScoreHome() {
             {/* RECENT TAB */}
             {activeTab === "Recent" && (
               <>
-                <h1 className="text-3xl font-bold text-white mb-6">Recent Matches</h1>
+                <h1 className="text-3xl font-bold text-white mb-6">
+                  Recent Matches
+                </h1>
 
                 <div className="flex gap-6">
                   <main className="flex-1">
@@ -444,12 +496,20 @@ export default function LiveScoreHome() {
                         <Pagination
                           page={recentPage}
                           totalPages={recentTotalPages}
-                          onPrev={() => setRecentPage((p) => Math.max(1, p - 1))}
-                          onNext={() => setRecentPage((p) => Math.min(recentTotalPages, p + 1))}
+                          onPrev={() =>
+                            setRecentPage((p) => Math.max(1, p - 1))
+                          }
+                          onNext={() =>
+                            setRecentPage((p) =>
+                              Math.min(recentTotalPages, p + 1)
+                            )
+                          }
                         />
                       </>
                     ) : (
-                      <div className="text-gray-400">No recent matches found for this date/filter.</div>
+                      <div className="text-gray-400">
+                        No recent matches found for this date/filter.
+                      </div>
                     )}
                   </main>
 
