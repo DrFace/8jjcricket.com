@@ -135,7 +135,7 @@ export default async function PortraitDetailsPage({
       <main className="min-h-screen bg-gradient-to-b from-black via-slate-950 to-black text-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-10">
           {/* TOP BAR */}
-          <div className="mb-8 flex items-center justify-between gap-3">
+          {/* <div className="mb-8 flex items-center justify-between gap-3">
             <Link
               href="/portraits"
               className="group flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 px-5 py-2.5 text-sm font-semibold text-white/90 ring-1 ring-white/20 backdrop-blur-xl transition-all duration-300 hover:from-blue-500/20 hover:to-purple-500/20 hover:ring-white/30 hover:shadow-lg hover:shadow-blue-500/20"
@@ -156,7 +156,7 @@ export default async function PortraitDetailsPage({
               Back to Players
             </Link>
 
-            <div className="flex items-center gap-2">
+           <div className="flex items-center gap-2">
               {topHero ? (
                 <a
                   href={topHero}
@@ -178,7 +178,7 @@ export default async function PortraitDetailsPage({
                 </a>
               ) : null}
             </div>
-          </div>
+          </div> */}
 
           {/* HERO */}
           <section className="group relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20">
@@ -219,23 +219,23 @@ export default async function PortraitDetailsPage({
           <section className="mt-10 grid gap-8 lg:grid-cols-[360px,1fr]">
             {/* LEFT STICKY */}
             <aside className="lg:sticky lg:top-6 lg:self-start">
+              
               <div className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900/60 to-slate-800/60 ring-1 ring-white/20 backdrop-blur-xl shadow-2xl">
-                <div className="p-5 border-b border-white/10">
-                  <div className="flex items-center gap-2">
-                    <div className="h-1 w-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500" />
-                    <div className="text-xs font-bold tracking-[0.15em] text-blue-300/90 uppercase">
-                      Portrait
-                    </div>
-                  </div>
-                </div>
+                                    
+                {/* Background banner */}
+                <img
+                  src="/bg.png"
+                  className="absolute inset-0 h-full w-full object-cover opacity-60"
+                />
 
                 {mainPortrait ? (
-                  <div className="relative group/portrait">
+                  <div className="relative group/portrait z-10">
+                    
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={mainPortrait}
                       alt={title || "Portrait"}
-                      className="h-[420px] w-full bg-gradient-to-br from-slate-800/50 to-slate-900/50 object-contain p-3 transition-transform duration-700 group-hover/portrait:scale-105"
+                      className="h-[500px] w-full object-contain transition-transform duration-800 group-hover/portrait:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover/portrait:opacity-100" />
                   </div>
@@ -294,7 +294,7 @@ export default async function PortraitDetailsPage({
                       </h2>
                     </div>
                     <p className="text-xs text-white/60 font-medium">
-                      Swipe to explore →
+                      Swipe to Explore →
                     </p>
                   </div>
 
@@ -312,47 +312,48 @@ export default async function PortraitDetailsPage({
                         "-mx-1 px-1",
                       ].join(" ")}
                     >
-                      {slider_images.map((s: any, idx: number) => {
-                        const img = toStorageUrl(
-                          pickFirst(s?.url, s?.path, s?.image_url)
-                        );
+                    {slider_images.map((s: any, idx: number) => {
+                      const img = toStorageUrl(pickFirst(s?.url, s?.path, s?.image_url));
 
-                        return (
-                          <div
-                            key={idx}
-                            className={[
-                              "flex-none snap-start",
-                              "w-[280px] sm:w-[320px]",
-                              "overflow-hidden rounded-[1.75rem]",
-                              "bg-gradient-to-br from-slate-900/60 to-slate-800/60",
-                              "ring-1 ring-white/20 backdrop-blur-xl shadow-xl",
-                              "transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20",
-                            ].join(" ")}
-                          >
-                            {img ? (
-                              <div className="relative overflow-hidden">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                  src={img}
-                                  alt={s?.alt || ""}
-                                  className="h-44 w-full object-cover transition-transform duration-700 hover:scale-110"
-                                  loading="lazy"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                                <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 hover:translate-x-[100%]" />
-                              </div>
-                            ) : (
-                              <div className="h-44 w-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
-                            )}
+                      return (
+                        <a
+                          key={idx}
+                          href="https://8jjcricket.com/news"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={[
+                            "flex-none snap-start",
+                            "w-[280px] sm:w-[320px]",
+                            "overflow-hidden rounded-[1.75rem]",
+                            "bg-gradient-to-br from-slate-900/60 to-slate-800/60",
+                            "ring-1 ring-white/20 backdrop-blur-xl shadow-xl",
+                            "transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20",
+                          ].join(" ")}
+                        >
+                          {img ? (
+                            <div className="relative overflow-hidden">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={img}
+                                alt={s?.alt || ""}
+                                className="h-44 w-full object-cover transition-transform duration-700 hover:scale-110"
+                                loading="lazy"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                              <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 hover:translate-x-[100%]" />
+                            </div>
+                          ) : (
+                            <div className="h-44 w-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
+                          )}
 
-                            <div className="p-4">
-                              <div className="text-sm font-bold text-white/90">
-                                {s?.alt || `Highlight ${idx + 1}`}
-                              </div>
+                          <div className="p-4">
+                            <div className="text-sm font-bold text-white/90">
+                              {s?.alt || `Highlight ${idx + 1}`}
                             </div>
                           </div>
-                        );
-                      })}
+                        </a>
+                      );
+                    })}
                     </div>
                   </div>
                 </section>
@@ -378,7 +379,7 @@ export default async function PortraitDetailsPage({
                           href={img || "#"}
                           target="_blank"
                           rel="noreferrer"
-                          className="group relative overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-slate-900/60 to-slate-800/60 ring-1 ring-white/20 backdrop-blur-xl shadow-xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20 hover:scale-[1.02]"
+                          className="group relative flex overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-slate-900/60 to-slate-800/60 ring-1 ring-white/20 backdrop-blur-xl shadow-xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20 hover:scale-[1.02]"
                         >
                           {img ? (
                             <>
@@ -386,7 +387,7 @@ export default async function PortraitDetailsPage({
                               <img
                                 src={img}
                                 alt={g?.alt || ""}
-                                className="h-full w-full object-contain bg-gradient-to-br from-slate-800/50 to-slate-900/50 p-2 transition-transform duration-700 group-hover:scale-110"
+                                className="max-h-full max-w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                 loading="lazy"
                               />
                               <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-[100%]" />
@@ -428,7 +429,7 @@ export default async function PortraitDetailsPage({
                             rel="noreferrer"
                             className="group inline-flex items-center gap-2 text-sm text-blue-300 font-semibold transition-all duration-300 hover:text-blue-200"
                           >
-                            Open article
+                            Read more
                             <svg
                               className="h-4 w-4 transition-transform group-hover:translate-x-1"
                               fill="none"
@@ -523,23 +524,21 @@ export default async function PortraitDetailsPage({
                   </div>
                 </section>
               ) : null}
+             
+            </div> 
+          </section> 
 
-              {/* FOOTER BANNER */}
-              {footerBanner ? (
-                <section className="group overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20">
-                  <div className="relative overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={footerBanner}
-                      alt="Footer banner"
-                      className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  </div>
-                </section>
-              ) : null}
-            </div>
-          </section>
+          {/* FOOTER BANNER */}
+          <section className="mt-8 group relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20">
+          {footerBanner ? (
+            <div
+              className="h-[42vh] min-h-[280px] w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.02]"
+              style={{ backgroundImage: `url(${footerBanner})` }}
+            />
+          ) : (
+            <div className="h-[42vh] min-h-[280px] w-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
+          )}
+        </section> 
         </div>
       </main>
 

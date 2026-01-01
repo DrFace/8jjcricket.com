@@ -25,7 +25,7 @@ function normalizeCarouselUrl(input: string): string {
   return `${origin}${finalPath}`;
 }
 
-export default function MobileBannerCarousel() {
+export default function BannerCarouselNew() {
   const [index, setIndex] = useState(0);
   const [images, setImages] = useState<string[]>([]);
   const timer = useRef<number | null>(null);
@@ -113,7 +113,7 @@ export default function MobileBannerCarousel() {
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-2xl shadow h-[120px]"
+      className="relative w-full overflow-hidden rounded-2xl shadow h-full"
       onMouseEnter={() => {
         if (timer.current) {
           clearTimeout(timer.current);
@@ -130,78 +130,27 @@ export default function MobileBannerCarousel() {
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      <div className="relative h-full">
+      <div className="relative w-full h-full rounded-2xl overflow-hidden">
         <div
-          className="flex h-full w-full transition-transform duration-700 ease-out"
+          className="flex h-full w-full transition-transform duration-700 ease-out rounded-2xl"
           style={{ transform: `translateX(-${index * 100}%)` }}
         >
           {images.map((imageUrl, i) => (
-            <div key={i} className="relative h-full w-full flex-shrink-0">
+            <div
+              key={i}
+              className="relative h-full w-full flex-shrink-0 rounded-2xl"
+            >
               <Image
                 src={normalizeCarouselUrl(imageUrl)}
                 alt={`Slide ${i + 1}`}
                 fill
-                sizes="100vw"
-                className="object-cover"
+                className="object-cover rounded-2xl"
                 priority={i === 0}
               />
             </div>
           ))}
         </div>
       </div>
-
-      {len > 1 && (
-        <>
-          <button
-            aria-label="previous"
-            onClick={() => setIndex((i) => (i - 1 + len) % len)}
-            className="absolute left-2 top-1/2 -translate-y-1/2 grid place-items-center h-9 w-9 rounded-full bg-black/40 hover:bg-black/55 backdrop-blur active:scale-95"
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5 text-white">
-              <path
-                d="M15 18l-6-6 6-6"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-
-          <button
-            aria-label="next"
-            onClick={() => setIndex((i) => (i + 1) % len)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 grid place-items-center h-9 w-9 rounded-full bg-black/40 hover:bg-black/55 backdrop-blur active:scale-95"
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5 text-white">
-              <path
-                d="M9 6l6 6-6 6"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
-            {images.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setIndex(i)}
-                aria-label={`go to slide ${i + 1}`}
-                className={`h-2.5 w-2.5 rounded-full transition-all ${
-                  i === index
-                    ? "scale-110 bg-white"
-                    : "bg-white/50 hover:bg-white/80"
-                }`}
-              />
-            ))}
-          </div>
-        </>
-      )}
     </div>
   );
 }

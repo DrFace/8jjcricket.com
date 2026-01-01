@@ -1,1 +1,9 @@
-export const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
+export const DEFAULT_API_BASE = "https://8jjcricket.com/api";
+export const CRICKET_CATEGORIES = [
+  "International",
+  "T20",
+  "ODI",
+  "Test",
+  "Leagues",
+  "All",
+];
