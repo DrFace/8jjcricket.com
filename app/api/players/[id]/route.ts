@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const BASE = process.env.SPORTMONKS_API_BASE ?? 'https://cricket.sportmonks.com/api/v2.0';
+const BASE = process.env.SPORTMONKS_API_BASE ?? 'http://72.60.107.98:8001/api';
 const TOKEN = process.env.SPORTMONKS_API_TOKEN;
 
 export const revalidate = 3600;
