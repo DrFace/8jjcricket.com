@@ -30,7 +30,7 @@ export default function WelcomePopup() {
                 {/* Banner Image */}
                 <div className="relative aspect-[16/9] w-full">
                     <Image
-                        src="/banner002.png"
+                        src="/banner004.png"
                         alt="Welcome banner"
                         fill
                         className="object-cover"
@@ -41,7 +41,7 @@ export default function WelcomePopup() {
                 {/* Content */}
                 <div className="p-4 text-center">
                     <h3 className="text-lg font-extrabold text-white">
-                        Welcome to 8jj
+                        Welcome to 8JJCRICKET
                     </h3>
 
                     <button
