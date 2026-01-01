@@ -46,10 +46,7 @@ type Player = {
   battingstyle?: string | null;
   bowlingstyle?: string | null;
 
-  // Laravel
   careers?: LaravelCareerRow[];
-
-  // SportMonks
   career?: SportMonksCareerRow[];
 };
 
@@ -95,35 +92,37 @@ function normalizeCareers(player: Player): LaravelCareerRow[] {
 }
 
 export default function PlayerDetailPage() {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
 
   const [player, setPlayer] = useState<Player | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!slug) return;
+    if (!id) return;
 
     async function load() {
       try {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`/api/players/${slug}`, { cache: "no-store" });
-        if (!res.ok) throw new Error("Failed to fetch player");
+        const res = await fetch(`/api/players/${id}`, { cache: "no-store" });
+        if (!res.ok) {
+          const t = await res.text();
+          throw new Error(t || "Failed to fetch player");
+        }
 
         const json = await res.json();
-        setPlayer(json.data);
+        setPlayer(json.data ?? null);
       } catch (e: any) {
         setError(e?.message ?? "Failed to load player");
       } finally {
         setLoading(false);
       }
     }
-    //new
 
     load();
-  }, [slug]);
+  }, [id]);
 
   const careers = useMemo(
     () => (player ? normalizeCareers(player) : []),
@@ -137,7 +136,7 @@ export default function PlayerDetailPage() {
         <meta name="description" content="Loading player profile." />
         <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
           Loading player details...
-          <div className="mt-4 h-6 w-6 animate-spin rounded-full border-4 border-amber-400 border-t-transparent mx-auto"></div>
+          <div className="mt-4 h-6 w-6 animate-spin rounded-full border-4 border-amber-400 border-t-transparent mx-auto" />
         </div>
       </>
     );
@@ -189,7 +188,9 @@ export default function PlayerDetailPage() {
               src={player.image_path || "/placeholder.png"}
               alt={fullname}
               fill
+              sizes="160px"
               className="object-contain"
+              unoptimized
             />
           </div>
 

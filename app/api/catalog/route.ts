@@ -3,11 +3,9 @@ import { NextResponse } from "next/server";
 export const revalidate = 0;
 export const dynamic = "force-dynamic";
 
-const BACKEND_BASE =
-  (process.env.NEXT_PUBLIC_BACKEND_BASE ?? "https://8jjcricket.com").replace(
-    /\/+$/,
-    ""
-  );
+const BACKEND_BASE = (
+  process.env.NEXT_PUBLIC_BACKEND_BASE ?? "https://8jjcricket.com"
+).replace(/\/+$/, "");
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -45,7 +43,7 @@ export async function GET(req: Request) {
   } catch (err: any) {
     console.error("❌ Exception:", err);
     return NextResponse.json(
-      { error: err.message ?? "Unknown error" },
+      { error: err?.message ?? "Unknown error" },
       { status: 500 }
     );
   }
