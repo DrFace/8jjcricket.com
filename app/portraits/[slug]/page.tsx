@@ -194,7 +194,6 @@ export default async function PortraitDetailsPage({
                   duration-700
                   group-hover:scale-[1.02]
                 " 
-
                 style={{ backgroundImage: `url(${topHero})` }}
               />
             ) : (
