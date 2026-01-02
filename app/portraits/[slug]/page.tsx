@@ -179,10 +179,19 @@ export default async function PortraitDetailsPage({
           </div> */}
 
           {/* HERO */}
-          <section className="group relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20">
+          <section className="group relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20 bg-gray-100">
             {topHero ? (
               <div
-                className="h-[42vh] min-h-[280px] w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.02]"
+                className="
+                  w-full
+                  aspect-[2210/590]
+                  bg-contain
+                  bg-center
+                  bg-no-repeat
+                  transition-transform
+                  duration-700
+                  group-hover:scale-[1.02]
+                " 
                 style={{ backgroundImage: `url(${topHero})` }}
               />
             ) : (
@@ -528,16 +537,25 @@ export default async function PortraitDetailsPage({
           </section>
 
           {/* FOOTER BANNER */}
-          <section className="mt-8 group relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20">
-            {footerBanner ? (
-              <div
-                className="h-[42vh] min-h-[280px] w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.02]"
-                style={{ backgroundImage: `url(${footerBanner})` }}
-              />
-            ) : (
-              <div className="h-[42vh] min-h-[280px] w-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
-            )}
-          </section>
+         <section className="mt-8 group relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20">
+          {footerBanner ? (
+            <div
+              className="
+                w-full
+                aspect-[2210/590]
+                bg-no-repeat
+                bg-center
+                bg-contain
+                transition-transform
+                duration-700
+                group-hover:scale-[1.02]
+              "
+              style={{ backgroundImage: `url(${footerBanner})` }}
+            />
+          ) : (
+            <div className="w-full aspect-[2210/590] bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
+          )}
+        </section>
         </div>
       </main>
 

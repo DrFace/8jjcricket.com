@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import MobileBackButton from "@/components/mobile/MobileBackButton";
 
+/* ===================== TYPES ===================== */
+
 type LaravelCareerRow = {
   id?: number;
   type: string;
@@ -46,9 +48,11 @@ type Player = {
   battingstyle?: string | null;
   bowlingstyle?: string | null;
 
-  careers?: LaravelCareerRow[];
-  career?: SportMonksCareerRow[];
+  careers?: LaravelCareerRow[]; // Laravel
+  career?: SportMonksCareerRow[]; // SportMonks (old)
 };
+
+/* ===================== HELPERS ===================== */
 
 function getDisplayName(p: Player): string {
   return (
@@ -91,52 +95,89 @@ function normalizeCareers(player: Player): LaravelCareerRow[] {
   return [];
 }
 
-export default function PlayerDetailPage() {
-  const { id } = useParams<{ id: string }>();
+/* ===================== PAGE ===================== */
+
+export default function PlayerDetailPageMobile() {
+  const params = useParams();
+  const idParam = (params as any)?.id as string | string[] | undefined;
 
   const [player, setPlayer] = useState<Player | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) return;
+    const playerIdStr = Array.isArray(idParam) ? idParam[0] : idParam;
+
+    if (!playerIdStr) return;
+
+    const playerId = Number(playerIdStr);
+    if (!Number.isFinite(playerId)) {
+      setError("Invalid player id");
+      setLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
 
     async function load() {
       try {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`/api/players/${id}`, { cache: "no-store" });
+        // Match your working code endpoint:
+        const res = await fetch(`/api/catalog/${playerId}`, {
+          signal: controller.signal,
+          next: { revalidate: 300 }, // 5 minutes
+        });
+
         if (!res.ok) {
-          const t = await res.text();
-          throw new Error(t || "Failed to fetch player");
+          if (res.status === 404) throw new Error("Player not found");
+          throw new Error("Failed to load player");
         }
 
         const json = await res.json();
-        setPlayer(json.data ?? null);
+
+        // Match your working code response handling:
+        // supports { player: {...} } OR direct object
+        // (optional: keep json.data too, if you sometimes return that)
+        const found: Player | null =
+          (json?.player ?? json?.data ?? json) || null;
+
+        if (!found) throw new Error("Player not found");
+
+        setPlayer(found);
       } catch (e: any) {
-        setError(e?.message ?? "Failed to load player");
+        if (e?.name !== "AbortError") {
+          setError(e?.message ?? "Failed to load player");
+        }
       } finally {
         setLoading(false);
       }
     }
 
     load();
-  }, [id]);
+    return () => controller.abort();
+  }, [idParam]);
 
   const careers = useMemo(
     () => (player ? normalizeCareers(player) : []),
     [player]
   );
 
+  /* ===================== UI STATES ===================== */
+
   if (loading) {
     return (
       <>
         <title>Loading Player | 8jjcricket</title>
-        <meta name="description" content="Loading player profile." />
-        <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
-          Loading player details...
-          <div className="mt-4 h-6 w-6 animate-spin rounded-full border-4 border-amber-400 border-t-transparent mx-auto" />
+
+        <div className="mx-auto max-w-3xl px-4 pb-5 pt-4">
+          <MobileBackButton />
+
+          <div className="mt-4 rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
+            Loading player details...
+            <div className="mt-4 mx-auto h-6 w-6 animate-spin rounded-full border-4 border-amber-400 border-t-transparent" />
+          </div>
         </div>
       </>
     );
@@ -146,10 +187,11 @@ export default function PlayerDetailPage() {
     return (
       <>
         <title>Player Error | 8jjcricket</title>
-        <meta name="description" content={error} />
-        <div>
+
+        <div className="mx-auto max-w-3xl px-4 pb-5 pt-4">
           <MobileBackButton />
-          <div className="rounded-2xl border border-red-500/30 bg-black/70 p-6 text-sm text-red-300 backdrop-blur-xl mt-6 text-center">
+
+          <div className="mt-4 rounded-2xl border border-red-500/30 bg-black/70 p-6 text-center text-sm text-red-300 backdrop-blur-xl">
             {error}
           </div>
         </div>
@@ -161,68 +203,66 @@ export default function PlayerDetailPage() {
     return (
       <>
         <title>Player Not Found | 8jjcricket</title>
-        <meta name="description" content="Player not found." />
-        <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
-          Player not found.
+
+        <div className="mx-auto max-w-3xl px-4 pb-5 pt-4">
+          <MobileBackButton />
+
+          <div className="mt-4 rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
+            Player not found.
+          </div>
         </div>
       </>
     );
   }
+
+  /* ===================== MAIN RENDER ===================== */
 
   const fullname = getDisplayName(player);
 
   return (
     <>
       <title>{fullname} | Player Profile | 8jjcricket</title>
-      <meta
-        name="description"
-        content={`View ${fullname}'s player profile, stats and information on 8jjcricket.`}
-      />
 
-      <div className="mx-auto px-4 pb-5 max-w-3xl">
+      <div className="mx-auto max-w-3xl px-4 pb-5 pt-4">
         <MobileBackButton />
 
-        <div className="flex flex-col md:flex-row gap-8 items-center w-full">
-          <div className="relative h-40 w-40 overflow-hidden rounded-full bg-slate-900 shadow-md bg-amber-300/10 border border-amber-400/30 flex-shrink-0">
+        <div className="mt-4 flex flex-col items-center gap-6 md:flex-row md:items-center">
+          <div className="relative h-36 w-36 overflow-hidden rounded-2xl bg-slate-900 shadow-md">
             <Image
               src={player.image_path || "/placeholder.png"}
               alt={fullname}
               fill
-              sizes="160px"
+              sizes="144px"
               className="object-contain"
-              unoptimized
+              // Remove `unoptimized` unless you *need* it
             />
           </div>
 
           <div className="w-full">
-            <h1 className="text-3xl font-bold text-white">{fullname}</h1>
+            <h1 className="text-2xl font-bold text-white">{fullname}</h1>
             <p className="text-amber-300">
               {player.country?.name ?? "Unknown Country"}
             </p>
 
-            <div className="mt-3 space-y-1 text-sm text-sky-100/70">
+            <div className="mt-3 space-y-2 text-sm text-sky-100/70">
               {player.dateofbirth && (
-                <div className="flex items-center justify-between">
-                  <p>
-                    <strong>DOB:</strong>
-                  </p>
-                  <p>{player.dateofbirth}</p>
+                <div className="flex items-start justify-between gap-3">
+                  <strong className="shrink-0">DOB:</strong>
+                  <span className="text-right">{player.dateofbirth}</span>
                 </div>
               )}
+
               {player.battingstyle && (
-                <div className="flex items-center justify-between">
-                  <p>
-                    <strong>Batting Style:</strong>
-                  </p>
-                  <p>{player.battingstyle}</p>
+                <div className="flex items-start justify-between gap-3">
+                  <strong className="shrink-0">Batting Style:</strong>
+                  <span className="text-right">{player.battingstyle}</span>
                 </div>
               )}
+
               {player.bowlingstyle && (
-                <div className="flex items-center justify-between">
-                  <p>
-                    <strong>Bowling Style:</strong>
-                  </p>
-                  <p>{player.bowlingstyle}</p>
+                <div className="flex items-start justify-between gap-3">
+                  <strong className="shrink-0">Bowling Style:</strong>
+                  <span className="text-right">{player.bowlingstyle}</span>
                 </div>
               )}
             </div>
@@ -230,13 +270,13 @@ export default function PlayerDetailPage() {
         </div>
 
         {careers.length > 0 ? (
-          <div className="mt-10">
-            <h2 className="text-2xl font-semibold mb-4 text-white">
+          <div className="mt-8">
+            <h2 className="mb-4 text-xl font-semibold text-white">
               Career Statistics
             </h2>
 
             <div className="overflow-x-auto rounded-xl border border-white/15 bg-black/50 backdrop-blur-xl">
-              <table className="min-w-full text-sm text-left text-sky-100/70">
+              <table className="min-w-full text-left text-sm text-sky-100/70">
                 <thead className="bg-slate-900/80 text-amber-300">
                   <tr>
                     <th className="px-4 py-2">Format</th>
@@ -250,6 +290,7 @@ export default function PlayerDetailPage() {
                     <th className="px-4 py-2">50s</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {careers.map((c, idx) => (
                     <tr
@@ -276,7 +317,7 @@ export default function PlayerDetailPage() {
             </div>
           </div>
         ) : (
-          <div className="mt-10 rounded-2xl border border-white/15 bg-black/50 p-6 text-sm text-sky-100/70 backdrop-blur-xl">
+          <div className="mt-8 rounded-2xl border border-white/15 bg-black/50 p-6 text-sm text-sky-100/70 backdrop-blur-xl">
             Career statistics not available.
           </div>
         )}
