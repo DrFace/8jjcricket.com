@@ -51,17 +51,6 @@ type Player = {
   career?: SportMonksCareerRow[]; // SportMonks (old)
 };
 
-type CatalogResponse = {
-  countries?: { id: number; name: string }[];
-  players?: {
-    data?: Player[];
-    current_page?: number;
-    last_page?: number;
-    per_page?: number;
-    total?: number;
-  };
-};
-
 function getDisplayName(p: Player): string {
   return (
     p.fullname ??
@@ -129,37 +118,23 @@ export default function PlayerDetailPage() {
         setLoading(true);
         setError(null);
 
-        // Backend caps per_page to max 50, so just request 50.
-        const perPage = 50;
+        // FAST: single request
+        // If you already have a Next API route: /api/catalog/[id], keep this.
+        // If not, and your Laravel API is public, you can fetch absolute URL instead.
+        const res = await fetch(`/api/catalog/${playerId}`, {
+          // Use caching (recommended). Change the value as you like.
+          next: { revalidate: 300 }, // 5 minutes
+        });
 
-        // Page 1 first to get last_page
-        const firstRes = await fetch(
-          `/api/catalog?page=1&per_page=${perPage}`,
-          { cache: "no-store" }
-        );
-        if (!firstRes.ok) throw new Error("Failed to fetch catalog");
-        const firstJson = (await firstRes.json()) as CatalogResponse;
-
-        const firstList = firstJson?.players?.data ?? [];
-        const lastPage = firstJson?.players?.last_page ?? 1;
-
-        let found = firstList.find((p) => Number(p.id) === playerId) ?? null;
-
-        // If not in page 1, scan remaining pages
-        let page = 2;
-        while (!found && page <= lastPage) {
-          const res = await fetch(
-            `/api/catalog?page=${page}&per_page=${perPage}`,
-            { cache: "no-store" }
-          );
-          if (!res.ok) throw new Error(`Failed to fetch catalog page ${page}`);
-          const json = (await res.json()) as CatalogResponse;
-
-          const list = json?.players?.data ?? [];
-          found = list.find((p) => Number(p.id) === playerId) ?? null;
-
-          page++;
+        if (!res.ok) {
+          if (res.status === 404) throw new Error("Player not found");
+          throw new Error("Failed to load player");
         }
+
+        const json = await res.json();
+
+        // Your screenshot shows: { player: {...} }
+        const found: Player | null = (json?.player ?? json) || null;
 
         if (!found) throw new Error("Player not found");
 
