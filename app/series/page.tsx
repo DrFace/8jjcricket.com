@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 interface League {
   seasons: any[];
   id: number;
+  sportmonks_league_id: number;
   name: string;
   code: string;
   image_path: string;
@@ -202,8 +203,6 @@ export default function SeriesPage() {
     })}`;
   }
 
-  console.log("series", data);
-
   return (
     <>
       <title>{title}</title>
@@ -293,19 +292,19 @@ export default function SeriesPage() {
 
                       {/* League Code */}
                       <p className="text-xs text-amber-200/80 uppercase font-medium mb-3">
-                        {league.code}
+                        {league.code + " " + league.sportmonks_league_id}
                       </p>
 
                       {/* Action Buttons */}
                       <div className="flex gap-2 mt-auto w-full">
                         <Link
-                          href={`/series/${league.id}`}
+                          href={`/series/${league.sportmonks_league_id}`}
                           className="flex-1 px-3 py-1.5 text-xs font-medium text-amber-300 border border-amber-400/50 rounded hover:bg-amber-950/40 transition-colors backdrop-blur-sm"
                         >
                           Details
                         </Link>
                         <Link
-                          href={`/teams?league=${league.id}`}
+                          href={`/teams?league=${league.sportmonks_league_id}`}
                           className="flex-1 px-3 py-1.5 text-xs font-medium text-black bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 rounded hover:brightness-110 transition-all shadow-lg"
                         >
                           Teams
