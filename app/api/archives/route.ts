@@ -1,3 +1,4 @@
+import { data } from 'framer-motion/client';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -168,7 +169,7 @@ export async function GET(request: Request) {
     params.append('page', String(page));
 
     const queryString = params.toString();
-    const backendUrl = `${process.env.BACKEND_ORIGIN || 'https://api.8jjcricket.com'}/archives${queryString ? `?${queryString}` : ''}`;
+    const backendUrl = `${process.env.BACKEND_ORIGIN || 'https://api.8jjcricket.com'}/api/archives${queryString ? `?${queryString}` : ''}`;
 
     console.log('Attempting to fetch archives from backend:', backendUrl);
 
@@ -182,6 +183,7 @@ export async function GET(request: Request) {
         cache: 'no-store',
         signal: AbortSignal.timeout(5000), // 5 second timeout
       });
+console.log('res', response);
 
       if (response.ok) {
         const data = await response.json();
