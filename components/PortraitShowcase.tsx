@@ -227,7 +227,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
 
           <div className="relative h-[45%] overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-800/30 to-slate-900/30 shadow-xl ring-1 ring-white/10 backdrop-blur-sm mt-8 bg-white-500">
             <div className="grid h-full grid-cols-4 gap-2 p-6 pr-24 bg-white-500 w-full">
-              {[...visiblePages].reverse().map((p) => {
+              {visiblePages.map((p) => {
                 const thumb = getMainPortrait(p) || getHero(p) || getHover(p);
                 const isHovered = hoveredId === p.id;
 
