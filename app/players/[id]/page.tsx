@@ -47,11 +47,8 @@ type Player = {
   battingstyle?: string | null;
   bowlingstyle?: string | null;
 
-  // Laravel
-  careers?: LaravelCareerRow[];
-
-  // SportMonks (old)
-  career?: SportMonksCareerRow[];
+  careers?: LaravelCareerRow[]; // Laravel
+  career?: SportMonksCareerRow[]; // SportMonks (old)
 };
 
 function getDisplayName(p: Player): string {
@@ -63,9 +60,7 @@ function getDisplayName(p: Player): string {
   );
 }
 
-// Convert Laravel or SportMonks careers into one standard shape
 function normalizeCareers(player: Player): LaravelCareerRow[] {
-  // If Laravel careers exist, use them
   if (Array.isArray(player.careers) && player.careers.length > 0) {
     return player.careers.map((c) => ({
       type: c.type,
@@ -80,7 +75,6 @@ function normalizeCareers(player: Player): LaravelCareerRow[] {
     }));
   }
 
-  // Else try SportMonks format
   if (Array.isArray(player.career) && player.career.length > 0) {
     return player.career.map((c) => ({
       type: c.type,
@@ -99,32 +93,65 @@ function normalizeCareers(player: Player): LaravelCareerRow[] {
 }
 
 export default function PlayerDetailPage() {
-  const { id } = useParams();
+  const params = useParams();
+  const idParam = params?.id;
+
   const [player, setPlayer] = useState<Player | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) return;
+    const playerIdStr = Array.isArray(idParam) ? idParam[0] : idParam;
+    if (!playerIdStr) return;
+
+    const playerId = Number(playerIdStr);
+    if (!Number.isFinite(playerId)) {
+      setError("Invalid player id");
+      setLoading(false);
+      return;
+    }
+
+    let cancelled = false;
 
     async function load() {
       try {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`/api/players/${id}`, { cache: "no-store" });
-        if (!res.ok) throw new Error("Failed to fetch player");
+        // FAST: single request
+        // If you already have a Next API route: /api/catalog/[id], keep this.
+        // If not, and your Laravel API is public, you can fetch absolute URL instead.
+        const res = await fetch(`/api/catalog/${playerId}`, {
+          // Use caching (recommended). Change the value as you like.
+          next: { revalidate: 300 }, // 5 minutes
+        });
+
+        if (!res.ok) {
+          if (res.status === 404) throw new Error("Player not found");
+          throw new Error("Failed to load player");
+        }
+
         const json = await res.json();
-        setPlayer(json.data);
+
+        // Your screenshot shows: { player: {...} }
+        const found: Player | null = (json?.player ?? json) || null;
+
+        if (!found) throw new Error("Player not found");
+
+        if (!cancelled) setPlayer(found);
       } catch (e: any) {
-        setError(e.message ?? "Failed to load player");
+        if (!cancelled) setError(e?.message ?? "Failed to load player");
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
 
     load();
-  }, [id]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [idParam]);
 
   const careers = useMemo(
     () => (player ? normalizeCareers(player) : []),
