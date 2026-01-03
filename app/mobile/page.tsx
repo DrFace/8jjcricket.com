@@ -248,10 +248,9 @@ export default async function MobileHomePage() {
       </section>
 
       {/* SPONSORS (GRID, no scroll) */}
-      <section className="mt-4 w-full snap-start scroll-mt-3">
+      {/* <section className="mt-4 w-full snap-start scroll-mt-3">
         <Reveal>
           <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
-            {/* Optional background image behind tiles */}
             <div
               className="absolute inset-0 opacity-30"
               style={{
@@ -304,7 +303,7 @@ export default async function MobileHomePage() {
             </div>
           </div>
         </Reveal>
-      </section>
+      </section> */}
 
       {/* QUICK GAMES */}
       <section className="mt-5 w-full snap-start scroll-mt-3">
