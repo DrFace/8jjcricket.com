@@ -138,7 +138,7 @@ export default function MobileNewsPage() {
                     <img
                       src={imgSrc}
                       alt={item.title}
-                      className="w-full h-44 object-cover"
+                      className="w-full h-full object-contain"
                       loading="lazy"
                     />
 
