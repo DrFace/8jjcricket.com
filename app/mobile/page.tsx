@@ -58,6 +58,12 @@ const BRAND_ITEMS: { name: string; icon: string }[] = [
   { name: "CM88", icon: "/brands/cm88.png" },
   { name: "OK8386", icon: "/brands/ok8386.png" },
   { name: "SC88", icon: "/brands/sc88.png" },
+  { name: "F168", icon: "/brands/f168.png" },
+  { name: "FLY88", icon: "/brands/fly88.png" },
+  { name: "CM88", icon: "/brands/cm88.png" },
+  { name: "OK8386", icon: "/brands/ok8386.png" },
+  { name: "SC88", icon: "/brands/sc88.png" },
+
 ];
 
 function normalizeImageUrl(url: string | null): string | null {
@@ -230,23 +236,6 @@ export default async function MobileHomePage() {
           </div>
         </Reveal>
       </section>
-
-      {/* SOCIALS (under video) */}
-      <section className="mt-4 w-full snap-start scroll-mt-3">
-        <Reveal>
-          <SocialBox />
-        </Reveal>
-      </section>
-
-      {/* HERO / BANNER */}
-      <section className="mt-3 w-full snap-start scroll-mt-3">
-        <Reveal>
-          <div className="w-full overflow-hidden rounded-xl">
-            <MobileBannerCarousel />
-          </div>
-        </Reveal>
-      </section>
-
       {/* SPONSORS (GRID, no scroll) */}
       {/* <section className="mt-4 w-full snap-start scroll-mt-3">
         <Reveal>
@@ -305,6 +294,15 @@ export default async function MobileHomePage() {
         </Reveal>
       </section> */}
 
+      {/* HERO / BANNER */}
+      <section className="mt-3 w-full snap-start scroll-mt-3">
+        <Reveal>
+          <div className="w-full overflow-hidden rounded-xl">
+            <MobileBannerCarousel />
+          </div>
+        </Reveal>
+      </section>
+
       {/* QUICK GAMES */}
       <section className="mt-5 w-full snap-start scroll-mt-3">
         <Reveal>
@@ -324,32 +322,33 @@ export default async function MobileHomePage() {
 
           {(() => {
             const COLS = 5;
-            const remainder = hotGames.length % COLS;
+            const visibleGames = hotGames.slice(0, COLS);
+            const remainder = visibleGames.length % COLS;
             const placeholders = remainder === 0 ? 0 : COLS - remainder;
 
             return (
               <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-white/5 p-4">
-                {hotGames.length === 0 ? (
+                {visibleGames.length === 0 ? (
                   <div className="text-sm text-white/70">
                     No minigames available right now.
                   </div>
                 ) : (
                   <>
                     <div className="grid grid-cols-5 gap-x-3 gap-y-4">
-                      {hotGames.map((g) => (
+                      {visibleGames.map((g) => (
                         <Link
                           key={g.slug}
                           href={`/mobile/minigames/${encodeURIComponent(
                             g.slug
                           )}`}
                           prefetch={false}
-                          className="flex flex-col items-center transition active:scale-95 cursor-pointer"
+                          className="flex flex-col items-center cursor-pointer active:scale-95"
                         >
-                          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-md">
+                          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-transparent overflow-hidden">
                             <img
                               src={g.icon}
                               alt={g.title}
-                              className="h-9 w-9 object-contain"
+                              className="h-full w-full object-contain rounded-2xl"
                               loading="lazy"
                             />
                           </div>
@@ -383,6 +382,12 @@ export default async function MobileHomePage() {
         </Reveal>
       </section>
 
+      {/* SOCIALS (under video) */}
+      <section className="mt-4 w-full snap-start scroll-mt-3">
+        <Reveal>
+          <SocialBox />
+        </Reveal>
+      </section>
       {/* NEWS */}
       {newsWithImages.length > 0 && (
         <section className="mt-5 w-full snap-start scroll-mt-3">
