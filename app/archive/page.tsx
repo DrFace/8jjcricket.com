@@ -6,7 +6,7 @@ import { ArchiveFilters, Archive } from '@/types/archive';
 import TopNav from '@/components/TopNav';
 import BottomNav from '@/components/BottomNav';
 import Footer from '@/components/Footer';
-import BetButton from '@/components/BetButton';
+// import BetButton from '@/components/BetButton';
 
 /**
  * Format date string to readable format
@@ -683,9 +683,9 @@ export default function ArchivePage() {
             </div>
 
             {/* Bet Button */}
-            <div className="border-t border-white/10 pt-4 flex justify-center">
+            {/* <div className="border-t border-white/10 pt-4 flex justify-center">
               <BetButton />
-            </div>
+            </div> */}
           </div>
         </aside>
       </div>
