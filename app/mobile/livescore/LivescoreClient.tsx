@@ -3,7 +3,6 @@
 import { useState } from "react";
 import useSWR from "swr";
 
-import BetButton from "@/components/BetButton";
 import type { Fixture } from "@/types/fixture";
 import MobileTabBar from "@/components/mobile/MobileTabBar";
 import MobileLiveGrid from "@/components/mobile/MobileLiveGrid";
@@ -74,7 +73,6 @@ export default function LivescoreClient() {
           <h2 className="text-xs font-semibold uppercase tracking-wide text-amber-300 ">
             Live Now
           </h2>
-          <BetButton />
         </div>
 
         <div className="px-4 py-4">

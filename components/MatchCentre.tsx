@@ -5,7 +5,6 @@ import useSWR from 'swr';
 import Link from 'next/link';
 
 import LiveGrid from './LiveGrid';
-import BetButton from './BetButton';
 import LiveCard from './LiveCard';
 import type { Fixture } from '@/types/fixture';
 
@@ -95,7 +94,6 @@ export default function MatchCentre() {
                             </div>
 
                             <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                                <BetButton />
                                 <div className="mt-3">
                                     <LiveGrid filter={selected} />
                                 </div>
