@@ -145,12 +145,12 @@ export default function HomeFeedbackSection({
                             <h2 className="text-2xl font-semibold text-white">Feedback</h2>
                             <p className="mt-1 text-sm text-white/70">
                                 Log in to submit feedback and receive valuable rewards!{" "}
-                                <a
+                                {/* <a
                                     href="/login"
                                     className="font-semibold text-amber-300 hover:text-amber-200"
                                 >
                                     Log in now.
-                                </a>
+                                </a> */}
                             </p>
                         </div>
 
