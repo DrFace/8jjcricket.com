@@ -26,7 +26,7 @@ const fetcher = async (u: string) => {
 type AnyRow = Record<string, any>;
 
 export default function MobileScoreboard({ id }: { id: string }) {
-  const { data, error, isLoading } = useSWR(`/api/fixture/${id}`, fetcher, {
+  const { data, error, isLoading } = useSWR(`/api/match/${id}`, fetcher, {
     refreshInterval: 15000,
   });
   const fx = data?.data;

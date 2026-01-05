@@ -90,7 +90,7 @@ function SubCard({
 }
 
 export default function Scoreboard({ id }: { id: string }) {
-  const { data, error, isLoading } = useSWR(`/api/fixture/${id}`, fetcher, {
+  const { data, error, isLoading } = useSWR(`/api/match/${id}`, fetcher, {
     refreshInterval: 15000,
   })
   const fx = data?.data
