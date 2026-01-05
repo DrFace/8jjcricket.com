@@ -77,6 +77,7 @@ async function getNewsPreview(): Promise<Article[]> {
     return [];
   }
 }
+console.log('test for branch');
 
 const latest: { slug: string; title: string; desc: string }[] = [
   {
