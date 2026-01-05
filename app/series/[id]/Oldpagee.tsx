@@ -4,9 +4,10 @@ import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
 import Image from "next/image";
 import Link from "next/link";
+import ArchiveCard from "@/components/ArchhiveCard";
+import TopNav from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
-import SeriesCalenderModal from "@/components/mobile/SeriesCalenderModal";
-import SeriesDetailsCard from "@/components/mobile/SeriesDetailsCard";
+import Footer from "@/components/Footer";
 
 interface Season {
   is_current: boolean;
@@ -93,6 +94,229 @@ function toDateString(date: Date) {
   return `${year}-${mm}-${dd}`;
 }
 
+type CalendarProps = {
+  selectedDate: string | null;
+  onSelectDate: (value: string | null) => void;
+  minDate?: string;
+  maxDate?: string;
+};
+
+function Calendar({
+  selectedDate,
+  onSelectDate,
+  minDate,
+  maxDate,
+}: CalendarProps) {
+  const initialMonth = selectedDate ? new Date(selectedDate) : new Date();
+  const [viewMonth, setViewMonth] = useState<Date>(
+    new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1)
+  );
+
+  const min = minDate ? new Date(minDate) : undefined;
+  const max = maxDate ? new Date(maxDate) : undefined;
+
+  const weeks = useMemo(() => {
+    const startOfMonth = new Date(
+      viewMonth.getFullYear(),
+      viewMonth.getMonth(),
+      1
+    );
+    const startDay = startOfMonth.getDay();
+    const gridStart = new Date(startOfMonth);
+    gridStart.setDate(startOfMonth.getDate() - startDay);
+
+    const days: Date[] = [];
+    for (let i = 0; i < 42; i += 1) {
+      const d = new Date(gridStart);
+      d.setDate(gridStart.getDate() + i);
+      days.push(d);
+    }
+
+    const weekRows: Date[][] = [];
+    for (let i = 0; i < days.length; i += 7) {
+      weekRows.push(days.slice(i, i + 7));
+    }
+
+    return { weekRows };
+  }, [viewMonth]);
+
+  const isDisabled = (day: Date) => {
+    if (min && day < min) return true;
+    if (max && day > max) return true;
+    return false;
+  };
+
+  const handleDayClick = (day: Date) => {
+    if (isDisabled(day)) return;
+    const value = toDateString(day);
+    onSelectDate(value);
+  };
+
+  const todayStr = toDateString(new Date());
+  const monthIndex = viewMonth.getMonth();
+  const yearValue = viewMonth.getFullYear();
+
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const currentYear = new Date().getFullYear();
+  const startYear = min ? min.getFullYear() : currentYear - 3;
+  const endYear = max ? max.getFullYear() : currentYear + 3;
+  const yearOptions: number[] = [];
+  for (let y = startYear; y <= endYear; y += 1) {
+    yearOptions.push(y);
+  }
+
+  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newMonth = Number(e.target.value);
+    setViewMonth(new Date(yearValue, newMonth, 1));
+  };
+
+  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newYear = Number(e.target.value);
+    setViewMonth(new Date(newYear, monthIndex, 1));
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between text-sm font-medium">
+        <button
+          type="button"
+          className="rounded-md px-2 py-1 text-amber-300 hover:bg-white/10 transition-colors"
+          onClick={() =>
+            setViewMonth(
+              new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1)
+            )
+          }
+        >
+          ‹
+        </button>
+
+        <div className="flex items-center gap-1">
+          <select
+            className="rounded-md border border-white/20 bg-black/40 px-2 py-1 text-xs font-medium text-amber-200 shadow-sm focus:outline-none focus:ring-1 focus:ring-amber-400 backdrop-blur-sm"
+            value={monthIndex}
+            onChange={handleMonthChange}
+          >
+            {monthNames.map((name, idx) => (
+              <option key={name} value={idx} className="bg-slate-900">
+                {name.slice(0, 3)}
+              </option>
+            ))}
+          </select>
+
+          <select
+            className="rounded-md border border-white/20 bg-black/40 px-2 py-1 text-xs font-medium text-amber-200 shadow-sm focus:outline-none focus:ring-1 focus:ring-amber-400 backdrop-blur-sm"
+            value={yearValue}
+            onChange={handleYearChange}
+          >
+            {yearOptions.map((y) => (
+              <option key={y} value={y} className="bg-slate-900">
+                {y}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button
+          type="button"
+          className="rounded-md px-2 py-1 text-amber-300 hover:bg-white/10 transition-colors"
+          onClick={() =>
+            setViewMonth(
+              new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1)
+            )
+          }
+        >
+          ›
+        </button>
+      </div>
+
+      <div className="grid grid-cols-7 text-center text-[10px] font-medium uppercase tracking-wide text-amber-300">
+        <div>Su</div>
+        <div>Mo</div>
+        <div>Tu</div>
+        <div>We</div>
+        <div>Th</div>
+        <div>Fr</div>
+        <div>Sa</div>
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 text-xs">
+        {weeks.weekRows.flat().map((day, idx) => {
+          const dayStr = toDateString(day);
+          const selected = selectedDate === dayStr;
+          const isToday = dayStr === todayStr;
+          const disabled = isDisabled(day);
+
+          return (
+            <button
+              key={idx}
+              type="button"
+              disabled={disabled}
+              onClick={() => handleDayClick(day)}
+              className={[
+                "h-7 w-7 rounded-md text-center leading-7 transition",
+                "text-white",
+                "hover:bg-white/10",
+                selected &&
+                  "bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-bold hover:brightness-110",
+                disabled &&
+                  "cursor-not-allowed opacity-40 hover:bg-transparent",
+                !selected &&
+                  isToday &&
+                  !disabled &&
+                  "border border-amber-400 text-amber-300",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+            >
+              {day.getDate()}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="flex items-center justify-between pt-1">
+        <button
+          type="button"
+          onClick={() => {
+            const now = new Date();
+            const today = new Date(
+              now.getFullYear(),
+              now.getMonth(),
+              now.getDate()
+            );
+            setViewMonth(new Date(today.getFullYear(), today.getMonth(), 1));
+            onSelectDate(toDateString(today));
+          }}
+          className="text-[11px] font-medium text-amber-300 hover:text-amber-200 transition-colors"
+        >
+          Today
+        </button>
+        <button
+          type="button"
+          onClick={() => onSelectDate(null)}
+          className="text-[11px] font-medium text-sky-200 hover:text-white transition-colors"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /**
  * SeriesDetailPage displays comprehensive information about a specific
  * cricket series/league similar to Cricbuzz format with multiple tabs
@@ -112,9 +336,10 @@ export default function SeriesDetailPage({
     `/api/leagues/${params.id}`,
     fetcher
   );
+
   // Extract league data from response
   const leagueData: League = data?.data;
-  const [open, setOpen] = useState(false);
+
   // Reset selected season when switching tabs or league changes
   useEffect(() => {
     if (activeTab !== "points") {
@@ -191,12 +416,10 @@ export default function SeriesDetailPage({
     }
   }, [activeTab, sortedFixtures, selectedDate]);
 
+  // Debug fixtures data
   useEffect(() => {
     if (fixturesData) {
       if (fixturesData?.data?.length > 0) {
-        console.log("🏏 Sample fixture:", fixturesData.data[0]);
-        console.log("🏏 Local team:", fixturesData.data[0]?.localteam);
-        console.log("🏏 Visitor team:", fixturesData.data[0]?.visitorteam);
       }
     }
   }, [fixturesData]);
@@ -407,19 +630,21 @@ export default function SeriesDetailPage({
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
+
+      <TopNav />
       <BottomNav />
 
       <div className="space-y-6">
         {/* Series Header */}
         <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 p-6 shadow-2xl backdrop-blur-xl">
-          <div className="flex items-center justify-between gap-4 mb-4">
+          <div className="flex items-start gap-4 mb-4">
             <button
               onClick={() => window.history.back()}
               className="flex items-center justify-center w-10 h-10 bg-black/40 hover:bg-amber-950/60 border border-amber-400/30 rounded-full transition-all duration-300 hover:scale-110 group shadow-lg backdrop-blur-sm flex-shrink-0"
               aria-label="Go back"
             >
               <svg
-                className="w-5 h-10 text-amber-300 group-hover:-translate-x-0.5 transition-transform"
+                className="w-5 h-5 text-amber-300 group-hover:-translate-x-0.5 transition-transform"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -431,22 +656,35 @@ export default function SeriesDetailPage({
                   d="M15 19l-7-7 7-7"
                 />
               </svg>
-            </button>{" "}
-            <div className="">
-              {leagueData.image_path && (
-                <Image
-                  src={leagueData.image_path}
-                  alt={leagueData.name}
-                  width={50}
-                  height={50}
-                  className="object-contain"
-                />
-              )}
+            </button>
+            {leagueData.image_path && (
+              <Image
+                src={leagueData.image_path}
+                alt={leagueData.name}
+                width={60}
+                height={60}
+                className="object-contain"
+              />
+            )}
+            <div className="flex-1">
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                {leagueData.name}
+              </h1>
+              <div className="flex flex-wrap items-center gap-3 text-sm text-sky-100/80">
+                {currentSeason && (
+                  <>
+                    <span>{currentSeason.name}</span>
+                    <span>•</span>
+                  </>
+                )}
+                <span>{dateRange}</span>
+              </div>
             </div>
+
             {/* Teams Button */}
             <Link
-              href={`/mobile/teams?league=${leagueData.id}`}
-              className="flex items-center gap-2 px-4 h-10 bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-bold rounded-2xl rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-xl flex-shrink-0"
+              href={`/teams?league=${leagueData.id}`}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-xl flex-shrink-0"
             >
               <svg
                 className="w-5 h-5"
@@ -465,22 +703,6 @@ export default function SeriesDetailPage({
             </Link>
           </div>
 
-          <div className="flex items-start">
-            <div className="flex-1">
-              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
-                {leagueData.name}
-              </h1>
-              <div className="flex flex-wrap items-center gap-3 text-sm text-sky-100/80">
-                {currentSeason && (
-                  <>
-                    <span>{currentSeason.name}</span>
-                    <span>•</span>
-                  </>
-                )}
-                <span>{dateRange}</span>
-              </div>
-            </div>
-          </div>
           {/* Tabs */}
           <div className="border-t border-white/20 -mx-6 px-6 mt-4">
             <div className="flex overflow-x-auto -mx-6 px-6">
@@ -673,16 +895,46 @@ export default function SeriesDetailPage({
               ) : (
                 <>
                   {/* Calendar Filter */}
-                  <SeriesCalenderModal
-                    isOpen={open}
-                    onClose={() => setOpen(false)}
-                    minDate={minDate}
-                    maxDate={maxDate}
-                    setOpen={setOpen}
-                    selectedDate={selectedDate}
-                    setSelectedDate={setSelectedDate}
-                  />
-                  <div className="mt-6" />
+                  <div className="mb-6 max-w-sm mx-auto lg:float-right lg:ml-6 lg:mb-0">
+                    <div className="rounded-xl border border-amber-400/30 bg-slate-900/80 backdrop-blur-xl p-4 shadow-xl">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-bold text-amber-300 uppercase tracking-wide">
+                          Filter by Date
+                        </h3>
+                        {selectedDate && (
+                          <button
+                            onClick={() => setSelectedDate(null)}
+                            className="text-xs text-sky-200 hover:text-white transition-colors font-medium"
+                          >
+                            Show All
+                          </button>
+                        )}
+                      </div>
+                      <Calendar
+                        selectedDate={selectedDate}
+                        onSelectDate={setSelectedDate}
+                        minDate={minDate}
+                        maxDate={maxDate}
+                      />
+                      {selectedDate && (
+                        <div className="mt-3 pt-3 border-t border-white/10">
+                          <p className="text-xs text-amber-200/80">
+                            Showing matches for{" "}
+                            {new Date(selectedDate).toLocaleDateString(
+                              "en-US",
+                              {
+                                weekday: "short",
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              }
+                            )}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                   {(() => {
                     <div className="text-center py-12 bg-slate-900/50 border border-white/10 rounded-2xl backdrop-blur-sm">
                       <svg
@@ -818,13 +1070,13 @@ export default function SeriesDetailPage({
                     });
 
                     return (
-                      <div className="space-y-4 ">
+                      <div className="space-y-4">
                         {Object.entries(groupedMatches).map(
                           ([date, matches]) => (
                             <div key={date}>
                               {/* Date Header */}
-                              <div className="bg-gradient-to-r from-slate-800/80 to-slate-900/80 border border-amber-400/30 px-4 py-3 mb-3 rounded-xl flex items-center justify-between backdrop-blur-sm ">
-                                <p className="text-sm font-bold text-amber-300 uppercase tracking-wide ">
+                              <div className="bg-gradient-to-r from-slate-800/80 to-slate-900/80 border border-amber-400/30 px-4 py-3 mb-3 rounded-xl flex items-center justify-between backdrop-blur-sm">
+                                <p className="text-sm font-bold text-amber-300 uppercase tracking-wide">
                                   {date}
                                 </p>
                                 {liveMatches.some((m) =>
@@ -837,9 +1089,9 @@ export default function SeriesDetailPage({
                               </div>
 
                               {/* Matches for this date - Using ArchiveCard */}
-                              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 flex items-center justify-center">
+                              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                                 {matches.map((match: any) => (
-                                  <SeriesDetailsCard key={match.id} f={match} />
+                                  <ArchiveCard key={match.id} f={match} />
                                 ))}
                               </div>
                             </div>
@@ -1202,6 +1454,8 @@ export default function SeriesDetailPage({
           )}
         </div>
       </div>
+
+      <Footer />
     </>
   );
 }

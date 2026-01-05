@@ -4,8 +4,9 @@ import Link from "next/link";
 import { formatDate, cn } from "@/lib/utils";
 import TeamBadge from "@/components/TeamBadge";
 import type { Fixture } from "@/types/fixture";
+import { Match } from "@/lib/cricket-types";
 
-export default function ArchhiveCard({ f }: { f: Fixture }) {
+export default function ArchhiveCard({ f }: { f: Match }) {
   const home = f.localteam;
   const away = f.visitorteam;
 

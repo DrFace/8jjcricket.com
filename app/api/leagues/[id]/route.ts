@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const SPORTMONKS_API_TOKEN = process.env.SPORTMONKS_API_TOKEN || "";
+const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 export async function GET(
   request: NextRequest,
@@ -15,7 +15,7 @@ export async function GET(
         { status: 400 }
       );
     }
-    const upstream = "http://127.0.0.1:8000/api/leagues/" + id;
+    const upstream = `${NEXT_PUBLIC_API_BASE_URL}/leagues/${id}`;
     const response = await fetch(upstream, {
       next: { revalidate: 300 }, // Cache for 5 minutes
     });
