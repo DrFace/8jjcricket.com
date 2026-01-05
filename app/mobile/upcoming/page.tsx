@@ -3,7 +3,6 @@
 import React, { useMemo, useState } from "react";
 import useSWR from "swr";
 import type { Fixture } from "@/types/fixture";
-import BetButton from "@/components/BetButton";
 import MobileTabBar from "@/components/mobile/MobileTabBar";
 import CalenderModal from "@/components/mobile/CalenderModal";
 import MobileFixtureCard from "@/components/mobile/MobileFixtureCard";
@@ -144,10 +143,6 @@ export default function UpcomingPage() {
                   setParentSelectedDate={setSelectedDate}
                 />
               ) : null}
-              {/* Bet button under the calendar, aligned to the right */}
-              <div className="mt-2 flex justify-end border-t border-white/10 pt-3">
-                <BetButton />
-              </div>
             </div>
           </aside>
 

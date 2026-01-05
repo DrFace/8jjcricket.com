@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-const LONG_FEEDBACK_EMAIL = "support@8jjcricket.com";
+const LONG_FEEDBACK_EMAIL = "8jjcricket@gmail.com";
 
 function MailIcon(props: React.SVGProps<SVGSVGElement>) {
     return (

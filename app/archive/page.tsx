@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useArchives } from '@/hooks/useArchives';
 import { ArchiveFilters, Archive } from '@/types/archive';
 import TopNav from '@/components/TopNav';
 import BottomNav from '@/components/BottomNav';
 import Footer from '@/components/Footer';
-import BetButton from '@/components/BetButton';
+// import BetButton from '@/components/BetButton';
 
 /**
  * Format date string to readable format
@@ -29,73 +30,83 @@ interface ArchiveCardProps {
 
 function ArchiveCard({ archive }: ArchiveCardProps) {
   return (
-    <div className="rounded-2xl border border-white/15 bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-xl p-5 shadow-2xl hover:border-amber-400/50 hover:shadow-[0_20px_50px_rgba(251,191,36,0.15)] transition-all duration-300 group">
-      {/* Format and Category Badges */}
-      <div className="flex items-center gap-2 mb-3">
-        {archive.format && (
+    <Link href={`/match/${archive.sportmonks_fixture_id}`} className="block">
+      <div className="rounded-2xl border border-white/15 bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-xl p-5 shadow-2xl hover:border-amber-400/50 hover:shadow-[0_20px_50px_rgba(251,191,36,0.15)] transition-all duration-300 group cursor-pointer">
+        {/* Format and Category Badges */}
+        <div className="flex items-center gap-2 mb-3">
+          {archive.format && (
+            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${
+              archive.format === 'T20'
+                ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                : archive.format === 'ODI'
+                ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                : 'bg-green-500/20 text-green-300 border border-green-500/30'
+            }`}>
+              {archive.format}
+            </span>
+          )}
           <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${
-            archive.format === 'T20'
-              ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
-              : archive.format === 'ODI'
-              ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-              : 'bg-green-500/20 text-green-300 border border-green-500/30'
+            archive.category === 'International'
+              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+              : 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
           }`}>
-            {archive.format}
+            {archive.category}
           </span>
+          <span className="ml-auto text-[10px] text-emerald-400 font-medium uppercase tracking-wide">
+            {archive.status}
+          </span>
+        </div>
+
+        {/* Match Title */}
+        <h3 className="text-base font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">
+          {archive.match_title}
+        </h3>
+
+        {/* Round */}
+        {archive.round && (
+          <p className="text-xs text-sky-200/70 mb-3">{archive.round}</p>
         )}
-        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${
-          archive.category === 'International'
-            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-            : 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
-        }`}>
-          {archive.category}
-        </span>
-        <span className="ml-auto text-[10px] text-emerald-400 font-medium uppercase tracking-wide">
-          {archive.status}
-        </span>
-      </div>
 
-      {/* Match Title */}
-      <h3 className="text-base font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">
-        {archive.match_title}
-      </h3>
-
-      {/* Round */}
-      {archive.round && (
-        <p className="text-xs text-sky-200/70 mb-3">{archive.round}</p>
-      )}
-
-      {/* Scores */}
-      <div className="space-y-2 mb-4">
-        <div className="flex items-center justify-between bg-black/30 rounded-lg px-3 py-2 border border-white/5">
-          <span className="text-sm font-medium text-white">{archive.home_team}</span>
-          <span className="text-sm font-bold text-amber-300">
-            {archive.home_score || 'N/A'}
-          </span>
+        {/* Scores */}
+        <div className="space-y-2 mb-4">
+          <div className="flex items-center justify-between bg-black/30 rounded-lg px-3 py-2 border border-white/5">
+            <span className="text-sm font-medium text-white">{archive.home_team}</span>
+            <span className="text-sm font-bold text-amber-300">
+              {archive.home_score || 'N/A'}
+            </span>
+          </div>
+          <div className="flex items-center justify-between bg-black/30 rounded-lg px-3 py-2 border border-white/5">
+            <span className="text-sm font-medium text-white">{archive.away_team}</span>
+            <span className="text-sm font-bold text-amber-300">
+              {archive.away_score || 'N/A'}
+            </span>
+          </div>
         </div>
-        <div className="flex items-center justify-between bg-black/30 rounded-lg px-3 py-2 border border-white/5">
-          <span className="text-sm font-medium text-white">{archive.away_team}</span>
-          <span className="text-sm font-bold text-amber-300">
-            {archive.away_score || 'N/A'}
-          </span>
+
+        {/* Result */}
+        {archive.result && (
+          <div className="bg-gradient-to-r from-emerald-900/30 to-teal-900/30 border border-emerald-500/20 rounded-lg px-3 py-2 mb-3">
+            <p className="text-xs text-emerald-200 font-medium">{archive.result}</p>
+          </div>
+        )}
+
+        {/* Match Date */}
+        <div className="flex items-center justify-between text-xs text-sky-100/60 pt-3 border-t border-white/5">
+          <div className="flex items-center gap-2">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            {formatDate(archive.match_date)}
+          </div>
+          <div className="flex items-center gap-1 text-amber-300 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="text-[10px] font-medium">View Details</span>
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
         </div>
       </div>
-
-      {/* Result */}
-      {archive.result && (
-        <div className="bg-gradient-to-r from-emerald-900/30 to-teal-900/30 border border-emerald-500/20 rounded-lg px-3 py-2 mb-3">
-          <p className="text-xs text-emerald-200 font-medium">{archive.result}</p>
-        </div>
-      )}
-
-      {/* Match Date */}
-      <div className="flex items-center gap-2 text-xs text-sky-100/60 pt-3 border-t border-white/5">
-        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-        {formatDate(archive.match_date)}
-      </div>
-    </div>
+    </Link>
   );
 }
 
@@ -682,10 +693,6 @@ export default function ArchivePage() {
               </div>
             </div>
 
-            {/* Bet Button */}
-            <div className="border-t border-white/10 pt-4 flex justify-center">
-              <BetButton />
-            </div>
           </div>
         </aside>
       </div>

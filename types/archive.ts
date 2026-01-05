@@ -50,3 +50,4 @@ export interface ArchiveFilters {
   per_page?: number;
   page?: number;
 }
+
