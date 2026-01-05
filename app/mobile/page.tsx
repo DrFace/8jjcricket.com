@@ -306,20 +306,6 @@ export default async function MobileHomePage() {
       {/* QUICK GAMES */}
       <section className="mt-5 w-full snap-start scroll-mt-3">
         <Reveal>
-          <div className="mb-2 flex w-full items-center justify-between px-4">
-            <div className="mb-3 flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-yellow-400" />
-              <h2 className="text-sm font-semibold">Hot Minigames</h2>
-            </div>
-
-            <Link
-              href="/mobile/minigames"
-              className="text-xs font-semibold text-sky-400"
-            >
-              View all →
-            </Link>
-          </div>
-
           {(() => {
             const COLS = 5;
             const visibleGames = hotGames.slice(0, COLS);
@@ -328,6 +314,21 @@ export default async function MobileHomePage() {
 
             return (
               <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-white/5 p-4">
+                {/* Header INSIDE tile */}
+                <div className="mb-4 flex w-full items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-yellow-400" />
+                    <h2 className="text-sm font-semibold">Hot Minigames</h2>
+                  </div>
+
+                  <Link
+                    href="/mobile/minigames"
+                    className="text-xs font-semibold text-sky-400"
+                  >
+                    View all →
+                  </Link>
+                </div>
+
                 {visibleGames.length === 0 ? (
                   <div className="text-sm text-white/70">
                     No minigames available right now.
@@ -338,13 +339,11 @@ export default async function MobileHomePage() {
                       {visibleGames.map((g) => (
                         <Link
                           key={g.slug}
-                          href={`/mobile/minigames/${encodeURIComponent(
-                            g.slug
-                          )}`}
+                          href={`/mobile/minigames/${encodeURIComponent(g.slug)}`}
                           prefetch={false}
                           className="flex flex-col items-center cursor-pointer active:scale-95"
                         >
-                          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-transparent overflow-hidden">
+                          <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl">
                             <img
                               src={g.icon}
                               alt={g.title}
@@ -356,14 +355,9 @@ export default async function MobileHomePage() {
                       ))}
 
                       {Array.from({ length: placeholders }).map((_, i) => (
-                        <div
-                          key={`game-ph-${i}`}
-                          className="flex flex-col items-center"
-                        >
+                        <div key={`game-ph-${i}`} className="flex flex-col items-center">
                           <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
-                          <span className="mt-1 text-[11px] text-transparent">
-                            .
-                          </span>
+                          <span className="mt-1 text-[11px] text-transparent">.</span>
                         </div>
                       ))}
                     </div>

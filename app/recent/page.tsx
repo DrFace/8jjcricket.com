@@ -4,6 +4,7 @@ import React, { useMemo, useState } from "react";
 import useSWR from "swr";
 import type { Fixture } from "@/types/fixture";
 import RecentMatchCard from "@/components/RecentMatchCard";
+//import BetButton from "@/components/BetButton";
 import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
 import DesktopOnly from "@/components/DesktopOnly";
@@ -243,6 +244,9 @@ export default function RecentPage() {
                   minDate={minDate}
                   maxDate={maxDate}
                 />
+                <div className="mt-4">
+                  {/* <BetButton /> */}
+                </div>
               </aside>
             </div>
           )}

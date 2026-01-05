@@ -693,6 +693,10 @@ export default function ArchivePage() {
               </div>
             </div>
 
+            {/* Bet Button */}
+            <div className="border-t border-white/10 pt-4 flex justify-center">
+              {/* <BetButton /> */}
+            </div>
           </div>
         </aside>
       </div>
