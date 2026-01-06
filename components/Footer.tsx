@@ -1,43 +1,76 @@
 // components/Footer.tsx
 import Link from "next/link";
 import Image from "next/image";
+import { SOCIALS_LINKS } from "@/lib/constant";
 
 export default function Footer() {
-    return (
-        <footer className="snap-none border-t border-white/10 bg-black/70 py-10 backdrop-blur-xl">
-            <div className="grid w-full grid-cols-1 gap-6 px-4 md:grid-cols-3">
-                <div>
-                    <div className="mb-2 flex items-center gap-2">
-                        <Image src="/8jjlogo.png" alt="8jjcricket" width={32} height={32} />
-                        <span className="font-semibold text-white">8jjcricket</span>
-                    </div>
-                    <p className="text-sm text-sky-100/80">
-                        Live cricket, instant odds and fast minigames. Play responsibly.
-                    </p>
-                </div>
+  return (
+    <footer className="snap-none border-t border-white/10 bg-black/70 py-10 backdrop-blur-xl left-0 w-full">
+      <div className="grid 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto gap-3 md:grid-cols-[2fr_1fr_1fr_1fr]">
+        {/* Logo */}
+        <div>
+          <div className="mb-2 flex items-center gap-2">
+            <Image src="/8jjlogo.png" alt="8jjcricket" width={32} height={32} />
+            <span className="font-semibold text-white">8jjcricket</span>
+          </div>
+          <p className="text-sm text-sky-100/80">
+            Live cricket, instant odds and fast minigames. Play responsibly.
+          </p>
+        </div>
 
-                <div className="text-sm text-sky-100/90">
-                    <p className="mb-2 font-semibold text-white">Quick Links</p>
-                    <div className="grid grid-cols-2 gap-2">
-                        <Link href="/players" className="hover:text-amber-300">Players</Link>
-                        <Link href="/minigames" className="hover:text-amber-300">Minigames</Link>
-                        <Link href="/series" className="hover:text-amber-300">Series</Link>
-                        <Link href="/archive" className="hover:text-amber-300">Archive</Link>
-                    </div>
-                </div>
+        {/* Quick Links */}
+        <div className="text-sm text-sky-100/90">
+          <p className="mb-2 font-semibold text-white">Quick Links</p>
+          <div className="grid grid-cols-2 gap-2">
+            <Link href="/players">Players</Link>
+            <Link href="/minigames">Minigames</Link>
+            <Link href="/series">Series</Link>
+            <Link href="/archive">Archive</Link>
+          </div>
+        </div>
 
-                <div className="text-sm text-sky-100/80">
-                    <p className="mb-2 font-semibold text-white">Trust &amp; Safety</p>
-                    <ul className="space-y-1">
-                        <li>Play responsibly</li>
-                        <li>Support: support@8jjcricket.com</li>
-                    </ul>
-                </div>
-            </div>
+        {/* Trust & Safety + Socials */}
+        <div className="flex justify-between gap-1">
+          <div className="text-sm text-sky-100/80">
+            <p className="mb-2 font-semibold text-white">Trust &amp; Safety</p>
+            <ul className="space-y-1">
+              <li>Play responsibly</li>
+              <li>Support: support@8jjcricket.com</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          {/* Social Icons */}
+          <div className="flex ">
+            {SOCIALS_LINKS.slice(0, 2).map((s) => (
+              <Link
+                key={s.url}
+                href={s.url}
+                target="_blank"
+                className="flex h-12 w-12 items-center justify-center rounded-2xl"
+              >
+                <Image src={s.icon} alt={s.label} width={32} height={32} />
+              </Link>
+            ))}
+          </div>
+          <div className="flex ">
+            {SOCIALS_LINKS.slice(2, 4).map((s) => (
+              <Link
+                key={s.url}
+                href={s.url}
+                target="_blank"
+                className="flex h-12 w-12 items-center justify-center rounded-2xl"
+              >
+                <Image src={s.icon} alt={s.label} width={32} height={32} />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
 
-            <p className="mt-8 w-full px-4 text-center text-xs text-sky-100/70">
-                © {new Date().getFullYear()} 8jjcricket. All rights reserved.
-            </p>
-        </footer>
-    );
+      <p className="mt-8 w-full px-4 text-center text-xs text-sky-100/70">
+        © {new Date().getFullYear()} 8jjcricket. All rights reserved.
+      </p>
+    </footer>
+  );
 }
