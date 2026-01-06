@@ -6,7 +6,6 @@ import ArchhiveCard from "@/components/ArchhiveCard";
 import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
 import DesktopOnly from "@/components/DesktopOnly";
-import { useTeams } from "@/hooks/useTeams"; // ✅ ADD
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -148,83 +147,73 @@ function Pagination({ page, totalPages, onPrev, onNext }: any) {
   );
 }
 
-function getCategory(leagueName?: string): string {
-  if (!leagueName) return "Leagues";
-  const name = leagueName.toLowerCase();
-  if (name.includes("test")) return "Test";
-  if (name.includes("one day") || name.includes("odi")) return "ODI";
-  if (name.includes("t20")) return "T20";
-  if (name.includes("international")) return "International";
-  return "Leagues";
+type Scope = "" | "International" | "Leagues";
+type Format = "" | "T20" | "ODI" | "Test";
+
+function normalizeFormatFromItem(item: any): Format {
+  const direct = String(item?.format ?? "").toUpperCase();
+  if (direct === "T20" || direct === "ODI" || direct === "TEST")
+    return direct === "TEST" ? "Test" : (direct as any);
+
+  // fallback if older API response doesn’t have `format`
+  const cat = String(item?.category ?? "").toUpperCase();
+  if (cat.includes("TEST")) return "Test";
+  if (cat.includes("ODI")) return "ODI";
+  if (cat.includes("T20")) return "T20";
+  const type = String(item?.type ?? "").toUpperCase();
+  if (type.includes("TEST")) return "Test";
+  if (type.includes("ODI")) return "ODI";
+  if (type.includes("T20")) return "T20";
+  return "";
+}
+
+function normalizeScopeFromItem(item: any): Scope {
+  const direct = String(item?.category ?? "");
+  if (direct === "International" || direct === "Leagues")
+    return direct as Scope;
+
+  // fallback heuristic
+  const localNat = Boolean(item?.localteam?.national_team);
+  const visitNat = Boolean(item?.visitorteam?.national_team);
+  if (localNat || visitNat) return "International";
+  return "";
 }
 
 export default function UpcomingPage() {
-  // ✅ use your backend endpoint now
   const { data, error, isLoading } = useSWR("/api/fixtures/upcoming", fetcher);
-  const rawFixtures: any[] = data?.data ?? [];
+  const fixtures: any[] = data?.data ?? [];
 
-  // ✅ collect team ids and load teams via /api/teams hook
-  const teamIds = useMemo(() => {
-    const ids = rawFixtures
-      .flatMap((f: any) => [f.localteam_id, f.visitorteam_id])
-      .filter(Boolean) as number[];
-    return Array.from(new Set(ids));
-  }, [rawFixtures]);
+  // Keep the same pill row UI, but interpret clicks as “scope” or “format”
+  const chips = [
+    "International",
+    "T20",
+    "ODI",
+    "Test",
+    "Leagues",
+    "All",
+  ] as const;
 
-  const { teams } = useTeams(teamIds); // ✅ pulls /api/teams?ids=...
-
-  // ✅ normalize team object so TeamBadge always receives `logo`
-  const toBadgeTeam = (t: any) =>
-    t
-      ? {
-          ...t,
-          logo: t.logo ?? t.logo_url ?? t.image_path ?? t.image?.path ?? "",
-        }
-      : undefined;
-
-  // ✅ merge fixture team + teams API team, then normalize
-  const fixtures = useMemo(() => {
-    return rawFixtures.map((f: any) => {
-      const home = {
-        ...(f.localteam ?? {}),
-        ...(teams.get(f.localteam_id) ?? {}),
-      };
-      const away = {
-        ...(f.visitorteam ?? {}),
-        ...(teams.get(f.visitorteam_id) ?? {}),
-      };
-
-      return {
-        ...f,
-        category: f.category ?? getCategory(f.league?.name),
-        localteam: toBadgeTeam(home),
-        visitorteam: toBadgeTeam(away),
-      };
-    });
-  }, [rawFixtures, teams]);
-
-  const categories = ["International", "T20", "ODI", "Test", "Leagues", "All"];
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedScope, setSelectedScope] = useState<Scope>("");
+  const [selectedFormat, setSelectedFormat] = useState<Format>("");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const PAGE_SIZE = 30;
   const [page, setPage] = useState(1);
 
-  function matchCategory(item: any, category: string) {
-    const cat = String(item?.category ?? "").toLowerCase();
-    if (category === "All") return true;
-    if (!cat) return false;
-
-    if (category === "Leagues") {
-      return !["international", "odi", "t20", "test"].some((c) =>
-        cat.includes(c)
-      );
+  function onChipClick(label: (typeof chips)[number]) {
+    if (label === "All") {
+      setSelectedScope("");
+      setSelectedFormat("");
+      return;
     }
-    if (category === "International") return cat.includes("international");
-    if (category === "T20") return cat.includes("t20");
-    if (category === "ODI") return cat.includes("odi");
-    if (category === "Test") return cat.includes("test");
-    return false;
+
+    if (label === "International" || label === "Leagues") {
+      setSelectedScope((cur) => (cur === label ? "" : label));
+      return;
+    }
+
+    // T20 / ODI / Test
+    setSelectedFormat((cur) => (cur === label ? "" : (label as Format)));
   }
 
   const sorted = useMemo(() => {
@@ -235,14 +224,29 @@ export default function UpcomingPage() {
 
   const filtered = useMemo(() => {
     let list = [...sorted];
-    if (selectedDate)
+
+    if (selectedDate) {
       list = list.filter(
         (f) => String(f.starting_at).slice(0, 10) === selectedDate
       );
-    if (selectedCategory !== "All")
-      list = list.filter((f) => matchCategory(f, selectedCategory));
+    }
+
+    if (selectedScope) {
+      list = list.filter((f) => {
+        const scope = normalizeScopeFromItem(f);
+        return scope === selectedScope;
+      });
+    }
+
+    if (selectedFormat) {
+      list = list.filter((f) => {
+        const fmt = normalizeFormatFromItem(f);
+        return fmt === selectedFormat;
+      });
+    }
+
     return list;
-  }, [sorted, selectedDate, selectedCategory]);
+  }, [sorted, selectedDate, selectedScope, selectedFormat]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paged = useMemo(() => {
@@ -250,7 +254,7 @@ export default function UpcomingPage() {
     return filtered.slice(start, start + PAGE_SIZE);
   }, [filtered, page]);
 
-  useMemo(() => setPage(1), [selectedCategory, selectedDate]);
+  useMemo(() => setPage(1), [selectedScope, selectedFormat, selectedDate]);
 
   const minDate = sorted.length
     ? String(sorted[0].starting_at).slice(0, 10)
@@ -258,6 +262,8 @@ export default function UpcomingPage() {
   const maxDate = sorted.length
     ? String(sorted[sorted.length - 1].starting_at).slice(0, 10)
     : undefined;
+
+  const allActive = !selectedScope && !selectedFormat;
 
   return (
     <>
@@ -269,14 +275,19 @@ export default function UpcomingPage() {
               Upcoming Matches
             </h1>
 
+            {/* Filters (scope + format + all) */}
             <div className="flex gap-2 mb-6 flex-wrap">
-              {categories.map((cat) => {
-                const active = selectedCategory === cat;
+              {chips.map((label) => {
+                const active =
+                  (label === "All" && allActive) ||
+                  label === selectedScope ||
+                  label === selectedFormat;
+
                 return (
                   <button
-                    key={cat}
+                    key={label}
                     type="button"
-                    onClick={() => setSelectedCategory(cat)}
+                    onClick={() => onChipClick(label)}
                     className={[
                       "rounded-full px-3 py-1 text-[11px] font-semibold transition",
                       "border backdrop-blur",
@@ -285,7 +296,7 @@ export default function UpcomingPage() {
                         : "border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100",
                     ].join(" ")}
                   >
-                    {cat}
+                    {label}
                   </button>
                 );
               })}
@@ -311,7 +322,7 @@ export default function UpcomingPage() {
                 <main className="flex-1">
                   {paged.length > 0 ? (
                     <>
-                      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
                         {paged.map((fixture: any) => (
                           <div
                             key={fixture.id}
