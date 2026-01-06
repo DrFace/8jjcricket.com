@@ -141,7 +141,6 @@ export default function SeriesDetailPage({
     { revalidateOnFocus: false }
   );
   const standingsData = standingsSwr.data;
-
   // ✅ Early returns AFTER all hooks are called
   if (leagueSwr.error) {
     return (

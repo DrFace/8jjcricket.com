@@ -23,7 +23,6 @@ export interface League {
   seasons?: Season[];
   currentseason?: Season;
 }
-
 export interface Team {
   id: number;
   name: string;
@@ -56,7 +55,7 @@ export interface Run {
 export interface Match {
   id: number;
   league_id: number;
-  season_id: number;
+  season_id?: number;
   stage_id?: number;
   round?: string | null;
   localteam_id: number;
