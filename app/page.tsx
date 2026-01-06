@@ -180,9 +180,9 @@ export default async function HomePage() {
 
   return (
     <SmoothScroller>
-      {/* <DesktopOnly>
+      <DesktopOnly>
         <WelcomePopup />
-      </DesktopOnly> */}
+      </DesktopOnly>
 
       <BottomNav />
       <TopNav />
