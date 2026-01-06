@@ -6,6 +6,7 @@ import ArchhiveCard from "@/components/ArchhiveCard";
 import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
 import DesktopOnly from "@/components/DesktopOnly";
+import { useTeams } from "@/hooks/useTeams"; // ✅ ADD
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -23,7 +24,11 @@ function Calendar({ selectedDate, onSelectDate, minDate, maxDate }: any) {
   const max = maxDate ? new Date(maxDate) : undefined;
 
   const weeks = useMemo(() => {
-    const startOfMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), 1);
+    const startOfMonth = new Date(
+      viewMonth.getFullYear(),
+      viewMonth.getMonth(),
+      1
+    );
     const startDay = startOfMonth.getDay();
     const gridStart = new Date(startOfMonth);
     gridStart.setDate(startOfMonth.getDate() - startDay);
@@ -36,7 +41,8 @@ function Calendar({ selectedDate, onSelectDate, minDate, maxDate }: any) {
     }
 
     const weekRows: Date[][] = [];
-    for (let i = 0; i < days.length; i += 7) weekRows.push(days.slice(i, i + 7));
+    for (let i = 0; i < days.length; i += 7)
+      weekRows.push(days.slice(i, i + 7));
 
     return { weekRows };
   }, [viewMonth]);
@@ -54,19 +60,24 @@ function Calendar({ selectedDate, onSelectDate, minDate, maxDate }: any) {
           type="button"
           className="rounded-md px-2 py-1 text-white/70 hover:bg-white/10"
           onClick={() =>
-            setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1))
+            setViewMonth(
+              new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1)
+            )
           }
         >
           ‹
         </button>
         <div>
-          {viewMonth.toLocaleString("default", { month: "short" })} {viewMonth.getFullYear()}
+          {viewMonth.toLocaleString("default", { month: "short" })}{" "}
+          {viewMonth.getFullYear()}
         </div>
         <button
           type="button"
           className="rounded-md px-2 py-1 text-white/70 hover:bg-white/10"
           onClick={() =>
-            setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1))
+            setViewMonth(
+              new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1)
+            )
           }
         >
           ›
@@ -85,8 +96,11 @@ function Calendar({ selectedDate, onSelectDate, minDate, maxDate }: any) {
               onClick={() => onSelectDate(selected ? null : dayStr)}
               className={[
                 "h-7 w-7 rounded-md text-center leading-7 transition",
-                selected ? "bg-amber-400 text-black font-bold" : "text-white/80 hover:bg-white/10",
-                disabled && "opacity-40 cursor-not-allowed hover:bg-transparent",
+                selected
+                  ? "bg-amber-400 text-black font-bold"
+                  : "text-white/80 hover:bg-white/10",
+                disabled &&
+                  "opacity-40 cursor-not-allowed hover:bg-transparent",
               ].join(" ")}
             >
               {day.getDate()}
@@ -119,7 +133,8 @@ function Pagination({ page, totalPages, onPrev, onNext }: any) {
         Prev
       </button>
       <div className="text-xs text-white/70">
-        Page <span className="text-white/90 font-semibold">{page}</span> / {totalPages}
+        Page <span className="text-white/90 font-semibold">{page}</span> /{" "}
+        {totalPages}
       </div>
       <button
         type="button"
@@ -133,9 +148,60 @@ function Pagination({ page, totalPages, onPrev, onNext }: any) {
   );
 }
 
+function getCategory(leagueName?: string): string {
+  if (!leagueName) return "Leagues";
+  const name = leagueName.toLowerCase();
+  if (name.includes("test")) return "Test";
+  if (name.includes("one day") || name.includes("odi")) return "ODI";
+  if (name.includes("t20")) return "T20";
+  if (name.includes("international")) return "International";
+  return "Leagues";
+}
+
 export default function UpcomingPage() {
-  const { data, error, isLoading } = useSWR("/api/upcoming", fetcher);
-  const fixtures: any[] = data?.data ?? [];
+  // ✅ use your backend endpoint now
+  const { data, error, isLoading } = useSWR("/api/fixtures/upcoming", fetcher);
+  const rawFixtures: any[] = data?.data ?? [];
+
+  // ✅ collect team ids and load teams via /api/teams hook
+  const teamIds = useMemo(() => {
+    const ids = rawFixtures
+      .flatMap((f: any) => [f.localteam_id, f.visitorteam_id])
+      .filter(Boolean) as number[];
+    return Array.from(new Set(ids));
+  }, [rawFixtures]);
+
+  const { teams } = useTeams(teamIds); // ✅ pulls /api/teams?ids=...
+
+  // ✅ normalize team object so TeamBadge always receives `logo`
+  const toBadgeTeam = (t: any) =>
+    t
+      ? {
+          ...t,
+          logo: t.logo ?? t.logo_url ?? t.image_path ?? t.image?.path ?? "",
+        }
+      : undefined;
+
+  // ✅ merge fixture team + teams API team, then normalize
+  const fixtures = useMemo(() => {
+    return rawFixtures.map((f: any) => {
+      const home = {
+        ...(f.localteam ?? {}),
+        ...(teams.get(f.localteam_id) ?? {}),
+      };
+      const away = {
+        ...(f.visitorteam ?? {}),
+        ...(teams.get(f.visitorteam_id) ?? {}),
+      };
+
+      return {
+        ...f,
+        category: f.category ?? getCategory(f.league?.name),
+        localteam: toBadgeTeam(home),
+        visitorteam: toBadgeTeam(away),
+      };
+    });
+  }, [rawFixtures, teams]);
 
   const categories = ["International", "T20", "ODI", "Test", "Leagues", "All"];
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -150,7 +216,9 @@ export default function UpcomingPage() {
     if (!cat) return false;
 
     if (category === "Leagues") {
-      return !["international", "odi", "t20", "test"].some((c) => cat.includes(c));
+      return !["international", "odi", "t20", "test"].some((c) =>
+        cat.includes(c)
+      );
     }
     if (category === "International") return cat.includes("international");
     if (category === "T20") return cat.includes("t20");
@@ -167,8 +235,12 @@ export default function UpcomingPage() {
 
   const filtered = useMemo(() => {
     let list = [...sorted];
-    if (selectedDate) list = list.filter((f) => String(f.starting_at).slice(0, 10) === selectedDate);
-    if (selectedCategory !== "All") list = list.filter((f) => matchCategory(f, selectedCategory));
+    if (selectedDate)
+      list = list.filter(
+        (f) => String(f.starting_at).slice(0, 10) === selectedDate
+      );
+    if (selectedCategory !== "All")
+      list = list.filter((f) => matchCategory(f, selectedCategory));
     return list;
   }, [sorted, selectedDate, selectedCategory]);
 
@@ -180,8 +252,12 @@ export default function UpcomingPage() {
 
   useMemo(() => setPage(1), [selectedCategory, selectedDate]);
 
-  const minDate = sorted.length ? String(sorted[0].starting_at).slice(0, 10) : undefined;
-  const maxDate = sorted.length ? String(sorted[sorted.length - 1].starting_at).slice(0, 10) : undefined;
+  const minDate = sorted.length
+    ? String(sorted[0].starting_at).slice(0, 10)
+    : undefined;
+  const maxDate = sorted.length
+    ? String(sorted[sorted.length - 1].starting_at).slice(0, 10)
+    : undefined;
 
   return (
     <>
@@ -193,7 +269,6 @@ export default function UpcomingPage() {
               Upcoming Matches
             </h1>
 
-            {/* Category Filters */}
             <div className="flex gap-2 mb-6 flex-wrap">
               {categories.map((cat) => {
                 const active = selectedCategory === cat;
@@ -218,12 +293,18 @@ export default function UpcomingPage() {
 
             {error && (
               <div className="rounded-2xl border border-red-500/30 bg-black/70 backdrop-blur-xl px-6 py-5 shadow-2xl">
-                <h2 className="text-lg font-semibold text-red-400 mb-1">Failed to load upcoming matches</h2>
-                <p className="text-sm text-red-300/80">Please refresh the page or try again later.</p>
+                <h2 className="text-lg font-semibold text-red-400 mb-1">
+                  Failed to load upcoming matches
+                </h2>
+                <p className="text-sm text-red-300/80">
+                  Please refresh the page or try again later.
+                </p>
               </div>
             )}
 
-            {isLoading && <div className="text-amber-300">Loading upcoming matches...</div>}
+            {isLoading && (
+              <div className="text-amber-300">Loading upcoming matches...</div>
+            )}
 
             {!error && !isLoading && (
               <div className="flex gap-6">
@@ -245,16 +326,25 @@ export default function UpcomingPage() {
                         page={page}
                         totalPages={totalPages}
                         onPrev={() => setPage((p) => Math.max(1, p - 1))}
-                        onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
+                        onNext={() =>
+                          setPage((p) => Math.min(totalPages, p + 1))
+                        }
                       />
                     </>
                   ) : (
-                    <div className="text-gray-300">No upcoming matches found for this date/filter.</div>
+                    <div className="text-gray-300">
+                      No upcoming matches found for this date/filter.
+                    </div>
                   )}
                 </main>
 
                 <aside className="w-80">
-                  <Calendar selectedDate={selectedDate} onSelectDate={setSelectedDate} minDate={minDate} maxDate={maxDate} />
+                  <Calendar
+                    selectedDate={selectedDate}
+                    onSelectDate={setSelectedDate}
+                    minDate={minDate}
+                    maxDate={maxDate}
+                  />
                 </aside>
               </div>
             )}

@@ -30,7 +30,7 @@ export default function Footer() {
                     <p className="mb-2 font-semibold text-white">Trust &amp; Safety</p>
                     <ul className="space-y-1">
                         <li>Play responsibly</li>
-                        <li>Support: support@8jjcricket.com</li>
+                        <li>Support: 8jjcricket@gmail.com</li>
                     </ul>
                 </div>
             </div>
