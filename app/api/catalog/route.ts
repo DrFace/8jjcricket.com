@@ -13,6 +13,7 @@ export async function GET(req: Request) {
   const page = searchParams.get("page") ?? "1";
   const perPage = searchParams.get("per_page") ?? "20";
   const countryId = searchParams.get("country_id") ?? "";
+  const ids = searchParams.get("ids") ?? "";
   const q = (searchParams.get("q") ?? "").trim();
 
   const backendUrl = new URL(`${BACKEND_BASE}/api/catalog`);
@@ -20,6 +21,7 @@ export async function GET(req: Request) {
   backendUrl.searchParams.set("per_page", perPage);
 
   if (countryId) backendUrl.searchParams.set("country_id", countryId);
+  if (ids) backendUrl.searchParams.set("ids", ids);
 
   if (q) {
     backendUrl.searchParams.set("q", q);
