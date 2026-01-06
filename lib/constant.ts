@@ -7,3 +7,22 @@ export const CRICKET_CATEGORIES = [
   "Leagues",
   "All",
 ];
+
+export const SOCIALS_LINKS = [
+  {
+    label: "Instagram",
+    url: "https://www.instagram.com/8jj_cricket/",
+    icon: "/instagram.png",
+  },
+  {
+    label: "Facebook",
+    url: "https://www.facebook.com/profile.php?id=61584089624639",
+    icon: "/facebook.png",
+  },
+  {
+    label: "Telegram",
+    url: "https://t.me/Official8JJ_cricket",
+    icon: "/telegram.png",
+  },
+  { label: "X", url: "https://x.com/8jjCricket73705", icon: "/x.png" },
+];

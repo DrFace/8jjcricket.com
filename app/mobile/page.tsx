@@ -7,6 +7,7 @@ import { fetchGames, toMinigameCards } from "@/lib/games-api";
 import MobileBannerCarousel from "@/components/mobile/MobileBannerCarousel";
 import { ApiBase } from "@/lib/utils";
 import { DEFAULT_API_BASE } from "@/lib/constant";
+import MobileSocialBox from "@/components/MobileSocialBox";
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
   ssr: false,
@@ -63,7 +64,6 @@ const BRAND_ITEMS: { name: string; icon: string }[] = [
   { name: "CM88", icon: "/brands/cm88.png" },
   { name: "OK8386", icon: "/brands/ok8386.png" },
   { name: "SC88", icon: "/brands/sc88.png" },
-
 ];
 
 function normalizeImageUrl(url: string | null): string | null {
@@ -385,7 +385,7 @@ export default async function MobileHomePage() {
       {/* SOCIALS (under video) */}
       <section className="mt-4 w-full snap-start scroll-mt-3">
         <Reveal>
-          <SocialBox />
+          <MobileSocialBox />
         </Reveal>
       </section>
       {/* NEWS */}

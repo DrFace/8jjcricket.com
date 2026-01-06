@@ -332,7 +332,7 @@ export default function TeamsClient() {
                   {national.map((t) => (
                     <Link
                       key={t.id}
-                      href={`/teams/${t.id}`}
+                      href={``}
                       aria-label={`View team ${t.name}`}
                       className="block"
                     >
@@ -375,7 +375,7 @@ export default function TeamsClient() {
                   {domesticLimited.map((t) => (
                     <Link
                       key={t.id}
-                      href={`/teams/${t.id}`}
+                      href={``}
                       aria-label={`View team ${t.name}`}
                       className="block"
                     >

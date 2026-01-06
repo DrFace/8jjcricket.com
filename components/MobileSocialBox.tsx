@@ -2,13 +2,34 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { SOCIALS_LINKS } from "@/lib/constant";
 
-export default function SocialBox() {
+const socials = [
+  {
+    label: "Instagram",
+    url: "https://www.instagram.com/8jj_cricket/",
+    icon: "/instagram.png",
+  },
+  {
+    label: "Facebook",
+    url: "https://www.facebook.com/profile.php?id=61584089624639",
+    icon: "/facebook.png",
+  },
+  {
+    label: "Telegram",
+    url: "https://t.me/Official8JJ_cricket",
+    icon: "/telegram.png",
+  },
+  { label: "X", url: "https://x.com/8jjCricket73705", icon: "/x.png" },
+];
+
+export default function MobileSocialBox() {
   return (
     <div
       className="
-        w-full rounded-xl h-full relative
+        w-full rounded-xl
+        border border-white/10
+        bg-gradient-to-b from-black/80 to-black/60
+        p-4
       "
     >
       {/* Header */}
@@ -18,8 +39,8 @@ export default function SocialBox() {
       </div>
 
       {/* Icons */}
-      <div className="grid grid-cols-4 gap-4 place-items-center absolute bottom-3 w-full">
-        {SOCIALS_LINKS.map((s) => (
+      <div className="grid grid-cols-4 gap-4 place-items-center">
+        {socials.map((s) => (
           <Link
             key={s.url}
             href={s.url}
@@ -29,6 +50,7 @@ export default function SocialBox() {
             className="
               flex h-12 w-12 items-center justify-center
               rounded-2xl
+              bg-amber-950
               shadow-md
               transition
               active:scale-95
