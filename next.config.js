@@ -19,6 +19,28 @@ const nextConfig = {
         hostname: "www.8jjcricket.com",
         pathname: "/storage/**",
       },
+
+      // ✅ ADDED: localhost dev (only additions)
+      {
+        protocol: "http",
+        hostname: "localhost",
+        pathname: "/storage/**",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        pathname: "/storage/**",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        pathname: "/**",
+      },
     ],
   },
 

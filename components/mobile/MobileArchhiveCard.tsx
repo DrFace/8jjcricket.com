@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { formatDate, cn } from "@/lib/utils";
-import TeamBadge from "@/components/TeamBadge";
-import type { Fixture } from "@/types/fixture";
+import { Match } from "@/lib/cricket-types";
+import MobileTeamBadge from "./MobileTeamBadge";
 
-export default function MobileArchhiveCard({ f }: { f: Fixture }) {
+export default function MobileArchhiveCard({ f }: { f: Match }) {
   const home = f.localteam;
   const away = f.visitorteam;
 
@@ -35,21 +35,14 @@ export default function MobileArchhiveCard({ f }: { f: Fixture }) {
 
       <Link
         href={`/mobile/match/${f.id}`}
-        className="relative z-10 block rounded-xl px-2 sm:px-3 py-3 transition"
+        className="relative z-10 block rounded-xl px-2 py-3 transition px-2"
       >
         {/* Top row: title + status */}
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h3 className="text-sm font-semibold text-white truncate">
-              {homeLabel} vs {awayLabel}
-            </h3>
-
-            <p className="text-xs text-amber-200 mt-0.5">{metaLine}</p>
-
-            <p className="text-[11px] text-sky-100/70 mt-0.5">{dateLine}</p>
-          </div>
-
-          <div className="text-right flex flex-col items-end gap-1">
+        <div className="">
+          <div className="flex justify-between">
+            {f.status && (
+              <div className="text-[11px] text-amber-200/80">{f.status}</div>
+            )}
             <span
               className={cn(
                 "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold",
@@ -60,17 +53,19 @@ export default function MobileArchhiveCard({ f }: { f: Fixture }) {
             >
               {f.live ? "LIVE" : "Finished"}
             </span>
-
-            {f.status && (
-              <div className="text-[11px] text-amber-200/80">{f.status}</div>
-            )}
           </div>
         </div>
+        <div className="flex justify-between">
+          <p className=" text-amber-200 mt-0.5">{metaLine}</p>
 
+          <p className="text-[11px] text-sky-100/70 mt-0.5">
+            {dateLine.toString().split(",")[2]}
+          </p>
+        </div>
         {/* Middle: badges + "vs" */}
         <div className="mt-2 flex items-center justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <TeamBadge team={home} className="justify-start" />
+            <MobileTeamBadge team={home} className="justify-start" />
           </div>
 
           <div className="px-2 text-[11px] text-amber-300 uppercase tracking-wide font-semibold">
@@ -78,14 +73,12 @@ export default function MobileArchhiveCard({ f }: { f: Fixture }) {
           </div>
 
           <div className="flex-1 min-w-0 flex justify-end">
-            <TeamBadge team={away} className="justify-end text-right" />
+            <MobileTeamBadge team={away} className="justify-end text-right" />
           </div>
         </div>
 
         {/* Optional note */}
-        {f.note && (
-          <p className="text-xs sm:text-sm mt-2 text-sky-100/80">{f.note}</p>
-        )}
+        {f.note && <p className=" sm:text-sm mt-2 text-sky-100/80">{f.note}</p>}
       </Link>
     </div>
   );
