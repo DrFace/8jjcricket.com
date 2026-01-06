@@ -370,7 +370,7 @@ export default function LiveScoreHome() {
 
                 <div className="mb-10">
                   {filteredLive.length > 0 ? (
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
                       {filteredLive.map((match: any) => (
                         <LiveCard key={match.id} f={match} />
                       ))}
@@ -435,7 +435,7 @@ export default function LiveScoreHome() {
                   <main className="flex-1">
                     {filteredUpcomingAll.length > 0 ? (
                       <>
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
                           {upcomingPaged.map((match: any) => (
                             <ArchhiveCard key={match.id} f={match} />
                           ))}
