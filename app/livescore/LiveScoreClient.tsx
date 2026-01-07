@@ -240,8 +240,8 @@ export default function LiveScoreHome() {
     return data;
   }, [liveMatches, selectedCategory]);
 
-  // ✅ Live tab recent 6 -> use RecentMatchCard
-  const liveTabRecent6 = useMemo(() => {
+  // ✅ Live tab recent 4 -> use RecentMatchCard
+  const liveTabRecent4 = useMemo(() => {
     let data = [...recentSorted];
     if (selectedDateLive)
       data = data.filter(
@@ -249,7 +249,7 @@ export default function LiveScoreHome() {
       );
     if (selectedCategory !== "All")
       data = data.filter((m: any) => matchCategory(m, selectedCategory));
-    return data.slice(0, 6);
+    return data.slice(0, 4);
   }, [recentSorted, selectedDateLive, selectedCategory]);
 
   // ✅ Recent tab (pagination + calendar) -> use RecentMatchCard
@@ -396,13 +396,13 @@ export default function LiveScoreHome() {
                       </div>
                     </div>
 
-                    {liveTabRecent6.length === 0 ? (
+                    {liveTabRecent4.length === 0 ? (
                       <div className="text-gray-400">
                         No recent matches found for this date/filter.
                       </div>
                     ) : (
-                      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {liveTabRecent6.map((f: any) => (
+                      <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
+                        {liveTabRecent4.map((f: any) => (
                           <RecentMatchCard key={f.id} f={f} />
                         ))}
                       </div>
@@ -487,7 +487,7 @@ export default function LiveScoreHome() {
                   <main className="flex-1">
                     {filteredRecentAll.length > 0 ? (
                       <>
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
                           {recentPaged.map((f: any) => (
                             <RecentMatchCard key={f.id} f={f} />
                           ))}

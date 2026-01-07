@@ -1,53 +1,32 @@
 import { NextResponse } from "next/server";
-import { smFetch, mapTeam } from "@/lib/sportmonks";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-function getCategory(leagueName?: string): string {
-  if (!leagueName) return "Leagues";
-  const name = leagueName.toLowerCase();
-  if (name.includes("test")) return "Test";
-  if (name.includes("one day") || name.includes("odi")) return "ODI";
-  if (name.includes("t20")) return "T20";
-  if (name.includes("international")) return "International";
-  return "Leagues";
-}
+const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 export async function GET() {
   try {
-    // ✅ include league so we can build category filter on frontend
-    const json = await smFetch(
-      "/fixtures?filter[status]=Finished&sort=-starting_at&include=league,localteam,visitorteam"
-    );
+    const res = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/fixtures/recent`, {
+      // helps prevent caching issues
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+    });
 
-    const fixtures = (json?.data ?? []).map((f: any) => ({
-      id: f.id,
-      round: f.round,
-      status: f.status,
-      starting_at: f.starting_at,
-      note: f.note,
-      localteam_id: f.localteam_id ?? f.localteam?.id,
-      visitorteam_id: f.visitorteam_id ?? f.visitorteam?.id,
-      league_id: f.league_id,
-      league: f.league ? { id: f.league.id, name: f.league.name } : undefined,
-      localteam: mapTeam(f.localteam),
-      visitorteam: mapTeam(f.visitorteam),
-      live: f.live ?? false,
-      category: getCategory(f.league?.name),
-    }));
-
-    return NextResponse.json({ data: fixtures });
-  } catch (err: any) {
-    const msg = String(err?.message ?? "");
-    if (msg === "SPORTMONKS_RATE_LIMIT") {
+    if (!res.ok) {
       return NextResponse.json(
-        { error: "SportMonks rate limit reached. Please try again soon." },
-        { status: 503 }
+        { error: `Laravel API failed: ${res.status}`, data: [] },
+        { status: 502 }
       );
     }
+
+    const json = await res.json();
+
+    // json is already: { data: [...] }
+    return NextResponse.json(json);
+  } catch (err: any) {
     return NextResponse.json(
-      { error: msg || "Failed to load recent fixtures", data: [] },
+      { error: err?.message || "Failed to load recent fixtures", data: [] },
       { status: 500 }
     );
   }
