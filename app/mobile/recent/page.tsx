@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
-import type { Fixture } from "@/types/fixture";
 import MobileTabBar from "@/components/mobile/MobileTabBar";
 import CalenderModal from "@/components/mobile/CalenderModal";
 import MobileLiveCard from "@/components/mobile/MobileLiveCard";
-import { CRICKET_CATEGORIES } from "@/lib/constant";
+import { CRICKET_CATEGORIES, MOBILE_PAGE_SIZE } from "@/lib/constant";
 import { MatchCategory } from "@/lib/match-category";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
@@ -18,11 +17,12 @@ const fetcher = (u: string) => fetch(u).then((r) => r.json());
 export default function RecentPage() {
   const { data, error, isLoading } = useSWR("/api/recent", fetcher);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [page, setPage] = useState<number>(1);
   const title = "Recent Matches | 8jjcricket";
   const description =
     "See the most recent cricket matches and results on 8jjcricket.";
 
-  const fixtures: Fixture[] = data?.data ?? [];
+  const fixtures = data?.data ?? [];
 
   // Hooks must be before any early returns
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -59,8 +59,21 @@ export default function RecentPage() {
     return data;
   }, [sortedFixtures, selectedDate, selectedCategory]);
 
-  // early returns
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredFixtures.length / MOBILE_PAGE_SIZE)
+  );
 
+  const pagedFixtures = useMemo(() => {
+    const start = (page - 1) * MOBILE_PAGE_SIZE;
+    return filteredFixtures.slice(start, start + MOBILE_PAGE_SIZE);
+  }, [filteredFixtures, page]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [selectedCategory, selectedDate]);
+
+  // early returns
   if (error)
     return (
       <>
@@ -154,10 +167,36 @@ export default function RecentPage() {
               filter.
             </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
-              {filteredFixtures.map((f) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {pagedFixtures.map((f) => (
                 <MobileLiveCard key={f.id} f={f} />
               ))}
+            </div>
+          )}
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-3 pt-4">
+              <button
+                type="button"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 disabled:opacity-40"
+              >
+                Prev
+              </button>
+
+              <span className="text-xs text-white/70">
+                Page <strong>{page}</strong> / {totalPages}
+              </span>
+
+              <button
+                type="button"
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 disabled:opacity-40"
+              >
+                Next
+              </button>
             </div>
           )}
         </main>

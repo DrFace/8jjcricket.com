@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     const base = getBackendBase();
 
     const res = await fetch(
-      `${base}/api/fixtures/recent?limit=${encodeURIComponent(limit)}`,
+      `${base}/api/fixtures/upcoming?limit=${encodeURIComponent(limit)}`,
       { cache: "no-store", headers: { Accept: "application/json" } }
     );
 
@@ -26,7 +26,7 @@ export async function GET(request: Request) {
       const text = await res.text();
       return NextResponse.json(
         {
-          error: `Backend /api/fixtures/recent returned ${res.status}`,
+          error: `Backend /api/fixtures/upcoming returned ${res.status}`,
           details: text.slice(0, 2000),
           data: [],
         },
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ data: json?.data ?? [] });
   } catch (e: any) {
     return NextResponse.json(
-      { error: e?.message ?? "Failed to load recent matches", data: [] },
+      { error: e?.message ?? "Failed to load upcoming matches", data: [] },
       { status: 500 }
     );
   }
