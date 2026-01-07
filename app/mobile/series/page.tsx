@@ -4,7 +4,6 @@ import { useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
-import Footer from "@/components/Footer";
 
 interface League {
   seasons: any[];
@@ -14,6 +13,7 @@ interface League {
   image_path: string;
   type: string;
   dateRange?: string;
+  sportmonks_league_id?: number;
 }
 
 interface SeriesByMonth {
@@ -25,19 +25,6 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json());
 const tabs = [{ id: "series", label: "Current & Future Series" }];
 
 const filters = ["All", "International", "League", "Domestic", "Women"];
-
-// Helper to get the latest season ID from a league
-const getLatestSeasonId = (league: League) => {
-  if (!league.seasons?.length) return null;
-  const sorted = [...league.seasons].sort((a: any, b: any) => {
-    const getYear = (name: string) => {
-      const years = name.match(/\d{4}/g);
-      return years ? Math.max(...years.map((y) => parseInt(y))) : 0;
-    };
-    return getYear(b.name) - getYear(a.name);
-  });
-  return sorted[0]?.id;
-};
 
 /**
  * SeriesPage displays cricket series similar to Cricbuzz format
@@ -112,8 +99,6 @@ export default function SeriesPage() {
     );
   }
 
-  // Filter only current and future series (2024 onwards)
-  const currentYear = 2025;
   const currentAndFutureLeagues = filteredLeagues.filter((league) => {
     // If league has seasons, check if any season is from 2024 onwards
     if (
@@ -300,20 +285,18 @@ export default function SeriesPage() {
                       </h3>
 
                       {/* League Code */}
-                      <p className="text-xs text-amber-200/80 uppercase font-medium mb-3">
-                        {league.code}
-                      </p>
 
+                      <h1>{league.sportmonks_league_id}</h1>
                       {/* Action Buttons */}
                       <div className="flex gap-2 mt-auto w-full">
                         <Link
-                          href={`series/${league.id}`}
+                          href={`series/${league.sportmonks_league_id}`}
                           className="flex-1 px-3 py-1.5 text-xs font-medium text-amber-300 border border-amber-400/50 rounded-xl hover:bg-amber-950/40 transition-colors backdrop-blur-sm"
                         >
                           Details
                         </Link>
                         <Link
-                          href={`teams?league=${league.id}`}
+                          href={`teams?league=${league.sportmonks_league_id}`}
                           className="flex-1 px-3 py-1.5 text-xs font-medium text-black bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 rounded-xl hover:brightness-110 transition-all shadow-lg"
                         >
                           Teams

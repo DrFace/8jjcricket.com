@@ -11,11 +11,12 @@ import Footer from "@/components/Footer";
 
 interface TeamFromAPI {
   id: number;
+  team_id?: number;
   name: string;
   code: string;
   image_path: string;
   country_id: number;
-  national_team: boolean;
+  national_team: boolean | number | string;
 }
 
 interface League {
@@ -78,8 +79,11 @@ export default function TeamsClient() {
     revalidateOnFocus: false,
   });
 
-  // Compute teams list (filtered when a league is selected)
-  const allTeams: TeamFromAPI[] = teamsData?.data ?? [];
+  const allTeams: TeamFromAPI[] = (teamsData?.data ?? []).map((t: any) => ({
+    ...t,
+    // normalize id to sportmonks team id
+    id: Number(t.team_id ?? t.id),
+  }));
 
   const teams: TeamFromAPI[] = useMemo(() => {
     if (!isValidSelection) return allTeams;
@@ -90,45 +94,23 @@ export default function TeamsClient() {
       if (fixture?.localteam_id) teamIdsInLeague.add(fixture.localteam_id);
       if (fixture?.visitorteam_id) teamIdsInLeague.add(fixture.visitorteam_id);
     });
-
-    return allTeams.filter((team) => teamIdsInLeague.has(team.id));
+    const retAllTeam = allTeams.filter((team) => teamIdsInLeague.has(team.id));
+    return retAllTeam;
   }, [allTeams, fixturesData, isValidSelection]);
 
   // Split teams
-  const national = useMemo(
-    () => teams.filter((t) => t.national_team),
-    [teams]
-  );
+  const isNationalTeam = (t: any) =>
+    t.national_team === true ||
+    t.national_team === 1 ||
+    t.national_team === "1" ||
+    t.national_team === "true";
+
+  const national = useMemo(() => teams.filter(isNationalTeam), [teams]);
   const domestic = useMemo(
-    () => teams.filter((t) => !t.national_team),
+    () => teams.filter((t) => !isNationalTeam(t)),
     [teams]
   );
   const domesticLimited = useMemo(() => domestic.slice(0, 30), [domestic]);
-
-  // Optional debug logs
-  useEffect(() => {
-    console.log("🏏 Teams Page Debug:", {
-      leagueParam,
-      selectedLeague,
-      isValidSelection,
-      fixturesUrl,
-      allTeamsCount: allTeams.length,
-      filteredTeamsCount: teams.length,
-      isLoading: teamsLoading,
-      hasError: !!teamsError,
-      hasFixturesData: !!fixturesData?.data,
-    });
-  }, [
-    leagueParam,
-    selectedLeague,
-    isValidSelection,
-    fixturesUrl,
-    allTeams.length,
-    teams.length,
-    teamsLoading,
-    teamsError,
-    fixturesData,
-  ]);
 
   const title =
     "Cricket Teams - All International & Domestic Teams | 8jjcricket";
@@ -280,10 +262,9 @@ export default function TeamsClient() {
 
               <div className="flex items-center gap-2 mt-2 ml-1">
                 <div
-                  className={`w-2 h-2 rounded-full ${selectedLeague === "all"
-                      ? "bg-amber-400"
-                      : "bg-emerald-400"
-                    } animate-pulse`}
+                  className={`w-2 h-2 rounded-full ${
+                    selectedLeague === "all" ? "bg-amber-400" : "bg-emerald-400"
+                  } animate-pulse`}
                 />
                 <p className="text-amber-200/80 text-xs font-medium">
                   {selectedLeague === "all"
@@ -351,7 +332,7 @@ export default function TeamsClient() {
                   {national.map((t) => (
                     <Link
                       key={t.id}
-                      href={`/teams/${t.id}`}
+                      href={``}
                       aria-label={`View team ${t.name}`}
                       className="block"
                     >
@@ -394,17 +375,17 @@ export default function TeamsClient() {
                   {domesticLimited.map((t) => (
                     <Link
                       key={t.id}
-                      href={`/teams/${t.id}`}
+                      href={``}
                       aria-label={`View team ${t.name}`}
                       className="block"
                     >
-                      <div className="flex items-center gap-3 rounded-xl border border-white/20 bg-gradient-to-br from-slate-900/80 via-slate-800/70 to-slate-900/80 backdrop-blur-xl p-3 shadow-lg hover:shadow-[0_8px_30px_rgba(251,191,36,0.2)] hover:border-amber-400/50 transition-all duration-300 cursor-pointer hover:-translate-y-1 group">
+                      <div className="flex items-center h-full gap-3 rounded-xl border border-white/20 bg-gradient-to-br from-slate-900/80 via-slate-800/70 to-slate-900/80 backdrop-blur-xl p-3 shadow-lg hover:shadow-[0_8px_30px_rgba(251,191,36,0.2)] hover:border-amber-400/50 transition-all duration-300 cursor-pointer hover:-translate-y-1 group">
                         <Image
                           src={t.image_path}
                           alt={t.name}
                           width={36}
                           height={36}
-                          className="object-contain rounded-full ring-2 ring-white/20 group-hover:ring-amber-400/50 transition-all"
+                          className="object-cover rounded-full ring-2 ring-white/20 group-hover:ring-amber-400/50 transition-all"
                         />
                         <span className="font-semibold text-white truncate group-hover:text-amber-200 transition-colors text-sm">
                           {t.name}

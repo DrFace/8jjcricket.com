@@ -10,9 +10,9 @@ type BadgeTeam = {
   image_path?: string | null;
 };
 
-export default function TeamBadge({
+export default function MobileTeamBadge({
   team,
-  size = 28,
+  size = 55,
   className,
   hideName = false,
 }: {
@@ -25,21 +25,23 @@ export default function TeamBadge({
   const logo = team?.logo ?? team?.image_path ?? null;
 
   return (
-    <div className={cn("flex items-center gap-2 min-w-0", className)}>
-      <div className="relative shrink-0" style={{ width: size, height: size }}>
+    <div className={cn("min-w-0", className)}>
+      <div
+        className="relative shrink-0 rounded-2xl"
+        style={{ width: 80, height: size }}
+      >
         {logo ? (
           <Image
             alt={label}
             src={logo}
             fill
-            sizes={`${size}px`}
-            className="object-contain"
+            className="object-cover rounded-2xl"
           />
         ) : (
           <div className="w-full h-full" />
         )}
       </div>
-      {!hideName && <span className="truncate">{label}</span>}
+      {!hideName && <div className="">{label}</div>}
     </div>
   );
 }

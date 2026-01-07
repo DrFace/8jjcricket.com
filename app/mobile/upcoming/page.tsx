@@ -17,6 +17,8 @@ const fetcher = (u: string) => fetch(u).then((r) => r.json());
  */
 export default function UpcomingPage() {
   const { data, error, isLoading } = useSWR("/api/upcoming", fetcher);
+  console.log("call upcoming page");
+
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const title = "Upcoming Matches | 8jjcricket";
   const description =

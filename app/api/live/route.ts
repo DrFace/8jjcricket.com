@@ -1,116 +1,58 @@
 // src/app/api/live/route.ts
-import { NextResponse } from 'next/server';
-import { smFetch, mapTeam } from '@/lib/sportmonks';
+import { NextResponse } from "next/server";
 
-/**
- * In-memory cache for live data. The structure stores both the
- * timestamp of the last fetch and the JSON response returned to the
- * client. Because this file is evaluated once per server process,
- * these variables persist across requests as long as the process lives.
- */
-let liveCache: { timestamp: number; json: any } | null = null;
-
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 0;
+
+function getBackendBase(): string {
+  return (
+    process.env.BACKEND_BASE ||
+    process.env.NEXT_PUBLIC_BACKEND_BASE ||
+    "https://8jjcricket.com"
+  ).replace(/\/$/, "");
+}
+
+// Optional: keep a short cache like you had
+let liveCache: { timestamp: number; json: any } | null = null;
 
 export async function GET() {
   try {
     const now = Date.now();
-    // If cached data is less than one minute old, return it instead of
-    // contacting SportMonks again. This dramatically reduces the
-    // likelihood of hitting the external API’s rate limit.
-    if (liveCache && now - liveCache.timestamp < 60_000) {
+    if (liveCache && now - liveCache.timestamp < 30_000) {
       return NextResponse.json(liveCache.json);
     }
 
-    const today = new Date();
-    const iso = (d: Date) => d.toISOString().slice(0, 10);
+    const base = getBackendBase();
 
-    const startPast = new Date(today);
-    startPast.setUTCDate(startPast.getUTCDate() - 45);
-
-    const endFuture = new Date(today);
-    endFuture.setUTCDate(endFuture.getUTCDate() + 90);
-
-    // Endpoint promises.  We initiate all three requests in parallel to
-    // minimise total latency.  Each call may throw if SportMonks
-    // responds with an error (e.g. rate limiting), in which case it
-    // will be caught below.
-    const liveP = smFetch(`/livescores?include=league,localteam,visitorteam,runs,tosswon`);
-    const upcomingP = smFetch(
-      `/fixtures?filter[starts_between]=${iso(today)},${iso(
-        endFuture
-      )}&include=league,localteam,visitorteam,runs,tosswon`
-    );
-    const recentP = smFetch(
-      `/fixtures?filter[starts_between]=${iso(startPast)},${iso(
-        today
-      )}&include=league,localteam,visitorteam,runs,tosswon`
-    );
-
-    const [liveJ, upcomingJ, recentJ] = await Promise.all([liveP, upcomingP, recentP]);
-
-    // Helper to determine category from league name
-    function getCategory(leagueName: string | undefined): string {
-      if (!leagueName) return "Leagues";
-      const name = leagueName.toLowerCase();
-      if (name.includes("test")) return "Test";
-      if (name.includes("one day") || name.includes("odi")) return "ODI";
-      if (name.includes("t20")) return "T20";
-      if (name.includes("international")) return "International";
-      return "Leagues";
-    }
-
-    const mapFx = (x: any): any => ({
-      id: x.id,
-      round: x.round ?? null,
-      starting_at: x.starting_at,
-      live: x.live === true || x.status === 'LIVE' || x.status === 'In Progress',
-      status: x.status ?? null,
-      note: x.note ?? null,
-      league_id: x.league_id,
-      localteam_id: x.localteam_id ?? x.localteam?.id,
-      visitorteam_id: x.visitorteam_id ?? x.visitorteam?.id,
-      league: x.league ? { id: x.league.id, name: x.league.name } : undefined,
-      localteam: mapTeam(x.localteam),
-      visitorteam: mapTeam(x.visitorteam),
-      runs: x.runs ?? [],
-      category: getCategory(x.league?.name),
+    const res = await fetch(`${base}/api/fixtures/live`, {
+      cache: "no-store",
+      headers: { Accept: "application/json" },
     });
 
-    // Sort and map upcoming fixtures
-    const upcoming = (upcomingJ?.data ?? [])
-      .filter((m: any) => new Date(m.starting_at).getTime() > Date.now())
-      .sort((a: any, b: any) => +new Date(a.starting_at) - +new Date(b.starting_at))
-      .map(mapFx);
-
-    // Sort and map recent fixtures
-    const recent = (recentJ?.data ?? [])
-      .sort((a: any, b: any) => +new Date(b.starting_at) - +new Date(a.starting_at))
-      .map(mapFx);
-
-    // Map live fixtures
-    const live = (liveJ?.data ?? []).map(mapFx);
-
-    const responseJson = { data: { live, upcoming, recent } };
-
-    // Update cache
-    liveCache = { timestamp: now, json: responseJson };
-
-    return NextResponse.json(responseJson);
-  } catch (err: any) {
-    console.error('Error in /api/live:', err);
-    const msg = String(err?.message ?? '');
-    // Handle SportMonks rate limit
-    if (msg.includes('Too Many Attempts') || msg === 'SPORTMONKS_RATE_LIMIT') {
+    if (!res.ok) {
+      const text = await res.text();
       return NextResponse.json(
-        { error: 'API rate limit hit. Please try again in a moment.' },
-        { status: 503 }
+        {
+          error: `Backend /api/fixtures/live returned ${res.status}`,
+          details: text.slice(0, 2000),
+          data: { live: [], upcoming: [], recent: [] },
+        },
+        { status: 502 }
       );
     }
-    // Fallback error
+
+    const json = await res.json();
+    const live = json?.data ?? [];
+
+    // IMPORTANT: your UI expects: { data: { live, upcoming, recent } }
+    const responseJson = { data: { live, upcoming: [], recent: [] } };
+
+    liveCache = { timestamp: now, json: responseJson };
+    return NextResponse.json(responseJson);
+  } catch (err: any) {
+    console.error("Error in /api/live:", err);
     return NextResponse.json(
-      { error: 'Internal server error in /api/live' },
+      { error: err?.message ?? "Internal server error in /api/live" },
       { status: 500 }
     );
   }
