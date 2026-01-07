@@ -193,10 +193,16 @@ function PortraitSlideshow({
 }
 
 export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
-  const cleanPages = useMemo(
-    () => (pages || []).filter((p) => !!p?.slug && !!p?.title),
-    [pages]
-  );
+ const cleanPages = useMemo(() => {
+   return [...(pages || [])]
+     .filter((p) => !!p?.slug && !!p?.title)
+     .sort((a, b) => {
+       const aId = typeof a?.id === "number" ? a.id : Number(a?.id ?? 0);
+       const bId = typeof b?.id === "number" ? b.id : Number(b?.id ?? 0);
+       return aId - bId; // ASC: 0,1,2...
+     });
+ }, [pages]);
+
 
   const [activeLeftUrl, setActiveLeftUrl] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
