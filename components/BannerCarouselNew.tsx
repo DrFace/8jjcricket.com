@@ -28,13 +28,13 @@ function normalizeCarouselUrl(input: string): string {
 export default function BannerCarouselNew() {
   const [index, setIndex] = useState(0);
   const [images, setImages] = useState<string[]>([]);
+  const [modalImage, setModalImage] = useState<string | null>(null);
   const timer = useRef<number | null>(null);
 
   const len = images.length;
 
   async function fetchImages(): Promise<string[]> {
     try {
-      // ✅ Same-origin request to Next.js API proxy (no CORS issues)
       const res = await fetch(`/api/carousels`, {
         method: "GET",
         headers: { Accept: "application/json" },
@@ -112,25 +112,26 @@ export default function BannerCarouselNew() {
   };
 
   return (
-    <div
-      className="relative w-full overflow-hidden rounded-2xl shadow h-full"
-      onMouseEnter={() => {
-        if (timer.current) {
-          clearTimeout(timer.current);
-          timer.current = null;
-        }
-      }}
-      onMouseLeave={() => {
-        if (len > 1) {
-          timer.current = window.setTimeout(() => {
-            setIndex((i) => (i + 1) % len);
-          }, 4000);
-        }
-      }}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-    >
-      <div className="relative w-full h-full rounded-2xl overflow-hidden">
+    <div className="relative w-full overflow-hidden rounded-2xl shadow h-full">
+      {/* Carousel container */}
+      <div
+        className="relative w-full h-full rounded-2xl overflow-hidden"
+        onMouseEnter={() => {
+          if (timer.current) {
+            clearTimeout(timer.current);
+            timer.current = null;
+          }
+        }}
+        onMouseLeave={() => {
+          if (len > 1) {
+            timer.current = window.setTimeout(() => {
+              setIndex((i) => (i + 1) % len);
+            }, 4000);
+          }
+        }}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
         <div
           className="flex h-full w-full transition-transform duration-700 ease-out rounded-2xl"
           style={{ transform: `translateX(-${index * 100}%)` }}
@@ -139,18 +140,35 @@ export default function BannerCarouselNew() {
             <div
               key={i}
               className="relative h-full w-full flex-shrink-0 rounded-2xl"
+              onClick={() =>
+                setModalImage(normalizeCarouselUrl(imageUrl))
+              }
             >
               <Image
                 src={normalizeCarouselUrl(imageUrl)}
                 alt={`Slide ${i + 1}`}
                 fill
-                className="object-cover rounded-2xl"
+                className="object-cover rounded-2xl cursor-pointer"
                 priority={i === 0}
               />
             </div>
           ))}
         </div>
       </div>
+
+      {/* Modal for full-screen image */}
+      {modalImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 cursor-pointer"
+          onClick={() => setModalImage(null)}
+        >
+          <img
+            src={modalImage}
+            alt="Full view"
+            className="max-h-full max-w-full rounded-lg shadow-lg"
+          />
+        </div>
+      )}
     </div>
   );
 }

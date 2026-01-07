@@ -1,39 +1,27 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import BannerCarouselNew from "./BannerCarouselNew";
+import ImageCarousel from "./ImageCarousel"; // Your new carousel component
 
 type PortraitPage = {
   id: number;
   slug: string;
   title: string;
   subtitle?: string | null;
-  hero_image_path?: string | null;
-  hero_image_url?: string | null;
-  hover_banner_path?: string | null;
-  hover_banner_url?: string | null;
   main_portrait_path?: string | null;
   main_portrait_url?: string | null;
   portrait_image_path?: string | null;
   portrait_image_url?: string | null;
 };
 
-// IMPORTANT:
-// - API_BASE is your Next public API base: https://8jjcricket.com/api
-// - SITE_ORIGIN is for serving storage assets: https://8jjcricket.com (NO /api)
-const API_BASE = (
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://8jjcricket.com/api"
-).replace(/\/+$/, "");
-
 const SITE_ORIGIN = (
   process.env.NEXT_PUBLIC_SITE_ORIGIN ||
-  (typeof window !== "undefined"
-    ? window.location.origin
-    : "https://8jjcricket.com")
+  (typeof window !== "undefined" ? window.location.origin : "https://8jjcricket.com")
 ).replace(/\/+$/, "");
 
 const DEFAULT_LEFT_IMAGE = "/AMD.png";
 
+// Utility to pick first non-empty value
 function pickFirst<T>(...vals: (T | null | undefined)[]) {
   for (const v of vals) {
     if (v !== null && v !== undefined && String(v).trim() !== "") return v;
@@ -41,94 +29,22 @@ function pickFirst<T>(...vals: (T | null | undefined)[]) {
   return null;
 }
 
+// Convert path or URL to full URL
 function toStorageUrl(pathOrUrl: string | null): string | null {
   if (!pathOrUrl) return null;
-
-  // If backend returns absolute URLs, keep them
   if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
-
-  // Otherwise treat as a storage path
   const clean = String(pathOrUrl).replaceAll("\\", "/").replace(/^\/+/, "");
   return `${SITE_ORIGIN}/storage/${clean}`;
 }
 
-function getHero(p: PortraitPage) {
-  return toStorageUrl(pickFirst(p.hero_image_url, p.hero_image_path));
-}
-function getHover(p: PortraitPage) {
-  return toStorageUrl(pickFirst(p.hover_banner_url, p.hover_banner_path));
-}
+// For thumbnails and hover images
 function getMainPortrait(p: PortraitPage) {
-  return toStorageUrl(
-    pickFirst(
-      p.main_portrait_url,
-      p.main_portrait_path,
-      p.portrait_image_url,
-      p.portrait_image_path
-    )
-  );
+  return toStorageUrl(pickFirst(p.main_portrait_url, p.main_portrait_path));
 }
 
-function Slideshow({ items }: { items: { src: string }[] }) {
-  const len = items.length;
-  const step = 100 / len;
-  const holdRatio = 0.85;
-  const segment = 100 / len;
-  const hold = segment * holdRatio;
-  const animName = `showcaseSlide_${len}`;
-
-  const keyframes = (() => {
-    if (len <= 1) return "";
-    let css = `@keyframes ${animName} {`;
-    for (let i = 0; i < len; i++) {
-      const t0 = i * segment;
-      const tHold = t0 + hold;
-      css += `
-        ${t0.toFixed(4)}% { transform: translateX(-${(i * step).toFixed(6)}%); }
-        ${tHold.toFixed(4)}% { transform: translateX(-${(i * step).toFixed(
-        6
-      )}%); }
-      `;
-      if (i < len - 1) {
-        const tNext = (i + 1) * segment;
-        css += `${tNext.toFixed(4)}% { transform: translateX(-${(
-          ((i + 1) * step) as number
-        ).toFixed(6)}%); }`;
-      }
-    }
-    css += `100% { transform: translateX(0%); }}`;
-    return css;
-  })();
-
-  return (
-    <div className="relative h-full w-full overflow-hidden rounded-[2rem]">
-      <div
-        className="flex h-full w-full will-change-transform"
-        style={{
-          width: `${len * 100}%`,
-          animation:
-            len > 1
-              ? `${animName} ${len * 6}s ease-in-out infinite`
-              : undefined,
-        }}
-      >
-        {items.map((it, idx) => (
-          <div
-            key={idx}
-            className="relative h-full"
-            style={{ width: `${100 / len}%` }}
-          >
-            <div
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-1000"
-              style={{ backgroundImage: `url(${it.src})` }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-          </div>
-        ))}
-      </div>
-      {keyframes && <style dangerouslySetInnerHTML={{ __html: keyframes }} />}
-    </div>
-  );
+// **Only for the ImageCarousel**
+function getCarouselPortrait(p: PortraitPage) {
+  return toStorageUrl(pickFirst(p.portrait_image_url, p.portrait_image_path));
 }
 
 export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
@@ -142,16 +58,23 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
 
   const leftImage = activeLeftUrl || DEFAULT_LEFT_IMAGE;
 
-  const slideshowItems = useMemo(() => {
-    const items = cleanPages
-      .map((p) => getHero(p) || getHover(p) || getMainPortrait(p))
-      .filter(Boolean)
-      .map((src) => ({ src: String(src) }));
-    return items.length ? items : [];
+  //Carousel uses portrait_image_path / portrait_image_url
+  const carouselItems = useMemo(() => {
+    return cleanPages
+      .map((p) => {
+        const src = getCarouselPortrait(p);
+        if (!src) return null;
+        return {
+          src,
+          href: `/portraits/${p.slug}`,
+          title: p.title,
+        };
+      })
+      .filter(Boolean) as { src: string; href: string; title?: string }[];
   }, [cleanPages]);
 
   const onPortraitHover = useCallback((p: PortraitPage) => {
-    const hoverImg = getHover(p) || getHero(p) || getMainPortrait(p);
+    const hoverImg = getMainPortrait(p); // still uses main portrait for hover
     if (hoverImg) {
       setActiveLeftUrl(hoverImg);
       setHoveredId(p.id);
@@ -165,11 +88,9 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
 
   const PAGE_SIZE = 4;
   const [pageIndex, setPageIndex] = useState(0);
-
   const pageCount = Math.max(1, Math.ceil(cleanPages.length / PAGE_SIZE));
   const canPrev = pageIndex > 0;
   const canNext = pageIndex < pageCount - 1;
-
   const visiblePages = cleanPages.slice(
     pageIndex * PAGE_SIZE,
     pageIndex * PAGE_SIZE + PAGE_SIZE
@@ -200,8 +121,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
         ref={lockScrollRef}
         className="relative mx-auto h-[85vh] min-h-[700px] w-full max-w-[1600px]"
       >
-        <div className="pointer-events-none absolute inset-0 rounded-[2.5rem]" />
-
+        {/* Left Hover Image */}
         <div className="pointer-events-none absolute inset-y-0 left-0 w-[46%] overflow-hidden rounded-l-[2.5rem]">
           <div
             className="absolute inset-0 bg-contain bg-left-bottom bg-no-repeat transition-all duration-700"
@@ -219,16 +139,19 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
           />
         </div>
 
+        {/* Right side: carousel + thumbnails */}
         <div className="relative ml-[46%] flex h-full flex-col gap-7 p-8 pt-16">
-          <div className="group relative h-[40%] overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-white/20 transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/30">
-            <BannerCarouselNew />
+          {/* Carousel */}
+          <div className="group relative h-[50%] overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-white/20 transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/30">
+            <ImageCarousel items={carouselItems} interval={2000} />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </div>
 
-          <div className="relative h-[45%] overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-800/30 to-slate-900/30 shadow-xl ring-1 ring-white/10 backdrop-blur-sm mt-8 bg-white-500">
-            <div className="grid h-full grid-cols-4 gap-2 p-6 pr-24 bg-white-500 w-full">
+          {/* Thumbnails */}
+          <div className="relative h-[45%] overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-800/30 to-slate-900/30 shadow-xl ring-1 ring-white/10 backdrop-blur-sm mt-8">
+            <div className="grid h-full grid-cols-4 gap-2 p-6 pr-24 w-full">
               {visiblePages.map((p) => {
-                const thumb = getMainPortrait(p) || getHero(p) || getHover(p);
+                const thumb = getMainPortrait(p); // still main portrait
                 const isHovered = hoveredId === p.id;
 
                 return (
@@ -237,12 +160,11 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     href={`/portraits/${p.slug}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="group relative h-full w-full max-w-[460px] mx-auto overflow-hidden rounded-[1.75rem]  shadow-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-blue-500/30"
+                    className="group relative h-full w-full max-w-[460px] mx-auto overflow-hidden rounded-[1.75rem] shadow-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-blue-500/30"
                     onMouseEnter={() => onPortraitHover(p)}
                     onMouseLeave={onPortraitLeave}
                     title={p.title}
                   >
-                    {/* ring */}
                     <div
                       className={`w-full pointer-events-none absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${
                         isHovered
@@ -250,9 +172,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                           : "ring-1 ring-black/5"
                       }`}
                     />
-                    {/* image fills FULL tile */}
                     {thumb ? (
-                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={thumb}
                         alt={p.title}
@@ -262,13 +182,12 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     ) : (
                       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50" />
                     )}
-                    {/* subtle overlay for consistency */}
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                   </a>
                 );
               })}
             </div>
 
+            {/* Pagination Buttons */}
             <div className="absolute right-6 top-1/2 z-20 -translate-y-1/2 flex flex-col gap-4">
               <button
                 onClick={() => setPageIndex((p) => Math.max(0, p - 1))}
@@ -281,25 +200,13 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                 type="button"
                 aria-label="Previous"
               >
-                <svg
-                  className="absolute inset-0 m-auto h-6 w-6 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M5 15l7-7 7 7"
-                  />
+                <svg className="absolute inset-0 m-auto h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
                 </svg>
               </button>
 
               <button
-                onClick={() =>
-                  setPageIndex((p) => Math.min(pageCount - 1, p + 1))
-                }
+                onClick={() => setPageIndex((p) => Math.min(pageCount - 1, p + 1))}
                 disabled={!canNext}
                 className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${
                   canNext
@@ -309,26 +216,13 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                 type="button"
                 aria-label="Next"
               >
-                <svg
-                  className="absolute inset-0 m-auto h-6 w-6 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M19 9l-7 7-7-7"
-                  />
+                <svg className="absolute inset-0 m-auto h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
             </div>
           </div>
         </div>
-
-        <div className="pointer-events-none absolute -left-20 top-20 h-64 w-64 rounded-full bg-blue-500/0 blur-[100px]" />
-        <div className="pointer-events-none absolute -right-20 bottom-20 h-64 w-64 rounded-full bg-purple-500/0 blur-[100px]" />
       </div>
     </section>
   );
