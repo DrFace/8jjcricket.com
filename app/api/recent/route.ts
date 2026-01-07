@@ -7,8 +7,6 @@ const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 export async function GET() {
   try {
-    console.log("================== Calling Recent ==================");
-
     const res = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/fixtures/recent`, {
       // helps prevent caching issues
       cache: "no-store",

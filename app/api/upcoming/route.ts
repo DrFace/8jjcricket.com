@@ -12,7 +12,6 @@ function getBackendBase(): string {
 }
 
 export async function GET(request: Request) {
-  console.log("================== Calling Live ==================");
   try {
     const url = new URL(request.url);
     const limit = url.searchParams.get("limit") ?? "200";

@@ -16,7 +16,6 @@ function getBackendBase(): string {
 let liveCache: { timestamp: number; json: any } | null = null;
 
 export async function GET() {
-  console.log("================== Calling Live ==================");
   try {
     const now = Date.now();
     if (liveCache && now - liveCache.timestamp < 30_000) {
