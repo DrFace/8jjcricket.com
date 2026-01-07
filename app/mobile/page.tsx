@@ -296,16 +296,16 @@ export default async function MobileHomePage() {
 
       {/* HERO / BANNER */}
       <section className="mt-3 w-full snap-start scroll-mt-3">
-        <Reveal>
+        {/* <Reveal> */}
           <div className="w-full overflow-hidden rounded-xl">
             <MobileBannerCarousel />
           </div>
-        </Reveal>
+        {/* </Reveal> */}
       </section>
 
       {/* QUICK GAMES */}
       <section className="mt-5 w-full snap-start scroll-mt-3">
-        <Reveal>
+        {/* <Reveal> */}
           <div className="mb-2 flex w-full items-center justify-between px-4">
             <div className="mb-3 flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-yellow-400" />
@@ -379,22 +379,22 @@ export default async function MobileHomePage() {
               </div>
             );
           })()}
-        </Reveal>
+        ?
       </section>
 
       {/* SOCIALS (under video) */}
       <section className="mt-4 w-full snap-start scroll-mt-3">
-        <Reveal>
+        {/* <Reveal> */}
           <MobileSocialBox />
-        </Reveal>
+        {/* </Reveal> */}
       </section>
       {/* NEWS */}
       {newsWithImages.length > 0 && (
         <section className="mt-5 w-full snap-start scroll-mt-3">
-          <Reveal>
+          {/* <Reveal> */}
             <h2 className="mb-2 text-sm font-semibold">Latest News</h2>
             <MobileNewsListCards items={newsWithImages} />
-          </Reveal>
+          {/* </Reveal> */}
         </section>
       )}
     </>
