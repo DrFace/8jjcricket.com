@@ -1,20 +1,16 @@
 export function MatchCategory(item: any, category: string) {
-  const type = item.type?.toLowerCase() || "";
-  const leagueName = item.league?.name?.toLowerCase() || "";
-
+  const cat = String(item?.type ?? "").toLowerCase();
   if (category === "All") return true;
-
-  if (category === "T20") return type === "t20";
-  if (category === "ODI") return type === "odi";
-  if (category === "Test") return type === "test";
-
-  if (category === "International") {
-    return leagueName.includes("international");
-  }
+  if (!cat) return false;
 
   if (category === "Leagues") {
-    return !["t20", "odi", "test"].includes(type);
+    return !["international", "odi", "t20", "test"].some((c) =>
+      cat.includes(c)
+    );
   }
-
-  return true;
+  if (category === "International") return cat.includes("international");
+  if (category === "T20") return cat.includes("t20");
+  if (category === "ODI") return cat.includes("odi");
+  if (category === "Test") return cat.includes("test");
+  return false;
 }

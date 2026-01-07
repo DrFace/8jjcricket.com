@@ -6,6 +6,8 @@ import ArchhiveCard from "@/components/ArchhiveCard";
 import DesktopOnly from "@/components/DesktopOnly";
 import RecentMatchCard from "@/components/RecentMatchCard";
 import LiveCard from "@/components/LiveCard";
+import { MatchCategory } from "@/lib/match-category";
+import UpcomingCard from "@/components/UpcomingCard";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -168,6 +170,18 @@ function Pagination({
   );
 }
 
+type TypeCountMap = Record<string, number>;
+
+function countByType(matches: { type?: string | null }[]): TypeCountMap {
+  return matches.reduce<TypeCountMap>((acc, match) => {
+    const type = String(match.type ?? "").trim();
+    if (!type) return acc;
+
+    acc[type] = (acc[type] ?? 0) + 1;
+    return acc;
+  }, {});
+}
+
 export default function LiveScoreHome() {
   // ✅ Separate APIs
   const liveRes = useSWR("/api/live", fetcher);
@@ -177,6 +191,22 @@ export default function LiveScoreHome() {
   const liveMatches = liveRes.data?.data?.live ?? [];
   const recentMatches = recentRes.data?.data ?? [];
   const upcomingMatches = upcomingRes.data?.data ?? [];
+
+  const upcomingTypeCounts = useMemo(
+    () => countByType(upcomingMatches),
+    [upcomingMatches]
+  );
+
+  const recentTypeCounts = useMemo(
+    () => countByType(recentMatches),
+    [recentMatches]
+  );
+
+  const liveTypeCounts = useMemo(() => countByType(liveMatches), [liveMatches]);
+
+  console.log("Upcoming:", upcomingTypeCounts);
+  console.log("Recent:", recentTypeCounts);
+  console.log("Live:", liveTypeCounts);
 
   const loading =
     liveRes.isLoading || recentRes.isLoading || upcomingRes.isLoading;
@@ -204,23 +234,6 @@ export default function LiveScoreHome() {
 
   const categories = ["International", "T20", "ODI", "Test", "Leagues", "All"];
 
-  function matchCategory(item: any, category: string) {
-    const cat = String(item?.category ?? "").toLowerCase();
-    if (category === "All") return true;
-    if (!cat) return false;
-
-    if (category === "Leagues") {
-      return !["international", "odi", "t20", "test"].some((c) =>
-        cat.includes(c)
-      );
-    }
-    if (category === "International") return cat.includes("international");
-    if (category === "T20") return cat.includes("t20");
-    if (category === "ODI") return cat.includes("odi");
-    if (category === "Test") return cat.includes("test");
-    return false;
-  }
-
   const recentSorted = useMemo(() => {
     return [...recentMatches].sort(
       (a: any, b: any) => +new Date(b.starting_at) - +new Date(a.starting_at)
@@ -236,7 +249,7 @@ export default function LiveScoreHome() {
   const filteredLive = useMemo(() => {
     let data = [...liveMatches];
     if (selectedCategory !== "All")
-      data = data.filter((m: any) => matchCategory(m, selectedCategory));
+      data = data.filter((m: any) => MatchCategory(m, selectedCategory));
     return data;
   }, [liveMatches, selectedCategory]);
 
@@ -248,7 +261,7 @@ export default function LiveScoreHome() {
         (m: any) => String(m.starting_at).slice(0, 10) === selectedDateLive
       );
     if (selectedCategory !== "All")
-      data = data.filter((m: any) => matchCategory(m, selectedCategory));
+      data = data.filter((m: any) => MatchCategory(m, selectedCategory));
     return data.slice(0, 4);
   }, [recentSorted, selectedDateLive, selectedCategory]);
 
@@ -260,7 +273,7 @@ export default function LiveScoreHome() {
         (m: any) => String(m.starting_at).slice(0, 10) === selectedDateRecent
       );
     if (selectedCategory !== "All")
-      data = data.filter((m: any) => matchCategory(m, selectedCategory));
+      data = data.filter((m: any) => MatchCategory(m, selectedCategory));
     return data;
   }, [recentSorted, selectedDateRecent, selectedCategory]);
 
@@ -281,7 +294,7 @@ export default function LiveScoreHome() {
         (m: any) => String(m.starting_at).slice(0, 10) === selectedDateUpcoming
       );
     if (selectedCategory !== "All")
-      data = data.filter((m: any) => matchCategory(m, selectedCategory));
+      data = data.filter((m: any) => MatchCategory(m, selectedCategory));
     return data;
   }, [upcomingSorted, selectedDateUpcoming, selectedCategory]);
 
@@ -437,7 +450,7 @@ export default function LiveScoreHome() {
                       <>
                         <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
                           {upcomingPaged.map((match: any) => (
-                            <ArchhiveCard key={match.id} f={match} />
+                            <UpcomingCard key={match.id} f={match} />
                           ))}
                         </div>
 
