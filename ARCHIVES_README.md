@@ -1,3 +1,26 @@
+Frontend API Migration
+migrated scorecard/match pages from using Sportmonks API to backend API 
+https://8jjcricket.com
+
+1. Created New Match API Route
+File: app/api/match/[id]/route.ts
+What it does: Proxies requests from your frontend to https://8jjcricket.com/api/match/{id}
+Why: Centralized API calls, avoids CORS issues, keeps backend URL consistent
+2. Updated Desktop Scoreboard
+File: Scoreboard.tsx:91
+Changed: useSWR('/api/fixture/${id}') → useSWR('/api/match/${id}')
+Result: Now fetches match data from your backend instead of Sportmonks
+3. Updated Mobile Scoreboard
+File: MobileScoreboard.tsx:28 (your current file)
+Changed: Same as desktop - switched from /api/fixture/ to /api/match/
+The fetcher function you're looking at handles the HTTP request and error parsing
+4. Migrated Player Details
+File: usePlayers.ts:8
+Changed: /api/sm/players?ids= → /api/catalog?ids=
+Why: Your backend's catalog API (https://8jjcricket.com/api/catalog) now provides player details
+
+
+
 # Cricket Archives API Integration
 
 This document provides an overview of the Cricket Archives API integration implemented in this Next.js TypeScript project.
