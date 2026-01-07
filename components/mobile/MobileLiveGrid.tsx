@@ -69,7 +69,7 @@ export default function MobileLiveGrid({ filter = "All" }: LiveGridProps) {
   return (
     <div className="space-y-2">
       {filtered.map((f) => (
-        <MobileFixtureCard key={f.id} f={f} />
+        <MobileLiveCard key={f.id} f={f} />
       ))}
     </div>
   );

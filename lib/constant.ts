@@ -26,3 +26,5 @@ export const SOCIALS_LINKS = [
   },
   { label: "X", url: "https://x.com/8jjCricket73705", icon: "/x.png" },
 ];
+
+export const MOBILE_PAGE_SIZE = 10;
