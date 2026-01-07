@@ -3,6 +3,7 @@
 import useSWR from "swr";
 import type { Fixture } from "@/types/fixture";
 import MobileLiveCard from "./MobileLiveCard";
+import MobileFixtureCard from "./MobileFixtureCard";
 
 interface LiveGridProps {
   filter?: string;
@@ -68,7 +69,7 @@ export default function MobileLiveGrid({ filter = "All" }: LiveGridProps) {
   return (
     <div className="space-y-2">
       {filtered.map((f) => (
-        <MobileLiveCard key={f.id} f={f} />
+        <MobileFixtureCard key={f.id} f={f} />
       ))}
     </div>
   );
