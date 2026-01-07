@@ -7,6 +7,7 @@ import DesktopOnly from "@/components/DesktopOnly";
 import RecentMatchCard from "@/components/RecentMatchCard";
 import LiveCard from "@/components/LiveCard";
 import { MatchCategory } from "@/lib/match-category";
+import UpcomingCard from "@/components/UpcomingCard";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -449,7 +450,7 @@ export default function LiveScoreHome() {
                       <>
                         <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
                           {upcomingPaged.map((match: any) => (
-                            <ArchhiveCard key={match.id} f={match} />
+                            <UpcomingCard key={match.id} f={match} />
                           ))}
                         </div>
 

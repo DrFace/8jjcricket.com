@@ -7,6 +7,7 @@ import CalenderModal from "@/components/mobile/CalenderModal";
 import { CRICKET_CATEGORIES, MOBILE_PAGE_SIZE } from "@/lib/constant";
 import { MatchCategory } from "@/lib/match-category";
 import MobileLiveCard from "@/components/mobile/MobileLiveCard";
+import MobileUpcomingCard from "@/components/mobile/MobileUpcomingCard";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -170,7 +171,7 @@ export default function UpcomingPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {pagedFixtures.map((f) => (
-                <MobileLiveCard key={f.id} f={f} />
+                <MobileUpcomingCard key={f.id} f={f} />
               ))}
             </div>
           )}
