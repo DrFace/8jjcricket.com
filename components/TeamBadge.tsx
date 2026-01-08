@@ -25,7 +25,7 @@ export default function TeamBadge({
   const logo = team?.logo ?? team?.image_path ?? null;
 
   return (
-    <div className={cn("flex items-center gap-2 min-w-0", className)}>
+    <div className={cn("items-center gap-2 min-w-0", className)}>
       <div className="relative shrink-0" style={{ width: size, height: size }}>
         {logo ? (
           <Image

@@ -4,9 +4,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import MobileTabBar from "@/components/mobile/MobileTabBar";
 import CalenderModal from "@/components/mobile/CalenderModal";
-import MobileLiveCard from "@/components/mobile/MobileLiveCard";
 import { CRICKET_CATEGORIES, MOBILE_PAGE_SIZE } from "@/lib/constant";
 import { MatchCategory } from "@/lib/match-category";
+import MobileRecentCard from "@/components/mobile/MobileRecentCard";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -169,7 +169,7 @@ export default function RecentPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {pagedFixtures.map((f) => (
-                <MobileLiveCard key={f.id} f={f} />
+                <MobileRecentCard key={f.id} f={f} />
               ))}
             </div>
           )}
