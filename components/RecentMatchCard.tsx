@@ -10,13 +10,14 @@ export default function RecentMatchCard({ f }: { f: Fixture }) {
   const away = f.visitorteam;
 
   const homeLabel = home?.short_name || home?.name || `Team ${f.localteam_id}`;
-  const awayLabel = away?.short_name || away?.name || `Team ${f.visitorteam_id}`;
+  const awayLabel =
+    away?.short_name || away?.name || `Team ${f.visitorteam_id}`;
 
   const metaLine = `${f.round ?? "Match"} · ${formatDate(f.starting_at)}`;
 
   return (
     <Link
-      href={`/match/${f.id}`}
+      href={`/match/${f.sportmonks_id}`}
       className={cn(
         "group block rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-sm transition",
         "hover:border-amber-300/30 hover:bg-white/7"

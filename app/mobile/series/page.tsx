@@ -265,12 +265,12 @@ export default function SeriesPage() {
                       )}
 
                       {/* League Logo */}
-                      <div className="w-16 h-16 mb-3 flex items-center justify-center">
+                      <div className="w-16 h-16 mb-3 flex items-center justify-center rounded-2xl">
                         {league.image_path ? (
                           <img
                             src={league.image_path}
                             alt={league.name}
-                            className="max-w-full max-h-full object-contain"
+                            className="max-w-full max-h-full object-contain rounded-2xl"
                           />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center text-black font-bold text-xl shadow-lg">
@@ -284,9 +284,8 @@ export default function SeriesPage() {
                         {league.name}
                       </h3>
 
-                      {/* League Code */}
+                      <div className="h-5" />
 
-                      <h1>{league.sportmonks_league_id}</h1>
                       {/* Action Buttons */}
                       <div className="flex gap-2 mt-auto w-full">
                         <Link

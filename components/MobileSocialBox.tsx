@@ -32,12 +32,6 @@ export default function MobileSocialBox() {
         p-4
       "
     >
-      {/* Header */}
-      <div className="mb-3 flex items-center gap-2">
-        <span className="h-2 w-2 rounded-full bg-yellow-400" />
-        <h2 className="text-sm font-semibold text-white">Follow Us</h2>
-      </div>
-
       {/* Icons */}
       <div className="grid grid-cols-4 gap-4 place-items-center">
         {socials.map((s) => (

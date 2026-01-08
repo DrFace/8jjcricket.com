@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import useSWR from "swr";
-import ArchhiveCard from "@/components/ArchhiveCard";
 import DesktopOnly from "@/components/DesktopOnly";
 import RecentMatchCard from "@/components/RecentMatchCard";
 import LiveCard from "@/components/LiveCard";

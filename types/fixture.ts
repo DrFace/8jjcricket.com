@@ -1,6 +1,8 @@
 import type { Team } from "./team";
 
 export type Fixture = {
+  fixture_id: number;
+  sportmonks_id: number;
   id: number;
   round?: string | null;
   starting_at: string;
