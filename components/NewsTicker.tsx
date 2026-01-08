@@ -44,7 +44,7 @@ export default function NewsTicker() {
 
       <style jsx>{`
         .animate-news-ticker {
-          animation: news-ticker 200s linear infinite;
+          animation: news-ticker 500s linear infinite;
         }
 
         /* Pause on hover for readability */
@@ -55,7 +55,7 @@ export default function NewsTicker() {
         /* Even slower on larger screens */
         @media (min-width: 768px) {
           .animate-news-ticker {
-            animation-duration: 200s;
+            animation-duration: 500s;
           }
         }
 

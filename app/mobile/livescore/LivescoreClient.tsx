@@ -6,8 +6,8 @@ import useSWR from "swr";
 import type { Fixture } from "@/types/fixture";
 import MobileTabBar from "@/components/mobile/MobileTabBar";
 import MobileLiveGrid from "@/components/mobile/MobileLiveGrid";
-import MobileLiveCard from "@/components/mobile/MobileLiveCard";
 import MobileFixtureCard from "@/components/mobile/MobileFixtureCard";
+import MobileLiveCard from "@/components/mobile/MobileLiveCard";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -111,7 +111,7 @@ export default function LivescoreClient() {
           {!recentLoading && !recentError && recentFixtures.length > 0 && (
             <div className="space-y-2">
               {recentFixtures.slice(0, 5).map((f) => (
-                <MobileFixtureCard key={f.id} f={f} />
+                <MobileLiveCard key={f.id} f={f} />
               ))}
             </div>
           )}
