@@ -5,7 +5,7 @@ import { cn, formatDate } from "@/lib/utils";
 import type { Fixture } from "@/types/fixture";
 import MobileRecentBadge from "./MobileRecentBadge";
 
-export default function MobileLiveCard({ f }: { f: Fixture }) {
+export default function MobileRecentCard({ f }: { f: Fixture }) {
   const home = f.localteam;
   const away = f.visitorteam;
 
@@ -14,7 +14,7 @@ export default function MobileLiveCard({ f }: { f: Fixture }) {
 
   return (
     <Link
-      href={`/mobile/match/${f.fixture_id}`}
+      href={`/mobile/match/${f.sportmonks_id}`}
       className="block active:scale-[0.98] transition-transform"
     >
       {/* Gradient border */}
