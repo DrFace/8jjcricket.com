@@ -379,7 +379,7 @@ export default async function MobileHomePage() {
               </div>
             );
           })()}
-        ?
+        
       </section>
 
       {/* SOCIALS (under video) */}
