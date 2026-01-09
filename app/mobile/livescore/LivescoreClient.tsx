@@ -6,7 +6,6 @@ import useSWR from "swr";
 import type { Fixture } from "@/types/fixture";
 import MobileTabBar from "@/components/mobile/MobileTabBar";
 import MobileLiveGrid from "@/components/mobile/MobileLiveGrid";
-import MobileFixtureCard from "@/components/mobile/MobileFixtureCard";
 import MobileLiveCard from "@/components/mobile/MobileLiveCard";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());

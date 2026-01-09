@@ -25,6 +25,7 @@ export interface League {
 }
 export interface Team {
   id: number;
+  logo: string;
   name: string;
   short_name: string;
   code: string;

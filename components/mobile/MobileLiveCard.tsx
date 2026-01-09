@@ -12,6 +12,18 @@ export default function MobileLiveCard({ f }: { f: Fixture }) {
   const homeLabel = home?.short_name || home?.name || "Home";
   const awayLabel = away?.short_name || away?.name || "Away";
 
+  const runsArr = Array.isArray((f as any).runs) ? (f as any).runs : [];
+
+  const homeRuns = runsArr
+    .filter((r: any) => r.team_id === f.localteam_id)
+    .sort((a: any, b: any) => (a.inning ?? 0) - (b.inning ?? 0))
+    .at(-1);
+
+  const awayRuns = runsArr
+    .filter((r: any) => r.team_id === f.visitorteam_id)
+    .sort((a: any, b: any) => (a.inning ?? 0) - (b.inning ?? 0))
+    .at(-1);
+
   return (
     <Link
       href={`/mobile/match/${f.fixture_id}`}
@@ -79,18 +91,16 @@ export default function MobileLiveCard({ f }: { f: Fixture }) {
           {/* Teams */}
           <div className="relative z-10 flex items-center justify-between gap-2">
             <div className="flex-1 flex justify-start">
-              <MobileRecentBadge team={home} />
+              <MobileRecentBadge runs={homeRuns} team={home} />
             </div>
 
             <div className="flex flex-col items-center shrink-0 px-1">
-              <span className="text-[10px] tracking-widest text-sky-100/40">
-                VS
-              </span>
+              <span className=" font-bold text-amber-200">VS</span>
               <span className="h-1 w-1 rounded-full bg-white/20" />
             </div>
 
             <div className="flex-1 flex justify-end">
-              <MobileRecentBadge team={away} />
+              <MobileRecentBadge runs={awayRuns} team={away} />
             </div>
           </div>
 
