@@ -3,14 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import BottomNav from "@/components/BottomNav";
-import Footer from "@/components/Footer";
-import SectionShell from "@/components/ui/SectionShell";
 import ErrorState from "@/components/ui/ErrorState";
 import LoadingState from "@/components/ui/LoadingState";
 import EmptyState from "@/components/ui/EmptyState";
 
 import SeriesHeader from "@/components/series/SeriesHeader";
-import MatchesByDate from "@/components/series/MatchesByDate";
 
 import type { League, Match } from "@/lib/cricket-types";
 import { Fetcher } from "@/lib/fetcher";
@@ -32,6 +29,7 @@ import SeriesCalenderModal from "@/components/mobile/SeriesCalenderModal";
 import MobileSectionShell from "@/components/ui/MobileSectionShell";
 import MobileMatchesByDate from "@/components/mobile/MobileMatchesByDate";
 import MobilePointsTable from "@/components/mobile/MobilePointsTable";
+import MobileSeriesHeader from "@/components/series/MobileSeriesHeader";
 
 export default function SeriesDetailPage({
   params,
@@ -174,7 +172,7 @@ export default function SeriesDetailPage({
       <BottomNav />
 
       <div className="space-y-6">
-        <SeriesHeader
+        <MobileSeriesHeader
           league={league}
           currentSeason={currentSeason}
           dateRange={dateRange}
@@ -251,8 +249,6 @@ export default function SeriesDetailPage({
           )}
         </MobileSectionShell>
       </div>
-
-      <Footer />
     </>
   );
 }

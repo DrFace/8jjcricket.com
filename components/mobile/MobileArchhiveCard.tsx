@@ -2,83 +2,93 @@
 
 import Link from "next/link";
 import { formatDate, cn } from "@/lib/utils";
-import { Match } from "@/lib/cricket-types";
+import type { Match } from "@/lib/cricket-types";
 import MobileTeamBadge from "./MobileTeamBadge";
 
-export default function MobileArchhiveCard({ f }: { f: Match }) {
+export default function MobileArchiveCard({ f }: { f: Match }) {
   const home = f.localteam;
   const away = f.visitorteam;
-
-  const homeLabel = home?.short_name || home?.name || `Team ${f.localteam_id}`;
-  const awayLabel =
-    away?.short_name || away?.name || `Team ${f.visitorteam_id}`;
 
   const metaLine = f.round ?? "Match";
   const dateLine = formatDate(f.starting_at);
 
   return (
     <div className="relative group">
-      {/* Base card with dark glassmorphism and visible border */}
-      <div className="absolute inset-0 rounded-xl border-2 border-white/20 bg-slate-900/80 backdrop-blur-sm shadow-xl group-hover:border-amber-400/60 group-hover:shadow-2xl transition-all" />
+      <div className="absolute inset-0 rounded-2xl border-2 border-gradient-to-r from-amber-500/60 via-amber-400/50 to-amber-600/60 via-slate-900 to-slate-950 backdrop-blur-xl shadow-2xl group-hover:shadow-amber-500/40 group-hover:border-amber-400/90 transition-all duration-300" />
 
-      {/* Subtle amber glow on hover (outside border only) */}
       <div
         className="
           pointer-events-none
-          absolute -inset-px rounded-[18px]
+          absolute -inset-1 rounded-2xl
           opacity-0 group-hover:opacity-100
           transition-opacity duration-300
-          bg-gradient-to-r from-amber-400/20 via-yellow-400/20 to-orange-500/20
-          blur-md
+          bg-gradient-to-r from-amber-500/25 via-amber-400/20 to-amber-600/25
+          blur-xl
         "
       />
 
       <Link
         href={`/mobile/match/${f.id}`}
-        className="relative z-10 block rounded-xl px-2 py-3 transition px-2"
+        className="relative z-10 block rounded-2xl px-5 py-5 transition-transform duration-300 group-hover:scale-105"
       >
-        {/* Top row: title + status */}
-        <div className="">
-          <div className="flex justify-between">
-            {f.status && (
-              <div className="text-[11px] text-amber-200/80">{f.status}</div>
+        <div className="text-xs font-black text-amber-400 uppercase tracking-widest mb-3">
+          {dateLine.toString().split(",")[2]}
+        </div>
+
+        <div className="flex justify-between items-start gap-3 mb-4">
+          <div className="flex flex-col gap-2">
+            {/* {f.status && (
+              <div className="text-xs font-bold text-slate-300 uppercase tracking-widest">
+                {f.status}
+              </div>
+            )} */}
+            <p className="text-sm font-black text-white uppercase tracking-wider">
+              {metaLine}
+            </p>
+          </div>
+          <span
+            className={cn(
+              "inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide border-2 transition-all whitespace-nowrap",
+              f.live
+                ? "bg-red-500/30 text-red-200 border-red-400/60 animate-pulse"
+                : "bg-slate-700/60 text-slate-200 border-slate-600/60"
             )}
-            <span
-              className={cn(
-                "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold",
-                f.live
-                  ? "bg-red-500/20 text-red-300 border border-red-500/30"
-                  : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-              )}
-            >
-              {f.live ? "LIVE" : "Finished"}
-            </span>
-          </div>
+          >
+            {f.live
+              ? "LIVE"
+              : f.status === "Finished"
+              ? "FINISHED"
+              : "Upcoming"}
+          </span>
         </div>
-        <div className="flex justify-between">
-          <p className=" text-amber-200 mt-0.5">{metaLine}</p>
 
-          <p className="text-[11px] text-sky-100/70 mt-0.5">
-            {dateLine.toString().split(",")[2]}
-          </p>
-        </div>
-        {/* Middle: badges + "vs" */}
-        <div className="mt-2 flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between gap-3 py-5 px-4 rounded-xl bg-slate-800/40 border border-slate-700/60 group-hover:border-amber-500/40 transition-colors mb-4">
           <div className="flex-1 min-w-0">
-            <MobileTeamBadge team={home} className="justify-start" />
+            <MobileTeamBadge team={home} size={70} className="justify-start" />
           </div>
 
-          <div className="px-2 text-[11px] text-amber-300 uppercase tracking-wide font-semibold">
-            vs
+          <div
+            className="px-4 py-2 text-white font-black text-lg uppercase tracking-widest
+            bg-gradient-to-r from-amber-400 via-amber-600 to-amber-800
+            rounded-lg shadow-lg whitespace-nowrap"
+          >
+            VS
           </div>
 
           <div className="flex-1 min-w-0 flex justify-end">
-            <MobileTeamBadge team={away} className="justify-end text-right" />
+            <MobileTeamBadge
+              team={away}
+              size={70}
+              className="justify-end text-right"
+            />
           </div>
         </div>
 
-        {/* Optional note */}
-        {f.note && <p className=" sm:text-sm mt-2 text-sky-100/80">{f.note}</p>}
+        {f.note && (
+          <p className="text-xs text-slate-300 font-medium italic border-l-2 border-amber-500/60 pl-3 py-2 rounded bg-slate-800/30">
+            {f.note}
+          </p>
+        )}
       </Link>
     </div>
   );

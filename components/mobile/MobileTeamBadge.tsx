@@ -33,15 +33,19 @@ export default function MobileTeamBadge({
         {logo ? (
           <Image
             alt={label}
-            src={logo}
+            src={logo || "/placeholder.svg"}
             fill
             className="object-cover rounded-2xl"
           />
         ) : (
-          <div className="w-full h-full" />
+          <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl" />
         )}
       </div>
-      {!hideName && <div className="">{label}</div>}
+      {!hideName && (
+        <div className="text-sm font-semibold text-slate-200 mt-1 text-center">
+          {label?.split(" ")[0]}
+        </div>
+      )}
     </div>
   );
 }
