@@ -1,6 +1,5 @@
-import ArchiveCard from "@/components/ArchhiveCard";
 import type { Match } from "@/lib/cricket-types"; // or wherever your Match type is
-import MobileArchhiveCard from "./MobileArchhiveCard";
+import MobileSeriesDetailsCard from "./MobileSeriesDetailsCard";
 
 export default function MobileMatchesByDate({
   grouped,
@@ -27,7 +26,7 @@ export default function MobileMatchesByDate({
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {matches.map((match) => (
-              <MobileArchhiveCard key={match.id} f={match} />
+              <MobileSeriesDetailsCard key={match.id} f={match} />
             ))}
           </div>
         </div>
