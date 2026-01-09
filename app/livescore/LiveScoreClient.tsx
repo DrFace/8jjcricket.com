@@ -7,6 +7,7 @@ import RecentMatchCard from "@/components/RecentMatchCard";
 import LiveCard from "@/components/LiveCard";
 import { MatchCategory } from "@/lib/match-category";
 import UpcomingCard from "@/components/UpcomingCard";
+import { CRICKET_CATEGORIES } from "@/lib/constant";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -203,10 +204,6 @@ export default function LiveScoreHome() {
 
   const liveTypeCounts = useMemo(() => countByType(liveMatches), [liveMatches]);
 
-  console.log("Upcoming:", upcomingTypeCounts);
-  console.log("Recent:", recentTypeCounts);
-  console.log("Live:", liveTypeCounts);
-
   const loading =
     liveRes.isLoading || recentRes.isLoading || upcomingRes.isLoading;
   const error = liveRes.error || recentRes.error || upcomingRes.error;
@@ -230,8 +227,6 @@ export default function LiveScoreHome() {
   const UPCOMING_PAGE_SIZE = 30;
   const [recentPage, setRecentPage] = useState(1);
   const [upcomingPage, setUpcomingPage] = useState(1);
-
-  const categories = ["International", "T20", "ODI", "Test", "Leagues", "All"];
 
   const recentSorted = useMemo(() => {
     return [...recentMatches].sort(
@@ -347,7 +342,7 @@ export default function LiveScoreHome() {
 
         {/* Category Filters */}
         <div className="flex justify-center gap-2 mb-6 flex-wrap">
-          {categories.map((cat) => {
+          {CRICKET_CATEGORIES.map((cat) => {
             const active = selectedCategory === cat;
             return (
               <button
