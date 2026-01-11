@@ -21,3 +21,28 @@ export function ApiBase() {
     ""
   );
 }
+
+export function URLNormalize(url: string, path: string) {
+  if (!url) return "";
+
+  // If URL is already absolute, return as-is
+  if (url.startsWith("http://") || url.startsWith("https://")) {
+    return url;
+  }
+
+  const apiBase = ApiBase(); // e.g., http://127.0.0.1:8000/api
+
+  // Remove trailing slash from apiBase
+  const cleanApiBase = apiBase.replace(/\/$/, "");
+
+  // Remove leading slash from url
+  const cleanUrl = url.replace(/^\/+/, "");
+
+  // If the URL comes from API endpoint (like audios/...), map to storage
+  // e.g., audios/abc.png -> /storage/path/..
+  const storagePath = cleanUrl.startsWith(`${path}/`)
+    ? `/storage/${cleanUrl}`
+    : `/${cleanUrl}`;
+
+  return `${cleanApiBase.replace(/\/api$/, "")}${storagePath}`;
+}

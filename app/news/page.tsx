@@ -60,7 +60,6 @@ function ShareIcon({ children }: { children: React.ReactNode }) {
     )
 }
 
-
 function IconX() {
     return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -159,8 +158,6 @@ function ShareModal({
     }
 
     async function onMore() {
-        // Web Share API (best for mobile)
-    
         if (navigator.share) {
             try {
                 await navigator.share({ title, text: title, url })
@@ -175,8 +172,7 @@ function ShareModal({
     }
 
     function onWhatsappStatus() {
-        // No official URL exists to open WhatsApp Status composer with prefilled text.
-        setToast("WhatsApp Status can’t be opened with a prefilled link. Use Copy link and paste into Status.")
+        setToast("WhatsApp Status can't be opened with a prefilled link. Use Copy link and paste into Status.")
         window.setTimeout(() => setToast(null), 2200)
     }
 
@@ -326,7 +322,8 @@ function ShareButton({ url, title }: { url: string; title: string }) {
             <button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 hover:bg-white/10 transition"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 
+                          hover:bg-white/10 transition-all duration-300 hover:-translate-y-[1px] active:translate-y-0"
                 aria-label="Share"
             >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -365,24 +362,32 @@ export default function NewsPage() {
 
                             <button
                                 onClick={() => setActiveCategory(null)}
-                                className={`block w-full text-left px-3 py-2 rounded-xl mb-1 transition ${activeCategory === null
-                                        ? "bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 text-white shadow-md shadow-blue-500/20"
-                                        : "text-slate-200 hover:bg-white/5"
-                                    }`}
+                                className={`relative overflow-hidden block w-full text-left px-3 py-2 rounded-xl mb-1 transition-all duration-300 ${
+                                    activeCategory === null
+                                        ? "bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-semibold shadow-lg shadow-amber-500/30 hover:shadow-xl hover:shadow-amber-500/40 hover:brightness-110"
+                                        : "text-slate-200 hover:bg-white/5 hover:translate-x-1"
+                                }`}
                             >
-                                All News
+                                <span className="relative z-10">All News</span>
+                                {activeCategory === null && (
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shimmer" />
+                                )}
                             </button>
 
                             {categories?.data?.map((cat: Category) => (
                                 <button
                                     key={cat.id}
                                     onClick={() => setActiveCategory(cat.slug)}
-                                    className={`block w-full text-left px-3 py-2 rounded-xl mb-1 transition ${activeCategory === cat.slug
-                                            ? "bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 text-white shadow-md shadow-blue-500/20"
-                                            : "text-slate-200 hover:bg-white/5"
-                                        }`}
+                                    className={`relative overflow-hidden block w-full text-left px-3 py-2 rounded-xl mb-1 transition-all duration-300 ${
+                                        activeCategory === cat.slug
+                                            ? "bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-semibold shadow-lg shadow-amber-500/30 hover:shadow-xl hover:shadow-amber-500/40 hover:brightness-110"
+                                            : "text-slate-200 hover:bg-white/5 hover:translate-x-1"
+                                    }`}
                                 >
-                                    {cat.name}
+                                    <span className="relative z-10">{cat.name}</span>
+                                    {activeCategory === cat.slug && (
+                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shimmer" />
+                                    )}
                                 </button>
                             ))}
                         </div>
@@ -415,39 +420,60 @@ export default function NewsPage() {
                                     return (
                                         <article
                                             key={item.id}
-                                            className="group rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 transition
-                                 hover:border-blue-400/40 hover:shadow-[0_0_0_1px_rgba(59,130,246,0.25)]"
+                                            className="group rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 
+                                                      transition-all duration-300
+                                                      hover:border-amber-400/40 hover:shadow-lg hover:shadow-amber-500/10 
+                                                      hover:-translate-y-1 active:translate-y-0"
                                         >
                                             {imgSrc && (
-                                                <div className="mb-3 overflow-hidden rounded-xl border border-white/10">
+                                                <div className="mb-3 overflow-hidden rounded-xl border border-white/10 relative">
                                                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                    <img src={imgSrc} alt={item.title} className="w-full h-40 object-cover" />
+                                                    <img 
+                                                        src={imgSrc} 
+                                                        alt={item.title} 
+                                                        className="w-full h-40 object-cover transition-transform duration-700 
+                                                                  group-hover:scale-110 group-hover:rotate-1" 
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 
+                                                                   group-hover:opacity-100 transition-opacity duration-300" />
                                                 </div>
                                             )}
 
-                                            <h2 className="text-xl font-semibold mb-2 text-slate-100">
-                                                <Link href={`/news/${item.slug}`} className="hover:text-sky-400 transition">
+                                            <h2 className="text-xl font-semibold mb-2 text-slate-100 transition-colors duration-300 
+                                                          group-hover:text-amber-300">
+                                                <Link href={`/news/${item.slug}`} className="hover:text-amber-400 transition">
                                                     {item.title}
                                                 </Link>
                                             </h2>
 
                                             {item.published_at && (
-                                                <p className="text-xs text-slate-400 mb-2">
+                                                <p className="text-xs text-slate-400 mb-2 transition-colors duration-300 
+                                                             group-hover:text-slate-300">
                                                     {new Date(item.published_at).toLocaleString()}
                                                 </p>
                                             )}
 
-                                            {item.excerpt && <p className="text-sm text-slate-300">{item.excerpt}</p>}
+                                            {item.excerpt && (
+                                                <p className="text-sm text-slate-300 line-clamp-2">{item.excerpt}</p>
+                                            )}
 
                                             <div className="mt-4 flex items-center justify-between gap-3">
                                                 <Link
                                                     href={`/news/${item.slug}`}
-                                                    className="text-sm font-medium text-sky-400 hover:underline"
+                                                    className="relative overflow-hidden inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                                                              bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500
+                                                              text-black text-sm font-semibold shadow-lg shadow-amber-500/30
+                                                              transition-all duration-300
+                                                              hover:brightness-110 hover:shadow-xl hover:shadow-amber-500/40 
+                                                              hover:-translate-y-[2px]
+                                                              active:translate-y-0"
                                                 >
-                                                    Read more..
+                                                    <span className="relative z-10">Read more</span>
+                                                    <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-1">→</span>
+                                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent 
+                                                                   -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                                                 </Link>
 
-                                                {/* Share button -> popup */}
                                                 <ShareButton url={shareUrl} title={item.title} />
                                             </div>
                                         </article>

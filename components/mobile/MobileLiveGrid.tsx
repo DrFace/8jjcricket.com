@@ -3,6 +3,7 @@
 import useSWR from "swr";
 import type { Fixture } from "@/types/fixture";
 import MobileLiveCard from "./MobileLiveCard";
+import MobileFixtureCard from "./MobileFixtureCard";
 
 interface LiveGridProps {
   filter?: string;

@@ -109,14 +109,20 @@ export default async function ArticlePage({ params }: Props) {
                         <div className="max-w-3xl mx-auto">
                             <Link
                                 href="/news"
-                                className="inline-flex items-center gap-2 rounded-full
-                 bg-gradient-to-r from-[#FACC15] via-[#F97316] to-[#EA580C]
-                 px-4 py-2 text-sm font-semibold text-black
-                 shadow-lg shadow-amber-500/40
-                 ring-1 ring-white/20
-                 hover:brightness-110 active:scale-95"
+                                className="group relative overflow-hidden inline-flex items-center gap-2 rounded-full
+                                          bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500
+                                          px-5 py-2.5 text-sm font-semibold text-black
+                                          shadow-lg shadow-amber-500/40
+                                          ring-1 ring-white/20
+                                          transition-all duration-300
+                                          hover:brightness-110 hover:shadow-xl hover:shadow-amber-500/50 
+                                          hover:-translate-y-[2px]
+                                          active:scale-95 active:translate-y-0"
                             >
-                                ← Back to News
+                                <span className="relative z-10 transition-transform duration-300 group-hover:-translate-x-1">←</span>
+                                <span className="relative z-10">Back to News</span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent 
+                                               -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                             </Link>
 
                             <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 text-slate-300">
@@ -142,15 +148,22 @@ export default async function ArticlePage({ params }: Props) {
                 <main className="flex-1 px-4 py-10">
                     <div className="max-w-3xl mx-auto">
                         <div className="flex items-center justify-between gap-3">
-                            <Link href="/news" className="text-sky-400 hover:underline transition">
-                                ← Back to news
+                            <Link 
+                                href="/news" 
+                                className="group inline-flex items-center gap-2 text-amber-400 font-medium
+                                          hover:text-amber-300 transition-all duration-300 hover:-translate-x-1"
+                            >
+                                <span className="transition-transform duration-300 group-hover:-translate-x-1">←</span>
+                                Back to news
                             </Link>
 
                             {/* Share button + popup */}
                             <ShareButton slug={article.slug} title={article.title} />
                         </div>
 
-                        <h1 className="text-3xl md:text-4xl font-bold mt-4 mb-3 text-slate-100">
+                        <h1 className="text-3xl md:text-4xl font-bold mt-4 mb-3 text-slate-100 
+                                      bg-gradient-to-r from-amber-200 via-yellow-100 to-orange-200 
+                                      bg-clip-text text-transparent">
                             {article.title}
                         </h1>
 
@@ -161,22 +174,51 @@ export default async function ArticlePage({ params }: Props) {
                         )}
 
                         {imgSrc && (
-                            <div className="mb-6 overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
+                            <div className="group mb-6 overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md
+                                          transition-all duration-300 hover:border-amber-400/30 hover:shadow-lg hover:shadow-amber-500/10">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
                                     src={imgSrc}
                                     alt={article.title}
-                                    className="w-full max-h-96 object-cover"
+                                    className="w-full max-h-96 object-cover transition-transform duration-700 
+                                              group-hover:scale-105"
                                 />
                             </div>
                         )}
 
-                        <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-6">
+                        <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-6 
+                                       transition-all duration-300 hover:border-white/15">
                             {/* FIX: render HTML body */}
                             <div
-                                className="prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-slate-100 prose-a:text-sky-400"
+                                className="prose prose-invert max-w-none 
+                                          prose-p:text-slate-300 prose-p:leading-relaxed
+                                          prose-headings:text-slate-100 prose-headings:font-bold
+                                          prose-a:text-amber-400 prose-a:no-underline hover:prose-a:text-amber-300 hover:prose-a:underline
+                                          prose-strong:text-amber-200 prose-strong:font-semibold
+                                          prose-ul:text-slate-300 prose-ol:text-slate-300
+                                          prose-li:marker:text-amber-400"
                                 dangerouslySetInnerHTML={{ __html: safeBodyHtml }}
                             />
+                        </div>
+
+                        {/* Back to news footer button */}
+                        <div className="mt-8 flex justify-center">
+                            <Link
+                                href="/news"
+                                className="group relative overflow-hidden inline-flex items-center gap-2 rounded-full
+                                          bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500
+                                          px-6 py-3 text-sm font-semibold text-black
+                                          shadow-lg shadow-amber-500/40
+                                          transition-all duration-300
+                                          hover:brightness-110 hover:shadow-xl hover:shadow-amber-500/50 
+                                          hover:-translate-y-[2px]
+                                          active:scale-95 active:translate-y-0"
+                            >
+                                <span className="relative z-10 transition-transform duration-300 group-hover:-translate-x-1">←</span>
+                                <span className="relative z-10">Back to All News</span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent 
+                                               -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                            </Link>
                         </div>
                     </div>
                 </main>

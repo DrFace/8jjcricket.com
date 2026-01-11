@@ -3,10 +3,10 @@
 import { useState } from "react";
 import useSWR from "swr";
 
-import BetButton from "@/components/BetButton";
 import type { Fixture } from "@/types/fixture";
 import MobileTabBar from "@/components/mobile/MobileTabBar";
 import MobileLiveGrid from "@/components/mobile/MobileLiveGrid";
+import MobileFixtureCard from "@/components/mobile/MobileFixtureCard";
 import MobileLiveCard from "@/components/mobile/MobileLiveCard";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
@@ -32,7 +32,6 @@ export default function LivescoreClient() {
 
   return (
     <div className="flex w-full flex-col gap-3">
-      {/* Header */}
       <div className="flex flex-col gap-2">
         <div>
           <h1 className="text-lg font-extrabold text-white">Live Score</h1>
@@ -43,8 +42,7 @@ export default function LivescoreClient() {
 
         <MobileTabBar tabs={navTabs} />
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1">
           {categories.map((cat) => {
             const active = selected === cat;
             return (
@@ -67,14 +65,11 @@ export default function LivescoreClient() {
         </div>
       </div>
 
-      {/* LIVE */}
       <div className="rounded-2xl border border-white/15 bg-black/40 shadow-2xl backdrop-blur-2xl">
-        <div className="flex items-center justify-between border-b border-white/10 bg-black/30 px-4 py-3">
-          {/* text color yellow */}
+        <div className="flex items-center justify-between px-4 py-3">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-amber-300 ">
             Live Now
           </h2>
-          <BetButton />
         </div>
 
         <div className="px-4 py-4">
@@ -82,7 +77,6 @@ export default function LivescoreClient() {
         </div>
       </div>
 
-      {/* RECENT */}
       <div className="rounded-2xl border border-white/15 bg-black/40 shadow-2xl backdrop-blur-2xl">
         <div className="border-b border-white/10 bg-black/30 px-4 py-3">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-amber-300">

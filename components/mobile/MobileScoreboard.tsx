@@ -8,6 +8,7 @@ import { formatDate } from "@/lib/utils";
 import TeamBadge from "@/components/TeamBadge";
 import { useTeams } from "@/hooks/useTeams";
 import { usePlayers } from "@/hooks/usePlayers";
+import MobileRecentBadge from "./MobileRecentBadge";
 
 const fetcher = async (u: string) => {
   const res = await fetch(u, { headers: { Accept: "application/json" } });
@@ -26,7 +27,7 @@ const fetcher = async (u: string) => {
 type AnyRow = Record<string, any>;
 
 export default function MobileScoreboard({ id }: { id: string }) {
-  const { data, error, isLoading } = useSWR(`/api/fixture/${id}`, fetcher, {
+  const { data, error, isLoading } = useSWR(`/api/match/${id}`, fetcher, {
     refreshInterval: 15000,
   });
   const fx = data?.data;
@@ -151,14 +152,14 @@ export default function MobileScoreboard({ id }: { id: string }) {
 
         <div className="flex items-center justify-center gap-5 mb-3">
           <div className="flex flex-col items-center gap-1">
-            <TeamBadge team={homeBadge} />
+            <MobileRecentBadge team={homeBadge} />
             <div className="text-sm font-medium">
               {home?.short_name || home?.name || `Team ${fx.localteam_id}`}
             </div>
           </div>
           <div className="text-xs text-gray-500">VS</div>
           <div className="flex flex-col items-center gap-1">
-            <TeamBadge team={awayBadge} />
+            <MobileRecentBadge team={awayBadge} />
             <div className="text-sm font-medium">
               {away?.short_name || away?.name || `Team ${fx.visitorteam_id}`}
             </div>

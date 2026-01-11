@@ -1,36 +1,45 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
-const BASE = process.env.SPORTMONKS_API_BASE ?? 'https://cricket.sportmonks.com/api/v2.0';
-const TOKEN = process.env.SPORTMONKS_API_TOKEN;
+export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
-export const revalidate = 3600;
+const BACKEND_BASE =
+  (process.env.NEXT_PUBLIC_BACKEND_BASE ?? "https://8jjcricket.com").replace(
+    /\/+$/,
+    ""
+  );
 
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: { id: string } }
 ) {
-  const { id } = params;
+  const { searchParams } = new URL(req.url);
+  const id = params.id;
 
-  if (!TOKEN) {
-    return NextResponse.json({ error: 'Missing SPORTMONKS_API_TOKEN' }, { status: 500 });
-  }
+  // OPTIONAL: if your backend supports include params, forward them
+  // e.g. /api/players/{id}?include=career,country
+  const backendUrl = new URL(`${BACKEND_BASE}/api/players/${id}`);
+  for (const [k, v] of searchParams.entries()) backendUrl.searchParams.set(k, v);
 
   try {
-    const url = `${BASE}/players/${id}?api_token=${TOKEN}&include=career,country`;
-    const res = await fetch(url, { next: { revalidate: 3600 } });
+    const res = await fetch(backendUrl.toString(), { cache: "no-store" });
 
     if (!res.ok) {
       const text = await res.text();
-      console.error('❌ SportMonks Error:', res.status, text);
-      return NextResponse.json({ error: 'Failed to fetch player' }, { status: 502 });
+      console.error("❌ Backend /api/players/:id error:", res.status, text);
+      return NextResponse.json(
+        { error: "Failed to fetch player", status: res.status },
+        { status: 502 }
+      );
     }
 
     const json = await res.json();
-    const player = json.data;
-
-    return NextResponse.json({ data: player });
+    return NextResponse.json(json);
   } catch (err: any) {
-    console.error('❌ Exception:', err);
-    return NextResponse.json({ error: err.message ?? 'Unknown error' }, { status: 500 });
+    console.error("❌ Exception:", err);
+    return NextResponse.json(
+      { error: err.message ?? "Unknown error" },
+      { status: 500 }
+    );
   }
 }

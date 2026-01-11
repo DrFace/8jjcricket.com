@@ -1,29 +1,43 @@
-import { NextResponse } from 'next/server'
-import { smFetch } from '@/lib/sportmonks'
+import { NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const revalidate = 0;
+export const dynamic = "force-dynamic";
+
+const BACKEND_BASE = (
+  process.env.NEXT_PUBLIC_BACKEND_BASE ?? "https://8jjcricket.com"
+).replace(/\/+$/, "");
 
 // GET /api/team-rankings
-// Fetches ICC team rankings from SportMonks. This endpoint aggregates the
-// Test, ODI and T20 rankings and returns them verbatim. Errors and rate
-// limit conditions are surfaced as simple JSON objects with an `error`
-// field so the client can show appropriate messaging.
-export async function GET() {
+// Now proxies to Laravel backend instead of calling SportMonks directly.
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+
+  // Forward optional query params if you ever use them:
+  // /api/team-rankings?type=ODI&gender=men etc.
+  const backendUrl = new URL(`${BACKEND_BASE}/api/team-rankings`);
+  for (const [k, v] of searchParams.entries()) {
+    backendUrl.searchParams.set(k, v);
+  }
+
   try {
-    const json = await smFetch('/team-rankings')
-    return NextResponse.json({ data: json?.data ?? [] })
-  } catch (err: any) {
-    const msg = String(err?.message ?? '')
-    if (msg === 'SPORTMONKS_RATE_LIMIT') {
+    const res = await fetch(backendUrl.toString(), { cache: "no-store" });
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("❌ Backend /api/team-rankings error:", res.status, text);
       return NextResponse.json(
-        { error: 'SportMonks rate limit reached. Please try again soon.' },
-        { status: 503 }
-      )
+        { error: "Failed to fetch team rankings", status: res.status },
+        { status: 502 }
+      );
     }
+
+    const json = await res.json();
+    return NextResponse.json(json); // expects { data: [...] }
+  } catch (err: any) {
+    console.error("❌ Exception:", err);
     return NextResponse.json(
-      { error: msg || 'Failed to load team rankings' },
+      { error: err?.message ?? "Unknown error" },
       { status: 500 }
-    )
+    );
   }
 }

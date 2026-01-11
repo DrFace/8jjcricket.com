@@ -2,8 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import useSWR from "swr";
-import type { Fixture } from "@/types/fixture";
-import BetButton from "@/components/BetButton";
+import type { Match } from "@/lib/cricket-types";
 import CalenderModal from "@/components/mobile/CalenderModal";
 import BottomNav from "@/components/BottomNav";
 import MobileArchhiveCard from "@/components/mobile/MobileArchhiveCard";
@@ -21,7 +20,7 @@ export default function ArchivePage() {
   const description =
     "Browse archived cricket matches with results and details.";
 
-  const fixtures: Fixture[] = data?.data ?? [];
+  const fixtures: Match[] = data?.data ?? [];
 
   // Calendar / date filter state and derived data
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -209,10 +208,6 @@ export default function ArchivePage() {
                 setParentSelectedDate={setSelectedDate}
               />
             ) : null}
-            {/* Bet button under the calendar, aligned to the right */}
-            <div className="mt-2 flex justify-end border-t border-white/10 pt-3">
-              <BetButton />
-            </div>
           </div>
         </aside>
         {/* BottomNav */}

@@ -5,7 +5,6 @@ import SmoothScroller from "@/components/SmoothScroller";
 import DesktopOnly from "@/components/DesktopOnly";
 import BottomNav from "@/components/BottomNav";
 import HomeVerticalSwiper from "@/components/HomeVerticalSwiper";
-import HomeGalleryShowcase from "@/components/HomeGalleryShowcase";
 import HomeNewsShowcase from "@/components/HomeNewsShowcase";
 import HomeFeedbackSection from "@/components/HomeFeedbackSection";
 import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
@@ -104,19 +103,19 @@ function gameInitials(title: string) {
 }
 
 const DOWNLOAD_URL = "https://download.9ipl.vip/normal/";
-const BRAND_ITEMS = [
-  "MB66",
-  "OK9",
-  "78win",
-  "QQ88",
-  "F168",
-  "FLY88",
-  "CM88",
-  "OK8386",
-  "SC88",
-  "C168",
-  "iP88",
-];
+// const BRAND_ITEMS = [
+//   "MB66",
+//   "OK9",
+//   "78win",
+//   "QQ88",
+//   "F168",
+//   "FLY88",
+//   "CM88",
+//   "OK8386",
+//   "SC88",
+//   "C168",
+//   "iP88",
+// ];
 
 export default async function HomePage() {
   const news = await getNewsPreview();
@@ -192,7 +191,7 @@ export default async function HomePage() {
       <HomeVerticalSwiper>
         <section
           data-snap
-          className="SectionScroll sticky top-0 Sh-screen w-full overflow-hidden"
+          className="SectionScroll sticky top-0 Sh-screen w-full overflow-hidden "
         >
           {/* Build a safe HTTPS URL for the video without changing backend/env */}
           {(() => {
@@ -250,10 +249,10 @@ export default async function HomePage() {
             );
           })()}
 
-          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-transparent" />
 
-          <div className="pointer-events-auto absolute bottom-4 left-0 right-0 z-20 flex justify-center px-4">
-            <div className="inline-flex min-w-0 max-w-full items-center justify-center gap-2 overflow-x-auto rounded-full border border-white/20 bg-black/70 px-3 py-2 shadow-2xl backdrop-blur-xl">
+          {/* <div className="pointer-events-auto absolute bottom-4 left-0 right-0 z-20 flex justify-center px-4 ">
+            <div className="inline-flex min-w-0 max-w-full items-center justify-center gap-2 overflow-x-auto rounded-full border border-white/20 bg-black/70 px-3 py-2 shadow-2xl backdrop-blur-xl ">
               {BRAND_ITEMS.map((name: string) => (
                 <a
                   key={name}
@@ -266,7 +265,7 @@ export default async function HomePage() {
                 </a>
               ))}
             </div>
-          </div>
+          </div> */}
         </section>
         <section
           data-snap
@@ -283,7 +282,7 @@ export default async function HomePage() {
               <PortraitShowcaseSection />
             </div>
           </div>
-        </section> 
+        </section>
 
         {/* SLIDE — GALLERY SHOWCASE */}
         {/* <section
@@ -315,7 +314,7 @@ export default async function HomePage() {
             />
             <div className="absolute inset-0 bg-black/70" />
 
-            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
+            <div className="relative w-full max-w-[1480px] mx-auto rounded-2xl border border-white/15 bg-slate-900/70 p-6 shadow-2xl backdrop-blur-2xl">
               <HomeNewsShowcase />
             </div>
           </div>

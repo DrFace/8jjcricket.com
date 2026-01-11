@@ -1,32 +1,31 @@
-"use client"
+"use client";
 
-import Image from 'next/image'
-import { cn } from '@/lib/utils'
-import type { Team } from '@/types/team'
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 
-/**
- * A reusable component that displays a team logo and name. The size of the
- * logo can be customized via the `size` prop. When `hideName` is set, only
- * the logo is shown. If a logo URL is not provided, the component renders
- * an empty box to preserve spacing.
- */
+type BadgeTeam = {
+  name?: string | null;
+  short_name?: string | null;
+  logo?: string | null;
+  image_path?: string | null;
+};
+
 export default function TeamBadge({
   team,
   size = 28,
   className,
   hideName = false,
 }: {
-  team?: Team
-  size?: number
-  className?: string
-  hideName?: boolean
+  team?: BadgeTeam;
+  size?: number;
+  className?: string;
+  hideName?: boolean;
 }) {
-  const label = team?.short_name || team?.name || 'Team'
-  const logo = team?.logo
+  const label = team?.short_name || team?.name || "Team";
+  const logo = team?.logo ?? team?.image_path ?? null;
 
   return (
-    <div className={cn('flex items-center gap-2 min-w-0', className)}>
-      {/* fixed-size box; image fills it and keeps aspect */}
+    <div className={cn("items-center gap-2 min-w-0", className)}>
       <div className="relative shrink-0" style={{ width: size, height: size }}>
         {logo ? (
           <Image
@@ -42,5 +41,5 @@ export default function TeamBadge({
       </div>
       {!hideName && <span className="truncate">{label}</span>}
     </div>
-  )
+  );
 }

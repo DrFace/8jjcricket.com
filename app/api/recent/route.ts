@@ -1,40 +1,33 @@
-import { NextResponse } from 'next/server'
-import { smFetch, mapTeam } from '@/lib/sportmonks'
+import { NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-// GET /api/recent
-// Returns a list of completed fixtures (archive). This mirrors the behaviour
-// of the upstream 8jjcricket implementation, fetching fixtures with
-// status=Finished and sorting by start date descending.
+const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+
 export async function GET() {
   try {
-    const json = await smFetch('/fixtures?filter[status]=Finished&sort=-starting_at&include=localteam,visitorteam')
-    const fixtures = (json?.data ?? []).map((f: any) => ({
-      id: f.id,
-      round: f.round,
-      status: f.status,
-      starting_at: f.starting_at,
-      note: f.note,
-      localteam_id: f.localteam_id ?? f.localteam?.id,
-      visitorteam_id: f.visitorteam_id ?? f.visitorteam?.id,
-      localteam: mapTeam(f.localteam),
-      visitorteam: mapTeam(f.visitorteam),
-      live: f.live ?? false,
-    }))
-    return NextResponse.json({ data: fixtures })
-  } catch (err: any) {
-    const msg = String(err?.message ?? '')
-    if (msg === 'SPORTMONKS_RATE_LIMIT') {
+    const res = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/fixtures/recent`, {
+      // helps prevent caching issues
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+    });
+
+    if (!res.ok) {
       return NextResponse.json(
-        { error: 'SportMonks rate limit reached. Please try again soon.' },
-        { status: 503 }
-      )
+        { error: `Laravel API failed: ${res.status}`, data: [] },
+        { status: 502 }
+      );
     }
+
+    const json = await res.json();
+
+    // json is already: { data: [...] }
+    return NextResponse.json(json);
+  } catch (err: any) {
     return NextResponse.json(
-      { error: msg || 'Failed to load recent fixtures', data: [] },
+      { error: err?.message || "Failed to load recent fixtures", data: [] },
       { status: 500 }
-    )
+    );
   }
 }

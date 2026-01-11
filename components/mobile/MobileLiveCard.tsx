@@ -1,80 +1,117 @@
 "use client";
 
 import Link from "next/link";
-import { formatDate, cn } from "@/lib/utils";
-import TeamBadge from "@/components/TeamBadge";
+import { cn, formatDate } from "@/lib/utils";
 import type { Fixture } from "@/types/fixture";
+import MobileRecentBadge from "./MobileRecentBadge";
 
 export default function MobileLiveCard({ f }: { f: Fixture }) {
   const home = f.localteam;
   const away = f.visitorteam;
 
-  const homeLabel = home?.short_name || home?.name || `Team ${f.localteam_id}`;
-  const awayLabel =
-    away?.short_name || away?.name || `Team ${f.visitorteam_id}`;
-
-  const metaLine = `${f.round ?? "Match"} · ${formatDate(f.starting_at)}`;
+  const homeLabel = home?.short_name || home?.name || "Home";
+  const awayLabel = away?.short_name || away?.name || "Away";
 
   return (
     <Link
-      href={`/mobile/match/${f.id}`}
-      className={cn(
-        "p-[1px] rounded-2xl to-transparent",
-        "hover:border-amber-300/30 hover:bg-white/7"
-      )}
+      href={`/mobile/match/${f.fixture_id}`}
+      className="block active:scale-[0.98] transition-transform"
     >
-      <div className="bg-[#0B0E14] rounded-2xl p-4 overflow-hidden">
-        <div className="px-4 py-3">
-          {/* Top row */}
-          <div className="flex items-start justify-between gap-3">
+      {/* Gradient border */}
+      <div
+        className={cn(
+          "relative rounded-2xl p-[0.2px]",
+          "bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-500",
+          "shadow-lg shadow-amber-500/25"
+        )}
+      >
+        {/* Card body */}
+        <div
+          className={cn(
+            "relative rounded-2xl p-4",
+            "bg-gradient-to-br from-[#0E1118] via-[#0B0E14] to-black"
+          )}
+        >
+          {/* LIVE glow */}
+          {f.live && (
+            <div className="absolute inset-0 rounded-2xl ring-1 ring-red-500/30 animate-pulse" />
+          )}
+
+          {/* Header */}
+          <div className="relative z-10 flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <h3 className="text-sm font-semibold text-white truncate">
+              <h3
+                className="
+              text-sm sm:text-base
+              font-extrabold
+              text-transparent bg-clip-text
+              bg-gradient-to-r from-white to-sky-200
+              truncate
+            "
+              >
                 {homeLabel} vs {awayLabel}
               </h3>
 
-              <p className="mt-0.5 text-[11px] text-sky-100/60">{metaLine}</p>
-
-              {f.status && (
-                <p className="mt-0.5 text-[11px] text-sky-100/50">{f.status}</p>
-              )}
+              <p className="mt-0.5 text-[11px] text-sky-100/60">
+                {f.round ?? "Match"} · {formatDate(f.starting_at)}
+              </p>
             </div>
 
+            {/* LIVE badge */}
             <span
               className={cn(
-                "shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide",
+                "relative shrink-0 rounded-full px-3 py-1 text-[10px] font-extrabold",
                 f.live
-                  ? "bg-red-500/15 text-red-200 border border-red-500/25"
-                  : "bg-white/10 text-sky-100/70 border border-white/10"
+                  ? "bg-red-500 text-white shadow-md shadow-red-500/40"
+                  : "bg-white/10 text-sky-100/70"
               )}
             >
-              {f.live ? "LIVE" : "SOON"}
+              {f.live && (
+                <span className="absolute -left-1 -top-1 h-2 w-2 rounded-full bg-red-400 animate-ping" />
+              )}
+              {f.live ? "LIVE" : "FINISHED"}
             </span>
           </div>
 
-          <div className="mt-2 h-px w-full bg-white/10" />
+          {/* Divider */}
+          <div className="my-3 h-px bg-white/10" />
 
-          {/* Teams row */}
-          <div className="mt-3 flex items-center justify-between gap-2">
-            <div className="flex-1 min-w-0 text-sky-100/90">
-              <TeamBadge
-                team={home}
-                className="justify-start text-sky-100/90"
-              />
+          {/* Teams */}
+          <div className="relative z-10 flex items-center justify-between gap-2">
+            <div className="flex-1 flex justify-start">
+              <MobileRecentBadge team={home} />
             </div>
 
-            <div className="px-2 text-[11px] text-sky-100/40 uppercase tracking-wide">
-              vs
+            <div className="flex flex-col items-center shrink-0 px-1">
+              <span className="text-[10px] tracking-widest text-sky-100/40">
+                VS
+              </span>
+              <span className="h-1 w-1 rounded-full bg-white/20" />
             </div>
 
-            <div className="flex-1 min-w-0 flex justify-end text-sky-100/90">
-              <TeamBadge
-                team={away}
-                className="justify-end text-right text-sky-100/90"
-              />
+            <div className="flex-1 flex justify-end">
+              <MobileRecentBadge team={away} />
             </div>
           </div>
 
-          {f.note && <p className="mt-2 text-xs text-sky-100/70">{f.note}</p>}
+          {/* Result */}
+          {f.note && (
+            <div
+              className="
+            mt-3
+            rounded-xl
+            bg-gradient-to-r from-emerald-500/15 to-sky-500/10
+            px-3 py-2
+            text-[12px]
+            font-semibold
+            text-emerald-200
+            break-words
+            text-left sm:text-center
+          "
+            >
+              {f.note}
+            </div>
+          )}
         </div>
       </div>
     </Link>

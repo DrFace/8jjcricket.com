@@ -7,6 +7,7 @@ import { fetchGames, toMinigameCards } from "@/lib/games-api";
 import MobileBannerCarousel from "@/components/mobile/MobileBannerCarousel";
 import { ApiBase } from "@/lib/utils";
 import { DEFAULT_API_BASE } from "@/lib/constant";
+import MobileSocialBox from "@/components/MobileSocialBox";
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
   ssr: false,
@@ -53,6 +54,11 @@ const SITE_ORIGIN =
 const DOWNLOAD_URL = "https://download.9ipl.vip/normal/";
 
 const BRAND_ITEMS: { name: string; icon: string }[] = [
+  { name: "F168", icon: "/brands/f168.png" },
+  { name: "FLY88", icon: "/brands/fly88.png" },
+  { name: "CM88", icon: "/brands/cm88.png" },
+  { name: "OK8386", icon: "/brands/ok8386.png" },
+  { name: "SC88", icon: "/brands/sc88.png" },
   { name: "F168", icon: "/brands/f168.png" },
   { name: "FLY88", icon: "/brands/fly88.png" },
   { name: "CM88", icon: "/brands/cm88.png" },
@@ -230,28 +236,10 @@ export default async function MobileHomePage() {
           </div>
         </Reveal>
       </section>
-
-      {/* SOCIALS (under video) */}
-      <section className="mt-4 w-full snap-start scroll-mt-3">
-        <Reveal>
-          <SocialBox />
-        </Reveal>
-      </section>
-
-      {/* HERO / BANNER */}
-      <section className="mt-3 w-full snap-start scroll-mt-3">
-        <Reveal>
-          <div className="w-full overflow-hidden rounded-xl">
-            <MobileBannerCarousel />
-          </div>
-        </Reveal>
-      </section>
-
       {/* SPONSORS (GRID, no scroll) */}
-      <section className="mt-4 w-full snap-start scroll-mt-3">
+      {/* <section className="mt-4 w-full snap-start scroll-mt-3">
         <Reveal>
           <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
-            {/* Optional background image behind tiles */}
             <div
               className="absolute inset-0 opacity-30"
               style={{
@@ -304,93 +292,112 @@ export default async function MobileHomePage() {
             </div>
           </div>
         </Reveal>
+      </section> */}
+
+      {/* HERO / BANNER */}
+      <section className="mt-3 w-full snap-start scroll-mt-3">
+        {/* <Reveal> */}
+        <div className="w-full overflow-hidden rounded-xl">
+          <MobileBannerCarousel />
+        </div>
+        {/* </Reveal> */}
       </section>
 
       {/* QUICK GAMES */}
       <section className="mt-5 w-full snap-start scroll-mt-3">
-        <Reveal>
-          <div className="mb-2 flex w-full items-center justify-between px-4">
-            <div className="mb-3 flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-yellow-400" />
-              <h2 className="text-sm font-semibold">Hot Minigames</h2>
-            </div>
-
-            <Link
-              href="/mobile/minigames"
-              className="text-xs font-semibold text-sky-400"
-            >
-              View all →
-            </Link>
+        {/* <Reveal> */}
+        <div className="mb-2 flex w-full items-center justify-between px-4">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-yellow-400" />
+            <h2 className="text-sm font-semibold">Hot Minigames</h2>
           </div>
 
-          {(() => {
-            const COLS = 5;
-            const remainder = hotGames.length % COLS;
-            const placeholders = remainder === 0 ? 0 : COLS - remainder;
+          <Link
+            href="/mobile/minigames"
+            className="text-xs font-semibold text-sky-400"
+          >
+            View all →
+          </Link>
+        </div>
 
-            return (
-              <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-white/5 p-4">
-                {hotGames.length === 0 ? (
-                  <div className="text-sm text-white/70">
-                    No minigames available right now.
-                  </div>
-                ) : (
-                  <>
-                    <div className="grid grid-cols-5 gap-x-3 gap-y-4">
-                      {hotGames.map((g) => (
-                        <Link
-                          key={g.slug}
-                          href={`/mobile/minigames/${encodeURIComponent(
-                            g.slug
-                          )}`}
-                          prefetch={false}
-                          className="flex flex-col items-center transition active:scale-95 cursor-pointer"
-                        >
-                          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-md">
-                            <img
-                              src={g.icon}
-                              alt={g.title}
-                              className="h-9 w-9 object-contain"
-                              loading="lazy"
-                            />
-                          </div>
-                        </Link>
-                      ))}
+        {(() => {
+          const COLS = 5;
+          const visibleGames = hotGames.slice(0, COLS);
+          const remainder = visibleGames.length % COLS;
+          const placeholders = remainder === 0 ? 0 : COLS - remainder;
 
-                      {Array.from({ length: placeholders }).map((_, i) => (
-                        <div
-                          key={`game-ph-${i}`}
-                          className="flex flex-col items-center"
-                        >
-                          <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
-                          <span className="mt-1 text-[11px] text-transparent">
-                            .
-                          </span>
+          return (
+            <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-white/5 p-4">
+              {visibleGames.length === 0 ? (
+                <div className="text-sm text-white/70">
+                  No minigames available right now.
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-5 gap-x-3 gap-y-4">
+                    {visibleGames.map((g) => (
+                      <Link
+                        key={g.slug}
+                        href={`/mobile/minigames/${encodeURIComponent(g.slug)}`}
+                        prefetch={false}
+                        className="flex flex-col items-center cursor-pointer active:scale-95"
+                      >
+                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-transparent overflow-hidden">
+                          <img
+                            src={g.icon}
+                            alt={g.title}
+                            className="h-full w-full object-contain rounded-2xl"
+                            loading="lazy"
+                          />
                         </div>
-                      ))}
-                    </div>
+                      </Link>
+                    ))}
 
-                    <Link
-                      href="/mobile/minigames"
-                      className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-xs font-bold text-black"
-                    >
-                      Play Minigames
-                    </Link>
-                  </>
-                )}
-              </div>
-            );
-          })()}
-        </Reveal>
+                    {Array.from({ length: placeholders }).map((_, i) => (
+                      <div
+                        key={`game-ph-${i}`}
+                        className="flex flex-col items-center"
+                      >
+                        <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
+                        <span className="mt-1 text-[11px] text-transparent">
+                          .
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Link
+                    href="/mobile/minigames"
+                    className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-xs font-bold text-black"
+                  >
+                    Play Minigames
+                  </Link>
+                </>
+              )}
+            </div>
+          );
+        })()}
       </section>
 
+      {/* SOCIALS (under video) */}
+      <section className="mt-4 w-full snap-start scroll-mt-3">
+        {/* <Reveal> */}
+        <div className="mb-2 flex w-full items-center justify-between px-4">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-yellow-400" />
+            <h2 className="text-sm font-semibold">Follow Us</h2>
+          </div>
+        </div>
+        <MobileSocialBox />
+        {/* </Reveal> */}
+      </section>
       {/* NEWS */}
       {newsWithImages.length > 0 && (
         <section className="mt-5 w-full snap-start scroll-mt-3">
-          <Reveal>
-            <h2 className="mb-2 text-sm font-semibold">Latest News</h2>
-            <MobileNewsListCards items={newsWithImages} />
-          </Reveal>
+          {/* <Reveal> */}
+          <h2 className="mb-2 text-sm font-semibold">Latest News</h2>
+          <MobileNewsListCards items={newsWithImages} />
+          {/* </Reveal> */}
         </section>
       )}
     </>
