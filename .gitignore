@@ -70,3 +70,5 @@ __pycache__/
 # Optional: ignore local data from minigames
 public/assets/temp/
 public/game_cache/
+
+test.js

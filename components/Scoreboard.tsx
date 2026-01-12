@@ -8,6 +8,10 @@ import { formatDate } from "@/lib/utils";
 import TeamBadge from "@/components/TeamBadge";
 import { useTeams } from "@/hooks/useTeams";
 import { usePlayers } from "@/hooks/usePlayers";
+import ScoreTeamBadge from "./ScoreTeamBadge";
+import { SubCard } from "./SubCard";
+import { Pill } from "./Pill";
+import { Panel } from "./Panel";
 
 const fetcher = async (u: string) => {
   const res = await fetch(u, { headers: { Accept: "application/json" } });
@@ -24,71 +28,6 @@ const fetcher = async (u: string) => {
 };
 
 type AnyRow = Record<string, any>;
-
-// Local UI helpers (8jjcricket-like)
-function Pill({
-  children,
-  tone = "neutral",
-}: {
-  children: React.ReactNode;
-  tone?: "neutral" | "success" | "warning";
-}) {
-  const cls =
-    tone === "success"
-      ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
-      : tone === "warning"
-      ? "border-[#F7B731]/30 bg-[#F7B731]/10 text-[#F7B731]"
-      : "border-white/15 bg-white/5 text-white/75";
-
-  return (
-    <span
-      className={[
-        "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs",
-        cls,
-      ].join(" ")}
-    >
-      {children}
-    </span>
-  );
-}
-
-function Panel({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <section
-      className={[
-        "rounded-2xl border border-white/10 bg-[#070D18] p-4 md:p-6",
-        className,
-      ].join(" ")}
-    >
-      {children}
-    </section>
-  );
-}
-
-function SubCard({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <div
-      className={[
-        "rounded-xl border border-white/10 bg-[#060A12] p-4",
-        className,
-      ].join(" ")}
-    >
-      {children}
-    </div>
-  );
-}
 
 export default function Scoreboard({ id }: { id: string }) {
   const { data, error, isLoading } = useSWR(`/api/match/${id}`, fetcher, {
@@ -240,18 +179,18 @@ export default function Scoreboard({ id }: { id: string }) {
           <div className="rounded-xl border border-white/10 bg-[#060A12] px-4 py-4">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <TeamBadge team={homeBadge} />
+                <ScoreTeamBadge team={homeBadge} />
                 <div className="leading-tight">
                   <div className="text-sm font-semibold text-white">
                     {home?.short_name ||
                       home?.name ||
                       `Team ${fx.localteam_id}`}
                   </div>
-                  <div className="text-xs text-white/60">Home</div>
+                  <div className="text-xs text-amber-300">Home</div>
                 </div>
               </div>
 
-              <div className="text-xs font-semibold tracking-widest text-white/50">
+              <div className="font-semibold tracking-widest text-amber-300">
                 VS
               </div>
 
@@ -262,9 +201,9 @@ export default function Scoreboard({ id }: { id: string }) {
                       away?.name ||
                       `Team ${fx.visitorteam_id}`}
                   </div>
-                  <div className="text-xs text-white/60">Away</div>
+                  <div className="text-xs text-amber-300">Away</div>
                 </div>
-                <TeamBadge team={awayBadge} />
+                <ScoreTeamBadge team={awayBadge} />
               </div>
             </div>
 
@@ -320,24 +259,29 @@ export default function Scoreboard({ id }: { id: string }) {
               return (
                 <SubCard key={inn.id ?? `${inn.team_id}-${inn.inning}`}>
                   <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <TeamBadge team={toBadgeTeam(t)} hideName />
+                    <div className="">
+                      <ScoreTeamBadge team={toBadgeTeam(t)} />
                       <div className="text-sm font-semibold text-white">
                         {label}
                       </div>
                     </div>
-                    <Pill>Inn {inn.inning ?? "—"}</Pill>
-                  </div>
 
-                  <div className="mt-2 text-2xl font-extrabold text-white">
-                    {inn.score ?? "–"}/{inn.wickets ?? "–"}{" "}
-                    <span className="text-sm font-semibold text-white/70">
-                      ({inn.overs ?? "–"} ov)
-                    </span>
-                  </div>
+                    <div>
+                      <div className="flex justify-end">
+                        <Pill>Inn {inn.inning ?? "—"}</Pill>
+                      </div>
 
-                  <div className="mt-1 text-xs text-white/60">
-                    PP1 {inn.pp1 ?? "—"} · PP2 {inn.pp2 ?? "—"}
+                      <div className="mt-2 text-2xl font-extrabold text-white">
+                        {inn.score ?? "–"}/{inn.wickets ?? "–"}{" "}
+                        <span className="text-sm font-semibold text-white/70">
+                          ({inn.overs ?? "–"} ov)
+                        </span>
+                      </div>
+
+                      <div className="mt-1 text-xs text-white/60">
+                        PP1 {inn.pp1 ?? "—"} · PP2 {inn.pp2 ?? "—"}
+                      </div>
+                    </div>
                   </div>
                 </SubCard>
               );
