@@ -7,6 +7,7 @@ import MobileTabBar from "@/components/mobile/MobileTabBar";
 import { groupByGender } from "@/src/utils/groupByGender";
 import { RankingEntry } from "@/types/rankings";
 import RankingTable from "@/components/mobile/RankingTable";
+import RankingsTabBar from "@/components/RankingsTabBar";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -30,12 +31,16 @@ export default function TestRankingsPage() {
       <>
         <title>{title}</title>
         <meta name="description" content={description} />
-        <TopNav />
-        <div className="card">
-          Failed to load team rankings.
-          {typeof error === "string" ? ` ${error}` : ""}
+        <div className="min-h-screen flex flex-col">
+          <TopNav />
+          <main className="flex-1">
+            <div className="card">
+              Failed to load team rankings.
+              {typeof error === "string" ? ` ${error}` : ""}
+            </div>
+          </main>
+          <Footer />
         </div>
-        <Footer />
       </>
     );
   }
@@ -45,9 +50,13 @@ export default function TestRankingsPage() {
       <>
         <title>{title}</title>
         <meta name="description" content={description} />
-        <TopNav />
-        <div className="card animate-pulse">Loading rankings…</div>
-        <Footer />
+        <div className="min-h-screen flex flex-col">
+          <TopNav />
+          <main className="flex-1">
+            <div className="card animate-pulse">Loading rankings…</div>
+          </main>
+          <Footer />
+        </div>
       </>
     );
   }
@@ -59,34 +68,37 @@ export default function TestRankingsPage() {
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
+      <div className="min-h-screen flex flex-col">
+        <TopNav />
+        <main className="flex-1">
+          <div className="space-y-4 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
+            <h1 className="text-lg font-extrabold mt-4">
+              ICC Test Team Rankings
+            </h1>
 
-      <TopNav />
+            <div className="sticky top-[12%] left-0 right-0 z-50 backdrop-blur-sm">
+              <RankingsTabBar tabs={rankingTabs} />
+            </div>
 
-      <div className="space-y-8">
-        <h1 className="text-lg font-extrabold mb-4">
-          ICC Test Team Rankings
-        </h1>
+            {men.length > 0 ? (
+              <RankingTable data={men} title="Men Rankings" />
+            ) : (
+              <div className="card text-gray-500 text-center">
+                No men's rankings available
+              </div>
+            )}
 
-        <MobileTabBar tabs={rankingTabs} />
-
-        {men.length > 0 ? (
-          <RankingTable data={men} title="Men Rankings" />
-        ) : (
-          <div className="card text-gray-500 text-center">
-            No men's rankings available
+            {women.length > 0 ? (
+              <RankingTable data={women} title="Women Rankings" />
+            ) : (
+              <div className="card text-gray-500 text-center">
+                No women's rankings available
+              </div>
+            )}
           </div>
-        )}
-
-        {women.length > 0 ? (
-          <RankingTable data={women} title="Women Rankings" />
-        ) : (
-          <div className="card text-gray-500 text-center">
-            No women's rankings available
-          </div>
-        )}
+        </main>
+        <Footer />
       </div>
-
-      <Footer />
     </>
   );
 }

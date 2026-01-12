@@ -322,7 +322,7 @@ export default function LiveScoreHome() {
   useMemo(() => setUpcomingPage(1), [selectedCategory, selectedDateUpcoming]);
 
   return (
-    <DesktopOnly>
+    <div>
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Tabs */}
         <div className="flex justify-center gap-4 mb-8">
@@ -399,7 +399,9 @@ export default function LiveScoreHome() {
                       </h2>
                       <div className="text-xs text-white/60">
                         Showing{" "}
-                        <span className="text-white/80 font-semibold">6</span>{" "}
+                        <span className="text-white/80 font-semibold">
+                          {liveTabRecent4?.length}
+                        </span>{" "}
                         latest
                       </div>
                     </div>
@@ -538,6 +540,6 @@ export default function LiveScoreHome() {
           </>
         )}
       </div>
-    </DesktopOnly>
+    </div>
   );
 }
