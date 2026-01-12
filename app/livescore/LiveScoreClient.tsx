@@ -411,7 +411,7 @@ export default function LiveScoreHome() {
                     ) : (
                       <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
                         {liveTabRecent4.map((f: any) => (
-                          <RecentMatchCard key={f.id} f={f} />
+                          <LiveScoreCard key={f.id} f={f} />
                         ))}
                       </div>
                     )}
@@ -497,7 +497,7 @@ export default function LiveScoreHome() {
                       <>
                         <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
                           {recentPaged.map((f: any) => (
-                            <RecentMatchCard key={f.id} f={f} />
+                            <LiveScoreCard key={f.id} f={f} />
                           ))}
                         </div>
 

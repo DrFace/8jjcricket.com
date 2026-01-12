@@ -7,15 +7,19 @@ import CalenderModal from "@/components/mobile/CalenderModal";
 import { CRICKET_CATEGORIES, MOBILE_PAGE_SIZE } from "@/lib/constant";
 import { MatchCategory } from "@/lib/match-category";
 import MobileRecentCard from "@/components/mobile/MobileRecentCard";
-
-const fetcher = (u: string) => fetch(u).then((r) => r.json());
+import { Fetcher } from "@/lib/fetcher";
+import type { ApiEnvelope } from "@/lib/cricket-types";
+import { Fixture } from "@/types/fixture";
 
 /**
  * RecentPage lists recently completed matches. It adds page-specific
  * `<title>` and `<meta>` tags for SEO, and uses the UpcomingPage template layout.
  */
 export default function RecentPage() {
-  const { data, error, isLoading } = useSWR("/api/recent", fetcher);
+  const { data, error, isLoading } = useSWR<ApiEnvelope<Fixture[]>>(
+    "/api/recent",
+    Fetcher
+  );
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [page, setPage] = useState<number>(1);
   const title = "Recent Matches | 8jjcricket";

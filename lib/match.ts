@@ -15,3 +15,10 @@ export function ScoreLine(r: any) {
   const o = FormatOvers(r.overs);
   return `${s}/${w}${o ? ` (${o})` : ""}`;
 }
+
+export const CalcRuns = (runsArr: any[], teamId: number) => {
+  return runsArr
+    .filter((r: any) => r.team_id === teamId)
+    .sort((a: any, b: any) => (a.inning ?? 0) - (b.inning ?? 0))
+    .at(-1);
+};

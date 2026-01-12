@@ -1,5 +1,3 @@
-import { Fixture } from "@/types/fixture";
-
 export interface Season {
   is_current: boolean;
   id: number;

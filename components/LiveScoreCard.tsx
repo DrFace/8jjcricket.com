@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { formatDate, cn } from "@/lib/utils";
 import type { Match } from "@/lib/cricket-types";
-import { ExtractTarget, ScoreLine } from "@/lib/match";
+import { CalcRuns, ExtractTarget, ScoreLine } from "@/lib/match";
 
 export default function LiveScoreCard({ f }: { f: Match }) {
   const home = f.localteam;
@@ -16,15 +16,8 @@ export default function LiveScoreCard({ f }: { f: Match }) {
 
   const runsArr = Array.isArray((f as any).runs) ? (f as any).runs : [];
 
-  const homeRuns = runsArr
-    .filter((r: any) => r.team_id === f.localteam_id)
-    .sort((a: any, b: any) => (a.inning ?? 0) - (b.inning ?? 0))
-    .at(-1);
-
-  const awayRuns = runsArr
-    .filter((r: any) => r.team_id === f.visitorteam_id)
-    .sort((a: any, b: any) => (a.inning ?? 0) - (b.inning ?? 0))
-    .at(-1);
+  const homeRuns = CalcRuns(runsArr, f.localteam_id);
+  const awayRuns = CalcRuns(runsArr, f.visitorteam_id);
 
   const target = ExtractTarget(f.note);
 
