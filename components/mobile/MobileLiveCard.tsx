@@ -4,6 +4,7 @@ import Link from "next/link";
 import { cn, formatDate } from "@/lib/utils";
 import type { Fixture } from "@/types/fixture";
 import MobileRecentBadge from "./MobileRecentBadge";
+import { CalcRuns } from "@/lib/match";
 
 export default function MobileLiveCard({ f }: { f: Fixture }) {
   const home = f.localteam;
@@ -14,15 +15,8 @@ export default function MobileLiveCard({ f }: { f: Fixture }) {
 
   const runsArr = Array.isArray((f as any).runs) ? (f as any).runs : [];
 
-  const homeRuns = runsArr
-    .filter((r: any) => r.team_id === f.localteam_id)
-    .sort((a: any, b: any) => (a.inning ?? 0) - (b.inning ?? 0))
-    .at(-1);
-
-  const awayRuns = runsArr
-    .filter((r: any) => r.team_id === f.visitorteam_id)
-    .sort((a: any, b: any) => (a.inning ?? 0) - (b.inning ?? 0))
-    .at(-1);
+  const homeRuns = CalcRuns(runsArr, f.localteam_id);
+  const awayRuns = CalcRuns(runsArr, f.visitorteam_id);
 
   return (
     <Link

@@ -7,6 +7,7 @@ import type { Fixture } from "@/types/fixture";
 import MobileTabBar from "@/components/mobile/MobileTabBar";
 import MobileLiveGrid from "@/components/mobile/MobileLiveGrid";
 import MobileLiveCard from "@/components/mobile/MobileLiveCard";
+import { CRICKET_CATEGORIES } from "@/lib/constant";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -20,8 +21,6 @@ export default function LivescoreClient() {
   } = useSWR("/api/recent", fetcher);
 
   const recentFixtures: Fixture[] = recentData?.data ?? [];
-
-  const categories = ["International", "T20", "ODI", "Test", "Leagues", "All"];
 
   const navTabs = [
     { label: "Live", href: "livescore", active: true },
@@ -40,27 +39,28 @@ export default function LivescoreClient() {
         </div>
 
         <MobileTabBar tabs={navTabs} />
-
-        <div className="flex flex-wrap gap-1">
-          {categories.map((cat) => {
-            const active = selected === cat;
-            return (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setSelected(cat)}
-                className={[
-                  "rounded-full px-3 py-1 text-[11px] font-semibold transition",
-                  "border backdrop-blur",
-                  active
-                    ? "border-amber-300/60 bg-amber-300/15 text-amber-200 shadow"
-                    : "border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100",
-                ].join(" ")}
-              >
-                {cat}
-              </button>
-            );
-          })}
+        <div className="w-full flex justify-center">
+          <div className="flex flex-wrap gap-1">
+            {CRICKET_CATEGORIES.map((cat) => {
+              const active = selected === cat;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelected(cat)}
+                  className={[
+                    "rounded-full px-3 py-1 text-[11px] font-semibold transition",
+                    "border backdrop-blur",
+                    active
+                      ? "border-amber-300/60 bg-amber-300/15 text-amber-200 shadow"
+                      : "border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100",
+                  ].join(" ")}
+                >
+                  {cat}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
