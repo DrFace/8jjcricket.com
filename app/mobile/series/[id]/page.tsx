@@ -7,8 +7,6 @@ import ErrorState from "@/components/ui/ErrorState";
 import LoadingState from "@/components/ui/LoadingState";
 import EmptyState from "@/components/ui/EmptyState";
 
-import SeriesHeader from "@/components/series/SeriesHeader";
-
 import type { League, Match } from "@/lib/cricket-types";
 import { Fetcher } from "@/lib/fetcher";
 import {
@@ -23,8 +21,6 @@ import {
   sortFixturesByCloseness,
 } from "@/lib/series-utils";
 import type { SeriesTabId } from "@/components/series/SeriesTabs";
-import PointsTable from "@/components/series/PointsTable";
-
 import SeriesCalenderModal from "@/components/mobile/SeriesCalenderModal";
 import MobileSectionShell from "@/components/ui/MobileSectionShell";
 import MobileMatchesByDate from "@/components/mobile/MobileMatchesByDate";

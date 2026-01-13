@@ -84,8 +84,6 @@ export default async function HomeNewsShowcase() {
     }))
     .filter((n) => Boolean(n.image_url));
 
-  console.log("news ii", news);
-
   if (items.length === 0) return null;
 
   const featured = items[0];

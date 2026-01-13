@@ -25,21 +25,23 @@ export default function MobileTeamBadge({
   const logo = team?.logo ?? team?.image_path ?? null;
 
   return (
-    <div className={cn("min-w-0", className)}>
-      <div
-        className="relative shrink-0 rounded-2xl"
-        style={{ width: 80, height: size }}
-      >
-        {logo ? (
-          <Image
-            alt={label}
-            src={logo || "/placeholder.svg"}
-            fill
-            className="object-cover rounded-2xl"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl" />
-        )}
+    <div className={cn("min-w-0 w-full", className)}>
+      <div className="w-full flex justify-center">
+        <div
+          className="relative shrink-0 rounded-2xl"
+          style={{ width: 80, height: size }}
+        >
+          {logo ? (
+            <Image
+              alt={label}
+              src={logo || "/placeholder.svg"}
+              fill
+              className="object-cover rounded-2xl"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl" />
+          )}
+        </div>
       </div>
       {!hideName && (
         <div className="text-sm font-semibold text-slate-200 mt-1 text-center">

@@ -173,16 +173,6 @@ function Pagination({
 
 type TypeCountMap = Record<string, number>;
 
-function countByType(matches: { type?: string | null }[]): TypeCountMap {
-  return matches.reduce<TypeCountMap>((acc, match) => {
-    const type = String(match.type ?? "").trim();
-    if (!type) return acc;
-
-    acc[type] = (acc[type] ?? 0) + 1;
-    return acc;
-  }, {});
-}
-
 export default function LiveScoreHome() {
   // ✅ Separate APIs
   const liveRes = useSWR("/api/live", fetcher);
@@ -192,18 +182,6 @@ export default function LiveScoreHome() {
   const liveMatches = liveRes.data?.data?.live ?? [];
   const recentMatches = recentRes.data?.data ?? [];
   const upcomingMatches = upcomingRes.data?.data ?? [];
-
-  const upcomingTypeCounts = useMemo(
-    () => countByType(upcomingMatches),
-    [upcomingMatches]
-  );
-
-  const recentTypeCounts = useMemo(
-    () => countByType(recentMatches),
-    [recentMatches]
-  );
-
-  const liveTypeCounts = useMemo(() => countByType(liveMatches), [liveMatches]);
 
   const loading =
     liveRes.isLoading || recentRes.isLoading || upcomingRes.isLoading;

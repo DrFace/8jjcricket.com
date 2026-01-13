@@ -12,8 +12,6 @@ type NewsItem = {
 };
 
 export default function NewsListCards({ items }: { items: NewsItem[] }) {
-  console.log("item home", items);
-
   return (
     <div className="space-y-3">
       {items.map((n) => (

@@ -19,11 +19,9 @@ export async function GET(
       { status: 400 }
     );
   }
-  // need to remove local_base
-  const local_base = "http://127.0.0.1:8000/api";
 
   try {
-    const res = await fetch(`${local_base}/match/${id}`, {
+    const res = await fetch(`${BACKEND_BASE}/api/match/${id}`, {
       cache: "no-store",
       headers: {
         Accept: "application/json",

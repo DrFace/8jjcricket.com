@@ -6,11 +6,8 @@ export const revalidate = 0;
 const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 export async function GET() {
-  // need to remove local_base
-  const local_base = "http://127.0.0.1:8000/api";
-
   try {
-    const res = await fetch(`${local_base}/fixtures/recent`, {
+    const res = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/fixtures/recent`, {
       // helps prevent caching issues
       cache: "no-store",
       headers: { Accept: "application/json" },

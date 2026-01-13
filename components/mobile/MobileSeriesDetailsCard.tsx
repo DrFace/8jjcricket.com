@@ -74,7 +74,7 @@ export default function MobileSeriesDetailsCard({ f }: { f: Match }) {
           </span>
         </div>
 
-        <div className="flex items-center justify-between gap-3 py-5 rounded-xl group-hover:border-amber-500/40 transition-colors mb-4">
+        <div className="flex items-center justify-between space-x-8 gap-3 py-5 rounded-xl group-hover:border-amber-500/40 transition-colors mb-4">
           <div className="flex-1 min-w-0">
             <MobileTeamBadge team={home} size={70} className="justify-start" />
           </div>

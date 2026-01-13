@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { formatDate, cn } from "@/lib/utils";
-import type { Match } from "@/lib/cricket-types";
+import type { Fixture } from "@/types/fixture";
 import { CalcRuns, ExtractTarget, ScoreLine } from "@/lib/match";
 
-export default function LiveScoreCard({ f }: { f: Match }) {
+export default function LiveScoreCard({ f }: { f: Fixture }) {
   const home = f.localteam;
   const away = f.visitorteam;
 
@@ -23,7 +23,7 @@ export default function LiveScoreCard({ f }: { f: Match }) {
 
   return (
     <Link
-      href="#"
+      href={`/match/${f.sportmonks_id}`}
       className={cn(
         "group block rounded-2xl transition-all duration-300",
         "border-2 border-amber-500/30 bg-slate-950/80 backdrop-blur-xl",
