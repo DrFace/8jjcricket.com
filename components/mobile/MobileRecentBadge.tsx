@@ -20,7 +20,7 @@ export default function MobileRecentBadge({
   team?: BadgeTeam;
   className?: string;
   hideName?: boolean;
-  runs: any;
+  runs?: any;
 }) {
   const label = team?.short_name || team?.name || "Team";
   const logo = team?.logo ?? team?.image_path ?? null;
