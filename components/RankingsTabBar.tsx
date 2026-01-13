@@ -4,7 +4,7 @@ interface TabBarProps {
   tabs: { label: string; href: string; active: boolean }[];
 }
 
-export default function MobileTabBar({ tabs }: TabBarProps) {
+export default function RankingsTabBar({ tabs }: TabBarProps) {
   return (
     <div className="w-full">
       <div className="relative w-full">
@@ -13,7 +13,7 @@ export default function MobileTabBar({ tabs }: TabBarProps) {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`relative px-4 py-1 font-bold text-lg transition-all duration-300 overflow-hidden group pb-4 rounded-2xl w-full text-center
+              className={`relative px-4 py-2 font-bold text-lg transition-all duration-300 overflow-hidden group pb-4 rounded-2xl
                 ${
                   tab.active
                     ? /* Active: top border highlight with amber color */
@@ -23,7 +23,7 @@ export default function MobileTabBar({ tabs }: TabBarProps) {
                 }
               `}
             >
-              <span className="relative z-10 text-[15px]">{tab.label}</span>
+              <span className="relative z-10">{tab.label}</span>
             </Link>
           ))}
         </div>

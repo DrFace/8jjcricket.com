@@ -93,6 +93,7 @@ export default async function HomeNewsShowcase() {
     slug: n.slug,
     title: n.title,
     imgSrc: n.image_url!,
+    excerpt: n.excerpt,
     date: formatDate(n.published_at),
   }));
 
@@ -126,7 +127,9 @@ export default async function HomeNewsShowcase() {
 
           {/* Content */}
           <div className="p-6 lg:p-7">
-            <div className="text-sm text-white/60">{formatDate(featured.published_at)}</div>
+            <div className="text-sm text-white/60">
+              {formatDate(featured.published_at)}
+            </div>
 
             <h3 className="mt-3 line-clamp-2 text-2xl lg:text-[28px] font-extrabold text-white">
               {featured.title}

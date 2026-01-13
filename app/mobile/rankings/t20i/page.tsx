@@ -5,6 +5,7 @@ import MobileTabBar from "@/components/mobile/MobileTabBar";
 import RankingTable from "@/components/mobile/RankingTable";
 import { groupByGender } from "@/src/utils/groupByGender";
 import { RankingEntry } from "@/types/rankings";
+import RankingsTabBar from "@/components/RankingsTabBar";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 

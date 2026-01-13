@@ -4,6 +4,7 @@ import Link from "next/link";
 import { cn, formatDate } from "@/lib/utils";
 import type { Fixture } from "@/types/fixture";
 import MobileRecentBadge from "./MobileRecentBadge";
+import { CalcRuns, ExtractTarget } from "@/lib/match";
 
 export default function MobileRecentCard({ f }: { f: Fixture }) {
   const home = f.localteam;
@@ -11,6 +12,13 @@ export default function MobileRecentCard({ f }: { f: Fixture }) {
 
   const homeLabel = home?.short_name || home?.name || "Home";
   const awayLabel = away?.short_name || away?.name || "Away";
+
+  const runsArr = Array.isArray((f as any).runs) ? (f as any).runs : [];
+
+  const homeRuns = CalcRuns(runsArr, f.localteam_id);
+  const awayRuns = CalcRuns(runsArr, f.visitorteam_id);
+
+  const target = ExtractTarget(f.note);
 
   return (
     <Link
@@ -79,7 +87,7 @@ export default function MobileRecentCard({ f }: { f: Fixture }) {
           {/* Teams */}
           <div className="relative z-10 flex items-center justify-between gap-2">
             <div className="flex-1 flex justify-start">
-              <MobileRecentBadge team={home} />
+              <MobileRecentBadge runs={homeRuns} team={home} />
             </div>
 
             <div className="flex flex-col items-center shrink-0 px-1">
@@ -90,12 +98,12 @@ export default function MobileRecentCard({ f }: { f: Fixture }) {
             </div>
 
             <div className="flex-1 flex justify-end">
-              <MobileRecentBadge team={away} />
+              <MobileRecentBadge runs={awayRuns} team={away} />
             </div>
           </div>
 
           {/* Result */}
-          {f.note && (
+          {f.note && f.note != "No result" ? (
             <div
               className="
             mt-3
@@ -109,9 +117,9 @@ export default function MobileRecentCard({ f }: { f: Fixture }) {
             text-left sm:text-center
           "
             >
-              {f.note}
+              {target ? target : f.note == "No result" ? "-" : f.note}
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </Link>

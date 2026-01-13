@@ -7,6 +7,8 @@ import RecentMatchCard from "@/components/RecentMatchCard";
 import LiveCard from "@/components/LiveCard";
 import { MatchCategory } from "@/lib/match-category";
 import UpcomingCard from "@/components/UpcomingCard";
+import { CRICKET_CATEGORIES } from "@/lib/constant";
+import LiveScoreCard from "@/components/LiveScoreCard";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -171,16 +173,6 @@ function Pagination({
 
 type TypeCountMap = Record<string, number>;
 
-function countByType(matches: { type?: string | null }[]): TypeCountMap {
-  return matches.reduce<TypeCountMap>((acc, match) => {
-    const type = String(match.type ?? "").trim();
-    if (!type) return acc;
-
-    acc[type] = (acc[type] ?? 0) + 1;
-    return acc;
-  }, {});
-}
-
 export default function LiveScoreHome() {
   // ✅ Separate APIs
   const liveRes = useSWR("/api/live", fetcher);
@@ -190,22 +182,6 @@ export default function LiveScoreHome() {
   const liveMatches = liveRes.data?.data?.live ?? [];
   const recentMatches = recentRes.data?.data ?? [];
   const upcomingMatches = upcomingRes.data?.data ?? [];
-
-  const upcomingTypeCounts = useMemo(
-    () => countByType(upcomingMatches),
-    [upcomingMatches]
-  );
-
-  const recentTypeCounts = useMemo(
-    () => countByType(recentMatches),
-    [recentMatches]
-  );
-
-  const liveTypeCounts = useMemo(() => countByType(liveMatches), [liveMatches]);
-
-  console.log("Upcoming:", upcomingTypeCounts);
-  console.log("Recent:", recentTypeCounts);
-  console.log("Live:", liveTypeCounts);
 
   const loading =
     liveRes.isLoading || recentRes.isLoading || upcomingRes.isLoading;
@@ -230,8 +206,6 @@ export default function LiveScoreHome() {
   const UPCOMING_PAGE_SIZE = 30;
   const [recentPage, setRecentPage] = useState(1);
   const [upcomingPage, setUpcomingPage] = useState(1);
-
-  const categories = ["International", "T20", "ODI", "Test", "Leagues", "All"];
 
   const recentSorted = useMemo(() => {
     return [...recentMatches].sort(
@@ -326,7 +300,7 @@ export default function LiveScoreHome() {
   useMemo(() => setUpcomingPage(1), [selectedCategory, selectedDateUpcoming]);
 
   return (
-    <DesktopOnly>
+    <div>
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Tabs */}
         <div className="flex justify-center gap-4 mb-8">
@@ -347,7 +321,7 @@ export default function LiveScoreHome() {
 
         {/* Category Filters */}
         <div className="flex justify-center gap-2 mb-6 flex-wrap">
-          {categories.map((cat) => {
+          {CRICKET_CATEGORIES.map((cat) => {
             const active = selectedCategory === cat;
             return (
               <button
@@ -384,7 +358,7 @@ export default function LiveScoreHome() {
                   {filteredLive.length > 0 ? (
                     <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
                       {filteredLive.map((match: any) => (
-                        <LiveCard key={match.id} f={match} />
+                        <LiveScoreCard key={match.id} f={match} />
                       ))}
                     </div>
                   ) : (
@@ -403,7 +377,9 @@ export default function LiveScoreHome() {
                       </h2>
                       <div className="text-xs text-white/60">
                         Showing{" "}
-                        <span className="text-white/80 font-semibold">6</span>{" "}
+                        <span className="text-white/80 font-semibold">
+                          {liveTabRecent4?.length}
+                        </span>{" "}
                         latest
                       </div>
                     </div>
@@ -415,7 +391,7 @@ export default function LiveScoreHome() {
                     ) : (
                       <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
                         {liveTabRecent4.map((f: any) => (
-                          <RecentMatchCard key={f.id} f={f} />
+                          <LiveScoreCard key={f.id} f={f} />
                         ))}
                       </div>
                     )}
@@ -501,7 +477,7 @@ export default function LiveScoreHome() {
                       <>
                         <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
                           {recentPaged.map((f: any) => (
-                            <RecentMatchCard key={f.id} f={f} />
+                            <LiveScoreCard key={f.id} f={f} />
                           ))}
                         </div>
 
@@ -542,6 +518,6 @@ export default function LiveScoreHome() {
           </>
         )}
       </div>
-    </DesktopOnly>
+    </div>
   );
 }
