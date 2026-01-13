@@ -7,15 +7,19 @@ import CalenderModal from "@/components/mobile/CalenderModal";
 import { CRICKET_CATEGORIES, MOBILE_PAGE_SIZE } from "@/lib/constant";
 import { MatchCategory } from "@/lib/match-category";
 import MobileRecentCard from "@/components/mobile/MobileRecentCard";
-
-const fetcher = (u: string) => fetch(u).then((r) => r.json());
+import { Fetcher } from "@/lib/fetcher";
+import type { ApiEnvelope } from "@/lib/cricket-types";
+import { Fixture } from "@/types/fixture";
 
 /**
  * RecentPage lists recently completed matches. It adds page-specific
  * `<title>` and `<meta>` tags for SEO, and uses the UpcomingPage template layout.
  */
 export default function RecentPage() {
-  const { data, error, isLoading } = useSWR("/api/recent", fetcher);
+  const { data, error, isLoading } = useSWR<ApiEnvelope<Fixture[]>>(
+    "/api/recent",
+    Fetcher
+  );
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [page, setPage] = useState<number>(1);
   const title = "Recent Matches | 8jjcricket";
@@ -127,26 +131,28 @@ export default function RecentPage() {
           </div>
 
           {/* Filters */}
-          <div className="flex flex-wrap gap-1">
-            {CRICKET_CATEGORIES.map((cat) => {
-              const active = selectedCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setSelectedCategory(cat)}
-                  className={[
-                    "rounded-full px-3 py-1 text-[11px] font-semibold transition",
-                    "border backdrop-blur",
-                    active
-                      ? "border-amber-300/60 bg-amber-300/15 text-amber-200 shadow"
-                      : "border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100",
-                  ].join(" ")}
-                >
-                  {cat}
-                </button>
-              );
-            })}
+          <div className="w-full flex justify-center">
+            <div className="flex flex-wrap gap-2">
+              {CRICKET_CATEGORIES.map((cat) => {
+                const active = selectedCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat)}
+                    className={[
+                      "rounded-full px-3 py-1 text-[11px] font-semibold transition",
+                      "border backdrop-blur",
+                      active
+                        ? "border-amber-300/60 bg-amber-300/15 text-amber-200 shadow"
+                        : "border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100",
+                    ].join(" ")}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* RIGHT: calendar / date filter */}

@@ -11,22 +11,20 @@ type BadgeTeam = {
   image_path?: string | null;
 };
 
-export default function MobileRecentBadge({
+export default function MobileScoreBadge({
   team,
-  runs,
   className,
   hideName = false,
 }: {
   team?: BadgeTeam;
   className?: string;
   hideName?: boolean;
-  runs?: any;
 }) {
   const label = team?.short_name || team?.name || "Team";
   const logo = team?.logo ?? team?.image_path ?? null;
 
   return (
-    <div className={cn("flex flex-col items-center gap-1 min-w-0", className)}>
+    <div className={cn("flex items-center gap-1 min-w-0", className)}>
       {/* Logo */}
       <div
         className="
@@ -60,7 +58,6 @@ export default function MobileRecentBadge({
           {label}
         </div>
       )}
-      <p className="font-bold text-amber-300">{ScoreLine(runs)}</p>
     </div>
   );
 }

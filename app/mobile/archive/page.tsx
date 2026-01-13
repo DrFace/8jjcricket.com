@@ -2,25 +2,26 @@
 
 import React, { useMemo, useState } from "react";
 import useSWR from "swr";
-import type { Match } from "@/lib/cricket-types";
+import type { ApiEnvelope, Match } from "@/lib/cricket-types";
 import CalenderModal from "@/components/mobile/CalenderModal";
 import BottomNav from "@/components/BottomNav";
 import MobileArchhiveCard from "@/components/mobile/MobileArchhiveCard";
-
-// Simple fetcher for SWR; fetches JSON from the given URL.
-const fetcher = (u: string) => fetch(u).then((r) => r.json());
+import { Fetcher } from "@/lib/fetcher";
 
 /**
  * ArchivePage displays a list of archived cricket fixtures. It provides
  * consistent light-themed styling and in-line `<title>`/`<meta>` tags for SEO.
  */
 export default function ArchivePage() {
-  const { data, error, isLoading } = useSWR("/api/recent", fetcher);
+  const { data, error, isLoading } = useSWR<ApiEnvelope<Match[]>>(
+    "/api/recent",
+    Fetcher
+  );
   const title = "Match Archive | 8jjcricket";
   const description =
     "Browse archived cricket matches with results and details.";
 
-  const fixtures: Match[] = data?.data ?? [];
+  const fixtures = data?.data ?? [];
 
   // Calendar / date filter state and derived data
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -33,15 +34,6 @@ export default function ArchivePage() {
       ),
     [fixtures]
   );
-
-  const minDate =
-    sortedFixtures.length > 0
-      ? sortedFixtures[0].starting_at.slice(0, 10)
-      : undefined;
-  const maxDate =
-    sortedFixtures.length > 0
-      ? sortedFixtures[sortedFixtures.length - 1].starting_at.slice(0, 10)
-      : undefined;
 
   const filteredFixtures = useMemo(() => {
     if (!selectedDate) return sortedFixtures;

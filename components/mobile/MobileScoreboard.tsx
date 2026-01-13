@@ -8,7 +8,7 @@ import { formatDate } from "@/lib/utils";
 import TeamBadge from "@/components/TeamBadge";
 import { useTeams } from "@/hooks/useTeams";
 import { usePlayers } from "@/hooks/usePlayers";
-import MobileRecentBadge from "./MobileRecentBadge";
+import MobileScoreBadge from "./MobileScoreBadge";
 
 const fetcher = async (u: string) => {
   const res = await fetch(u, { headers: { Accept: "application/json" } });
@@ -145,61 +145,54 @@ export default function MobileScoreboard({ id }: { id: string }) {
   return (
     <div className="space-y-6">
       {/* League + header */}
-      <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 p-6 shadow-2xl backdrop-blur-xl">
+      <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 p-3 shadow-2xl backdrop-blur-xl">
         <h2 className="text-center text-xl font-semibold text-amber-300 mb-3">
           {fx.league?.name || "Twenty20 International" /* fallback */}
         </h2>
 
         <div className="flex items-center justify-center gap-5 mb-3">
           <div className="flex flex-col items-center gap-1">
-            <MobileRecentBadge team={homeBadge} />
-            <div className="text-sm font-medium">
-              {home?.short_name || home?.name || `Team ${fx.localteam_id}`}
-            </div>
+            <MobileScoreBadge team={homeBadge} />
           </div>
-          <div className="text-xs text-gray-500">VS</div>
+          <div className="text-amber-300 font-semibold">VS</div>
           <div className="flex flex-col items-center gap-1">
-            <MobileRecentBadge team={awayBadge} />
-            <div className="text-sm font-medium">
-              {away?.short_name || away?.name || `Team ${fx.visitorteam_id}`}
-            </div>
+            <MobileScoreBadge team={awayBadge} />
           </div>
         </div>
-
         <p className="text-sm">
           <strong>{fx.status || "—"}</strong>
-          {fx.note ? (
-            <span className="text-gray-700"> — {fx.note}</span>
-          ) : null}{" "}
         </p>
-
-        {(fx.toss_won_team_id || fx.elected) && (
-          <div className="mt-2 rounded-2xl bg-amber-900 px-3 py-2 text-sm">
-            <strong>Toss:</strong>{" "}
-            {tossTeam?.name ||
-              tossTeam?.short_name ||
-              (fx.toss_won_team_id ? `Team ${fx.toss_won_team_id}` : "—")}
-            {fx.elected ? (
-              <>
-                {" "}
-                won the toss and chose to{" "}
-                <span className="font-medium">
-                  {String(fx.elected).toLowerCase()}
-                </span>{" "}
-                first.
-              </>
-            ) : null}
-          </div>
-        )}
-
-        <p className="text-xs text-gray-600 mt-2">
-          {fx.round || "—"} · {formatDate(fx.starting_at)}
+        <p className="text-sm">
+          {fx.note ? <span className="text-gray-700"> {fx.note}</span> : null}{" "}
         </p>
+        <div className="">
+          {(fx.toss_won_team_id || fx.elected) && (
+            <div className="mt-2 rounded-2xl bg-amber-900 px-3 py-2 text-sm">
+              <strong>Toss:</strong>
+              {tossTeam?.name ||
+                tossTeam?.short_name ||
+                (fx.toss_won_team_id ? `Team ${fx.toss_won_team_id}` : "—")}
+              {fx.elected ? (
+                <>
+                  won the toss and chose to
+                  <span className="font-medium text-amber-300">
+                    {String(fx.elected).toLowerCase()}
+                  </span>
+                  first.
+                </>
+              ) : null}
+            </div>
+          )}
+
+          <p className="text-xs text-gray-600 mt-2 text-right">
+            {fx.round || "—"} · {formatDate(fx.starting_at)}
+          </p>
+        </div>
       </div>
 
       {/* Innings Summary */}
       {runs.length > 0 && (
-        <div className="card">
+        <div className="">
           <h3 className="font-semibold text-amber-300 mb-2">Innings Summary</h3>
           <div className="grid sm:grid-cols-2 gap-3 mt-3">
             {runs.map((inn) => {

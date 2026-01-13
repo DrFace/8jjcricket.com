@@ -5,12 +5,14 @@ import LiveScoreHome from "./LiveScoreClient";
 
 export default function LiveScorePage() {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <TopNav />
-      <DesktopOnly>
-        <LiveScoreHome />
-      </DesktopOnly>
+      <main className="flex-1">
+        <DesktopOnly>
+          <LiveScoreHome />
+        </DesktopOnly>
+      </main>
       <Footer />
-    </>
+    </div>
   );
 }

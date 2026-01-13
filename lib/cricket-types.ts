@@ -1,5 +1,3 @@
-import { Fixture } from "@/types/fixture";
-
 export interface Season {
   is_current: boolean;
   id: number;
@@ -25,6 +23,7 @@ export interface League {
 }
 export interface Team {
   id: number;
+  logo: string;
   name: string;
   short_name: string;
   code: string;
