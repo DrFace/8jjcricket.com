@@ -21,3 +21,4 @@ export const SOCIALS_LINKS = [
 ];
 
 export const MOBILE_PAGE_SIZE = 10;
+export const PAGE_SIZE = 30;
