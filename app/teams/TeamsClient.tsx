@@ -225,7 +225,7 @@ export default function TeamsClient() {
           ) : (
             <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
               {/* Header */}
-              <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 p-6 md:p-8 shadow-2xl backdrop-blur-xl">
+              <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 p-6 md:p-8 shadow-2xl backdrop-blur-xl mt-5">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                   <div className="flex items-center gap-4">
                     <button
