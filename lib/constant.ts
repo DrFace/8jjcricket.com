@@ -22,3 +22,4 @@ export const SOCIALS_LINKS = [
 
 export const MOBILE_PAGE_SIZE = 10;
 export const PAGE_SIZE = 30;
+export const SERIES_TABS = [{ id: "series", label: "Current & Future Series" }];
