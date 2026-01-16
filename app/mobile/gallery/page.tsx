@@ -146,7 +146,7 @@ export default async function GalleryMobilePage() {
                 Browse by category and album. Tap any photo to view fullscreen.
               </p>
 
-              <div className="flex flex-wrap gap-2 text-[11px]">
+              {/* <div className="flex flex-wrap gap-2 text-[11px]">
                 <span className="rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
                   {categories.length} Categories
                 </span>
@@ -156,7 +156,7 @@ export default async function GalleryMobilePage() {
                 <span className="rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
                   {totalPhotos} Photos
                 </span>
-              </div>
+              </div> */}
 
               <div className="pt-1">
                 <Link

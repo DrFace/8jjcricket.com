@@ -3,13 +3,14 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
-// GET /api/leagues
-// Fetches a list of leagues and tournaments. Each league includes its
-// associated country and seasons information. This endpoint powers the Series page and Teams page dropdown.
-export async function GET() {
-  const upstream = `${NEXT_PUBLIC_API_BASE_URL}/leagues`;
+export async function GET(req: Request) {
+
+  const url = new URL(req.url);
+  const qs = url.searchParams.toString(); // ✅ read ?page, ?per_page, ?country_id, etc.
+
+  const upstream = `${API_BASE}/leagues${qs ? `?${qs}` : ""}`; // ✅ forward query string
 
   const res = await fetch(upstream, {
     method: "GET",
@@ -17,12 +18,11 @@ export async function GET() {
     cache: "no-store",
   });
 
-  const text = await res.text();
+  const json = await res.json(); // ✅ keep structure (data/meta/links)
 
-  return new NextResponse(text, {
+  return NextResponse.json(json, {
     status: res.status,
     headers: {
-      "Content-Type": res.headers.get("content-type") ?? "application/json",
       "Cache-Control": "no-store",
     },
   });

@@ -9,3 +9,18 @@ export interface League {
     starting_at?: string;
   }>;
 }
+
+export interface LeagueRespond {
+  seasons: any[];
+  id: number;
+  name: string;
+  code: string;
+  image_path: string;
+  type: string;
+  dateRange?: string;
+  sportmonks_league_id?: number;
+}
+
+export interface SeriesByMonth {
+  [key: string]: LeagueRespond[];
+}
