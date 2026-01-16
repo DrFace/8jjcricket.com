@@ -7,8 +7,6 @@ export function PaginationComponet({
   totalPages: number;
   onPage: (p: number) => void;
 }) {
-  if (totalPages <= 1) return null;
-
   return (
     <div className="flex items-center justify-center gap-2 mt-6">
       <button
