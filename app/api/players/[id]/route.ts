@@ -3,11 +3,9 @@ import { NextResponse } from "next/server";
 export const revalidate = 0;
 export const dynamic = "force-dynamic";
 
-const BACKEND_BASE =
-  (process.env.NEXT_PUBLIC_BACKEND_BASE ?? "https://8jjcricket.com").replace(
-    /\/+$/,
-    ""
-  );
+const BACKEND_BASE = (
+  process.env.NEXT_PUBLIC_BACKEND_BASE ?? "https://8jjcricket.com"
+).replace(/\/+$/, "");
 
 export async function GET(
   req: Request,
@@ -19,7 +17,8 @@ export async function GET(
   // OPTIONAL: if your backend supports include params, forward them
   // e.g. /api/players/{id}?include=career,country
   const backendUrl = new URL(`${BACKEND_BASE}/api/players/${id}`);
-  for (const [k, v] of searchParams.entries()) backendUrl.searchParams.set(k, v);
+  for (const [k, v] of searchParams.entries())
+    backendUrl.searchParams.set(k, v);
 
   try {
     const res = await fetch(backendUrl.toString(), { cache: "no-store" });
