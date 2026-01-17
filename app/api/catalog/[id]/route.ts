@@ -11,7 +11,7 @@ export async function GET(
   if (!id || Number.isNaN(Number(id))) {
     return NextResponse.json({ error: "Invalid id" }, { status: 400 });
   }
-  // const local_base = "http://127.0.0.1:8000/api";
+
   try {
     const upstream = await fetch(`${API_BASE}/catalog/${id}`, {
       // Cache at the Next server layer (optional)
