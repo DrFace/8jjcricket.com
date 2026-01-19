@@ -37,10 +37,7 @@ export default function PlayerDetailPage() {
         setLoading(true);
         setError(null);
 
-        // FAST: single request
-        // If you already have a Next API route: /api/catalog/[id], keep this.
-        // If not, and your Laravel API is public, you can fetch absolute URL instead.
-        const res = await fetch(`/api/catalog/${playerId}`, {
+        const res = await fetch(`/api/players/${playerId}`, {
           // Use caching (recommended). Change the value as you like.
           next: { revalidate: 300 }, // 5 minutes
         });
@@ -51,7 +48,6 @@ export default function PlayerDetailPage() {
         }
 
         const json = await res.json();
-        console.log("player json", json.data);
 
         // Your screenshot shows: { player: {...} }
         const found: PlayerRespond | null = (json?.data ?? json.data) || null;

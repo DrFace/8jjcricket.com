@@ -36,14 +36,9 @@ export function MobileSummaryTable<T>({
   }, [rows, page, pageSize]);
 
   return (
-    <div className="shadow-lg backdrop-blur">
+    <div className="shadow-lg backdrop-blur px-2">
       {/* Title */}
       <div className="mb-3 text-lg font-semibold text-amber-300">{title}</div>
-
-      {/* Mobile hint */}
-      <div className="mb-2 block text-xs text-white/60 md:hidden">
-        Swipe left/right to see more →
-      </div>
 
       {/* Table wrapper (horizontal scroll on small screens) */}
       <div
@@ -106,12 +101,12 @@ export function MobileSummaryTable<T>({
 
       {/* Pagination */}
       {rows.length > pageSize && (
-        <div className="mt-4 flex items-center justify-between gap-3">
+        <div className="mt-4 flex items-center justify-between">
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={!canPrev}
             className={[
-              "rounded-full border py-2 text-sm font-semibold transition",
+              "rounded-full border py-2 text-sm font-semibold transition px-4",
               canPrev
                 ? "border-amber-800 bg-white/5 text-amber-300 hover:bg-white/10"
                 : "cursor-not-allowed border-white/10 bg-transparent text-white/40",
@@ -129,7 +124,7 @@ export function MobileSummaryTable<T>({
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={!canNext}
             className={[
-              "rounded-full border py-2 text-sm font-semibold transition",
+              "rounded-full border py-2 text-sm font-semibold transition px-4",
               canNext
                 ? "border-amber-800 bg-white/5 text-amber-300 hover:bg-white/10"
                 : "cursor-not-allowed border-white/10 bg-transparent text-white/40",
