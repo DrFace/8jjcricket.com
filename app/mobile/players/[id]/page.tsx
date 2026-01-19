@@ -45,7 +45,6 @@ export default function PlayerDetailPage() {
         }
 
         const json = await res.json();
-        console.log("player json", json.data);
         // Your screenshot shows: { player: {...} }
         const found: PlayerRespond | null = (json?.data ?? json.data) || null;
 
@@ -103,19 +102,19 @@ export default function PlayerDetailPage() {
                   <div className="mt-3 space-y-1 text-sm text-sky-100/70 w-full">
                     {player.dateofbirth && (
                       <div className="flex justify-between w-full">
-                        <div>DOB:</div>
+                        <strong>DOB:</strong>
                         <div> {player.dateofbirth}</div>
                       </div>
                     )}
                     {player.battingstyle && (
                       <div className="flex justify-between w-full">
-                        <div>Batting Style:</div>
+                        <strong>Batting Style:</strong>
                         <div>{player.battingstyle}</div>
                       </div>
                     )}
                     {player.bowlingstyle && (
                       <div className="flex justify-between w-full">
-                        <div>Bowling Style:</div>
+                        <strong>Bowling Style:</strong>
                         <div>{player.bowlingstyle}</div>
                       </div>
                     )}
