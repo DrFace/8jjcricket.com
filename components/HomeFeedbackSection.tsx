@@ -3,6 +3,9 @@
 import { useMemo, useState } from "react";
 import Reveal from "./Reveal";
 import SocialBox from "./SocialBox";
+import Image from "next/image";
+import { GOOGLE_PLAY_STORE } from "@/lib/constant";
+import PlayStore from "./PlayStore";
 
 const LONG_FEEDBACK_EMAIL = "8jjcricket@gmail.com";
 
@@ -75,7 +78,7 @@ export default function HomeFeedbackSection({
     // UI-only implementation: open user's email client
     const subject = encodeURIComponent("Website feedback");
     const body = encodeURIComponent(
-      `From: ${email.trim()}\n\n${message.trim()}\n`
+      `From: ${email.trim()}\n\n${message.trim()}\n`,
     );
 
     window.location.href = `mailto:${LONG_FEEDBACK_EMAIL}?subject=${subject}&body=${body}`;
@@ -205,43 +208,12 @@ export default function HomeFeedbackSection({
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         {/* LEFT: two action cards */}
         <div className="grid gap-6 sm:grid-cols-2">
-          <a
-            href={voteBrandHref}
-            className="group relative rounded-2xl border border-white/15 bg-slate-900/55 p-5 shadow-2xl backdrop-blur-2xl hover:border-amber-400/40"
-          >
-            <div className="absolute right-4 top-4 text-amber-300/90">
-              <ExternalArrow className="h-5 w-5" />
-            </div>
-
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/15 text-amber-300">
-              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">
-                <path
-                  d="M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M6 11h12v8a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-8Z"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                />
-                <path
-                  d="M9 14h6"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
-
-            <h3 className="mt-4 text-lg font-semibold text-white">
-              Vote for Top Brands
-            </h3>
-            <p className="mt-1 text-sm text-white/70">
-              Shape the ranking — earn special rewards.
-            </p>
-          </a>
+          <div className="group relative rounded-2xl border border-white/15 bg-slate-900/55 p-5 shadow-2xl backdrop-blur-2xl hover:border-amber-400/40">
+            {/* Play Store */}
+            <Reveal>
+              <PlayStore />
+            </Reveal>
+          </div>
 
           <div className="group relative rounded-2xl border border-white/15 bg-slate-900/55 p-5 shadow-2xl backdrop-blur-2xl hover:border-amber-400/40">
             {/* social media */}

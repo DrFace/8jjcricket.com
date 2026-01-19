@@ -23,3 +23,10 @@ export const SOCIALS_LINKS = [
 export const MOBILE_PAGE_SIZE = 10;
 export const PAGE_SIZE = 30;
 export const SERIES_TABS = [{ id: "series", label: "Current & Future Series" }];
+export const GOOGLE_PLAY_STORE = [
+  {
+    url: "https://play.google.com/store/apps/details?id=com.eightjj.cricket",
+    img: "/images/Google-Play-Logo.png",
+    alt: "Play Store",
+  },
+];
