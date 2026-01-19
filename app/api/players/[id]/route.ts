@@ -9,36 +9,45 @@ const BACKEND_BASE = (
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   const { searchParams } = new URL(req.url);
   const id = params.id;
 
-  // OPTIONAL: if your backend supports include params, forward them
-  // e.g. /api/players/{id}?include=career,country
-  const backendUrl = new URL(`${BACKEND_BASE}/api/players/${id}`);
+  // const local_url = "http://127.0.0.1:8000";
+  const backendUrl = new URL(`${BACKEND_BASE}/api/catalog/${id}`);
   for (const [k, v] of searchParams.entries())
     backendUrl.searchParams.set(k, v);
 
   try {
-    const res = await fetch(backendUrl.toString(), { cache: "no-store" });
+    const res = await fetch(backendUrl.toString(), {
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+      },
+    });
 
     if (!res.ok) {
       const text = await res.text();
       console.error("❌ Backend /api/players/:id error:", res.status, text);
       return NextResponse.json(
         { error: "Failed to fetch player", status: res.status },
-        { status: 502 }
+        { status: 502 },
       );
     }
 
     const json = await res.json();
-    return NextResponse.json(json);
+    return NextResponse.json(json, {
+      headers: {
+        "x-debug-api": "catalog-route-ts",
+        "Cache-Control": "no-store",
+      },
+    });
   } catch (err: any) {
     console.error("❌ Exception:", err);
     return NextResponse.json(
       { error: err.message ?? "Unknown error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

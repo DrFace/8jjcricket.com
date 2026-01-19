@@ -30,7 +30,7 @@ export default function SeriesPage() {
 
   const { data, error, isLoading } = useSWR(
     `/api/leagues?page=${page}&per_page=${PAGE_SIZE}`,
-    fetcher
+    fetcher,
   );
 
   const leagues: LeagueRespond[] = data?.data ?? [];
@@ -60,23 +60,23 @@ export default function SeriesPage() {
         l.code.match(/T20I|ODI|TEST|WC|AC|ASH|WA|WODI|WT20/i) ||
         l.name.toLowerCase().includes("world cup") ||
         l.name.toLowerCase().includes("ashes") ||
-        l.name.toLowerCase().includes("champions trophy")
+        l.name.toLowerCase().includes("champions trophy"),
     );
   } else if (activeFilter === "League") {
     filteredLeagues = leagues.filter(
       (l) =>
         l.code.match(/IPL|BBL|PSL|BPL|CPL|ILT20|SA20|MLC|LPL|MSL/i) ||
         l.name.toLowerCase().includes("premier league") ||
-        l.name.toLowerCase().includes("super league")
+        l.name.toLowerCase().includes("super league"),
     );
   } else if (activeFilter === "Domestic") {
     filteredLeagues = leagues.filter(
-      (l) => l.type === "domestic" || l.code.match(/DOMESTIC/i)
+      (l) => l.type === "domestic" || l.code.match(/DOMESTIC/i),
     );
   } else if (activeFilter === "Women") {
     filteredLeagues = leagues.filter(
       (l) =>
-        l.code.match(/WOMEN|WOM/i) || l.name.toLowerCase().includes("women")
+        l.code.match(/WOMEN|WOM/i) || l.name.toLowerCase().includes("women"),
     );
   }
 
@@ -141,7 +141,7 @@ export default function SeriesPage() {
         ...league,
         dateRange: formatDateRange(
           currentSeason.starting_at,
-          currentSeason.ending_at
+          currentSeason.ending_at,
         ),
       });
     } else {
@@ -227,7 +227,7 @@ export default function SeriesPage() {
                       {sortedLeagues && sortedLeagues.length > 0 ? (
                         sortedLeagues.map((league) => {
                           const isActive = league.seasons?.some(
-                            (s: any) => s.is_current
+                            (s: any) => s.is_current,
                           );
                           return (
                             <div
@@ -249,9 +249,16 @@ export default function SeriesPage() {
                               <div className="w-16 h-16 mb-3 flex items-center justify-center rounded-xl">
                                 {league.image_path ? (
                                   <img
-                                    src={league.image_path}
+                                    src={
+                                      league.image_path ||
+                                      "/images/series-placeholder.jpg"
+                                    }
                                     alt={league.name}
                                     className="max-w-full max-h-full object-contain rounded-xl"
+                                    onError={(e) => {
+                                      e.currentTarget.src =
+                                        "/images/series-placeholder.jpg";
+                                    }}
                                   />
                                 ) : (
                                   <div className="w-full h-full bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center text-black font-bold text-xl shadow-lg">

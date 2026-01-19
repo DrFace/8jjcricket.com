@@ -9,6 +9,7 @@ import {
 import { BuildSummary } from "@/lib/player";
 import { CareerDetailsTable } from "../CareerDetailsTable";
 import { MobileSummaryTable } from "./MobileSummaryTable";
+import MobileCareerDetailsTable from "./MobileCareerDetailsTable";
 
 const battingRows = [
   { label: "Matches", get: (b: BattingStats | null) => b?.matches ?? "-" },
@@ -67,14 +68,14 @@ export function MobilePlayerCareerTables({ careers }: { careers: Career[] }) {
       />
 
       {/* 1) Batting details */}
-      <CareerDetailsTable
+      <MobileCareerDetailsTable
         title="Batting Details"
         careers={careers}
         kind="batting"
       />
 
       {/* 2) Bowling details */}
-      <CareerDetailsTable
+      <MobileCareerDetailsTable
         title="Bowling Details"
         careers={careers}
         kind="bowling"

@@ -3,10 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import TopNav from "@/components/TopNav";
-import Footer from "@/components/Footer";
 import { PlayerRespond } from "@/types/player";
-import { PlayerCareerTables } from "@/components/PlayerCareerTables";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import { GetDisplayName } from "@/lib/player";
@@ -38,12 +35,8 @@ export default function PlayerDetailPage() {
         setLoading(true);
         setError(null);
 
-        // FAST: single request
-        // If you already have a Next API route: /api/catalog/[id], keep this.
-        // If not, and your Laravel API is public, you can fetch absolute URL instead.
-        const res = await fetch(`/api/catalog/${playerId}`, {
-          // Use caching (recommended). Change the value as you like.
-          next: { revalidate: 300 }, // 5 minutes
+        const res = await fetch(`/api/players/${playerId}`, {
+          cache: "no-store",
         });
 
         if (!res.ok) {
@@ -52,8 +45,6 @@ export default function PlayerDetailPage() {
         }
 
         const json = await res.json();
-        console.log("player json", json.data);
-
         // Your screenshot shows: { player: {...} }
         const found: PlayerRespond | null = (json?.data ?? json.data) || null;
 
@@ -89,7 +80,7 @@ export default function PlayerDetailPage() {
               <ErrorState message={error ?? "Player not found"} />
             </div>
           ) : (
-            <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
+            <div className="space-y-6 w-full">
               <div className="flex flex-col items-center gap-8 md:flex-row mt-3">
                 <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-slate-900 shadow-md">
                   <Image
@@ -100,44 +91,45 @@ export default function PlayerDetailPage() {
                   />
                 </div>
 
-                <div>
-                  <h1 className="text-3xl font-bold text-white">
+                <div className="w-full">
+                  <h1 className="text-3xl font-bold text-white text-center">
                     {player ? GetDisplayName(player) : ""}
                   </h1>
-                  <p className="text-amber-300">
+                  <p className="text-amber-300 text-center">
                     {player.country?.name ?? "Unknown Country"}
                   </p>
 
-                  <div className="mt-3 space-y-1 text-sm text-sky-100/70">
+                  <div className="mt-3 space-y-1 text-sm text-sky-100/70 w-full">
                     {player.dateofbirth && (
-                      <p>
-                        <strong>DOB:</strong> {player.dateofbirth}
-                      </p>
+                      <div className="flex justify-between w-full">
+                        <strong>DOB:</strong>
+                        <div> {player.dateofbirth}</div>
+                      </div>
                     )}
                     {player.battingstyle && (
-                      <p>
-                        <strong>Batting Style:</strong> {player.battingstyle}
-                      </p>
+                      <div className="flex justify-between w-full">
+                        <strong>Batting Style:</strong>
+                        <div>{player.battingstyle}</div>
+                      </div>
                     )}
                     {player.bowlingstyle && (
-                      <p>
-                        <strong>Bowling Style:</strong> {player.bowlingstyle}
-                      </p>
+                      <div className="flex justify-between w-full">
+                        <strong>Bowling Style:</strong>
+                        <div>{player.bowlingstyle}</div>
+                      </div>
                     )}
                   </div>
                 </div>
               </div>
 
               {careers.length > 0 ? (
-                <div className="mt-10">
+                <div className="mt-10 w-full">
                   <h2 className="mb-4 text-2xl font-semibold text-white">
                     Career Statistics
                   </h2>
 
                   {careers && careers.length > 0 ? (
-                    <div className="w-full overflow-x-auto">
-                      <MobilePlayerCareerTables careers={careers} />
-                    </div>
+                    <MobilePlayerCareerTables careers={careers} />
                   ) : null}
                 </div>
               ) : (
