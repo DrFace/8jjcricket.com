@@ -14,8 +14,7 @@ export async function GET(
   const { searchParams } = new URL(req.url);
   const id = params.id;
 
-  const local_url = "http://127.0.0.1:8000";
-  const backendUrl = new URL(`${local_url}/api/catalog/${id}`);
+  const backendUrl = new URL(`${BACKEND_BASE}/api/catalog/${id}`);
   for (const [k, v] of searchParams.entries())
     backendUrl.searchParams.set(k, v);
 
