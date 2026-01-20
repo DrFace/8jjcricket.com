@@ -73,13 +73,22 @@ export default function LiveScoreCard({ f }: { f: Fixture }) {
             {/* Home Team */}
             <div className="text-left">
               <div className="flex items-center gap-2 mb-2">
-                {home?.image_path && (
-                  <img
-                    src={home?.image_path || "/placeholder.svg"}
-                    alt={homeLabel}
-                    className="w-8 h-8 rounded-full"
-                  />
-                )}
+                <div className="w-8 h-8 flex items-center justify-center rounded-full flex-shrink-0">
+                  {home?.image_path ? (
+                    <img
+                      src={home?.image_path || "/images/cricket-team-placeholder.png"}
+                      alt={homeLabel}
+                      className="w-8 h-8 rounded-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/cricket-team-placeholder.png";
+                      }}
+                    />
+                  ) : (
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-lg">
+                      {homeLabel?.substring(0, 2).toUpperCase()}
+                    </div>
+                  )}
+                </div>
                 <span className="font-semibold text-white text-sm">
                   {homeLabel}
                 </span>
@@ -103,13 +112,22 @@ export default function LiveScoreCard({ f }: { f: Fixture }) {
                 <span className="font-semibold text-white text-sm">
                   {awayLabel}
                 </span>
-                {away?.image_path && (
-                  <img
-                    src={away?.image_path || "/placeholder.svg"}
-                    alt={awayLabel}
-                    className="w-8 h-8 rounded-full"
-                  />
-                )}
+                <div className="w-8 h-8 flex items-center justify-center rounded-full flex-shrink-0">
+                  {away?.image_path ? (
+                    <img
+                      src={away?.image_path || "/images/cricket-team-placeholder.png"}
+                      alt={awayLabel}
+                      className="w-8 h-8 rounded-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/cricket-team-placeholder.png";
+                      }}
+                    />
+                  ) : (
+                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-lg">
+                      {awayLabel?.substring(0, 2).toUpperCase()}
+                    </div>
+                  )}
+                </div>
               </div>
               <p className="text-xl font-bold text-amber-300">
                 {ScoreLine(awayRuns)}
