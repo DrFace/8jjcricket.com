@@ -28,12 +28,18 @@ export default function TeamBadge({
   return (
     <div className={cn("items-center gap-2 min-w-0", className)}>
       <div className="relative shrink-0" style={{ width: size, height: size }}>
-        {logo && !imageError ? (
+        {!imageError ? (
           <img
             alt={label}
-            src={logo}
+            src={logo || "/images/cricket-team-placeholder.png"}
             className="w-full h-full object-contain rounded-full"
-            onError={() => setImageError(true)}
+            onError={(e) => {
+              if (e.currentTarget.src.includes('cricket-team-placeholder.png')) {
+                setImageError(true);
+              } else {
+                e.currentTarget.src = '/images/cricket-team-placeholder.png';
+              }
+            }}
           />
         ) : (
           <div 

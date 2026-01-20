@@ -78,17 +78,18 @@ function ArchiveCard({ archive }: ArchiveCardProps) {
         <div className="space-y-2 mb-4">
           <div className="flex items-center justify-between bg-black/30 rounded-lg px-3 py-2 border border-white/5">
             <div className="flex items-center gap-2 flex-1 min-w-0">
-              <div className="w-6 h-6 flex items-center justify-center rounded-full flex-shrink-0">
+              <div className="w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0">
                 {archive.home_team_logo && !homeImageError ? (
                   <img
                     src={archive.home_team_logo}
                     alt={archive.home_team}
-                    className="w-6 h-6 rounded-full object-cover"
+                    className="w-10 h-10 rounded-full object-cover bg-gray-800"
+                    loading="lazy"
                     onError={() => setHomeImageError(true)}
                   />
                 ) : (
-                  <div className="w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-[10px] shadow-lg">
-                    {archive.home_team?.substring(0, 2).toUpperCase()}
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                    {archive.home_team?.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase() || '??'}
                   </div>
                 )}
               </div>
@@ -102,17 +103,18 @@ function ArchiveCard({ archive }: ArchiveCardProps) {
           </div>
           <div className="flex items-center justify-between bg-black/30 rounded-lg px-3 py-2 border border-white/5">
             <div className="flex items-center gap-2 flex-1 min-w-0">
-              <div className="w-6 h-6 flex items-center justify-center rounded-full flex-shrink-0">
+              <div className="w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0">
                 {archive.away_team_logo && !awayImageError ? (
                   <img
                     src={archive.away_team_logo}
                     alt={archive.away_team}
-                    className="w-6 h-6 rounded-full object-cover"
+                    className="w-10 h-10 rounded-full object-cover bg-gray-800"
+                    loading="lazy"
                     onError={() => setAwayImageError(true)}
                   />
                 ) : (
-                  <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-[10px] shadow-lg">
-                    {archive.away_team?.substring(0, 2).toUpperCase()}
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                    {archive.away_team?.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase() || '??'}
                   </div>
                 )}
               </div>
