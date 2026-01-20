@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     template: `%s · ${SITE.name}`,
   },
   description: SITE.description,
+
   openGraph: {
     title: SITE.name,
     description: SITE.description,
@@ -19,10 +20,31 @@ export const metadata: Metadata = {
     images: [{ url: "/og.jpg", width: 1200, height: 630 }],
     type: "website",
   },
-  robots: { index: true, follow: true },
+
+  // ✅ Necessary for link previews on X/Twitter and some crawlers
+  twitter: {
+    card: "summary_large_image",
+    title: SITE.name,
+    description: SITE.description,
+    images: ["/og.jpg"],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    // ✅ Optional, but safe and common
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+
   alternates: { canonical: "/" },
 
-  // ✅ favicon added (ONLY change)
+  // ✅ favicon added (ONLY change) — preserved exactly
   icons: {
     icon: [{ url: "/8jjlogo.png", type: "image/png" }],
     shortcut: "/8jjlogo.png",
