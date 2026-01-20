@@ -39,7 +39,7 @@ const SITE_ORIGIN =
 function apiBase() {
   return (process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE).replace(
     /\/+$/,
-    ""
+    "",
   );
 }
 
@@ -93,30 +93,6 @@ const latest: { slug: string; title: string; desc: string }[] = [
   { slug: "flappysquare", title: "Flappy Square", desc: "Click to fly!" },
 ];
 
-function gameInitials(title: string) {
-  return title
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 3)
-    .map((w) => w[0]?.toUpperCase())
-    .join("");
-}
-
-const DOWNLOAD_URL = "https://download.9ipl.vip/normal/";
-// const BRAND_ITEMS = [
-//   "MB66",
-//   "OK9",
-//   "78win",
-//   "QQ88",
-//   "F168",
-//   "FLY88",
-//   "CM88",
-//   "OK8386",
-//   "SC88",
-//   "C168",
-//   "iP88",
-// ];
-
 export default async function HomePage() {
   const news = await getNewsPreview();
   const [videosRaw] = await Promise.all([fetchVideos()]);
@@ -139,7 +115,7 @@ export default async function HomePage() {
     }))
     .filter(
       (a: { id: number; slug: string; title: string; imgSrc: string | null }) =>
-        a.imgSrc
+        a.imgSrc,
     ) as {
     id: number;
     slug: string;
@@ -211,7 +187,7 @@ export default async function HomePage() {
               if (input.startsWith("http://72.60.107.98:8001/")) {
                 return input.replace(
                   "http://72.60.107.98:8001",
-                  "https://8jjcricket.com"
+                  "https://8jjcricket.com",
                 );
               }
 
@@ -250,22 +226,6 @@ export default async function HomePage() {
           })()}
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-transparent" />
-
-          {/* <div className="pointer-events-auto absolute bottom-4 left-0 right-0 z-20 flex justify-center px-4 ">
-            <div className="inline-flex min-w-0 max-w-full items-center justify-center gap-2 overflow-x-auto rounded-full border border-white/20 bg-black/70 px-3 py-2 shadow-2xl backdrop-blur-xl ">
-              {BRAND_ITEMS.map((name: string) => (
-                <a
-                  key={name}
-                  href={DOWNLOAD_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="whitespace-nowrap rounded-full bg-slate-200/90 px-4 py-1.5 text-xs font-semibold text-slate-900 shadow-md transition hover:bg-white sm:text-sm"
-                >
-                  {name}
-                </a>
-              ))}
-            </div>
-          </div> */}
         </section>
         <section
           data-snap
@@ -284,25 +244,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* SLIDE — GALLERY SHOWCASE */}
-        {/* <section
-          data-snap
-          className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
-        >
-          <div className="relative h-full w-full flex items-center">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
-            />
-            <div className="absolute inset-0 bg-black/70" />
-
-            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
-              <HomeGalleryShowcase />
-            </div>
-          </div>
-        </section> */}
-
-        {/* SLIDE — NEWS */}
         <section
           data-snap
           className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"

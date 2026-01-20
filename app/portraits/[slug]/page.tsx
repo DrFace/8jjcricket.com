@@ -191,7 +191,7 @@ export default async function PortraitDetailsPage({
                   transition-transform
                   duration-700
                   group-hover:scale-[1.02]
-                " 
+                "
                 style={{ backgroundImage: `url(${topHero})` }}
               />
             ) : (
@@ -204,18 +204,15 @@ export default async function PortraitDetailsPage({
             {/* Shine effect */}
             <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-[100%]" />
 
-            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="h-1 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500" />
-                <p className="text-xs font-bold tracking-[0.2em] text-blue-300 uppercase">
-                  Player Profile
-                </p>
-              </div>
-              <h1 className="text-4xl font-black tracking-tight sm:text-5xl bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent drop-shadow-lg">
+            <div className="absolute bottom-10 left-10 h-50">
+              <h1
+                className="text-4xl font-black bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent drop-shadow-lg"
+                style={{ height: 45 }}
+              >
                 {title}
               </h1>
               {subtitle ? (
-                <p className="mt-3 max-w-2xl text-base text-white/85 leading-relaxed">
+                <p className="mt-1 max-w-2xl text-base text-white/85 leading-relaxed">
                   {subtitle}
                 </p>
               ) : null}
@@ -226,9 +223,7 @@ export default async function PortraitDetailsPage({
           <section className="mt-10 grid gap-8 lg:grid-cols-[360px,1fr]">
             {/* LEFT STICKY */}
             <aside className="lg:sticky lg:top-6 lg:self-start">
-              
               <div className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900/60 to-slate-800/60 ring-1 ring-white/20 backdrop-blur-xl shadow-2xl">
-                                    
                 {/* Background banner */}
                 <img
                   src="/bg.png"
@@ -237,7 +232,6 @@ export default async function PortraitDetailsPage({
 
                 {mainPortrait ? (
                   <div className="relative group/portrait z-10">
-                    
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={mainPortrait}
@@ -537,10 +531,10 @@ export default async function PortraitDetailsPage({
           </section>
 
           {/* FOOTER BANNER */}
-         <section className="mt-8 group relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20">
-          {footerBanner ? (
-            <div
-              className="
+          <section className="mt-8 group relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20">
+            {footerBanner ? (
+              <div
+                className="
                 w-full
                 aspect-[2210/590]
                 bg-no-repeat
@@ -550,12 +544,12 @@ export default async function PortraitDetailsPage({
                 duration-700
                 group-hover:scale-[1.02]
               "
-              style={{ backgroundImage: `url(${footerBanner})` }}
-            />
-          ) : (
-            <div className="w-full aspect-[2210/590] bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
-          )}
-        </section>
+                style={{ backgroundImage: `url(${footerBanner})` }}
+              />
+            ) : (
+              <div className="w-full aspect-[2210/590] bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
+            )}
+          </section>
         </div>
       </main>
 

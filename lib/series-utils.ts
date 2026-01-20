@@ -127,3 +127,9 @@ export function extractTeamsFromFixtures(fixtures: Match[]) {
 export function getTodayDateString() {
   return toDateString(new Date());
 }
+
+export const ToInt = (v: string | null, fallback: number) => {
+  if (!v) return fallback;
+  const n = parseInt(v, 10);
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+};

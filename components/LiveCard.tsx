@@ -14,6 +14,7 @@ export default function LiveCard({ f }: { f: Fixture }) {
     away?.short_name || away?.name || `Team ${f.visitorteam_id}`;
 
   const metaLine = `${f.round ?? "Match"} · ${formatDate(f.starting_at)}`;
+  console.log("live card ", f);
 
   return (
     <Link

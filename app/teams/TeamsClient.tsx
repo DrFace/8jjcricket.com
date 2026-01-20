@@ -1,406 +1,400 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import useSWR from "swr";
-import Image from "next/image";
-import Link from "next/link";
 import TopNav from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
+import ErrorState from "@/components/ui/ErrorState";
+import { PaginationComponet } from "@/components/ui/Pagination";
+import { League } from "@/types/series";
+import { ApiResponse, TabKey, TeamFromAPI } from "@/types/team";
+import { HasValidImage } from "@/lib/teams";
+import { PAGE_SIZE } from "@/lib/constant";
+import TeamsCard from "@/components/TeamsCard";
+import { FetchJson } from "@/lib/fetcher";
 
-interface TeamFromAPI {
-  id: number;
-  team_id?: number;
-  name: string;
-  code: string;
-  image_path: string;
-  country_id: number;
-  national_team: boolean | number | string;
+function parseLeagueParam(value: string | null): string | null {
+  if (!value) return null;
+  if (value === "null" || value === "undefined") return null;
+  return value;
 }
 
-interface League {
-  id: number;
-  name: string;
-  code: string;
-  seasons?: Array<{
-    id: number;
-    name: string;
-    is_current?: boolean;
-    starting_at?: string;
-  }>;
+// Prefer validating against known leagues.
+// Fallback: allow numeric IDs only (adjust if your IDs are not numeric).
+function sanitizeLeagueId(
+  raw: string | null,
+  leagues: League[]
+): string | null {
+  if (!raw) return null;
+
+  // Strict allow-list: only values present in leagues
+  const exists = leagues.some((l) => String(l.id) === raw);
+  if (exists) return raw;
+
+  // Fallback strict pattern
+  if (/^\d+$/.test(raw)) return raw;
+
+  return null;
 }
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+function isNationalTeam(team: TeamFromAPI): boolean {
+  const v: unknown = (team as any)?.national_team;
+  return v === true || v === 1 || v === "1" || v === "true";
+}
 
-export default function TeamsClient() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const leagueParam = searchParams.get("league");
-
-  const [selectedLeague, setSelectedLeague] = useState<string>("all");
-
-  // Auto-select league from URL parameter
-  useEffect(() => {
-    if (leagueParam && leagueParam !== "null" && leagueParam !== "undefined") {
-      setSelectedLeague(leagueParam);
-    } else if (leagueParam === "null" || leagueParam === "undefined") {
-      setSelectedLeague("all");
-    }
-  }, [leagueParam]);
-
-  // Fetch all leagues for the dropdown
-  const { data: leaguesData, isLoading: leaguesLoading } = useSWR(
-    "/api/leagues",
-    fetcher,
-    { revalidateOnFocus: false }
+function sortTeamsByImage(teams: TeamFromAPI[]): TeamFromAPI[] {
+  // Avoid mutating original array
+  return [...teams].sort(
+    (a, b) => Number(HasValidImage(b)) - Number(HasValidImage(a))
   );
-  const leagues: League[] = leaguesData?.data ?? [];
+}
 
-  // Fetch all teams
-  const {
-    data: teamsData,
-    error: teamsError,
-    isLoading: teamsLoading,
-  } = useSWR("/api/teams", fetcher, { revalidateOnFocus: false });
+function paginate<T>(items: T[], page: number, pageSize: number): T[] {
+  const safePage = Math.max(1, page);
+  const start = (safePage - 1) * pageSize;
+  return items.slice(start, start + pageSize);
+}
 
-  const isValidSelection =
-    selectedLeague &&
-    selectedLeague !== "null" &&
-    selectedLeague !== "undefined" &&
-    selectedLeague !== "all";
+function totalPages(totalItems: number, pageSize: number): number {
+  return Math.max(1, Math.ceil(totalItems / pageSize));
+}
 
-  // Fetch fixtures for selected league to filter teams
-  const fixturesUrl = isValidSelection
-    ? `/api/leagues/${selectedLeague}/fixtures`
-    : null;
-
-  const { data: fixturesData } = useSWR(fixturesUrl, fetcher, {
+function useTeamsData(leagueId: string | null) {
+  const leaguesSWR = useSWR<ApiResponse<League[]>>("/api/leagues", FetchJson, {
     revalidateOnFocus: false,
   });
 
-  const allTeams: TeamFromAPI[] = (teamsData?.data ?? []).map((t: any) => ({
-    ...t,
-    // normalize id to sportmonks team id
-    id: Number(t.team_id ?? t.id),
-  }));
+  const teamsSWR = useSWR<ApiResponse<any[]>>("/api/teams", FetchJson, {
+    revalidateOnFocus: false,
+  });
 
-  const teams: TeamFromAPI[] = useMemo(() => {
-    if (!isValidSelection) return allTeams;
-    if (!fixturesData?.data || !Array.isArray(fixturesData.data)) return [];
+  const fixturesUrl = leagueId ? `/api/leagues/${leagueId}/fixtures` : null;
+  const fixturesSWR = useSWR<ApiResponse<any[]>>(fixturesUrl, FetchJson, {
+    revalidateOnFocus: false,
+  });
 
-    const teamIdsInLeague = new Set<number>();
-    fixturesData.data.forEach((fixture: any) => {
-      if (fixture?.localteam_id) teamIdsInLeague.add(fixture.localteam_id);
-      if (fixture?.visitorteam_id) teamIdsInLeague.add(fixture.visitorteam_id);
-    });
-    const retAllTeam = allTeams.filter((team) => teamIdsInLeague.has(team.id));
-    return retAllTeam;
-  }, [allTeams, fixturesData, isValidSelection]);
+  // Normalize teams once
+  const allTeams: TeamFromAPI[] = useMemo(() => {
+    const raw = teamsSWR.data?.data ?? [];
+    return raw.map((t: any) => ({
+      ...t,
+      id: Number(t.team_id ?? t.id),
+    }));
+  }, [teamsSWR.data]);
 
-  // Split teams
-  const isNationalTeam = (t: any) =>
-    t.national_team === true ||
-    t.national_team === 1 ||
-    t.national_team === "1" ||
-    t.national_team === "true";
+  // Filter by league fixtures if leagueId is set
+  const filteredTeams: TeamFromAPI[] = useMemo(() => {
+    if (!leagueId) return allTeams;
 
-  const national = useMemo(() => teams.filter(isNationalTeam), [teams]);
-  const domestic = useMemo(
-    () => teams.filter((t) => !isNationalTeam(t)),
-    [teams]
+    const fixtures = fixturesSWR.data?.data;
+    if (!Array.isArray(fixtures)) return [];
+
+    const teamIds = new Set<number>();
+    for (const fx of fixtures) {
+      if (fx?.localteam_id != null) teamIds.add(Number(fx.localteam_id));
+      if (fx?.visitorteam_id != null) teamIds.add(Number(fx.visitorteam_id));
+    }
+
+    return allTeams.filter((t) =>
+      teamIds.has(Number((t as any).sportmonks_team_id))
+    );
+  }, [allTeams, fixturesSWR.data, leagueId]);
+
+  return {
+    leagues: leaguesSWR.data?.data ?? [],
+    leaguesLoading: leaguesSWR.isLoading,
+    teamsLoading: teamsSWR.isLoading,
+    teamsError: teamsSWR.error,
+    teams: filteredTeams,
+  };
+}
+
+export default function TeamsClient() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const leagueParamRaw = parseLeagueParam(searchParams.get("league"));
+
+  const [activeTab, setActiveTab] = useState<TabKey>("all");
+  const [pageIntl, setPageIntl] = useState(1);
+  const [pageDom, setPageDom] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  // Load leagues + teams; leagueId validated after leagues are known
+  const { leagues, leaguesLoading, teamsLoading, teamsError, teams } =
+    useTeamsData(null);
+
+  const leagueId = useMemo(
+    () => sanitizeLeagueId(leagueParamRaw, leagues),
+    [leagueParamRaw, leagues]
   );
-  const domesticLimited = useMemo(() => domestic.slice(0, 30), [domestic]);
 
-  const title =
-    "Cricket Teams - All International & Domestic Teams | 8jjcricket";
-  const description =
-    "Explore cricket teams from around the world. Filter by series and leagues including ODI, T20I, Test, IPL, and more. View international and domestic cricket teams.";
+  // Re-run data hook with validated leagueId
+  const data = useTeamsData(leagueId);
 
-  // Error state (only when showing "all")
-  if (teamsError && selectedLeague === "all") {
-    return (
-      <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+  // Reset tab + pages when query changes
+  useEffect(() => {
+    setActiveTab("all");
+    setPageIntl(1);
+    setPageDom(1);
+  }, [leagueId]);
 
-        <div className="rounded-2xl border border-red-500/30 bg-black/50 backdrop-blur-xl p-8 shadow-2xl">
-          <p className="text-red-300 font-medium">
-            Failed to load teams. Please try again later.
-          </p>
-        </div>
-      </>
-    );
-  }
+  const national = useMemo(
+    () => sortTeamsByImage(data.teams.filter(isNationalTeam)),
+    [data.teams]
+  );
 
-  // Loading state
-  if (teamsLoading || leaguesLoading) {
-    return (
-      <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+  const domestic = useMemo(
+    () => sortTeamsByImage(data.teams.filter((t) => !isNationalTeam(t))),
+    [data.teams]
+  );
 
-        <div className="space-y-6">
-          <div className="h-24 bg-slate-900/80 border border-white/20 rounded-3xl animate-pulse backdrop-blur-xl" />
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {Array.from({ length: 10 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-20 bg-slate-900/80 border border-white/20 rounded-2xl animate-pulse backdrop-blur-xl"
-              />
-            ))}
-          </div>
-        </div>
-      </>
-    );
-  }
+  const visibleNational = useMemo(
+    () => (activeTab === "domestic" ? [] : national),
+    [activeTab, national]
+  );
+
+  const visibleDomestic = useMemo(
+    () => (activeTab === "international" ? [] : domestic),
+    [activeTab, domestic]
+  );
+
+  const visibleTeamsCount = visibleNational.length + visibleDomestic.length;
+
+  const intlPages = totalPages(visibleNational.length, PAGE_SIZE);
+  const domPages = totalPages(visibleDomestic.length, PAGE_SIZE);
+
+  const pagedInternational = useMemo(
+    () => paginate(visibleNational, pageIntl, PAGE_SIZE),
+    [visibleNational, pageIntl]
+  );
+
+  const pagedDomestic = useMemo(
+    () => paginate(visibleDomestic, pageDom, PAGE_SIZE),
+    [visibleDomestic, pageDom]
+  );
+
+  const onLeagueChange = useCallback(
+    (value: string) => {
+      if (value === "all") router.push("/teams");
+      else router.push(`/teams?league=${encodeURIComponent(value)}`);
+    },
+    [router]
+  );
+
+  const goBack = useCallback(() => router.back(), [router]);
+
+  useEffect(() => {
+    setIsLoading(data.teamsLoading || data.leaguesLoading);
+  }, [data.teamsLoading, data.leaguesLoading]);
+
+  const showError = Boolean(data.teamsError) && !leagueId; // align with your previous logic
 
   return (
     <>
-      <title>{title}</title>
-      <meta name="description" content={description} />
+      {/* Prefer Next.js metadata in app router; kept here to match your current approach */}
+      <title>
+        Cricket Teams - All International & Domestic Teams | 8jjcricket
+      </title>
+      <meta
+        name="description"
+        content="Explore cricket teams from around the world. Filter by series and leagues including ODI, T20I, Test, IPL, and more. View international and domestic cricket teams."
+      />
 
-      <TopNav />
-      <BottomNav />
+      <div className="min-h-screen flex flex-col">
+        <TopNav />
+        <BottomNav />
 
-      {/* IMPORTANT: if BottomNav is fixed, increase bottom padding to avoid overlap */}
-      <div className="space-y-6 pb-24">
-        {/* Header */}
-        <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 p-6 md:p-8 shadow-2xl backdrop-blur-xl">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            {/* Title */}
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => window.history.back()}
-                className="flex items-center justify-center w-10 h-10 bg-black/40 hover:bg-amber-950/60 border border-amber-400/30 rounded-full transition-all duration-300 hover:scale-110 group shadow-lg backdrop-blur-sm flex-shrink-0"
-                aria-label="Go back"
-                type="button"
-              >
-                <svg
-                  className="w-5 h-5 text-amber-300 group-hover:-translate-x-0.5 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M15 19l-7-7 7-7"
+        <main className="flex-1">
+          {showError ? (
+            <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
+              <ErrorState message="Failed to load teams. Please try again later." />
+            </div>
+          ) : isLoading ? (
+            <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
+              <div className="h-24 bg-slate-900/80 border border-white/20 rounded-3xl animate-pulse backdrop-blur-xl" />
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-20 bg-slate-900/80 border border-white/20 rounded-2xl animate-pulse backdrop-blur-xl"
                   />
-                </svg>
-              </button>
-
-              <div>
-                <p className="text-xs font-semibold tracking-[0.18em] text-amber-300 mb-1">
-                  8JJCRICKET · TEAMS
-                </p>
-                <h1 className="text-2xl md:text-3xl font-bold text-white">
-                  Cricket Teams
-                </h1>
-                <p className="text-sky-100/80 text-sm md:text-base mt-1">
-                  Browse teams by series and leagues
-                </p>
+                ))}
               </div>
             </div>
+          ) : (
+            <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
+              {/* Header */}
+              <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 p-6 md:p-8 shadow-2xl backdrop-blur-xl mt-5">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={goBack}
+                      className="flex items-center justify-center w-10 h-10 bg-black/40 hover:bg-amber-950/60 border border-amber-400/30 rounded-full transition-all duration-300 hover:scale-110 group shadow-lg backdrop-blur-sm flex-shrink-0"
+                      aria-label="Go back"
+                      type="button"
+                    >
+                      <svg
+                        className="w-5 h-5 text-amber-300 group-hover:-translate-x-0.5 transition-transform"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2.5}
+                          d="M15 19l-7-7 7-7"
+                        />
+                      </svg>
+                    </button>
 
-            {/* Dropdown */}
-            <div className="w-full lg:w-auto">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                  <svg
-                    className="w-5 h-5 text-amber-300/70"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                    <div>
+                      <p className="text-xs font-semibold tracking-[0.18em] text-amber-300 mb-1">
+                        8JJCRICKET · TEAMS
+                      </p>
+                      <h1 className="text-2xl md:text-3xl font-bold text-white">
+                        Cricket Teams
+                      </h1>
+                      <p className="text-sky-100/80 text-sm md:text-base mt-1">
+                        Browse teams by series and leagues
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Dropdown */}
+                  <div className="w-full lg:w-auto">
+                    <div className="relative">
+                      <select
+                        id="league-select"
+                        value={leagueId ?? "all"}
+                        onChange={(e) => onLeagueChange(e.target.value)}
+                        className="w-full lg:w-80 pl-4 pr-10 py-3.5 bg-black/40 border border-white/20 rounded-xl shadow-sm text-amber-200 font-medium text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-amber-400/50 transition-all duration-200 cursor-pointer hover:bg-black/60 backdrop-blur-sm appearance-none"
+                      >
+                        <option value="all" className="bg-slate-900">
+                          All Teams - All Series/Leagues
+                        </option>
+                        <option disabled className="bg-slate-900">
+                          ────────────────────────────
+                        </option>
+                        {data.leagues.map((league) => (
+                          <option
+                            key={league.id}
+                            value={String(league.id)}
+                            className="bg-slate-900"
+                          >
+                            {league.name} - {league.code}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex flex-wrap gap-2 items-center">
+                {(
+                  [
+                    { key: "all", label: `All (${data.teams.length})` },
+                    {
+                      key: "international",
+                      label: `International (${national.length})`,
+                    },
+                    { key: "domestic", label: `Domestic (${domestic.length})` },
+                  ] as const
+                ).map((tab) => (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`px-4 py-2 rounded-xl border text-sm font-semibold transition-all
+                    ${
+                      activeTab === tab.key
+                        ? "bg-amber-400/20 border-amber-400/60 text-amber-200"
+                        : "bg-black/30 border-white/15 text-sky-100/70 hover:text-sky-100 hover:border-amber-400/40"
+                    }`}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-                    />
-                  </svg>
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Empty state */}
+              {visibleTeamsCount === 0 && leagueId ? (
+                <div className="rounded-2xl border border-amber-400/30 bg-gradient-to-br from-slate-900/90 via-amber-900/10 to-orange-900/20 backdrop-blur-xl p-12 text-center shadow-2xl">
+                  <p className="text-2xl font-bold text-white mb-3">
+                    No Teams Data Available
+                  </p>
+                  <button
+                    onClick={() => router.push("/teams")}
+                    className="px-6 py-3 bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-bold rounded-lg"
+                    type="button"
+                  >
+                    View All Cricket Teams Instead
+                  </button>
                 </div>
+              ) : (
+                <>
+                  {/* International */}
+                  {visibleNational.length > 0 && (
+                    <section>
+                      <div className="flex items-center gap-3 mb-5">
+                        <h2 className="text-xl md:text-2xl font-bold text-amber-300">
+                          International Teams
+                        </h2>
+                        <span className="px-3 py-1.5 text-amber-300 text-xs font-bold rounded-full border border-amber-400/40 shadow-lg">
+                          {pagedInternational.length}
+                        </span>
+                      </div>
 
-                <select
-                  id="league-select"
-                  value={selectedLeague}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setSelectedLeague(value);
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        {pagedInternational.map((t) => (
+                          <TeamsCard key={t.id} team={t} />
+                        ))}
+                      </div>
 
-                    if (value === "all") router.push("/teams");
-                    else router.push(`/teams?league=${value}`);
-                  }}
-                  className="w-full lg:w-80 pl-12 pr-10 py-3.5 bg-black/40 border border-white/20 rounded-xl shadow-sm text-amber-200 font-medium text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-amber-400/50 transition-all duration-200 cursor-pointer hover:bg-black/60 backdrop-blur-sm appearance-none"
-                  style={{
-                    backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                    backgroundPosition: "right 0.75rem center",
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "1.5em 1.5em",
-                  }}
-                >
-                  <option value="all" className="bg-slate-900">
-                    All Teams - All Series/Leagues
-                  </option>
-                  <option disabled className="bg-slate-900">
-                    ────────────────────────────
-                  </option>
+                      <PaginationComponet
+                        page={pageIntl}
+                        totalPages={intlPages}
+                        onPage={setPageIntl}
+                      />
+                    </section>
+                  )}
 
-                  {leagues.map((league) => (
-                    <option
-                      key={league.id}
-                      value={league.id}
-                      className="bg-slate-900"
-                    >
-                      {league.name} - {league.code}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                  {/* Domestic */}
+                  {visibleDomestic.length > 0 && (
+                    <section>
+                      <div className="flex items-center gap-3 mb-5">
+                        <h2 className="text-xl md:text-2xl font-bold text-amber-300">
+                          Domestic Teams
+                        </h2>
+                        <span className="px-3 py-1.5 text-amber-300 text-xs font-bold rounded-full border border-amber-400/40 shadow-lg">
+                          {pagedDomestic.length}
+                        </span>
+                      </div>
 
-              <div className="flex items-center gap-2 mt-2 ml-1">
-                <div
-                  className={`w-2 h-2 rounded-full ${
-                    selectedLeague === "all" ? "bg-amber-400" : "bg-emerald-400"
-                  } animate-pulse`}
-                />
-                <p className="text-amber-200/80 text-xs font-medium">
-                  {selectedLeague === "all"
-                    ? "Showing all teams"
-                    : "Filtered by selected series"}
-                </p>
-              </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        {pagedDomestic.map((t) => (
+                          <TeamsCard key={t.id} team={t} />
+                        ))}
+                      </div>
+
+                      <PaginationComponet
+                        page={pageDom}
+                        totalPages={domPages}
+                        onPage={setPageDom}
+                      />
+                    </section>
+                  )}
+                </>
+              )}
             </div>
-          </div>
-        </div>
+          )}
+        </main>
 
-        {/* No teams for selected league */}
-        {teams.length === 0 && selectedLeague !== "all" ? (
-          <div className="rounded-2xl border border-amber-400/30 bg-gradient-to-br from-slate-900/90 via-amber-900/10 to-orange-900/20 backdrop-blur-xl p-12 text-center shadow-2xl">
-            <svg
-              className="w-20 h-20 text-amber-300/70 mx-auto mb-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-
-            <p className="text-2xl font-bold text-white mb-3">
-              No Teams Data Available
-            </p>
-            <p className="text-base text-sky-100/90 mb-2">
-              This league doesn't have team roster data in our system yet.
-            </p>
-            <p className="text-sm text-amber-200/70 mb-6">
-              Teams are usually added closer to the tournament start date
-            </p>
-
-            <button
-              onClick={() => {
-                setSelectedLeague("all");
-                router.push("/teams");
-              }}
-              className="px-6 py-3 bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-xl"
-              type="button"
-            >
-              View All Cricket Teams Instead
-            </button>
-          </div>
-        ) : teams.length > 0 ? (
-          <>
-            {/* International */}
-            {national.length > 0 && (
-              <div>
-                <div className="flex items-center gap-3 mb-5">
-                  <h2 className="text-xl md:text-2xl font-bold text-amber-300">
-                    International Teams
-                  </h2>
-                  <span className="px-3 py-1.5 bg-gradient-to-r from-amber-300/20 via-yellow-400/20 to-orange-500/20 text-amber-300 text-xs font-bold rounded-full border border-amber-400/40 shadow-lg">
-                    {national.length}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {national.map((t) => (
-                    <Link
-                      key={t.id}
-                      href={``}
-                      aria-label={`View team ${t.name}`}
-                      className="block"
-                    >
-                      <div className="flex items-center gap-3 rounded-xl border border-amber-400/30 bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-xl p-3.5 shadow-xl hover:shadow-[0_10px_40px_rgba(251,191,36,0.25)] hover:border-amber-400/60 transition-all duration-300 cursor-pointer hover:-translate-y-1 group">
-                        <Image
-                          src={t.image_path}
-                          alt={t.name}
-                          width={40}
-                          height={40}
-                          className="object-contain rounded-full ring-2 ring-amber-400/40 group-hover:ring-amber-400/70 transition-all"
-                        />
-                        <span className="font-semibold text-white group-hover:text-amber-200 transition-colors">
-                          {t.name}
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Domestic */}
-            {domesticLimited.length > 0 && (
-              <div>
-                <div className="flex items-center gap-3 mb-5">
-                  <h2 className="text-xl md:text-2xl font-bold text-amber-300">
-                    Domestic Teams
-                  </h2>
-                  <span className="px-3 py-1.5 bg-gradient-to-r from-amber-300/20 via-yellow-400/20 to-orange-500/20 text-amber-300 text-xs font-bold rounded-full border border-amber-400/40 shadow-lg">
-                    {domesticLimited.length}
-                  </span>
-                </div>
-
-                <p className="text-sm text-sky-100/70 mb-5 bg-black/30 border-l-4 border-amber-400/50 pl-4 py-2.5 rounded backdrop-blur-sm">
-                  Showing top {domesticLimited.length} domestic teams. Many more
-                  available.
-                </p>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {domesticLimited.map((t) => (
-                    <Link
-                      key={t.id}
-                      href={``}
-                      aria-label={`View team ${t.name}`}
-                      className="block"
-                    >
-                      <div className="flex items-center h-full gap-3 rounded-xl border border-white/20 bg-gradient-to-br from-slate-900/80 via-slate-800/70 to-slate-900/80 backdrop-blur-xl p-3 shadow-lg hover:shadow-[0_8px_30px_rgba(251,191,36,0.2)] hover:border-amber-400/50 transition-all duration-300 cursor-pointer hover:-translate-y-1 group">
-                        <Image
-                          src={t.image_path}
-                          alt={t.name}
-                          width={36}
-                          height={36}
-                          className="object-cover rounded-full ring-2 ring-white/20 group-hover:ring-amber-400/50 transition-all"
-                        />
-                        <span className="font-semibold text-white truncate group-hover:text-amber-200 transition-colors text-sm">
-                          {t.name}
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
-        ) : null}
+        <Footer />
       </div>
-
-      <Footer />
     </>
   );
 }

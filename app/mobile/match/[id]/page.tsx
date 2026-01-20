@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Scoreboard from "@/components/Scoreboard";
 import MobileScoreboard from "@/components/mobile/MobileScoreboard";
 import MobileBackButton from "@/components/mobile/MobileBackButton";
 
