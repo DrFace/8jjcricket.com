@@ -123,11 +123,7 @@ function ShareModal({
         window.setTimeout(() => setToast(null), 1600)
     }
 
-    function onWhatsappStatus() {
-        // WhatsApp has no official URL to open Status composer with prefilled link.
-        setToast("WhatsApp Status can’t be opened with a prefilled link. Use Copy link and paste into Status.")
-        window.setTimeout(() => setToast(null), 2200)
-    }
+
 
     if (!open) return null
 
@@ -170,12 +166,7 @@ function ShareModal({
                         <span className="text-xs text-slate-200">WhatsApp</span>
                     </a>
 
-                    <button type="button" onClick={onWhatsappStatus} className="group flex flex-col items-center gap-2 text-center">
-                        <ShareIcon>
-                            <IconWhatsapp />
-                        </ShareIcon>
-                        <span className="text-xs text-slate-200">WA Status</span>
-                    </button>
+                
 
                     <a
                         href={links.telegram}
