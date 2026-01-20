@@ -1,6 +1,7 @@
 export const SITE = {
-  name: '8jjcricket',
-  url: 'https://example.com',
-  description: 'Live cricket scores, rich scoreboards, and fun minigames.',
-  twitter: '@yourhandle',
-}
+  name: "8JJ Cricket",
+  url: "https://8jjcricket.com",
+  description:
+    "Live cricket scores, news, fixtures, and updates from around the world.",
+  twitter: "@8jjcricket",
+};

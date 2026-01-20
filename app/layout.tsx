@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     template: `%s · ${SITE.name}`,
   },
   description: SITE.description,
+
   openGraph: {
     title: SITE.name,
     description: SITE.description,
@@ -19,14 +20,61 @@ export const metadata: Metadata = {
     images: [{ url: "/og.jpg", width: 1200, height: 630 }],
     type: "website",
   },
-  robots: { index: true, follow: true },
+
+  // ✅ Necessary for link previews on X/Twitter and some crawlers
+  twitter: {
+    card: "summary_large_image",
+    title: SITE.name,
+    description: SITE.description,
+    images: ["/og.jpg"],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    // ✅ Optional, but safe and common
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+
   alternates: { canonical: "/" },
 
-  // ✅ favicon added (ONLY change)
+  // ✅ Add manifest (new)
+  manifest: "/site.webmanifest",
+
+  // ✅ Use your new favicon set (replace the old 8jjlogo.png icons)
   icons: {
-    icon: [{ url: "/8jjlogo.png", type: "image/png" }],
-    shortcut: "/8jjlogo.png",
-    apple: "/8jjlogo.png",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      {
+        url: "/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+    other: [
+      {
+        rel: "icon",
+        url: "/android-chrome-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        rel: "icon",
+        url: "/android-chrome-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+      },
+    ],
   },
 };
 
