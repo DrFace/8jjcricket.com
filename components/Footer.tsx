@@ -29,19 +29,28 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Trust & Safety + Socials */}
+        {/* Trust & Safety */}
         <div className="flex justify-between gap-1">
           <div className="text-sm text-sky-100/80">
             <p className="mb-2 font-semibold text-white">Trust &amp; Safety</p>
             <ul className="space-y-1">
               <li>Play responsibly</li>
-              <li>Support: support@8jjcricket.com</li>
+              <li>
+                Support:{" "}
+                <a
+                  href="mailto:8jjcricket@gmail.com"
+                  className="underline hover:text-white"
+                >
+                  8jjcricket@gmail.com
+                </a>
+              </li>
             </ul>
           </div>
         </div>
+
+        {/* Social Icons */}
         <div>
-          {/* Social Icons */}
-          <div className="flex ">
+          <div className="flex">
             {SOCIALS_LINKS.slice(0, 2).map((s) => (
               <Link
                 key={s.url}
@@ -53,7 +62,7 @@ export default function Footer() {
               </Link>
             ))}
           </div>
-          <div className="flex ">
+          <div className="flex">
             {SOCIALS_LINKS.slice(2, 4).map((s) => (
               <Link
                 key={s.url}
