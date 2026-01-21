@@ -83,7 +83,7 @@ function ArchiveCard({ archive }: ArchiveCardProps) {
                   <img
                     src={archive.home_team_logo}
                     alt={archive.home_team}
-                    className="w-10 h-10 rounded-full object-cover bg-gray-800"
+                    className="w-10 h-10 rounded-full object-cover bg-gray-800 border-2 border-gray-700"
                     loading="lazy"
                     onError={() => setHomeImageError(true)}
                   />
@@ -108,7 +108,7 @@ function ArchiveCard({ archive }: ArchiveCardProps) {
                   <img
                     src={archive.away_team_logo}
                     alt={archive.away_team}
-                    className="w-10 h-10 rounded-full object-cover bg-gray-800"
+                    className="w-10 h-10 rounded-full object-cover bg-gray-800 border-2 border-gray-700"
                     loading="lazy"
                     onError={() => setAwayImageError(true)}
                   />
