@@ -18,8 +18,9 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json());
  */
 export default function T20IRankingsPage() {
   const { data, error, isLoading } = useSWR("/api/team-rankings", fetcher);
-  const title = "T20I Team Rankings | 8jjcricket";
-  const description = "ICC T20I team rankings for men and women teams.";
+  const title = "ICC T20I Team Rankings 2026: Men's Points Table | 8JJ Cricket";
+  const description =
+    "Official ICC Men's T20I Team Rankings. Check the latest 2026 points table and standings. See where India, England, and West Indies rank in T20 cricket.";
 
   const rankingTabs = [
     { label: "ODI", href: "odi", active: false },
