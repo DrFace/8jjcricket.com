@@ -18,8 +18,10 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json());
  */
 export default function ODIRankingsPage() {
   const { data, error, isLoading } = useSWR("/api/team-rankings", fetcher);
-  const title = "ODI Team Rankings | 8jjcricket";
-  const description = "ICC ODI team rankings for men and women teams.";
+  const title =
+    "ICC ODI Team Rankings 2026: Men's Cricket Points Table | 8JJ Cricket";
+  const description =
+    "Current ICC Men's ODI Team Rankings. View the official points table, team ratings, and standings for 2026. Check where Team India, Australia, and Pakistan rank today.";
 
   const rankingTabs = [
     { label: "ODI", href: "odi", active: true },

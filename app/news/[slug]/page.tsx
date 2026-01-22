@@ -76,7 +76,7 @@ function sanitizeHtml(input: string): string {
   // Remove script tags + content
   html = html.replace(
     /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-    ""
+    "",
   );
 
   // Remove inline event handlers: onClick="...", onerror='...'
@@ -85,7 +85,7 @@ function sanitizeHtml(input: string): string {
   // Remove javascript: from href/src
   html = html.replace(
     /\s(href|src)\s*=\s*(['"])\s*javascript:[^'"]*\2/gi,
-    " $1=$2#$2"
+    " $1=$2#$2",
   );
 
   return html;

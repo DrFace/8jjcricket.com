@@ -10,6 +10,8 @@ import { ToInt } from "@/lib/series-utils";
 import { MOBILE_PAGE_SIZE, SERIES_TABS } from "@/lib/constant";
 import { LeagueRespond, SeriesByMonth } from "@/types/series";
 
+
+
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 /**
