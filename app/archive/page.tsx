@@ -29,6 +29,9 @@ interface ArchiveCardProps {
 }
 
 function ArchiveCard({ archive }: ArchiveCardProps) {
+  const [homeImageError, setHomeImageError] = useState(false);
+  const [awayImageError, setAwayImageError] = useState(false);
+
   return (
     <Link href={`/match/${archive.sportmonks_fixture_id}`} className="block">
       <div className="rounded-2xl border border-white/15 bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-xl p-5 shadow-2xl hover:border-amber-400/50 hover:shadow-[0_20px_50px_rgba(251,191,36,0.15)] transition-all duration-300 group cursor-pointer">
@@ -74,18 +77,52 @@ function ArchiveCard({ archive }: ArchiveCardProps) {
         {/* Scores */}
         <div className="space-y-2 mb-4">
           <div className="flex items-center justify-between bg-black/30 rounded-lg px-3 py-2 border border-white/5">
-            <span className="text-sm font-medium text-white">
-              {archive.home_team}
-            </span>
-            <span className="text-sm font-bold text-amber-300">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <div className="w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0">
+                {archive.home_team_logo && !homeImageError ? (
+                  <img
+                    src={archive.home_team_logo}
+                    alt={archive.home_team}
+                    className="w-10 h-10 rounded-full object-cover bg-gray-800 border-2 border-gray-700"
+                    loading="lazy"
+                    onError={() => setHomeImageError(true)}
+                  />
+                ) : (
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                    {archive.home_team?.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase() || '??'}
+                  </div>
+                )}
+              </div>
+              <span className="text-sm font-medium text-white truncate">
+                {archive.home_team}
+              </span>
+            </div>
+            <span className="text-sm font-bold text-amber-300 ml-2">
               {archive.home_score || "N/A"}
             </span>
           </div>
           <div className="flex items-center justify-between bg-black/30 rounded-lg px-3 py-2 border border-white/5">
-            <span className="text-sm font-medium text-white">
-              {archive.away_team}
-            </span>
-            <span className="text-sm font-bold text-amber-300">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <div className="w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0">
+                {archive.away_team_logo && !awayImageError ? (
+                  <img
+                    src={archive.away_team_logo}
+                    alt={archive.away_team}
+                    className="w-10 h-10 rounded-full object-cover bg-gray-800 border-2 border-gray-700"
+                    loading="lazy"
+                    onError={() => setAwayImageError(true)}
+                  />
+                ) : (
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                    {archive.away_team?.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase() || '??'}
+                  </div>
+                )}
+              </div>
+              <span className="text-sm font-medium text-white truncate">
+                {archive.away_team}
+              </span>
+            </div>
+            <span className="text-sm font-bold text-amber-300 ml-2">
               {archive.away_score || "N/A"}
             </span>
           </div>
