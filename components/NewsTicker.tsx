@@ -68,6 +68,7 @@ export default function NewsTicker() {
           }
         }
       `}</style>
-    </div>
+    </div> 
+    
   );
 }
