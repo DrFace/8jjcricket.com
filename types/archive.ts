@@ -8,6 +8,8 @@ export interface Archive {
   round: string | null;
   home_team: string;
   away_team: string;
+  home_team_logo?: string | null;
+  away_team_logo?: string | null;
   home_score: string | null;
   away_score: string | null;
   status: string;
