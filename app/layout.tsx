@@ -110,9 +110,10 @@ export default function RootLayout({
         </Script>
         <script
           src="https://analytics.ahrefs.com/analytics.js"
-          data-key="7FbA3dEx0l3lU5uFv91jHA"
+          data-key="Hke7yvQwoPbtfbwEUBLeKQ"
           async
         ></script>
+       
       </body>
     </html>
   );
