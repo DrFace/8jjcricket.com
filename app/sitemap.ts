@@ -4,7 +4,7 @@ import { MetadataRoute } from "next";
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://8jjcricket.com/api";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
 
-// Helper to fetch data safely
+// Helper to fetch data safelyn
 async function fetchSitemapData(endpoint: string) {
   try {
     // Revalidate every 15 minutes to keep sitemap fresh without overloading server
