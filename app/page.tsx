@@ -22,9 +22,6 @@ const AnimatedText = dynamic(() => import("@/components/AnimatedText"), {
   ssr: false,
 });
 
-// ... [Keep your Types and API Helper functions exactly as they are] ...
-// ... [Keep normalizeImageUrl, getNewsPreview, latest, etc.] ...
-
 type Article = {
   id: number;
   title: string;
@@ -167,10 +164,13 @@ export default async function HomePage() {
       <HomeVerticalSwiper>
         <section
           data-snap
-          className="SectionScroll sticky top-0 Sh-screen w-full overflow-hidden "
+          className="SectionScroll sticky top-0 h-screen w-full overflow-hidden"
         >
-          {/* H1 for SEO (Hidden visually but readable by bots) */}
-          <h1 className="sr-only">Live Cricket Scores & Minigames for India</h1>
+          {/* SEO-Optimized H1 for India & South Asia */}
+          <h1 className="sr-only">
+            8JJ Cricket - Live Cricket Scores, IPL Updates & Match News for
+            India & South Asia
+          </h1>
 
           {(() => {
             const raw = videos?.[0]?.video_path ?? "";
@@ -219,8 +219,6 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-transparent" />
         </section>
 
-        {/* ... Rest of your sections (PortraitShowcase, News, Feedback) ... */}
-        {/* I'm keeping the structure exactly as you had it below */}
         <section
           data-snap
           className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
