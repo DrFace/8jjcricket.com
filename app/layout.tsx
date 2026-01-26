@@ -42,8 +42,6 @@ export const metadata: Metadata = {
     },
   },
 
-  alternates: { canonical: "/" },
-
   // ✅ Add manifest (new)
   manifest: "/site.webmanifest",
 
