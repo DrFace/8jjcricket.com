@@ -618,7 +618,15 @@ export default function NewsPage() {
 
                         {item.published_at && (
                           <p className="text-xs text-slate-400 mb-2 group-hover:text-slate-300 transition-colors duration-300">
-                            {new Date(item.published_at).toLocaleString()}
+                            {item.published_at && (
+                              <p className="text-xs text-slate-400 mb-2">
+                                {new Intl.DateTimeFormat("en-IN", {
+                                  dateStyle: "medium",
+                                  timeStyle: "short",
+                                  timeZone: "Asia/Kolkata",
+                                }).format(new Date(item.published_at))}
+                              </p>
+                            )}
                           </p>
                         )}
 
