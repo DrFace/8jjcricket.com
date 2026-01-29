@@ -28,6 +28,9 @@ export const metadata: Metadata = {
     description: SITE.description,
     images: ["/og.jpg"],
   },
+  other: {
+    "probely-verification": "8312e3a6-179b-47f1-95bd-bf1ed3710463",
+  },
 
   robots: {
     index: true,
