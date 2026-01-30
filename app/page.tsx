@@ -235,7 +235,7 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
-
+        {/* News */}
         <section
           data-snap
           className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"

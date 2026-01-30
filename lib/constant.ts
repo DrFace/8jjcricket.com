@@ -30,3 +30,5 @@ export const GOOGLE_PLAY_STORE = [
     alt: "Play Store",
   },
 ];
+
+export const HOME_NEWS_PARAM = "?category=events&page=1&per_page=20";
