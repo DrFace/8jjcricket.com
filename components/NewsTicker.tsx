@@ -44,8 +44,8 @@ export default function NewsTicker() {
 
       <style jsx>{`
         .animate-news-ticker {
-          animation: news-ticker 1000s linear infinite;
-        }
+          animation: news-ticker 250s linear infinite;
+        } 
 
         /* Pause on hover for readability */
         .animate-news-ticker:hover {
@@ -55,7 +55,7 @@ export default function NewsTicker() {
         /* Even slower on larger screens */
         @media (min-width: 768px) {
           .animate-news-ticker {
-            animation-duration: 1000s;
+            animation-duration: 250s;
           }
         }
 
@@ -68,7 +68,6 @@ export default function NewsTicker() {
           }
         }
       `}</style>
-    </div> 
-    
+    </div>
   );
 }
