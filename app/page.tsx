@@ -9,6 +9,12 @@ import HomeNewsShowcase from "@/components/HomeNewsShowcase";
 import HomeFeedbackSection from "@/components/HomeFeedbackSection";
 import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
 
+// --- IMPORT SEO DATA ---
+import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
+
+// --- EXPORT METADATA (This sets the <head> tags) ---
+export const metadata = homeMetadata;
+
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
   ssr: false,
 });
@@ -78,21 +84,6 @@ async function getNewsPreview(): Promise<Article[]> {
   }
 }
 
-const latest: { slug: string; title: string; desc: string }[] = [
-  {
-    slug: "cricket-legends",
-    title: "Cricket Legends",
-    desc: "Career mode with levels & characters.",
-  },
-  {
-    slug: "cricket-superover",
-    title: "Cricket Super Over",
-    desc: "6 balls, pure timing — hit for 6s!",
-  },
-  { slug: "tictactoe", title: "Tic Tac Toe", desc: "Classic 3×3 duel." },
-  { slug: "flappysquare", title: "Flappy Square", desc: "Click to fly!" },
-];
-
 export default async function HomePage() {
   const news = await getNewsPreview();
   const [videosRaw] = await Promise.all([fetchVideos()]);
@@ -125,7 +116,6 @@ export default async function HomePage() {
 
   function normalizeVideoUrl(url: string | null): string | null {
     if (!url) return null;
-    // Remove '/api' from backend_url if present
     let backend_url = apiBase().replace(/\/api$/, "");
     try {
       const u = new URL(url, backend_url);
@@ -156,6 +146,13 @@ export default async function HomePage() {
 
   return (
     <SmoothScroller>
+      {/* --- INJECT SCHEMA JSON-LD --- */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
+      />
+      {/* ----------------------------- */}
+
       <DesktopOnly>
         <WelcomePopup />
       </DesktopOnly>
@@ -163,49 +160,43 @@ export default async function HomePage() {
       <BottomNav />
       <TopNav />
 
-      {/* Swiper vertical scroll effect wrapper (no content changes inside) */}
+      {/* Swiper vertical scroll effect wrapper */}
       <HomeVerticalSwiper>
         <section
           data-snap
-          className="SectionScroll sticky top-0 Sh-screen w-full overflow-hidden "
+          className="SectionScroll sticky top-0 h-screen w-full overflow-hidden"
         >
-          {/* Build a safe HTTPS URL for the video without changing backend/env */}
+          {/* SEO-Optimized H1 for India & South Asia */}
+          <h1 className="sr-only">
+            8JJ Cricket - Live Cricket Scores, IPL Updates & Match News for
+            India & South Asia
+          </h1>
+
           {(() => {
             const raw = videos?.[0]?.video_path ?? "";
 
-            // Convert IP-based HTTP storage URLs to your HTTPS domain storage URL
             const getSafeVideoUrl = (input: string) => {
               if (!input) return "";
-
-              // If backend returns a relative path like "/storage/....mp4"
               if (input.startsWith("/")) {
                 return `https://8jjcricket.com${input}`;
               }
-
-              // If backend returns full URL with the IP + port over http
-              // e.g. http://72.60.107.98:8001/storage/home_videos/xxx.mp4
               if (input.startsWith("http://72.60.107.98:8001/")) {
                 return input.replace(
                   "http://72.60.107.98:8001",
                   "https://8jjcricket.com",
                 );
               }
-
-              // If any other http URL, try to remap just the /storage/... portion to your HTTPS domain
               if (input.startsWith("http://")) {
                 try {
                   const u = new URL(input);
                   if (u.pathname.startsWith("/storage/")) {
                     return `https://8jjcricket.com${u.pathname}${u.search}`;
                   }
-                  // If it's some other path, still force https on same host (best effort)
                   return `https://${u.host}${u.pathname}${u.search}`;
                 } catch {
                   return input;
                 }
               }
-
-              // Already https or something else
               return input;
             };
 
@@ -227,6 +218,7 @@ export default async function HomePage() {
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-transparent" />
         </section>
+
         <section
           data-snap
           className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
@@ -261,7 +253,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* SLIDE — FEEDBACK */}
         <section
           data-snap
           className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"

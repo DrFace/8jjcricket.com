@@ -17,8 +17,9 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json());
  */
 export default function TestRankingsPage() {
   const { data, error, isLoading } = useSWR("/api/team-rankings", fetcher);
-  const title = "Test Team Rankings | 8jjcricket";
-  const description = "ICC Test team rankings for men and women teams.";
+  const title = "ICC Test Team Rankings 2026: WTC Points Table | 8JJ Cricket";
+  const description =
+    "Official ICC Men's Test Team Rankings & World Test Championship (WTC) standings for 2026. Check the latest points table for India, Australia, and England.";
 
   const rankingTabs = [
     { label: "ODI", href: "odi", active: false },

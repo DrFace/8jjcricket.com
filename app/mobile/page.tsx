@@ -9,6 +9,12 @@ import { ApiBase } from "@/lib/utils";
 import { DEFAULT_API_BASE } from "@/lib/constant";
 import MobileSocialBox from "@/components/MobileSocialBox";
 
+// --- IMPORT SEO DATA ---
+import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
+
+// --- EXPORT METADATA (This sets the <head> tags) ---
+export const metadata = homeMetadata;
+
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
   ssr: false,
 });
@@ -198,7 +204,7 @@ export default async function MobileHomePage() {
                   if (input.startsWith("http://72.60.107.98:8001/")) {
                     return input.replace(
                       "http://72.60.107.98:8001",
-                      "https://8jjcricket.com"
+                      "https://8jjcricket.com",
                     );
                   }
 
