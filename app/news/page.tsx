@@ -506,10 +506,12 @@ export default function NewsPage() {
     if (activeCategory) params.set("category", activeCategory);
     params.set("page", String(page));
     params.set("per_page", "20");
+
     return `/api/news?${params.toString()}`;
   }, [activeCategory, page]);
 
   const { data: categories } = useSWR("/api/news/categories", fetcher);
+
   const { data, error, isLoading } = useSWR<NewsResponse>(newsUrl, fetcher);
 
   const articles: Article[] = (data?.data || []) as Article[];
