@@ -1,6 +1,7 @@
 // components/HomeNewsShowcase.tsx
 import Link from "next/link";
 import NewsListCards from "@/components/NewsListCards";
+import { HOME_NEWS_PARAM } from "@/lib/constant";
 
 type Article = {
   id: number;
@@ -23,49 +24,16 @@ const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
 const SITE_ORIGIN =
   process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
 
-/* =======================
-   EVENTS CONFIG
-======================= */
-const EVENTS_SLUG = "events";
-const EVENTS_NAME = "Events";
-
-function normalizeImageUrl(url: string | null): string | null {
-  if (!url) return null;
-  try {
-    const u = new URL(url, SITE_ORIGIN);
-    let pathname = u.pathname;
-    if (!pathname.startsWith("/storage/")) {
-      pathname = `/storage/${pathname.replace(/^\/+/, "")}`;
-    }
-    return `${SITE_ORIGIN}${pathname}${u.search}`;
-  } catch {
-    return `${SITE_ORIGIN}/storage/${String(url).replace(/^\/+/, "")}`;
-  }
-}
 
 function formatDate(date?: string | null) {
   if (!date) return "";
   return date.slice(0, 10);
 }
 
-/* =======================
-   EVENTS FILTER
-======================= */
-function isEvent(article: Article): boolean {
-  const slug = article.category?.slug?.toLowerCase()?.trim();
-  const name = article.category?.name?.toLowerCase()?.trim();
-  const categoryName = article.category_name?.toLowerCase()?.trim();
-
-  return (
-    slug === EVENTS_SLUG ||
-    name === EVENTS_NAME.toLowerCase() ||
-    categoryName === EVENTS_NAME.toLowerCase()
-  );
-}
 
 async function fetchNews(): Promise<Article[]> {
   const base = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE;
-  const res = await fetch(`${base.replace(/\/+$/, "")}/news`, {
+  const res = await fetch(`${base.replace(/\/+$/, "")}/news${HOME_NEWS_PARAM}`, {
     cache: "no-store",
   });
   if (!res.ok) return [];
@@ -77,16 +45,14 @@ export default async function HomeNewsShowcase() {
   const news = await fetchNews();
 
   const items = news
-    .filter(isEvent)
-    .map((n) => ({
-      ...n,
-      image_url: normalizeImageUrl(n.image_url),
-    }))
-    .filter((n) => Boolean(n.image_url));
 
-  if (items.length === 0) return null;
+  const featured = items.at(0);
 
-  const featured = items[0];
+  if (!featured) {
+    return (
+      <div className="text-white/60 text-center py-10">No news available</div>
+    );
+  }
 
   const listItems = items.slice(1, 5).map((n) => ({
     id: n.id,

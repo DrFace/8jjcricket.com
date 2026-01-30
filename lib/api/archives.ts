@@ -28,11 +28,14 @@ function buildQueryString(filters?: ArchiveFilters): string {
  * @throws Error if the request fails
  */
 export async function getArchives(
-  filters?: ArchiveFilters
+  filters?: ArchiveFilters,
 ): Promise<ArchivesResponse> {
   try {
+    console.log("call getArchives");
+    const apibase = "http://127.0.0.1:8000/api";
     const queryString = buildQueryString(filters);
-    const url = `${API_BASE_URL}/archives${queryString}`;
+    console.log("queryString", queryString);
+    const url = `${apibase}/archives${queryString}`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -47,7 +50,7 @@ export async function getArchives(
       const errorText = await response.text();
       console.error("API Error Response:", errorText);
       throw new Error(
-        `Failed to fetch archives: ${response.status} ${response.statusText}. ${errorText}`
+        `Failed to fetch archives: ${response.status} ${response.statusText}. ${errorText}`,
       );
     }
 
@@ -58,7 +61,7 @@ export async function getArchives(
     console.error("Error fetching archives:", error);
     if (error instanceof TypeError && error.message.includes("fetch")) {
       throw new Error(
-        "Network error: Unable to connect to the API. Please check if the backend server is running."
+        "Network error: Unable to connect to the API. Please check if the backend server is running.",
       );
     }
     throw error;
@@ -82,7 +85,7 @@ export async function getArchiveById(id: number): Promise<any> {
 
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch archive: ${response.status} ${response.statusText}`
+        `Failed to fetch archive: ${response.status} ${response.statusText}`,
       );
     }
 

@@ -37,7 +37,7 @@ export default function PlayerDetailPage() {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`/api/players/${playerId}`, {
+        const res = await fetch(`/api/catalog/${playerId}`, {
           // Use caching (recommended). Change the value as you like.
           next: { revalidate: 300 }, // 5 minutes
         });

@@ -35,7 +35,7 @@ export default function PlayerDetailPage() {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`/api/players/${playerId}`, {
+        const res = await fetch(`/api/catalog/${playerId}`, {
           cache: "no-store",
         });
 
