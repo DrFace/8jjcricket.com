@@ -4,7 +4,7 @@ import { MetadataRoute } from "next";
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://8jjcricket.com/api";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
 
-// Helper to fetch data safelyn
+// Helper to fetch data safely
 async function fetchSitemapData(endpoint: string) {
   try {
     // Revalidate every 15 minutes to keep sitemap fresh without overloading server
@@ -22,10 +22,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   // 1. Parallel Data Fetching (Fastest Method)
-  const [newsData, seriesData, teamsData] = await Promise.all([
+  // ✅ OPTIMIZED: Removed 'teamsData' to save server resources and crawl budget
+  const [newsData, seriesData] = await Promise.all([
     fetchSitemapData("news"),   // Critical for Discover
     fetchSitemapData("series"), // Critical for "IPL Schedule" queries
-    fetchSitemapData("teams"),  // Critical for "Team India" queries
   ]);
 
   const sitemapEntries: MetadataRoute.Sitemap = [];
@@ -85,51 +85,40 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // ==========================================
   // 2. DYNAMIC NEWS (Freshness Algorithm)
   // ==========================================
-  newsData.forEach((item: any) => {
-    if (!item.slug) return;
+  if (Array.isArray(newsData)) {
+    newsData.forEach((item: any) => {
+      if (!item.slug) return;
 
-    const publishedAt = item.updated_at ? new Date(item.updated_at) : new Date(item.published_at);
-    
-    // Check if news is fresh (< 24 hours)
-    const isFresh = (now.getTime() - publishedAt.getTime()) < (24 * 60 * 60 * 1000);
+      const publishedAt = item.updated_at ? new Date(item.updated_at) : new Date(item.published_at);
+      
+      // Check if news is fresh (< 24 hours)
+      const isFresh = (now.getTime() - publishedAt.getTime()) < (24 * 60 * 60 * 1000);
 
-    sitemapEntries.push({
-      url: `${SITE_URL}/news/${item.slug}`,
-      lastModified: publishedAt,
-      changeFrequency: isFresh ? "hourly" : "monthly", // Stop crawling old news often
-      priority: isFresh ? 0.9 : 0.5, // Prioritize fresh content
+      sitemapEntries.push({
+        url: `${SITE_URL}/news/${item.slug}`,
+        lastModified: publishedAt,
+        changeFrequency: isFresh ? "hourly" : "monthly", // Stop crawling old news often
+        priority: isFresh ? 0.9 : 0.5, // Prioritize fresh content
+      });
     });
-  });
+  }
 
   // ==========================================
   // 3. DYNAMIC SERIES (Tournaments)
   // ==========================================
-  seriesData.forEach((item: any) => {
-    if (!item.slug && !item.id) return;
-    const slug = item.slug || item.id; // Fallback to ID if slug missing
+  if (Array.isArray(seriesData)) {
+    seriesData.forEach((item: any) => {
+      if (!item.slug && !item.id) return;
+      const slug = item.slug || item.id; // Fallback to ID if slug missing
 
-    sitemapEntries.push({
-      url: `${SITE_URL}/series/${slug}`,
-      lastModified: item.updated_at ? new Date(item.updated_at) : now,
-      changeFrequency: "daily", // Schedules change, points tables update
-      priority: 0.8,
+      sitemapEntries.push({
+        url: `${SITE_URL}/series/${slug}`,
+        lastModified: item.updated_at ? new Date(item.updated_at) : now,
+        changeFrequency: "daily", // Schedules change, points tables update
+        priority: 0.8,
+      });
     });
-  });
-
-  // ==========================================
-  // 4. DYNAMIC TEAMS
-  // ==========================================
-  teamsData.forEach((item: any) => {
-    if (!item.slug && !item.id) return;
-    const slug = item.slug || item.id;
-
-    sitemapEntries.push({
-      url: `${SITE_URL}/team/${slug}`,
-      lastModified: now, // Team pages usually static, but good to refresh
-      changeFrequency: "weekly",
-      priority: 0.6,
-    });
-  });
+  }
 
   return sitemapEntries;
 }
