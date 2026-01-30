@@ -4,7 +4,7 @@ const API_BASE =
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   const id = params?.id;
 
@@ -31,7 +31,7 @@ export async function GET(
   } catch (e: any) {
     return NextResponse.json(
       { error: e?.message ?? "Upstream fetch failed" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -28,6 +28,7 @@ export const metadata: Metadata = {
     description: SITE.description,
     images: ["/og.jpg"],
   },
+  
 
   robots: {
     index: true,
@@ -41,8 +42,6 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-
-  alternates: { canonical: "/" },
 
   // ✅ Add manifest (new)
   manifest: "/site.webmanifest",
@@ -108,6 +107,11 @@ export default function RootLayout({
             gtag('config', 'G-FBJM2CQHHS');
           `}
         </Script>
+        <script
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key="UpHEbr/a/JxSmmqvOPM52g"
+          async
+        ></script>
       </body>
     </html>
   );
