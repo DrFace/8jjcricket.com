@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import Link from "next/link";
+import Head from "next/head"; // ✅ ADD THIS IMPORT
 import TopNav from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
@@ -12,6 +13,9 @@ import ErrorState from "@/components/ui/ErrorState";
 import { ToInt } from "@/lib/series-utils";
 import { PAGE_SIZE, SERIES_TABS } from "@/lib/constant";
 import { LeagueRespond, SeriesByMonth } from "@/types/series";
+
+// ✅ IMPORT SEO DATA
+import { seriesMetadata, seriesJsonLd } from "@/components/seo/SeriesSeo";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -26,7 +30,6 @@ export default function SeriesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = ToInt(searchParams.get("page"), 1);
-  const perPage = 30; // or let user choose
 
   const { data, error, isLoading } = useSWR(
     `/api/leagues?page=${page}&per_page=${PAGE_SIZE}`,
@@ -34,13 +37,12 @@ export default function SeriesPage() {
   );
 
   const leagues: LeagueRespond[] = data?.data ?? [];
-  // make sure totalPages is a number too
   const totalPages = data?.meta?.last_page
     ? parseInt(data?.meta?.last_page)
     : 1;
 
   const onPage = (p: number) => {
-    if (!Number.isFinite(p)) return; // guard NaN
+    if (!Number.isFinite(p)) return;
     const next = Math.min(Math.max(1, p), totalPages);
 
     const sp = new URLSearchParams(searchParams.toString());
@@ -48,9 +50,19 @@ export default function SeriesPage() {
     router.push(`?${sp.toString()}`);
   };
 
-  const title = "Cricket Schedule - Series | 8jjcricket";
+  // ✅ EXTRACT META VALUES
+  const title =
+    (seriesMetadata.title as string) ||
+    "Cricket Series Schedule 2026 | 8jjcricket";
   const description =
-    "View current and upcoming cricket series, matches, and tournaments.";
+    (seriesMetadata.description as string) ||
+    "Complete cricket series schedule for 2026";
+  const ogImage =
+    (seriesMetadata.openGraph?.images as Array<{ url: string }>)?.[0]?.url ||
+    "https://8jjcricket.com/og-series.jpg";
+  const twitterImage =
+    (seriesMetadata.twitter?.images as string[])?.[0] ||
+    "https://8jjcricket.com/og-series.jpg";
 
   // Filter leagues based on active filter
   let filteredLeagues = leagues;
@@ -81,7 +93,6 @@ export default function SeriesPage() {
   }
 
   const currentAndFutureLeagues = filteredLeagues.filter((league) => {
-    // If league has seasons, check if any season is from 2024 onwards
     if (
       league.seasons &&
       Array.isArray(league.seasons) &&
@@ -89,7 +100,6 @@ export default function SeriesPage() {
     ) {
       return league.seasons.some((season: any) => {
         const seasonName = season.name || "";
-        // Extract year from season name (e.g., "2024/2025", "2025", "2024-25")
         const yearMatch = seasonName.match(/\d{4}/);
         if (yearMatch) {
           const year = parseInt(yearMatch[0]);
@@ -98,10 +108,9 @@ export default function SeriesPage() {
         return false;
       });
     }
-    return true; // Include leagues without season info
+    return true;
   });
 
-  // Helper function to get latest season
   const getLatestSeason = (seasons: any[]) => {
     if (!seasons?.length) return null;
     const sorted = [...seasons].sort((a, b) => {
@@ -114,12 +123,10 @@ export default function SeriesPage() {
     return sorted[0];
   };
 
-  // Sort leagues alphabetically by name
   const sortedLeagues = [...currentAndFutureLeagues].sort((a, b) => {
     return a.name.localeCompare(b.name);
   });
 
-  // Group series by month based on current season dates
   const seriesByMonth: SeriesByMonth = {};
 
   sortedLeagues.forEach((league) => {
@@ -145,7 +152,6 @@ export default function SeriesPage() {
         ),
       });
     } else {
-      // For leagues without dates, put them in current month
       const monthYear = "December 2025";
       if (!seriesByMonth[monthYear]) {
         seriesByMonth[monthYear] = [];
@@ -154,7 +160,6 @@ export default function SeriesPage() {
     }
   });
 
-  // Helper function to format date range
   function formatDateRange(start: string, end: string) {
     if (!start || !end) return "";
     const startDate = new Date(start);
@@ -170,12 +175,60 @@ export default function SeriesPage() {
 
   return (
     <>
-      <title>{title}</title>
-      <meta name="description" content={description} />
+      {/* ✅ USE HEAD COMPONENT FOR CLIENT COMPONENTS */}
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta
+          name="keywords"
+          content={(seriesMetadata.keywords as string[])?.join(", ") || ""}
+        />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content={(seriesMetadata.openGraph?.title as string) || title}
+        />
+        <meta
+          property="og:description"
+          content={
+            (seriesMetadata.openGraph?.description as string) || description
+          }
+        />
+        <meta property="og:url" content="https://8jjcricket.com/series" />
+        <meta property="og:site_name" content="8jjcricket" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={ogImage} />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content={(seriesMetadata.twitter?.title as string) || title}
+        />
+        <meta
+          name="twitter:description"
+          content={
+            (seriesMetadata.twitter?.description as string) || description
+          }
+        />
+        <meta name="twitter:image" content={twitterImage} />
+        <meta name="twitter:site" content="@8jjcricket" />
+
+        {/* Canonical */}
+        <link rel="canonical" href="https://8jjcricket.com/series" />
+
+        {/* JSON-LD Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(seriesJsonLd) }}
+        />
+      </Head>
+
       <div className="min-h-screen flex flex-col">
         <TopNav />
         <BottomNav />
-        {/* Main content grows to push footer down */}
+
         <main className="flex-1">
           <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
             {isLoading ? (
@@ -206,23 +259,27 @@ export default function SeriesPage() {
                     ))}
                   </div>
                 </div>
-                {/* Show Series content only when series tab is active */}
+
                 {activeTab === "series" && (
                   <>
-                    {/* Page Title & Description */}
+                    {/* SEO Content Section */}
                     <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
                       <p className="text-xs font-semibold tracking-[0.18em] text-amber-400">
                         8JJCRICKET · SERIES
                       </p>
                       <h1 className="mt-2 text-3xl font-bold text-white">
-                        Series & Leagues
+                        Cricket Series Schedule 2026 | 8jjcricket
                       </h1>
                       <p className="mt-2 text-sky-100/90">
-                        Explore major cricket leagues and tournaments.
+                        Complete cricket tournament calendar for 2026 at
+                        8jjcricket. Get match schedules, fixtures, dates, and
+                        venues for IPL 2026, T20 World Cup, international tours,
+                        Test series, and all domestic leagues. Updated daily
+                        with the latest squad announcements and venue changes.
                       </p>
                     </div>
 
-                    {/* Series Grid - Card Layout like screenshot */}
+                    {/* Series Grid */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                       {sortedLeagues && sortedLeagues.length > 0 ? (
                         sortedLeagues.map((league) => {
@@ -238,14 +295,12 @@ export default function SeriesPage() {
                                   : "border-white/20 bg-slate-900/80 hover:border-amber-400/40"
                               }`}
                             >
-                              {/* Active Badge */}
                               {isActive && (
                                 <span className="absolute top-2 right-2 px-2 py-0.5 bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black text-xs font-bold rounded-full">
                                   LIVE
                                 </span>
                               )}
 
-                              {/* League Logo */}
                               <div className="w-16 h-16 mb-3 flex items-center justify-center rounded-xl">
                                 {league.image_path ? (
                                   <img
@@ -253,7 +308,7 @@ export default function SeriesPage() {
                                       league.image_path ||
                                       "/images/series-placeholder.jpg"
                                     }
-                                    alt={league.name}
+                                    alt={`${league.name} - Cricket Series at 8jjcricket`}
                                     className="max-w-full max-h-full object-contain rounded-xl"
                                     onError={(e) => {
                                       e.currentTarget.src =
@@ -269,29 +324,26 @@ export default function SeriesPage() {
                                 )}
                               </div>
 
-                              {/* League Name */}
                               <h3 className="font-medium text-white text-sm line-clamp-2 mb-1">
                                 {league.name}
                               </h3>
 
-                              {/* League Code */}
                               <p className="text-xs text-amber-200/80 uppercase font-medium mb-3">
-                                {league.code +
-                                  " " +
-                                  league.sportmonks_league_id}
+                                {league.code}
                               </p>
 
-                              {/* Action Buttons */}
                               <div className="flex gap-2 mt-auto w-full">
                                 <Link
                                   href={`/series/${league.sportmonks_league_id}`}
                                   className="flex-1 px-3 py-1.5 text-xs font-medium text-amber-300 border border-amber-400/50 rounded-xl hover:bg-amber-950/40 transition-colors backdrop-blur-sm"
+                                  aria-label={`View ${league.name} details at 8jjcricket`}
                                 >
                                   Details
                                 </Link>
                                 <Link
                                   href={`/teams?league=${league.sportmonks_league_id}`}
                                   className="flex-1 px-3 py-1.5 text-xs font-medium text-black bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 rounded-xl hover:brightness-110 transition-all shadow-lg"
+                                  aria-label={`View ${league.name} teams`}
                                 >
                                   Teams
                                 </Link>
@@ -302,13 +354,43 @@ export default function SeriesPage() {
                       ) : (
                         <div className="col-span-full rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-8 text-center shadow-2xl">
                           <p className="text-sky-100/80">
-                            No current or upcoming series found.
+                            No current or upcoming series found. Check back soon
+                            for cricket series updates at 8jjcricket.
                           </p>
                         </div>
                       )}
                     </div>
+
+                    {/* Breadcrumb Navigation */}
+                    <nav aria-label="Breadcrumb" className="text-sm">
+                      <ol
+                        itemScope
+                        itemType="https://schema.org/BreadcrumbList"
+                        className="flex items-center space-x-2 text-sky-100/60"
+                      >
+                        <li
+                          itemProp="itemListElement"
+                          itemScope
+                          itemType="https://schema.org/ListItem"
+                        >
+                          <Link
+                            itemProp="item"
+                            href="https://8jjcricket.com"
+                            className="hover:text-amber-300"
+                          >
+                            <span itemProp="name">8jjcricket</span>
+                          </Link>
+                          <meta itemProp="position" content="1" />
+                        </li>
+                        <li className="before:content-['>'] before:mx-2">
+                          <span itemProp="name">Cricket Series</span>
+                          <meta itemProp="position" content="2" />
+                        </li>
+                      </ol>
+                    </nav>
                   </>
                 )}
+
                 {/* Current Matches Tab */}
                 {activeTab === "current" && (
                   <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-8 text-center shadow-2xl">
@@ -329,7 +411,7 @@ export default function SeriesPage() {
                       Live Matches
                     </h3>
                     <p className="text-sky-100/80">
-                      Check the home page for live cricket matches
+                      Check the home page for live cricket matches at 8jjcricket
                     </p>
                     <Link
                       href="/"
@@ -339,11 +421,12 @@ export default function SeriesPage() {
                     </Link>
                   </div>
                 )}
+
                 {/* Matches By Day Tab */}
                 {activeTab === "byDay" && (
-                  <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
+                  <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-8 text-center shadow-2xl">
                     <svg
-                      className="w-16 h-16 text-gray-300 mx-auto mb-4"
+                      className="w-16 h-16 text-amber-300/50 mx-auto mb-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -355,34 +438,35 @@ export default function SeriesPage() {
                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                       />
                     </svg>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    <h3 className="text-lg font-medium text-white mb-2">
                       Matches Schedule
                     </h3>
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-sky-100/80 mb-4">
                       View matches organized by date on the Recent and Upcoming
                       pages
                     </p>
                     <div className="flex gap-3 justify-center">
                       <Link
                         href="/recent"
-                        className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                        className="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors"
                       >
                         Recent Matches
                       </Link>
                       <Link
                         href="/upcoming"
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                        className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
                       >
                         Upcoming Matches
                       </Link>
                     </div>
                   </div>
                 )}
+
                 {/* Teams Tab */}
                 {activeTab === "teams" && (
-                  <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
+                  <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-8 text-center shadow-2xl">
                     <svg
-                      className="w-16 h-16 text-gray-300 mx-auto mb-4"
+                      className="w-16 h-16 text-amber-300/50 mx-auto mb-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -394,25 +478,26 @@ export default function SeriesPage() {
                         d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                       />
                     </svg>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    <h3 className="text-lg font-medium text-white mb-2">
                       Cricket Teams
                     </h3>
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-sky-100/80 mb-4">
                       Browse all international and domestic cricket teams
                     </p>
                     <Link
                       href="/teams"
-                      className="inline-block px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                      className="inline-block px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
                     >
                       View All Teams
                     </Link>
                   </div>
                 )}
+
                 {/* Archive Tab */}
                 {activeTab === "archive" && (
-                  <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
+                  <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-8 text-center shadow-2xl">
                     <svg
-                      className="w-16 h-16 text-gray-300 mx-auto mb-4"
+                      className="w-16 h-16 text-amber-300/50 mx-auto mb-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -424,20 +509,21 @@ export default function SeriesPage() {
                         d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
                       />
                     </svg>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    <h3 className="text-lg font-medium text-white mb-2">
                       Series Archive
                     </h3>
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-sky-100/80 mb-4">
                       Browse past cricket series and tournaments
                     </p>
                     <Link
                       href="/archive"
-                      className="inline-block px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                      className="inline-block px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors"
                     >
                       View Archive
                     </Link>
                   </div>
                 )}
+
                 <PaginationComponet
                   page={page}
                   totalPages={totalPages}

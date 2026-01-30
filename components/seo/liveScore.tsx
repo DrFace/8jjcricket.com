@@ -1,67 +1,155 @@
 import type { Metadata } from "next";
 
-// 1. The Metadata Object
+// ============================================
+// OPTIMIZED FOR "8jjcricket live score" RANKING
+// Targets: live score searches + brand queries
+// ============================================
+
 export const liveScoreMetadata: Metadata = {
-  title: "Live Cricket Scores, Ball-by-Ball Commentary & Updates | 8JJ Cricket",
+  // ✅ FIXED: Brand first + target keyword
+  title: "8jjcricket - Live Cricket Scores & Ball-by-Ball Commentary Today",
+
+  // ✅ IMPROVED: More keyword-rich, includes brand mention
   description:
-    "Get the fastest live cricket scores for IPL 2026, Team India, and international matches. Real-time ball-by-ball commentary, full scorecards, and match fixtures.",
+    "Get real-time cricket scores at 8jjcricket - fastest live updates for IPL 2026, Team India, international matches. Ball-by-ball commentary, full scorecards, and instant match results.",
+
+  // ✅ UPDATED: Brand keyword first, more specific long-tail
   keywords: [
-    "Live cricket score",
-    "IPL live score",
-    "India vs Australia live",
-    "fastest cricket score app",
+    "8jjcricket live score",
+    "live cricket score today",
+    "cricket live score",
+    "livescore",
+    "IPL",
+    "u19 world cup live score",
+    "IPL 2026 live score",
+    "India vs Australia live score",
     "ball by ball commentary",
-    "cricket scorecard",
-    "8jj cricket live",
+    "cricket scorecard live",
+    "T20 World Cup 2026 live",
+    "Asia Cup live score",
+    "live cricket match today",
   ],
+
   openGraph: {
-    title: "Fastest Live Cricket Scores & Commentary",
+    // ✅ FIXED: Brand consistency + keyword optimization
+    title: "8jjcricket - Live Cricket Scores & Ball-by-Ball Updates",
     description:
-      "Track every ball, every wicket, and every boundary in real-time. The fastest scorecard for India and world cricket.",
+      "Real-time cricket scores, ball-by-ball commentary, and instant match updates. Follow IPL 2026, Team India, and international cricket live at 8jjcricket.",
     url: "https://8jjcricket.com/livescore",
-    siteName: "8JJ Cricket",
+    siteName: "8jjcricket", // ✅ Exact match, no space
     locale: "en_IN",
     type: "website",
     images: [
       {
-        url: "https://8jjcricket.com/og-livescore.jpg", // Make sure this image exists
+        url: "https://8jjcricket.com/og-livescore.jpg",
         width: 1200,
         height: 630,
-        alt: "8JJ Cricket Live Scoreboard",
+        alt: "8jjcricket Live Cricket Scoreboard - Real-time Updates",
       },
     ],
   },
+
   alternates: {
     canonical: "https://8jjcricket.com/livescore",
   },
+
+  // ✅ ADDED: Twitter card for better social sharing
+  twitter: {
+    card: "summary_large_image",
+    title: "8jjcricket - Live Cricket Scores Today",
+    description:
+      "Fastest live cricket scores, ball-by-ball commentary for IPL 2026, Team India & international matches.",
+    images: ["https://8jjcricket.com/og-livescore.jpg"],
+    site: "@8jjcricket",
+  },
+
+  // ✅ ADDED: Robot directives
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
-// 2. The Schema Markup (JSON-LD)
+// ============================================
+// OPTIMIZED SCHEMA MARKUP (JSON-LD)
+// Enhanced for live sports content
+// ============================================
+
 export const liveScoreJsonLd = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  name: "Live Cricket Scores",
+  name: "Live Cricket Scores | 8jjcricket", // ✅ ADDED: Brand mention
   description:
-    "Real-time cricket match results, fixtures, and ball-by-ball commentary.",
+    "Real-time cricket match scores, ball-by-ball commentary, fixtures, and live updates for IPL 2026, Team India, and international cricket at 8jjcricket.",
   url: "https://8jjcricket.com/livescore",
+  inLanguage: "en-IN", // ✅ ADDED
+  isPartOf: {
+    // ✅ ADDED: Link to parent website
+    "@type": "WebSite",
+    "@id": "https://8jjcricket.com/#website",
+    name: "8jjcricket",
+  },
   publisher: {
     "@type": "Organization",
-    name: "8JJ Cricket",
+    "@id": "https://8jjcricket.com/#organization", // ✅ ADDED: Reference to org
+    name: "8jjcricket", // ✅ FIXED: Consistent brand name
+    url: "https://8jjcricket.com",
     logo: {
       "@type": "ImageObject",
       url: "https://8jjcricket.com/logo.png",
+      width: 112,
+      height: 112,
     },
   },
   mainEntity: {
     "@type": "ItemList",
+    name: "Live Cricket Matches", // ✅ IMPROVED: More descriptive
+    description:
+      "Currently ongoing and upcoming cricket matches with live scores", // ✅ ADDED
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Live International Matches" },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Live International Matches",
+        description: "Test, ODI, and T20I matches between national teams", // ✅ ADDED
+      },
       {
         "@type": "ListItem",
         position: 2,
-        name: "Live League Matches (IPL, PSL)",
+        name: "Live League Matches - IPL 2026, PSL, BBL",
+        description: "Domestic T20 leagues including Indian Premier League", // ✅ ADDED
       },
-      { "@type": "ListItem", position: 3, name: "Domestic Cricket Scores" },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Domestic Cricket Scores - Ranji Trophy, Vijay Hazare",
+        description: "First-class and List A cricket from around the world", // ✅ ADDED
+      },
+    ],
+  },
+  // ✅ ADDED: Breadcrumb for better navigation
+  breadcrumb: {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "8jjcricket",
+        item: "https://8jjcricket.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Live Scores",
+        item: "https://8jjcricket.com/livescore",
+      },
     ],
   },
 };
