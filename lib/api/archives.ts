@@ -6,7 +6,7 @@ const API_BASE_URL = "/api";
 /**
  * Build query string from filter parameters
  */
-function buildQueryString(filters?: ArchiveFilters): string {
+export function BuildQueryString(filters?: ArchiveFilters): string {
   if (!filters) return "";
 
   const params = new URLSearchParams();
@@ -32,10 +32,11 @@ export async function getArchives(
 ): Promise<ArchivesResponse> {
   try {
     console.log("call getArchives");
-    const apibase = "http://127.0.0.1:8000/api";
-    const queryString = buildQueryString(filters);
+    const apibase = "https://8jjcricket.com/api";
+    const queryString = BuildQueryString(filters);
     console.log("queryString", queryString);
     const url = `${apibase}/archives${queryString}`;
+    console.log("Arc url", url);
 
     const response = await fetch(url, {
       method: "GET",
@@ -55,7 +56,7 @@ export async function getArchives(
     }
 
     const data: ArchivesResponse = await response.json();
-
+    console.log("Fetched Archives Data:", data);
     return data;
   } catch (error) {
     console.error("Error fetching archives:", error);
