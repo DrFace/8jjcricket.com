@@ -13,7 +13,9 @@ type PortraitPage = {
 const SITE_ORIGIN = (
   process.env.NEXT_PUBLIC_BACKEND_BASE ||
   process.env.NEXT_PUBLIC_SITE_ORIGIN ||
-  (typeof window !== "undefined" ? window.location.origin : "https://8jjcricket.com")
+  (typeof window !== "undefined"
+    ? window.location.origin
+    : "https://8jjcricket.com")
 ).replace(/\/+$/, "");
 
 function pickFirst<T>(...vals: (T | null | undefined)[]) {
@@ -153,7 +155,11 @@ function BannerSlideshow({
   );
 }
 
-export default function MobilePortraitShowcase({ pages }: { pages: PortraitPage[] }) {
+export default function MobilePortraitShowcase({
+  pages,
+}: {
+  pages: PortraitPage[];
+}) {
   const cleanPages = useMemo(() => {
     return [...(pages || [])]
       .filter((p) => p?.slug && p?.title)
@@ -164,8 +170,14 @@ export default function MobilePortraitShowcase({ pages }: { pages: PortraitPage[
     return cleanPages
       .map((p) => {
         const src = getPortraitImage(p);
+        const isHttp =
+          p.slug.startsWith("http://") || p.slug.startsWith("https://");
         if (!src) return null;
-        return { src, href: `/mobile/portraits/${p.slug}`, title: p.title };
+        return {
+          src,
+          href: isHttp ? p.slug : `/mobile/portraits/${p.slug}`,
+          title: p.title,
+        };
       })
       .filter(Boolean) as { src: string; href: string; title: string }[];
   }, [cleanPages]);

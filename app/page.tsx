@@ -8,9 +8,11 @@ import HomeVerticalSwiper from "@/components/HomeVerticalSwiper";
 import HomeNewsShowcase from "@/components/HomeNewsShowcase";
 import HomeFeedbackSection from "@/components/HomeFeedbackSection";
 import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
+import { useSponsors } from "@/hooks/useSponsors";
 
 // --- IMPORT SEO DATA ---
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
+import SponsorBar from "@/components/SponsorBar";
 
 // --- EXPORT METADATA (This sets the <head> tags) ---
 export const metadata = homeMetadata;
@@ -164,7 +166,7 @@ export default async function HomePage() {
       <HomeVerticalSwiper>
         <section
           data-snap
-          className="SectionScroll sticky top-0 h-screen w-full overflow-hidden"
+          className="SectionScroll sticky top-0 xl:h-[85vh] lg:h-[84vh] w-full overflow-hidden"
         >
           {/* SEO-Optimized H1 for India & South Asia */}
           <h1 className="sr-only">
@@ -215,13 +217,13 @@ export default async function HomePage() {
               </>
             );
           })()}
-
+          <SponsorBar />
           <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-transparent" />
         </section>
 
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
+          className="SectionScroll sticky top-0 flex w-full items-center px-6 xl:mt-0 lg:mt-10"
         >
           <div className="relative h-full w-full flex items-center">
             <div
