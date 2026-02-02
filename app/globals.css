@@ -64,3 +64,9 @@ a {
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome/Safari */
 }
+
+
+.backdrop-blur-2xl{
+   padding: 0px;
+   
+}
