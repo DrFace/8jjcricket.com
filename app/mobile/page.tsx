@@ -4,14 +4,13 @@ import Reveal from "@/components/Reveal";
 import MobileNewsListCards from "@/components/MobileNewsListCards";
 import SocialBox from "@/components/SocialBox";
 import { fetchGames, toMinigameCards } from "@/lib/games-api";
-import MobileBannerCarousel from "@/components/mobile/MobileBannerCarousel";
 import { ApiBase } from "@/lib/utils";
 import { DEFAULT_API_BASE } from "@/lib/constant";
 import MobileSocialBox from "@/components/MobileSocialBox";
 
 // --- IMPORT SEO DATA ---
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
-
+import MobilePortraitShowcaseSection from "@/components/mobile/MobilePortraitShowcaseSection";
 // --- EXPORT METADATA (This sets the <head> tags) ---
 export const metadata = homeMetadata;
 
@@ -303,8 +302,22 @@ export default async function MobileHomePage() {
       {/* HERO / BANNER */}
       <section className="mt-3 w-full snap-start scroll-mt-3">
         {/* <Reveal> */}
-        <div className="w-full overflow-hidden rounded-xl">
-          <MobileBannerCarousel />
+        <div className="mb-2 flex w-full items-center justify-between px-4">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-yellow-400" />
+            <h2 className="text-sm font-semibold">Player Portraits</h2>
+          </div>
+
+          <Link
+            href="/mobile/portraits"
+            className="text-xs font-semibold text-sky-400"
+          >
+            View all →
+          </Link>
+        </div>
+
+        <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
+          <MobilePortraitShowcaseSection />
         </div>
         {/* </Reveal> */}
       </section>
