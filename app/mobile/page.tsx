@@ -302,6 +302,20 @@ export default async function MobileHomePage() {
       {/* HERO / BANNER */}
       <section className="mt-3 w-full snap-start scroll-mt-3">
         {/* <Reveal> */}
+        <div className="mb-2 flex w-full items-center justify-between px-4">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-yellow-400" />
+            <h2 className="text-sm font-semibold">Player Portraits</h2>
+          </div>
+
+          <Link
+            href="/mobile/portraits"
+            className="text-xs font-semibold text-sky-400"
+          >
+            View all →
+          </Link>
+        </div>
+
         <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
           <MobilePortraitShowcaseSection />
         </div>

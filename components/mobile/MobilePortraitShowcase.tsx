@@ -165,7 +165,7 @@ export default function MobilePortraitShowcase({ pages }: { pages: PortraitPage[
       .map((p) => {
         const src = getPortraitImage(p);
         if (!src) return null;
-        return { src, href: `/portraits/${p.slug}`, title: p.title };
+        return { src, href: `/mobile/portraits/${p.slug}`, title: p.title };
       })
       .filter(Boolean) as { src: string; href: string; title: string }[];
   }, [cleanPages]);
