@@ -24,7 +24,7 @@ export default function MobileScoreBadge({
   const logo = team?.logo ?? team?.image_path ?? null;
 
   return (
-    <div className={cn("flex items-center gap-1 min-w-0", className)}>
+    <div className={cn("", className)}>
       {/* Logo */}
       <div
         className="
@@ -47,12 +47,13 @@ export default function MobileScoreBadge({
       {!hideName && (
         <div
           className="
-            text-[11px] sm:text-[12px]
+            text-[12px]
             font-semibold
             text-white
             truncate
             max-w-[90px]
             text-center
+            mt-2
           "
         >
           {label}
