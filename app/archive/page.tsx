@@ -9,6 +9,7 @@ import useSWR from "swr";
 import { FetchJson } from "@/lib/fetcher";
 import { BuildQueryString } from "@/lib/api/archives";
 import { NativeArchiveCard } from "@/components/NativeArchiveCard";
+import { PAGE_SIZE } from "@/lib/constant";
 
 /**
  * Pagination Component
@@ -177,7 +178,7 @@ export default function ArchivePage() {
   const filters: ArchiveFilters = useMemo(() => {
     const f: ArchiveFilters = {
       page,
-      per_page: 30,
+      per_page: PAGE_SIZE,
     };
     if (category) f.category = category;
     if (format) f.format = format;
