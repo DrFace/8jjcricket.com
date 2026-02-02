@@ -27,7 +27,6 @@ export interface PaginationLink {
   active: boolean;
 }
 
-// Paginated API response
 export interface ArchivesResponse {
   current_page: number;
   data: Archive[];
@@ -47,9 +46,12 @@ export interface ArchivesResponse {
 // Filter parameters
 export interface ArchiveFilters {
   date?: string; // Format: YYYY-MM-DD
-  format?: 'T20' | 'ODI' | 'Test' | '';
-  category?: 'International' | 'Leagues' | '';
+  format?: "T20" | "ODI" | "Test" | "";
+  category?: "International" | "Leagues" | "";
   per_page?: number;
   page?: number;
 }
 
+export interface ArchiveCardProps {
+  archive: Archive;
+}

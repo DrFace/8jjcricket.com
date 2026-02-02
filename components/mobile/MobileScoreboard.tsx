@@ -127,20 +127,20 @@ export default function MobileScoreboard({ id }: { id: string }) {
 
   const teamForId = (tid?: number) =>
     tid
-      ? teams.get(tid) ??
+      ? (teams.get(tid) ??
         (tid === fx.localteam_id
           ? home
           : tid === fx.visitorteam_id
-          ? away
-          : undefined)
+            ? away
+            : undefined))
       : undefined;
 
   const tossTeam =
     fx.toss_won_team_id === fx.localteam_id
       ? home
       : fx.toss_won_team_id === fx.visitorteam_id
-      ? away
-      : teamForId(fx.toss_won_team_id);
+        ? away
+        : teamForId(fx.toss_won_team_id);
 
   return (
     <div className="space-y-6">
@@ -150,12 +150,12 @@ export default function MobileScoreboard({ id }: { id: string }) {
           {fx.league?.name || "Twenty20 International" /* fallback */}
         </h2>
 
-        <div className="flex items-center justify-center gap-5 mb-3">
-          <div className="flex flex-col items-center gap-1">
+        <div className="flex items-center justify-between gap-4 mb-2">
+          <div className="">
             <MobileScoreBadge team={homeBadge} />
           </div>
           <div className="text-amber-300 font-semibold">VS</div>
-          <div className="flex flex-col items-center gap-1">
+          <div className="">
             <MobileScoreBadge team={awayBadge} />
           </div>
         </div>
@@ -163,7 +163,9 @@ export default function MobileScoreboard({ id }: { id: string }) {
           <strong>{fx.status || "—"}</strong>
         </p>
         <p className="text-sm">
-          {fx.note ? <span className="text-gray-700"> {fx.note}</span> : null}{" "}
+          {fx.note ? (
+            <span className="text-gray-700"> {fx.note}</span>
+          ) : null}{" "}
         </p>
         <div className="">
           {(fx.toss_won_team_id || fx.elected) && (
@@ -203,8 +205,8 @@ export default function MobileScoreboard({ id }: { id: string }) {
                 (inn.team_id === fx.localteam_id
                   ? home?.short_name || home?.name
                   : inn.team_id === fx.visitorteam_id
-                  ? away?.short_name || away?.name
-                  : `Team ${inn.team_id}`);
+                    ? away?.short_name || away?.name
+                    : `Team ${inn.team_id}`);
 
               return (
                 <div

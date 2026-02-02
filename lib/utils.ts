@@ -11,6 +11,15 @@ export function formatDate(d: string | Date) {
   });
 }
 
+export function FormatDateToArchive(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 export function cn(...classes: (string | false | null | undefined)[]) {
   return classes.filter(Boolean).join(" ");
 }
@@ -18,7 +27,7 @@ export function cn(...classes: (string | false | null | undefined)[]) {
 export function ApiBase() {
   return (process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE).replace(
     /\/+$/,
-    ""
+    "",
   );
 }
 
