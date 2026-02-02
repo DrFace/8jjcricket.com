@@ -11,6 +11,8 @@ import MobileSocialBox from "@/components/MobileSocialBox";
 
 // --- IMPORT SEO DATA ---
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
+import SponsorBar from "@/components/SponsorBar";
+import MobileSponsorBar from "@/components/MobileSponsorBar";
 
 // --- EXPORT METADATA (This sets the <head> tags) ---
 export const metadata = homeMetadata;
@@ -243,9 +245,9 @@ export default async function MobileHomePage() {
         </Reveal>
       </section>
       {/* SPONSORS (GRID, no scroll) */}
-      {/* <section className="mt-4 w-full snap-start scroll-mt-3">
+      <section className="mt-4 w-full snap-start scroll-mt-3">
         <Reveal>
-          <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
+          <div className="relative w-full overflow-hidden">
             <div
               className="absolute inset-0 opacity-30"
               style={{
@@ -256,49 +258,16 @@ export default async function MobileHomePage() {
             />
             <div className="absolute inset-0 bg-black/50" />
 
-            <div className="relative px-4 py-3">
-              <div className="mb-3 flex items-center gap-2">
+            <div className="relative py-3">
+              <div className="mb-3 flex items-center gap-2 px-4">
                 <span className="h-2 w-2 rounded-full bg-yellow-400" />
                 <h3 className="text-sm font-semibold text-white">Sponsors</h3>
               </div>
-
-              <div className="grid grid-cols-5 gap-x-3 gap-y-4">
-                {BRAND_ITEMS.map((b) => (
-                  <a
-                    key={b.name}
-                    href={DOWNLOAD_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex flex-col items-center transition active:scale-95"
-                  >
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-md">
-                      <img
-                        src={b.icon}
-                        alt={b.name}
-                        className="h-9 w-9 object-contain"
-                        loading="lazy"
-                      />
-                    </div>
-                    <span className="mt-1 text-[11px] font-medium text-white/90">
-                      {b.name}
-                    </span>
-                  </a>
-                ))}
-
-                {Array.from({ length: brandPlaceholders }).map((_, i) => (
-                  <div
-                    key={`brand-ph-${i}`}
-                    className="flex flex-col items-center"
-                  >
-                    <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
-                    <span className="mt-1 text-[11px] text-transparent">.</span>
-                  </div>
-                ))}
-              </div>
+              <MobileSponsorBar />
             </div>
           </div>
         </Reveal>
-      </section> */}
+      </section>
 
       {/* HERO / BANNER */}
       <section className="mt-3 w-full snap-start scroll-mt-3">
