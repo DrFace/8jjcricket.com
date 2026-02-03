@@ -45,13 +45,12 @@ export default function TopNav() {
 
   const MUSIC_KEY = "musicEnabled";
 
-  // IMPORTANT:
-  // Do NOT read localStorage in the useState initializer (SSR hydration mismatch risk).
-  // Keep a stable default for SSR + first client render.
   const [mounted, setMounted] = useState(false);
   const [audioData, setAudioData] = useState<any>(null);
   const [musicEnabled, setMusicEnabled] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
+
+  const [lang, setLang] = useState("en");
 
   useEffect(() => {
     setMounted(true);
@@ -72,7 +71,6 @@ export default function TopNav() {
             audio.loop = true;
             audio.preload = "auto";
 
-            // Check localStorage after we have the audio object
             const saved = window.localStorage.getItem(MUSIC_KEY);
             const isEnabled = saved === null ? true : saved === "true";
 
@@ -88,7 +86,6 @@ export default function TopNav() {
     loadAudio();
   }, []);
 
-  // 1) Mount: set up audio + load saved preference AFTER mount
   useEffect(() => {
     setMounted(true);
 
@@ -96,23 +93,19 @@ export default function TopNav() {
     if (!audio) return;
     audioRef.current = audio;
 
-    // Ensure known baseline
     audio.loop = true;
     audio.preload = "auto";
     audio.muted = true;
 
-    // Load preference after mount to avoid hydration mismatch
     const saved = window.localStorage.getItem(MUSIC_KEY);
     if (saved !== null) setMusicEnabled(saved === "true");
   }, []);
 
-  // 2) Persist preference (only after mounted)
   useEffect(() => {
     if (!mounted) return;
     window.localStorage.setItem(MUSIC_KEY, String(musicEnabled));
   }, [musicEnabled, mounted]);
 
-  // 3) Detect first user interaction (needed to unmute reliably)
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -120,13 +113,11 @@ export default function TopNav() {
     const onFirstInteraction = async () => {
       setHasInteracted(true);
 
-      // If user wants music enabled, try to start it now
       if (musicEnabled) {
         audio.muted = false;
         try {
           await audio.play();
         } catch {
-          // If play still fails, keep muted to avoid noise/errors
           audio.muted = true;
           audio.play().catch(() => {});
         }
@@ -142,7 +133,6 @@ export default function TopNav() {
     };
   }, [musicEnabled]);
 
-  // 4) Keep audio state in sync with musicEnabled + interaction state
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -152,8 +142,6 @@ export default function TopNav() {
       return;
     }
 
-    // musicEnabled === true
-    // If user interacted, unmute and play; otherwise try muted play (may or may not succeed)
     if (hasInteracted) {
       audio.muted = false;
       audio.play().catch(() => {});
@@ -163,7 +151,6 @@ export default function TopNav() {
     }
   }, [musicEnabled, hasInteracted]);
 
-  // 5) Toggle handler (use next value, not stale state)
   const toggleMusic = async () => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -176,20 +163,25 @@ export default function TopNav() {
       return;
     }
 
-    // Turning ON
-    // Respect autoplay rules: if no interaction yet, keep muted
     audio.muted = !hasInteracted;
 
     try {
       await audio.play();
-      // If we successfully played and user has interacted, ensure unmuted
       if (hasInteracted) audio.muted = false;
     } catch {
-      // Fallback: muted play attempt
       audio.muted = true;
       audio.play().catch(() => {});
     }
   };
+
+  useEffect(() => {
+    if (!mounted) return;
+    if (lang === "en") return;
+    const url = `https://translate.google.com/translate?sl=auto&tl=${encodeURIComponent(
+      lang,
+    )}&u=${encodeURIComponent(window.location.href)}`;
+    window.location.href = url;
+  }, [lang, mounted]);
 
   const isActive = (href: string) => pathname === href;
 
@@ -263,6 +255,23 @@ export default function TopNav() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <div className="inline-flex h-9 items-center justify-center rounded-full border border-white/15 bg-white/5 px-3 text-sm font-semibold text-white hover:bg-white/10">
+              <select
+                value={lang}
+                onChange={(e) => setLang(e.target.value)}
+                className="h-9 bg-transparent text-white outline-none [&>option]:text-black"
+                aria-label="Google Translate language"
+              >
+                <option value="hi">Hindi</option>
+                <option value="bn">Bengali</option>
+                <option value="ur">Urdu</option>
+                <option value="pa">Punjabi</option>
+                <option value="ta">Tamil</option>
+                <option value="te">Telugu</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+
             {audioData && (
               <button
                 type="button"
@@ -271,7 +280,6 @@ export default function TopNav() {
                 aria-label="Toggle music"
                 aria-pressed={musicEnabled}
               >
-                {/* Avoid hydration mismatch: do not swap SVGs until mounted */}
                 {!mounted ? (
                   <span className="inline-block h-[18px] w-[18px]" />
                 ) : musicEnabled ? (
