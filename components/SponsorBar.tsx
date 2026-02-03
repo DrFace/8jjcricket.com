@@ -7,8 +7,6 @@ import styles from "./SponsorBar.module.css";
 function SponsorBar() {
   const { sponsors, isLoading, error } = useSponsors();
 
-  console.log("data", sponsors);
-
   if (isLoading || error || !sponsors || sponsors.length === 0) {
     return null;
   }
