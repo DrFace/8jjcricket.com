@@ -246,13 +246,7 @@ export default async function MobileHomePage() {
             />
             <div className="absolute inset-0 bg-black/50" />
 
-            <div className="relative py-3">
-              <div className="mb-3 flex items-center gap-2 px-4">
-                <span className="h-2 w-2 rounded-full bg-yellow-400" />
-                <h3 className="text-sm font-semibold text-white">Sponsors</h3>
-              </div>
-              <MobileSponsorBar />
-            </div>
+            <MobileSponsorBar />
           </div>
         </Reveal>
       </section>

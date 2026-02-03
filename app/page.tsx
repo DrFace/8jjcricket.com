@@ -8,7 +8,6 @@ import HomeVerticalSwiper from "@/components/HomeVerticalSwiper";
 import HomeNewsShowcase from "@/components/HomeNewsShowcase";
 import HomeFeedbackSection from "@/components/HomeFeedbackSection";
 import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
-import { useSponsors } from "@/hooks/useSponsors";
 
 // --- IMPORT SEO DATA ---
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
@@ -153,7 +152,6 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
       />
-      {/* ----------------------------- */}
 
       <DesktopOnly>
         <WelcomePopup />
@@ -166,7 +164,7 @@ export default async function HomePage() {
       <HomeVerticalSwiper>
         <section
           data-snap
-          className="SectionScroll sticky top-0 xl:h-[85vh] lg:h-[84vh] w-full overflow-hidden"
+          className="SectionScroll sticky top-0 xl:h-[90vh] lg:h-[84vh] w-full overflow-hidden"
         >
           {/* SEO-Optimized H1 for India & South Asia */}
           <h1 className="sr-only">

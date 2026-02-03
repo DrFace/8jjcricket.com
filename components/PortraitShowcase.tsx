@@ -97,8 +97,6 @@ function PortraitSlideshow({
 
   const active = items[index];
 
-  console.log("active link", active);
-
   return (
     <div className="relative h-full w-full overflow-hidden rounded-[2rem]">
       {/* Click opens in NEW TAB to relevant portrait page */}
