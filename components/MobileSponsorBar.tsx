@@ -1,45 +1,63 @@
 "use client";
 
 import { useSponsors } from "@/hooks/useSponsors";
+import { STORAGE_BASE_URL } from "@/lib/constant";
 import React from "react";
-import styles from "./SponsorBar.module.css";
 
 function MobileSponsorBar() {
   const { sponsors, isLoading, error } = useSponsors();
+  console.log("Sponsors data:", sponsors);
 
   if (isLoading || error || !sponsors || sponsors.length === 0) {
     return null;
   }
 
   return (
-    <div className="relative py-3">
-      <div className="mb-3 flex items-center gap-2 px-4">
-        <span className="h-2 w-2 rounded-full bg-yellow-400" />
-        <h3 className="text-sm font-semibold text-white">Sponsors</h3>
-      </div>
-      <div className="grid grid-cols-2 gap-3 w-full px-4">
-        {sponsors?.map((sponsor, index) => {
-          return (
-            <a
-              key={index}
-              href={sponsor.info ?? "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                animationDelay: `${index * 0.2}s`,
-              }}
-              className={`${styles.sponsorBar} ${styles.sponsorLink} relative pointer-events-auto flex items-center justify-center gap-2 rounded-full border border-amber-200 bg-white/5 px-4 py-2.5 backdrop-blur-md shadow-lg transition-all duration-300 ease-out cursor-pointer hover:no-underline hover:shadow-2xl`}
-            >
-              {/* Decorative elements */}
-              <div className="absolute -left-1 -top-1 h-2 w-2 rounded-full bg-amber-400/40 blur-sm"></div>
-              <div className="absolute -right-1 -bottom-1 h-1.5 w-1.5 rounded-full bg-yellow-300/30 blur-sm"></div>
+    <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
+      <div
+        className="absolute inset-0 opacity-30"
+        style={{
+          backgroundImage: "url(/brands/brands-bg.jpg)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="absolute inset-0 bg-black/50" />
 
-              <span className="relative text-sm font-bold text-transparent bg-clip-text whitespace-nowrap bg-gradient-to-r from-amber-200 via-yellow-100 to-white drop-shadow-lg">
-                ✨ {sponsor.title}
-              </span>
-            </a>
-          );
-        })}
+      <div className="relative px-4 py-3">
+        <div className="mb-3 flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-yellow-400" />
+          <h3 className="text-sm font-semibold text-white">Sponsors</h3>
+        </div>
+
+        <div className="grid grid-cols-5 gap-x-3 gap-y-4">
+          {sponsors && sponsors.length > 0
+            ? sponsors.map((b, i) => (
+                <a
+                  key={i}
+                  href={b.info || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center transition active:scale-95"
+                >
+                  {b?.image ? (
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-md">
+                      <img
+                        src={
+                          b.image
+                            ? `${STORAGE_BASE_URL}${b.image}`
+                            : "/placeholder.png"
+                        }
+                        alt={b.name || "Sponsor Logo"}
+                        className="h-9 w-9 object-contain"
+                        loading="lazy"
+                      />
+                    </div>
+                  ) : null}
+                </a>
+              ))
+            : null}
+        </div>
       </div>
     </div>
   );
