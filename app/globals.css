@@ -65,8 +65,35 @@ a {
   display: none; /* Chrome/Safari */
 }
 
+.backdrop-blur-2xl {
+  padding: 0px;
+}
 
-.backdrop-blur-2xl{
-   padding: 0px;
-   
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+/* This hides the top bar area even if the class name is different */
+html {
+  top: 0 !important;
+}
+
+body {
+  top: 0 !important;
+  position: static !important;
+}
+
+/* Hide anything Google injects that isn't your content */
+.skiptranslate,
+#google_translate_element,
+.goog-te-gadget,
+.goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Sometimes Google adds a margin to the body */
+.translated-ltr,
+.translated-rtl {
+  margin-top: 0 !important;
 }
