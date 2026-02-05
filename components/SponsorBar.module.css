@@ -1,0 +1,31 @@
+@keyframes float-bounce {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 15px rgba(217, 119, 6, 0.1),
+      0 0 30px rgba(217, 119, 6, 0.05);
+  }
+  50% {
+    box-shadow:
+      0 0 20px rgba(217, 119, 6, 0.15),
+      0 0 40px rgba(217, 119, 6, 0.08);
+  }
+}
+
+.sponsorLink {
+  animation: float-bounce 3s ease-in-out infinite;
+}
+
+.sponsorBar {
+  animation: glow-pulse 2s ease-in-out infinite;
+}

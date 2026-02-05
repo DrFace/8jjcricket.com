@@ -8,7 +8,6 @@ import MobileSidebar from "@/components/MobileSidebar";
 import BottomNav from "@/components/BottomNav";
 import { VolumeOff, Music2 } from "lucide-react";
 import { ApiBase, URLNormalize } from "@/lib/utils";
-import { GetGlobalAudio } from "@/lib/audio";
 
 export default function MoblieLayout({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -54,7 +53,7 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
               () => {
                 setAudioReady(true);
               },
-              { once: true }
+              { once: true },
             );
 
             // Load saved preference

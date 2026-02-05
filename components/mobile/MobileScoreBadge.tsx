@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { ScoreLine } from "@/lib/match";
 
 type BadgeTeam = {
   name?: string | null;

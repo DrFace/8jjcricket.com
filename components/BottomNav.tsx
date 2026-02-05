@@ -44,7 +44,7 @@ export default function BottomNav() {
               <Link
                 key={href}
                 href={href}
-                className="flex w-full flex-col items-center justify-center gap-0.5 py-1"
+                className="flex w-full flex-col items-center justify-center gap-0.5 py-1 hover:no-underline"
               >
                 <Icon
                   className={

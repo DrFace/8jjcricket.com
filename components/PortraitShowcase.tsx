@@ -59,8 +59,8 @@ function getMainPortrait(p: PortraitPage) {
       p.main_portrait_url,
       p.main_portrait_path,
       p.portrait_image_url,
-      p.portrait_image_path
-    )
+      p.portrait_image_path,
+    ),
   );
 }
 
@@ -193,16 +193,15 @@ function PortraitSlideshow({
 }
 
 export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
- const cleanPages = useMemo(() => {
-   return [...(pages || [])]
-     .filter((p) => !!p?.slug && !!p?.title)
-     .sort((a, b) => {
-       const aId = typeof a?.id === "number" ? a.id : Number(a?.id ?? 0);
-       const bId = typeof b?.id === "number" ? b.id : Number(b?.id ?? 0);
-       return aId - bId; // ASC: 0,1,2...
-     });
- }, [pages]);
-
+  const cleanPages = useMemo(() => {
+    return [...(pages || [])]
+      .filter((p) => !!p?.slug && !!p?.title)
+      .sort((a, b) => {
+        const aId = typeof a?.id === "number" ? a.id : Number(a?.id ?? 0);
+        const bId = typeof b?.id === "number" ? b.id : Number(b?.id ?? 0);
+        return aId - bId; // ASC: 0,1,2...
+      });
+  }, [pages]);
 
   const [activeLeftUrl, setActiveLeftUrl] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
@@ -214,10 +213,12 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
     const items = cleanPages
       .map((p) => {
         const src = getPortraitImage(p);
+        const isHttp =
+          p.slug.startsWith("http://") || p.slug.startsWith("https://");
         if (!src) return null;
         return {
           src,
-          href: `/portraits/${p.slug}`,
+          href: isHttp ? p.slug : `/portraits/${p.slug}`,
           title: p.title,
         };
       })
@@ -248,7 +249,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
 
   const visiblePages = cleanPages.slice(
     pageIndex * PAGE_SIZE,
-    pageIndex * PAGE_SIZE + PAGE_SIZE
+    pageIndex * PAGE_SIZE + PAGE_SIZE,
   );
 
   const lockScrollRef = useRef<HTMLDivElement | null>(null);
@@ -307,11 +308,13 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
               {visiblePages.map((p) => {
                 const thumb = getMainPortrait(p) || getHero(p) || getHover(p);
                 const isHovered = hoveredId === p.id;
+                const isHttp =
+                  p.slug.startsWith("http://") || p.slug.startsWith("https://");
 
                 return (
                   <a
                     key={p.id}
-                    href={`/portraits/${p.slug}`}
+                    href={isHttp ? p.slug : `/portraits/${p.slug}`}
                     target="_blank"
                     rel="noreferrer"
                     className="group relative h-full w-full max-w-[460px] mx-auto overflow-hidden rounded-[1.75rem]  shadow-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-blue-500/30"
