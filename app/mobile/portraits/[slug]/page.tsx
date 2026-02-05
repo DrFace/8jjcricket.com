@@ -175,7 +175,20 @@ export default async function PortraitDetailsPage({
           </div> */}
 
           {/* HERO */}
-          <section className="group relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20 bg-gray-100">
+          <div className="bottom-10 left-10 h-50 Font-Size-mid">
+              <h1
+                className="text-4xl font-black bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent drop-shadow-lg"
+               
+              >
+                {title}
+              </h1>
+              {subtitle ? (
+                <p className="mt-1 max-w-2xl text-base text-white/85 leading-relaxed">
+                  {subtitle}
+                </p>
+              ) : null}
+            </div>
+          <section className="group relative overflow-hidden rounded-[1.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20 bg-gray-100">
             {topHero ? (
               <div
                 className="
@@ -200,19 +213,7 @@ export default async function PortraitDetailsPage({
             {/* Shine effect */}
             <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-[100%]" />
 
-            <div className="absolute bottom-10 left-10 h-50">
-              <h1
-                className="text-4xl font-black bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent drop-shadow-lg"
-                style={{ height: 45 }}
-              >
-                {title}
-              </h1>
-              {subtitle ? (
-                <p className="mt-1 max-w-2xl text-base text-white/85 leading-relaxed">
-                  {subtitle}
-                </p>
-              ) : null}
-            </div>
+            
           </section>
 
           {/* MAIN CONTENT */}

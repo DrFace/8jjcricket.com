@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 
 type PortraitPage = {
   id: number;
@@ -74,13 +75,15 @@ function BannerSlideshow({
     <div className="relative h-full w-full overflow-hidden rounded-2xl">
       {/* SLIDES */}
       <div
-        className="flex h-full w-full transition-transform duration-700 ease-out"
+        className="flex h-full w-full transition-transform duration-700 ease-out adsdas"
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
         {items.map((item, i) => (
-          <a
+          <Link
             key={i}
             href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
             className="relative h-full w-full flex-shrink-0 block"
             onClick={() => setAutoPlay(false)}
             title={item.title}
@@ -93,7 +96,7 @@ function BannerSlideshow({
               draggable={false}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/10" />
-          </a>
+          </Link>
         ))}
       </div>
 

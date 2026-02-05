@@ -97,3 +97,15 @@ body {
 .translated-rtl {
   margin-top: 0 !important;
 }
+
+
+
+.Font-Size-mid p {
+    margin-bottom: 10px;
+}
+
+.Font-Size-mid h1 {
+    margin-bottom: 5px;
+    line-height: normal;
+    font-size: 22px;
+}
