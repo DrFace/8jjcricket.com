@@ -331,8 +331,8 @@ export default function TopNav() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <div className="inline-flex h-9 items-center justify-center rounded-full border border-white/15 bg-white/5 px-3 text-sm font-semibold text-white hover:bg-white/10">
-              {/* <select
+            {/* <div className="inline-flex h-9 items-center justify-center rounded-full border border-white/15 bg-white/5 px-3 text-sm font-semibold text-white hover:bg-white/10">
+              <select
                 value={lang}
                 onChange={(e) => handleLanguageChange(e.target.value)}
                 className="h-9 bg-transparent text-white outline-none [&>option]:text-black"
@@ -345,8 +345,8 @@ export default function TopNav() {
                 <option value="pa">Punjabi</option>
                 <option value="ta">Tamil</option>
                 <option value="te">Telugu</option>
-              </select> */}
-            </div>
+              </select>
+            </div> */}
 
             {audioData && (
               <button
