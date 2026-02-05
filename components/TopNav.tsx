@@ -50,7 +50,92 @@ export default function TopNav() {
   const [musicEnabled, setMusicEnabled] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
 
-  const [lang, setLang] = useState("en");
+  // Check if a cookie exists on page load, otherwise default to "en"
+  const [lang, setLang] = useState<string>(() => {
+    if (typeof document !== "undefined") {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; googtrans=`);
+      if (parts.length === 2) {
+        const cookieValue = parts.pop()?.split(";")[0]; // e.g., "/en/hi"
+        const code = cookieValue?.split("/").pop(); // e.g., "hi"
+        return code || "en";
+      }
+    }
+    return "en";
+  });
+
+  // Helper function to clear ALL googtrans cookies across all domains and paths
+  const clearAllGoogTransCookies = () => {
+    const hostname = window.location.hostname;
+    const domainVariants = [
+      "", // No domain (current path only)
+      `domain=${hostname}`,
+      `domain=.${hostname}`,
+      `domain=${hostname.replace("www.", "")}`,
+      `domain=.${hostname.replace("www.", "")}`,
+    ];
+
+    const pathVariants = ["path=/", "path=/minigames", ""];
+
+    // Clear cookies with all possible domain and path combinations
+    domainVariants.forEach((domain) => {
+      pathVariants.forEach((path) => {
+        const attributes = [
+          "expires=Thu, 01 Jan 1970 00:00:00 GMT",
+          path,
+          domain,
+        ]
+          .filter(Boolean)
+          .join("; ");
+
+        document.cookie = `googtrans=; ${attributes}`;
+      });
+    });
+  };
+
+  const handleLanguageChange = (selectedLang: string) => {
+    console.log("Selected Value from Dropdown:", selectedLang);
+
+    if (selectedLang === "en" || selectedLang === "eng") {
+      console.log(
+        "LOG: Switching to English - Clearing ALL translation cookies",
+      );
+
+      // Clear ALL possible googtrans cookies
+      clearAllGoogTransCookies();
+
+      // Wait a bit to ensure cookies are cleared
+      setTimeout(() => {
+        setLang("en");
+
+        // Double-check and force reload
+        setTimeout(() => {
+          window.location.reload();
+        }, 50);
+      }, 50);
+    } else {
+      console.log("LOG: Switching to Language:", selectedLang);
+
+      // First clear all existing cookies to avoid conflicts
+      clearAllGoogTransCookies();
+
+      setTimeout(() => {
+        const targetValue = `/en/${selectedLang}`;
+        const hostname = window.location.hostname;
+
+        // Set new language cookie with multiple domain variants to ensure it works
+        document.cookie = `googtrans=${targetValue}; path=/;`;
+        document.cookie = `googtrans=${targetValue}; path=/; domain=${hostname}`;
+        document.cookie = `googtrans=${targetValue}; path=/; domain=.${hostname}`;
+
+        setLang(selectedLang);
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
+      }, 50);
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -174,15 +259,6 @@ export default function TopNav() {
     }
   };
 
-  useEffect(() => {
-    if (!mounted) return;
-    if (lang === "en") return;
-    const url = `https://translate.google.com/translate?sl=auto&tl=${encodeURIComponent(
-      lang,
-    )}&u=${encodeURIComponent(window.location.href)}`;
-    window.location.href = url;
-  }, [lang, mounted]);
-
   const isActive = (href: string) => pathname === href;
 
   return (
@@ -256,20 +332,20 @@ export default function TopNav() {
 
           <div className="flex items-center gap-3">
             <div className="inline-flex h-9 items-center justify-center rounded-full border border-white/15 bg-white/5 px-3 text-sm font-semibold text-white hover:bg-white/10">
-              {/* <select
+              <select
                 value={lang}
-                onChange={(e) => setLang(e.target.value)}
+                onChange={(e) => handleLanguageChange(e.target.value)}
                 className="h-9 bg-transparent text-white outline-none [&>option]:text-black"
                 aria-label="Google Translate language"
               >
+                <option value="en">English</option>
                 <option value="hi">Hindi</option>
                 <option value="bn">Bengali</option>
                 <option value="ur">Urdu</option>
                 <option value="pa">Punjabi</option>
                 <option value="ta">Tamil</option>
                 <option value="te">Telugu</option>
-                <option value="en">English</option>
-              </select> */}
+              </select>
             </div>
 
             {audioData && (
