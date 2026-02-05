@@ -262,6 +262,8 @@ export default async function MobileHomePage() {
 
           <Link
             href="/mobile/portraits"
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-xs font-semibold text-sky-400"
           >
             View all →
@@ -285,6 +287,8 @@ export default async function MobileHomePage() {
 
           <Link
             href="/mobile/minigames"
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-xs font-semibold text-sky-400"
           >
             View all →
