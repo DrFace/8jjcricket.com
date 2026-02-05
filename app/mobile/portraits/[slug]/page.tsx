@@ -175,7 +175,20 @@ export default async function PortraitDetailsPage({
           </div> */}
 
           {/* HERO */}
-          <section className="group relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20 bg-gray-100">
+          <div className="bottom-10 left-10 h-50 Font-Size-mid">
+              <h1
+                className="text-4xl font-black bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent drop-shadow-lg"
+               
+              >
+                {title}
+              </h1>
+              {subtitle ? (
+                <p className="mt-1 max-w-2xl text-base text-white/85 leading-relaxed">
+                  {subtitle}
+                </p>
+              ) : null}
+            </div>
+          <section className="group relative overflow-hidden rounded-[1.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20 bg-gray-100">
             {topHero ? (
               <div
                 className="
@@ -200,19 +213,7 @@ export default async function PortraitDetailsPage({
             {/* Shine effect */}
             <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-[100%]" />
 
-            <div className="absolute bottom-10 left-10 h-50">
-              <h1
-                className="text-4xl font-black bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent drop-shadow-lg"
-                style={{ height: 45 }}
-              >
-                {title}
-              </h1>
-              {subtitle ? (
-                <p className="mt-1 max-w-2xl text-base text-white/85 leading-relaxed">
-                  {subtitle}
-                </p>
-              ) : null}
-            </div>
+            
           </section>
 
           {/* MAIN CONTENT */}
@@ -242,15 +243,15 @@ export default async function PortraitDetailsPage({
 
                 <div className="p-5">
                   <div className="flex flex-wrap gap-2 text-xs">
-                    <span className="rounded-full bg-blue-500/20 px-4 py-2 font-semibold text-blue-300 ring-1 ring-blue-400/30 backdrop-blur-xl transition-all duration-300 hover:bg-blue-500/30">
+                    <a href="#gallery-section" className="rounded-full bg-blue-500/20 px-4 py-2 font-semibold text-blue-300 ring-1 ring-blue-400/30 backdrop-blur-xl transition-all duration-300 hover:bg-blue-500/30 cursor-pointer">
                       {gallery_images.length} Gallery
-                    </span>
-                    <span className="rounded-full bg-purple-500/20 px-4 py-2 font-semibold text-purple-300 ring-1 ring-purple-400/30 backdrop-blur-xl transition-all duration-300 hover:bg-purple-500/30">
+                    </a>
+                    <a href="#highlights-section" className="rounded-full bg-purple-500/20 px-4 py-2 font-semibold text-purple-300 ring-1 ring-purple-400/30 backdrop-blur-xl transition-all duration-300 hover:bg-purple-500/30 cursor-pointer">
                       {slider_images.length} Highlights
-                    </span>
-                    <span className="rounded-full bg-pink-500/20 px-4 py-2 font-semibold text-pink-300 ring-1 ring-pink-400/30 backdrop-blur-xl transition-all duration-300 hover:bg-pink-500/30">
+                    </a>
+                    <a href="#news-section" className="rounded-full bg-pink-500/20 px-4 py-2 font-semibold text-pink-300 ring-1 ring-pink-400/30 backdrop-blur-xl transition-all duration-300 hover:bg-pink-500/30 cursor-pointer">
                       {embedded_news.length} News
-                    </span>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -282,7 +283,7 @@ export default async function PortraitDetailsPage({
 
               {/* HIGHLIGHTS */}
               {slider_images.length ? (
-                <section className="min-w-0">
+                <section id="highlights-section" className="min-w-0 scroll-mt-6">
                   <div className="mb-5 flex items-end justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div className="h-8 w-1 rounded-full bg-gradient-to-b from-blue-500 to-purple-500" />
@@ -360,7 +361,7 @@ export default async function PortraitDetailsPage({
 
               {/* GALLERY */}
               {gallery_images.length ? (
-                <section>
+                <section id="gallery-section" className="scroll-mt-6">
                   <div className="mb-5 flex items-center gap-3">
                     <div className="h-8 w-1 rounded-full bg-gradient-to-b from-blue-500 to-purple-500" />
                     <h2 className="text-xl font-black text-white/95 tracking-tight">
@@ -403,7 +404,7 @@ export default async function PortraitDetailsPage({
 
               {/* NEWS */}
               {embedded_news.length ? (
-                <section>
+                <section id="news-section" className="scroll-mt-6">
                   <div className="mb-5 flex items-center gap-3">
                     <div className="h-8 w-1 rounded-full bg-gradient-to-b from-blue-500 to-purple-500" />
                     <h2 className="text-xl font-black text-white/95 tracking-tight">
