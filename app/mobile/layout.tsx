@@ -8,6 +8,7 @@ import MobileSidebar from "@/components/MobileSidebar";
 import BottomNav from "@/components/BottomNav";
 import { VolumeOff, Music2 } from "lucide-react";
 import { ApiBase, URLNormalize } from "@/lib/utils";
+import Script from "next/script";
 
 export default function MoblieLayout({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -356,6 +357,23 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
       </main>
       {/* BOTTOM NAV (GLOBAL) */}
       <BottomNav />
+      {/* Google Translate */}
+      <Script
+        src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+        strategy="afterInteractive"
+      />
+      <Script id="google-translate-init" strategy="afterInteractive">
+        {`
+            function googleTranslateElementInit() {
+              new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'hi,bn,ur,pa,ta,te,en',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false,
+              }, 'google_translate_element');
+            }
+          `}
+      </Script>
     </div>
   );
 }
