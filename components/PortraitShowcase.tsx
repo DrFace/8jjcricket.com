@@ -81,6 +81,17 @@ function PortraitSlideshow({
     if (index >= len) setIndex(0);
   }, [index, len]);
 
+  // Auto-advance slideshow every 5 seconds
+  useEffect(() => {
+    if (len <= 1) return;
+    
+    const timer = setInterval(() => {
+      setIndex((i) => (i + 1) % len);
+    }, 5000); // Change image every 5 seconds
+
+    return () => clearInterval(timer);
+  }, [len]);
+
   const canGo = len > 1;
 
   const prev = useCallback(() => {
@@ -95,27 +106,43 @@ function PortraitSlideshow({
 
   if (!len) return null;
 
-  const active = items[index];
-
   return (
     <div className="relative h-full w-full overflow-hidden rounded-[2rem]">
-      {/* Click opens in NEW TAB to relevant portrait page */}
-      <a
-        href={active.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="absolute inset-0 block"
-        title={active.title}
+      {/* Sliding carousel container */}
+      <div 
+        className="flex h-full transition-transform duration-[1500ms] ease-in-out"
+        style={{ 
+          transform: `translateX(-${index * 100}%)`,
+        }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={active.src}
-          alt={active.title}
-          className="h-full w-full object-cover object-center transition-opacity duration-500"
-          draggable={false}
-        />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-      </a>
+        {items.map((item, i) => (
+          <div
+            key={i}
+            className="relative h-full w-full flex-shrink-0"
+            style={{
+              transform: i === index ? 'scale(1) rotateY(0deg)' : 'scale(0.95) rotateY(-3deg)',
+              transition: 'transform 1500ms ease-in-out',
+            }}
+          >
+            <a
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute inset-0 block"
+              title={item.title}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={item.src}
+                alt={item.title}
+                className="h-full w-full object-cover object-center"
+                draggable={false}
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+            </a>
+          </div>
+        ))}
+      </div>
 
       {/* Prev / Next buttons */}
       <div className="absolute inset-y-0 left-4 z-20 flex items-center">
