@@ -95,12 +95,12 @@ export default function HomeFeedbackSection({
       {/* TOP: Two panels */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* LEFT: Open policy text */}
-        <div className="rounded-2xl border border-white/15 bg-slate-900/55 p-6 shadow-2xl backdrop-blur-2xl">
-          <h2 className="text-2xl font-semibold text-white">Open Policy</h2>
+        <div className="india-card-blue-glow p-6">
+          <h2 className="text-2xl india-header-text">Open Policy</h2>
 
-          <ul className="mt-4 space-y-3 text-sm leading-relaxed text-white/85">
+          <ul className="mt-4 space-y-3 text-sm leading-relaxed text-gray-200">
             <li className="flex gap-2">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" />
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-india-gold" />
               <p>
                 Our open policy is the guiding compass for the 8jjcricket
                 Alliance’s growth. We put customers at the center and treat
@@ -110,21 +110,21 @@ export default function HomeFeedbackSection({
             </li>
 
             <li className="flex gap-2">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" />
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-india-gold" />
               <p>
                 This{" "}
-                <span className="font-semibold text-amber-300">FEEDBACK</span>{" "}
+                <span className="font-semibold text-india-saffron">FEEDBACK</span>{" "}
                 area was built based on that idea.
               </p>
             </li>
 
             <li className="flex gap-2">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" />
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-india-gold" />
               <p>We listen to improve and value every single opinion.</p>
             </li>
 
             <li className="flex gap-2">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" />
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-india-gold" />
               <p>
                 The system will grant special rewards to thank loyal members who
                 accompany us and contribute valuable feedback for continuous
@@ -133,50 +133,50 @@ export default function HomeFeedbackSection({
             </li>
 
             <li className="flex gap-2">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" />
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-india-gold" />
               <p>Share your ideas to earn meaningful rewards.</p>
             </li>
 
             <li className="flex gap-2">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" />
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-india-gold" />
               <p>8jjcricket Alliance sincerely thanks you, valued members.</p>
             </li>
           </ul>
         </div>
 
         {/* RIGHT: Feedback form */}
-        <div className="rounded-2xl border border-white/15 bg-slate-900/55 p-6 shadow-2xl backdrop-blur-2xl">
+        <div className="india-card-saffron-glow p-6">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h2 className="text-2xl font-semibold text-white">Feedback</h2>
-              <p className="mt-1 text-sm text-white/70">
+              <h2 className="text-2xl font-bold text-india-gold">Feedback</h2>
+              <p className="mt-1 text-sm text-gray-300">
                 Log in to submit feedback and receive valuable rewards!
               </p>
             </div>
 
-            <div className="hidden sm:flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-black/30">
-              <MailIcon className="h-5 w-5 text-white/80" />
+            <div className="hidden sm:flex h-10 w-10 items-center justify-center rounded-xl border border-india-gold/30 bg-black/30">
+              <MailIcon className="h-5 w-5 text-india-gold" />
             </div>
           </div>
 
           <form onSubmit={handleSendFeedback} className="mt-5 space-y-4">
-            <div className="rounded-xl border border-white/10 bg-black/25 px-4 py-3">
+            <div className="rounded-xl border border-white/10 bg-black/40 px-4 py-3 focus-within:border-india-gold focus-within:ring-1 focus-within:ring-india-gold transition-all shadow-inner">
               <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 placeholder="Enter your email"
-                className="w-full bg-transparent text-sm text-white placeholder:text-white/40 outline-none"
+                className="w-full bg-transparent text-sm text-white placeholder:text-gray-500 outline-none"
                 required
               />
             </div>
 
-            <div className="rounded-xl border border-white/10 bg-black/25 px-4 py-3">
+            <div className="rounded-xl border border-white/10 bg-black/40 px-4 py-3 focus-within:border-india-gold focus-within:ring-1 focus-within:ring-india-gold transition-all shadow-inner">
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Enter your feedback"
-                className="h-40 w-full resize-none bg-transparent text-sm text-white placeholder:text-white/40 outline-none"
+                className="h-40 w-full resize-none bg-transparent text-sm text-white placeholder:text-gray-500 outline-none"
                 required
               />
               <div className="mt-3 flex justify-end gap-2">
@@ -196,7 +196,7 @@ export default function HomeFeedbackSection({
             <button
               type="submit"
               disabled={!canSend}
-              className="group w-full rounded-full bg-amber-500 px-6 py-3 text-sm font-bold text-slate-900 shadow-xl transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
+              className="india-btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Send feedback →
             </button>
@@ -208,14 +208,14 @@ export default function HomeFeedbackSection({
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         {/* LEFT: two action cards */}
         <div className="grid gap-6 sm:grid-cols-2">
-          <div className="group relative rounded-2xl border border-white/15 bg-slate-900/55 p-5 shadow-2xl backdrop-blur-2xl hover:border-amber-400/40">
+          <div className="group relative india-card-gold-glow p-5 hover:scale-[1.02] transition-transform">
             {/* Play Store */}
             <Reveal>
               <PlayStore />
             </Reveal>
           </div>
 
-          <div className="group relative rounded-2xl border border-white/15 bg-slate-900/55 p-5 shadow-2xl backdrop-blur-2xl hover:border-amber-400/40">
+          <div className="group relative india-card-saffron-glow p-5 hover:scale-[1.02] transition-transform">
             {/* social media */}
             <Reveal>
               <SocialBox />
@@ -224,16 +224,16 @@ export default function HomeFeedbackSection({
         </div>
 
         {/* RIGHT: long feedback email bar */}
-        <div className="rounded-2xl border border-white/15 bg-slate-900/55 p-5 shadow-2xl backdrop-blur-2xl">
+        <div className="india-card-blue-glow p-6">
           <p className="text-sm font-semibold text-white">
             If your feedback is long, please send it by email
           </p>
-          <p className="mt-1 text-sm text-white/70">
+          <p className="mt-1 text-sm text-gray-300">
             We will receive it and support you as best as possible. Thank you!
           </p>
 
-          <div className="mt-4 flex items-center gap-3 rounded-2xl border border-amber-400/30 bg-black/25 p-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500 text-slate-900">
+          <div className="mt-4 flex items-center gap-3 rounded-2xl border border-india-blue/30 bg-black/25 p-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-india-blue text-white">
               <MailIcon className="h-6 w-6" />
             </div>
 
@@ -246,7 +246,7 @@ export default function HomeFeedbackSection({
             <button
               type="button"
               onClick={handleLongFeedbackSend}
-              className="rounded-xl border border-amber-400/40 bg-amber-500/20 px-5 py-3 text-sm font-bold text-amber-200 hover:bg-amber-500/30"
+              className="india-btn-secondary py-2 px-4 shadow-none"
             >
               Send
             </button>
@@ -256,3 +256,4 @@ export default function HomeFeedbackSection({
     </section>
   );
 }
+

@@ -164,7 +164,7 @@ export default async function HomePage() {
       <HomeVerticalSwiper>
         <section
           data-snap
-          className="SectionScroll sticky top-0 xl:h-[90vh] lg:h-[84vh] w-full overflow-hidden"
+          className="SectionScroll sticky top-0 h-[75vh] lg:h-[84vh] xl:h-[90vh] w-full overflow-hidden"
         >
           {/* SEO-Optimized H1 for India & South Asia */}
           <h1 className="sr-only">
@@ -216,12 +216,12 @@ export default async function HomePage() {
             );
           })()}
           <SponsorBar />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </section>
 
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex w-full items-center px-6 xl:mt-0 lg:mt-10"
+          className="SectionScroll sticky top-0 flex w-full items-center px-6 mt-4 lg:mt-8 xl:mt-0 min-h-[85vh] lg:h-screen"
         >
           <div className="relative h-full w-full flex items-center">
             <div
@@ -230,7 +230,7 @@ export default async function HomePage() {
             />
             <div className="absolute inset-0 bg-black/70" />
 
-            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
+            <div className="relative w-full india-card-gold-glow p-4">
               <PortraitShowcaseSection />
             </div>
           </div>
@@ -238,16 +238,12 @@ export default async function HomePage() {
         {/* News */}
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
+          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6"
         >
           <div className="relative h-full w-full flex items-center">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
-            />
-            <div className="absolute inset-0 bg-black/70" />
+            {/* Background removed as per request */}
 
-            <div className="relative w-full max-w-[1480px] mx-auto rounded-2xl border border-white/15 bg-slate-900/70 p-6 shadow-2xl backdrop-blur-2xl">
+            <div className="relative w-full max-w-[1480px] mx-auto india-card-green-glow p-6">
               <HomeNewsShowcase />
             </div>
           </div>
@@ -255,16 +251,12 @@ export default async function HomePage() {
 
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
+          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6"
         >
           <div className="relative h-full w-full flex items-center">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
-            />
-            <div className="absolute inset-0 bg-black/70" />
+            {/* Background removed as per request */}
 
-            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
+            <div className="relative w-full india-card-saffron-glow p-4">
               <HomeFeedbackSection />
             </div>
           </div>

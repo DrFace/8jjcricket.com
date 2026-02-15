@@ -69,56 +69,50 @@ export default async function HomeNewsShowcase() {
         {/* LEFT — Featured */}
         <Link
           href={`/news/${featured.slug}`}
-          className="group relative overflow-hidden rounded-3xl bg-white/5 ring-1 ring-white/10 shadow-2xl transition
-                     hover:bg-white/7 hover:ring-white/15"
+          className="group relative overflow-hidden rounded-3xl india-card-green-glow transition hover:scale-[1.01]"
         >
           {/* Image */}
           <div
             className="relative w-full h-[22vw] max-h-[340px] min-h-[220px]
-                       overflow-hidden"
+                       overflow-hidden rounded-t-2xl"
           >
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out
                          group-hover:scale-[1.03]"
               style={{ backgroundImage: `url(${featured.image_url})` }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-india-charcoal via-india-charcoal/50 to-transparent" />
 
             {/* subtle shine */}
             <div
-              className="pointer-events-none absolute -inset-x-24 -top-24 h-48 rotate-12 bg-white/10 blur-2xl opacity-0
+              className="pointer-events-none absolute -inset-x-24 -top-24 h-48 rotate-12 bg-india-saffron/20 blur-2xl opacity-0
                          transition-opacity duration-700 group-hover:opacity-100"
             />
           </div>
 
           {/* Content */}
           <div className="p-6 lg:p-7">
-            <div className="text-sm text-white/60">
+            <div className="india-header-text text-sm mb-1 inline-block">
               {formatDate(featured.published_at)}
             </div>
 
-            <h3 className="mt-3 line-clamp-2 text-2xl lg:text-[28px] font-extrabold text-white">
+            <h3 className="mt-3 line-clamp-2 text-2xl lg:text-[28px] font-extrabold text-white group-hover:text-india-gold transition-colors">
               {featured.title}
             </h3>
 
-            <p className="mt-2 line-clamp-2 text-sm text-white/60">
+            <p className="mt-2 line-clamp-2 text-sm text-gray-300">
               {featured.excerpt || featured.title}
             </p>
 
             {/* CTA */}
             <div className="mt-5">
               <div
-                className="block w-full rounded-xl bg-amber-400/15 py-3 text-center text-sm font-semibold text-amber-200
-                           ring-1 ring-amber-300/20 transition
-                           hover:bg-amber-400/20"
+                className="india-btn-primary inline-block text-sm"
               >
                 Read more
               </div>
             </div>
           </div>
-
-          {/* lift on hover */}
-          <div className="pointer-events-none absolute inset-0 transition-transform duration-300 ease-out group-hover:-translate-y-[1px]" />
         </Link>
 
         {/* RIGHT — List */}
@@ -127,9 +121,8 @@ export default async function HomeNewsShowcase() {
 
           <Link
             href="/news"
-            className="mt-4 flex items-center justify-center rounded-2xl bg-white/5 py-4 text-sm font-semibold text-white/70
-                       ring-1 ring-white/10 transition
-                       hover:bg-white/10 hover:ring-white/15 hover:-translate-y-[1px] active:translate-y-0"
+            className="mt-4 flex items-center justify-center rounded-2xl india-card-gold-glow py-4 text-sm font-semibold text-india-gold
+                        transition hover:scale-[1.01]"
           >
             View more →
           </Link>
@@ -138,3 +131,4 @@ export default async function HomeNewsShowcase() {
     </div>
   );
 }
+

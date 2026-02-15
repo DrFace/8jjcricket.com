@@ -19,10 +19,10 @@ export default function SeriesTabs({
           <button
             key={tab.id}
             onClick={() => onChange(tab.id)}
-            className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+            className={`px-4 py-3 text-sm font-bold whitespace-nowrap border-b-2 transition-colors ${
               activeTab === tab.id
-                ? "border-amber-400 text-amber-300 bg-amber-950/30"
-                : "border-transparent text-sky-100/70 hover:text-white hover:bg-white/5"
+                ? "border-india-saffron text-india-gold bg-india-saffron/10"
+                : "border-transparent text-slate-300 hover:text-white hover:bg-white/5"
             }`}
           >
             {tab.label}

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import useSWR from "swr";
+import { cn } from "@/lib/utils";
 import DesktopOnly from "@/components/DesktopOnly";
 import RecentMatchCard from "@/components/RecentMatchCard";
 import LiveCard from "@/components/LiveCard";
@@ -308,10 +309,10 @@ export default function LiveScoreHome() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 rounded-full text-sm font-semibold transition ${
+              className={`px-6 py-2 rounded-full text-sm font-bold transition shadow-md ${
                 activeTab === tab
-                  ? "bg-amber-400 text-black shadow"
-                  : "bg-black/40 text-white hover:bg-amber-300/20"
+                  ? "bg-gradient-to-r from-india-saffron to-india-gold text-black border border-india-gold"
+                  : "bg-black/40 text-white hover:bg-white/10 border border-white/10"
               }`}
             >
               {tab}
@@ -328,13 +329,12 @@ export default function LiveScoreHome() {
                 key={cat}
                 type="button"
                 onClick={() => setSelectedCategory(cat)}
-                className={[
-                  "rounded-full px-3 py-1 text-[11px] font-semibold transition",
-                  "border backdrop-blur",
+                className={cn(
+                  "rounded-full px-3 py-1 text-[11px] font-semibold transition border backdrop-blur",
                   active
-                    ? "border-amber-300/60 bg-amber-300/15 text-amber-200 shadow"
-                    : "border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100",
-                ].join(" ")}
+                    ? "border-india-green bg-india-green/20 text-india-green shadow-sm"
+                    : "border-white/15 bg-white/5 text-gray-400 hover:border-india-green/40 hover:text-india-green",
+                )}
               >
                 {cat}
               </button>
@@ -342,15 +342,15 @@ export default function LiveScoreHome() {
           })}
         </div>
 
-        {error && <div className="text-red-500">Failed to load data.</div>}
-        {!error && loading && <div className="text-amber-300">Loading...</div>}
+        {error && <div className="text-india-red">Failed to load data.</div>}
+        {!error && loading && <div className="text-india-gold animate-pulse">Loading matches...</div>}
 
         {!error && !loading && (
           <>
             {/* LIVE TAB */}
             {activeTab === "Live" && (
               <>
-                <h1 className="text-3xl font-bold text-white mb-6">
+                <h1 className="text-3xl font-bold india-header-text mb-6">
                   Live Scores
                 </h1>
 
@@ -362,14 +362,14 @@ export default function LiveScoreHome() {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-gray-400">
-                      No live matches available.
+                    <div className="text-gray-400 italic text-center py-10 india-card-gradient rounded-xl">
+                      No live matches available at the moment.
                     </div>
                   )}
                 </div>
 
                 {/* Recent 6 below live */}
-                <div className="flex gap-6">
+                <div className="flex flex-col lg:flex-row gap-6">
                   <main className="flex-1">
                     <div className="flex items-center justify-between mb-4">
                       <h2 className="text-xl font-semibold text-white">
@@ -377,7 +377,7 @@ export default function LiveScoreHome() {
                       </h2>
                       <div className="text-xs text-white/60">
                         Showing{" "}
-                        <span className="text-white/80 font-semibold">
+                        <span className="text-india-gold font-semibold">
                           {liveTabRecent4?.length}
                         </span>{" "}
                         latest
@@ -385,7 +385,7 @@ export default function LiveScoreHome() {
                     </div>
 
                     {liveTabRecent4.length === 0 ? (
-                      <div className="text-gray-400">
+                      <div className="text-gray-400 italic text-center py-10 india-card-gradient rounded-xl">
                         No recent matches found for this date/filter.
                       </div>
                     ) : (
@@ -397,8 +397,8 @@ export default function LiveScoreHome() {
                     )}
                   </main>
 
-                  <aside className="w-80">
-                    <div className="mb-2 text-xs font-semibold text-white/70">
+                  <aside className="w-full lg:w-80">
+                    <div className="mb-2 text-xs font-semibold text-india-gold">
                       Calendar (filters recent)
                     </div>
                     <Calendar
@@ -415,11 +415,11 @@ export default function LiveScoreHome() {
             {/* UPCOMING TAB */}
             {activeTab === "Upcoming" && (
               <>
-                <h1 className="text-3xl font-bold text-white mb-6">
+                <h1 className="text-3xl font-bold india-header-text mb-6">
                   Upcoming Matches
                 </h1>
 
-                <div className="flex gap-6">
+                <div className="flex flex-col lg:flex-row gap-6">
                   <main className="flex-1">
                     {filteredUpcomingAll.length > 0 ? (
                       <>
@@ -443,14 +443,14 @@ export default function LiveScoreHome() {
                         />
                       </>
                     ) : (
-                      <div className="text-gray-400">
+                      <div className="text-gray-400 italic text-center py-10 india-card-gradient rounded-xl">
                         No upcoming matches found for this date/filter.
                       </div>
                     )}
                   </main>
 
-                  <aside className="w-80">
-                    <div className="mb-2 text-xs font-semibold text-white/70">
+                  <aside className="w-full lg:w-80">
+                    <div className="mb-2 text-xs font-semibold text-india-gold">
                       Calendar (filters upcoming)
                     </div>
                     <Calendar
@@ -467,11 +467,11 @@ export default function LiveScoreHome() {
             {/* RECENT TAB */}
             {activeTab === "Recent" && (
               <>
-                <h1 className="text-3xl font-bold text-white mb-6">
+                <h1 className="text-3xl font-bold india-header-text mb-6">
                   Recent Matches
                 </h1>
 
-                <div className="flex gap-6">
+                <div className="flex flex-col lg:flex-row gap-6">
                   <main className="flex-1">
                     {filteredRecentAll.length > 0 ? (
                       <>
@@ -495,14 +495,14 @@ export default function LiveScoreHome() {
                         />
                       </>
                     ) : (
-                      <div className="text-gray-400">
+                      <div className="text-gray-400 italic text-center py-10 india-card-gradient rounded-xl">
                         No recent matches found for this date/filter.
                       </div>
                     )}
                   </main>
 
-                  <aside className="w-80">
-                    <div className="mb-2 text-xs font-semibold text-white/70">
+                  <aside className="w-full lg:w-80">
+                    <div className="mb-2 text-xs font-semibold text-india-gold">
                       Calendar (filters recent)
                     </div>
                     <Calendar

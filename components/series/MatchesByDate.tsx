@@ -12,8 +12,8 @@ export default function MatchesByDate({
     <div className="space-y-4">
       {Object.entries(grouped).map(([date, matches]) => (
         <div key={date}>
-          <div className="bg-gradient-to-r from-slate-800/80 to-slate-900/80 border border-amber-400/30 px-4 py-3 mb-3 rounded-xl flex items-center justify-between backdrop-blur-sm">
-            <p className="text-sm font-bold text-amber-300 uppercase tracking-wide">
+          <div className="bg-gradient-to-r from-india-charcoal to-slate-900 border border-india-gold/30 px-4 py-3 mb-3 rounded-xl flex items-center justify-between backdrop-blur-sm">
+            <p className="text-sm font-bold text-india-gold uppercase tracking-wide">
               {date}
             </p>
 

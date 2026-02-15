@@ -36,28 +36,28 @@ export function SummaryTable<T>({
   }, [rows, page, pageSize]);
 
   return (
-    <div className="shadow-lg backdrop-blur">
+    <div className="shadow-2xl backdrop-blur-xl bg-slate-900/40 rounded-2xl p-4 border border-india-gold/20">
       {/* Title */}
-      <div className="mb-3 text-lg font-semibold text-amber-300">{title}</div>
+      <div className="mb-3 text-lg font-bold text-india-gold india-header-text border-b border-india-gold/20 pb-2">{title}</div>
 
       {/* Mobile hint */}
-      <div className="mb-2 block text-xs text-white/60 md:hidden">
+      <div className="mb-2 block text-xs text-sky-100/60 md:hidden font-medium">
         Swipe left/right to see more →
       </div>
 
       {/* Table wrapper (horizontal scroll on small screens) */}
       <div
-        className="w-full overflow-x-scroll overscroll-x-contain touch-pan-x rounded-xl border border-amber-600"
+        className="w-full overflow-x-auto overscroll-x-contain touch-pan-x rounded-xl border border-india-gold/30 shadow-inner"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
         <table className="border-collapse text-sm text-white w-full">
           {/* 👆 min-w-max forces horizontal scrolling when needed */}
-          <thead className="bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-600 text-black shadow-lg">
-            <tr className="bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-600 text-black shadow-lg">
-              <th className="px-4 py-3 text-left font-semibold" />
+          <thead className="bg-gradient-to-r from-india-saffron via-india-gold to-india-orange text-black shadow-lg">
+            <tr className="bg-gradient-to-r from-india-saffron via-india-gold to-india-orange text-black shadow-lg">
+              <th className="px-4 py-3 text-left font-bold uppercase tracking-wider text-xs" />
 
               {columns.map((c) => (
-                <th key={c} className="px-4 py-3 text-left font-semibold">
+                <th key={c} className="px-4 py-3 text-left font-bold uppercase tracking-wider text-xs">
                   {c}
                 </th>
               ))}
@@ -65,20 +65,20 @@ export function SummaryTable<T>({
           </thead>
 
           <tbody>
-            {visibleRows.map((r) => (
+            {visibleRows.map((r, i) => (
               <tr
                 key={r.label}
-                className="border-t border-white/10 hover:bg-white/5"
+                className={`border-t border-white/5 hover:bg-white/5 transition-colors ${i % 2 === 0 ? 'bg-white/5' : 'bg-transparent'}`}
               >
                 {/* sticky first column (optional but very useful on mobile) */}
-                <td className="sticky left-0 bg-slate-950/80 px-4 py-3 font-medium text-white backdrop-blur">
+                <td className="sticky left-0 bg-slate-900/90 px-4 py-3 font-bold text-india-gold backdrop-blur-md border-r border-white/5 shadow-[4px_0_8px_rgba(0,0,0,0.2)]">
                   {r.label}
                 </td>
 
                 {columns.map((c) => (
                   <td
                     key={c}
-                    className="px-4 py-3 text-white whitespace-nowrap"
+                    className="px-4 py-3 text-white whitespace-nowrap font-medium"
                   >
                     {/* whitespace-nowrap keeps cell content from wrapping weirdly */}
                     {r.get(dataByColumn[c] ?? null)}
@@ -91,9 +91,9 @@ export function SummaryTable<T>({
               <tr className="border-t border-white/10">
                 <td
                   colSpan={Math.max(1, columns.length + 1)}
-                  className="px-4 py-6 text-center text-white/70"
+                  className="px-4 py-6 text-center text-white/70 italic"
                 >
-                  No data
+                  No data available
                 </td>
               </tr>
             )}
@@ -108,28 +108,28 @@ export function SummaryTable<T>({
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={!canPrev}
             className={[
-              "rounded-full border px-4 py-2 text-sm font-semibold transition",
+              "rounded-full border px-4 py-2 text-sm font-bold transition-all shadow-md",
               canPrev
-                ? "border-amber-800 bg-white/5 text-amber-300 hover:bg-white/10"
-                : "cursor-not-allowed border-white/10 bg-transparent text-white/40",
+                ? "border-india-gold/50 bg-slate-900/60 text-india-gold hover:bg-india-gold/10 hover:border-india-gold"
+                : "cursor-not-allowed border-white/5 bg-transparent text-white/20",
             ].join(" ")}
           >
             Prev
           </button>
 
-          <div className="text-xs text-white/80 sm:text-sm">
-            Page <span className="font-semibold text-white">{page}</span> of{" "}
-            <span className="font-semibold text-white">{totalPages}</span>
+          <div className="text-xs text-sky-100/80 sm:text-sm font-medium">
+            Page <span className="font-bold text-india-gold">{page}</span> of{" "}
+            <span className="font-bold text-india-gold">{totalPages}</span>
           </div>
 
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={!canNext}
             className={[
-              "rounded-full border px-4 py-2 text-sm font-semibold transition",
+              "rounded-full border px-4 py-2 text-sm font-bold transition-all shadow-md",
               canNext
-                ? "border-amber-800 bg-white/5 text-amber-300 hover:bg-white/10"
-                : "cursor-not-allowed border-white/10 bg-transparent text-white/40",
+                ? "border-india-gold/50 bg-slate-900/60 text-india-gold hover:bg-india-gold/10 hover:border-india-gold"
+                : "cursor-not-allowed border-white/5 bg-transparent text-white/20",
             ].join(" ")}
           >
             Next

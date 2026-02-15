@@ -21,10 +21,10 @@ export default function PlayerCard({
   return (
     <Link
       href={`/players/${id}`}
-      className="group block rounded-2xl border border-white/20 bg-black/50 p-4 shadow-xl backdrop-blur-xl transition hover:border-amber-400 hover:shadow-amber-400/30"
+      className="group block rounded-2xl india-card-gradient p-4 shadow-xl backdrop-blur-xl transition hover:border-india-gold hover:shadow-india-gold/30 hover:-translate-y-1"
     >
       <div className="flex items-center gap-4">
-        <div className="relative h-20 w-20 overflow-hidden rounded-xl border border-white/10 bg-slate-900">
+        <div className="relative h-20 w-20 overflow-hidden rounded-xl border border-india-gold/20 bg-slate-900">
           {image_path ? (
             <Image
               src={image_path}
@@ -41,16 +41,16 @@ export default function PlayerCard({
         </div>
 
         <div className="min-w-0">
-          <div className="truncate text-lg font-semibold text-amber-300 drop-shadow">
+          <div className="truncate text-lg font-bold text-white group-hover:text-india-gold transition-colors drop-shadow">
             {fullname}
           </div>
           <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-sky-100/90">
             {position && (
-              <span className="rounded-full bg-slate-800/70 px-2 py-0.5 text-white/80">
+              <span className="rounded-full bg-slate-800/70 px-2 py-0.5 text-india-gold font-semibold uppercase tracking-wide text-xs">
                 {position}
               </span>
             )}
-            {country && <span className="truncate">{country}</span>}
+            {country && <span className="truncate text-xs text-slate-300">{country}</span>}
           </div>
         </div>
       </div>
