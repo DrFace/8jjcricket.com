@@ -50,7 +50,6 @@ export default function MobileSidebar() {
         Icon: BarChart3,
       },
       { href: "/mobile/archive", label: "Archive", Icon: Archive },
-      { href: "/mobile/minigames", label: "Minigames", Icon: Gamepad2 },
       { href: "/mobile/news", label: "News", Icon: Newspaper },
     ],
     []

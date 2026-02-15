@@ -32,7 +32,8 @@ export function middleware(req: NextRequest) {
   // while still sending human mobile users to your mobile page.
   if (isMobileUserAgent(ua) && !isBotUserAgent(ua)) {
     const url = req.nextUrl.clone();
-    url.pathname = "/mobile";
+    // Preserve the path (e.g., /download -> /mobile/download)
+    url.pathname = `/mobile${pathname === "/" ? "" : pathname}`;
     return NextResponse.redirect(url);
   }
 
