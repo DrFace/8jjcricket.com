@@ -495,6 +495,7 @@ export default function TopNav() {
               label="Gallery"
               active={isActive("/gallery")}
             />
+            <NavItem href="/download" label="Feedback" active={isActive("/download")} />
           </nav>
 
           <div className="flex items-center gap-3">
