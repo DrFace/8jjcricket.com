@@ -76,11 +76,40 @@ function PortraitSlideshow({
 }) {
   const [index, setIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [progress, setProgress] = useState(0);
   const len = items.length;
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+  const progressRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (index >= len) setIndex(0);
+  }, [index, len]);
+
+  // Progress bar animation
+  useEffect(() => {
+    if (len <= 1) return;
+    
+    setProgress(0);
+    const startTime = Date.now();
+    const duration = 4000;
+
+    const updateProgress = () => {
+      const elapsed = Date.now() - startTime;
+      const newProgress = Math.min((elapsed / duration) * 100, 100);
+      setProgress(newProgress);
+
+      if (newProgress < 100) {
+        progressRef.current = setTimeout(updateProgress, 16);
+      }
+    };
+
+    updateProgress();
+
+    return () => {
+      if (progressRef.current) {
+        clearTimeout(progressRef.current);
+      }
+    };
   }, [index, len]);
 
   // Auto-play functionality
@@ -90,7 +119,7 @@ function PortraitSlideshow({
     const startAutoPlay = () => {
       autoPlayRef.current = setInterval(() => {
         setIndex((i) => (i + 1) % len);
-      }, 4000); // Change slide every 4 seconds
+      }, 4000);
     };
 
     startAutoPlay();
@@ -109,7 +138,6 @@ function PortraitSlideshow({
     setIsTransitioning(true);
     setIndex((i) => (i - 1 + len) % len);
     
-    // Reset auto-play timer
     if (autoPlayRef.current) {
       clearInterval(autoPlayRef.current);
       autoPlayRef.current = setInterval(() => {
@@ -117,7 +145,7 @@ function PortraitSlideshow({
       }, 4000);
     }
     
-    setTimeout(() => setIsTransitioning(false), 600);
+    setTimeout(() => setIsTransitioning(false), 700);
   }, [len, isTransitioning]);
 
   const next = useCallback(() => {
@@ -125,7 +153,6 @@ function PortraitSlideshow({
     setIsTransitioning(true);
     setIndex((i) => (i + 1) % len);
     
-    // Reset auto-play timer
     if (autoPlayRef.current) {
       clearInterval(autoPlayRef.current);
       autoPlayRef.current = setInterval(() => {
@@ -133,7 +160,7 @@ function PortraitSlideshow({
       }, 4000);
     }
     
-    setTimeout(() => setIsTransitioning(false), 600);
+    setTimeout(() => setIsTransitioning(false), 700);
   }, [len, isTransitioning]);
 
   const goToSlide = useCallback((slideIndex: number) => {
@@ -141,7 +168,6 @@ function PortraitSlideshow({
     setIsTransitioning(true);
     setIndex(slideIndex);
     
-    // Reset auto-play timer
     if (autoPlayRef.current) {
       clearInterval(autoPlayRef.current);
       autoPlayRef.current = setInterval(() => {
@@ -149,54 +175,71 @@ function PortraitSlideshow({
       }, 4000);
     }
     
-    setTimeout(() => setIsTransitioning(false), 600);
+    setTimeout(() => setIsTransitioning(false), 700);
   }, [isTransitioning, index, len]);
 
   if (!len) return null;
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-[2rem]">
-      {/* Sliding container */}
+    <div className="group/carousel relative h-full w-full overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 to-slate-800">
+      {/* Sliding container - FIXED: Use proper flex layout */}
       <div
-        className="flex h-full transition-transform duration-700 ease-in-out"
+        className="flex h-full transition-transform duration-700 ease-out"
         style={{
           transform: `translateX(-${index * 100}%)`,
-          width: `${len * 100}%`,
         }}
       >
-        {items.map((item, idx) => (
-          <div
-            key={idx}
-            className="relative h-full flex-shrink-0"
-            style={{ width: `${100 / len}%` }}
-          >
-            <a
-              href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="absolute inset-0 block"
-              title={item.title}
+        {items.map((item, idx) => {
+          const isActive = idx === index;
+          const isPrev = idx === (index - 1 + len) % len;
+          const isNext = idx === (index + 1) % len;
+          
+          return (
+            <div
+              key={idx}
+              className="relative h-full w-full flex-shrink-0"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={item.src}
-                alt={item.title}
-                className="h-full w-full object-cover object-center"
-                draggable={false}
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-              
-              {/* Title overlay */}
-              <div className="pointer-events-none absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-2xl font-bold drop-shadow-lg">{item.title}</h3>
-              </div>
-            </a>
-          </div>
-        ))}
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute inset-0 block group/slide"
+                title={item.title}
+              >
+                {/* Image with parallax effect */}
+                <div className="absolute inset-0 overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={item.src}
+                    alt={item.title}
+                    className={`h-full w-full object-cover object-center transition-all duration-700 ${
+                      isActive ? "scale-100" : "scale-105"
+                    } group-hover/slide:scale-105`}
+                    draggable={false}
+                  />
+                </div>
+                
+                {/* Gradient overlays */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30 opacity-0 transition-opacity duration-500 group-hover/slide:opacity-100" />
+                
+                {/* Title overlay with animation */}
+                <div className={`pointer-events-none absolute bottom-0 left-0 right-0 p-8 text-white transition-all duration-700 ${
+                  isActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+                }`}>
+                  <h3 className="text-3xl font-bold drop-shadow-2xl mb-2 transform transition-transform duration-500 group-hover/slide:translate-x-2">
+                    {item.title}
+                  </h3>
+                  <div className="h-1 w-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transform transition-all duration-500 group-hover/slide:w-32" />
+                </div>
+              </a>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Prev / Next buttons */}
-      <div className="absolute inset-y-0 left-4 z-20 flex items-center">
+      {/* Enhanced Prev / Next buttons */}
+      <div className="absolute inset-y-0 left-6 z-20 flex items-center opacity-0 transition-opacity duration-300 group-hover/carousel:opacity-100">
         <button
           onClick={(e) => {
             e.preventDefault();
@@ -204,16 +247,17 @@ function PortraitSlideshow({
             prev();
           }}
           disabled={!canGo}
-          className={`group relative h-14 w-14 overflow-hidden rounded-full transition-all duration-300 ${
+          className={`group relative h-16 w-16 overflow-hidden rounded-full transition-all duration-300 ${
             canGo
-              ? "bg-gradient-to-br from-blue-500/90 to-blue-600/90 shadow-lg shadow-blue-500/40 hover:shadow-xl hover:shadow-blue-500/50 hover:scale-110 backdrop-blur-sm"
+              ? "bg-gradient-to-br from-blue-500 to-blue-700 shadow-2xl shadow-blue-500/50 hover:shadow-blue-500/70 hover:scale-110 active:scale-95"
               : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
           }`}
           type="button"
           aria-label="Previous slide"
         >
+          <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
           <svg
-            className="absolute inset-0 m-auto h-7 w-7 text-white transition-transform group-hover:-translate-x-0.5"
+            className="absolute inset-0 m-auto h-8 w-8 text-white transition-transform group-hover:-translate-x-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -221,14 +265,14 @@ function PortraitSlideshow({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2.5}
+              strokeWidth={3}
               d="M15 19l-7-7 7-7"
             />
           </svg>
         </button>
       </div>
 
-      <div className="absolute inset-y-0 right-4 z-20 flex items-center">
+      <div className="absolute inset-y-0 right-6 z-20 flex items-center opacity-0 transition-opacity duration-300 group-hover/carousel:opacity-100">
         <button
           onClick={(e) => {
             e.preventDefault();
@@ -236,16 +280,17 @@ function PortraitSlideshow({
             next();
           }}
           disabled={!canGo}
-          className={`group relative h-14 w-14 overflow-hidden rounded-full transition-all duration-300 ${
+          className={`group relative h-16 w-16 overflow-hidden rounded-full transition-all duration-300 ${
             canGo
-              ? "bg-gradient-to-br from-blue-500/90 to-blue-600/90 shadow-lg shadow-blue-500/40 hover:shadow-xl hover:shadow-blue-500/50 hover:scale-110 backdrop-blur-sm"
+              ? "bg-gradient-to-br from-blue-500 to-blue-700 shadow-2xl shadow-blue-500/50 hover:shadow-blue-500/70 hover:scale-110 active:scale-95"
               : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
           }`}
           type="button"
           aria-label="Next slide"
         >
+          <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
           <svg
-            className="absolute inset-0 m-auto h-7 w-7 text-white transition-transform group-hover:translate-x-0.5"
+            className="absolute inset-0 m-auto h-8 w-8 text-white transition-transform group-hover:translate-x-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -253,16 +298,16 @@ function PortraitSlideshow({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2.5}
+              strokeWidth={3}
               d="M9 5l7 7-7 7"
             />
           </svg>
         </button>
       </div>
 
-      {/* Dot indicators */}
+      {/* Enhanced dot indicators */}
       {len > 1 && (
-        <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+        <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-3 rounded-full bg-black/30 px-4 py-3 backdrop-blur-md">
           {items.map((_, idx) => (
             <button
               key={idx}
@@ -271,23 +316,37 @@ function PortraitSlideshow({
                 e.stopPropagation();
                 goToSlide(idx);
               }}
-              className={`h-2 rounded-full transition-all duration-300 ${
+              className={`relative h-2.5 rounded-full transition-all duration-300 ${
                 idx === index
-                  ? "w-8 bg-blue-500 shadow-lg shadow-blue-500/50"
-                  : "w-2 bg-white/50 hover:bg-white/80"
+                  ? "w-10 bg-gradient-to-r from-blue-400 to-blue-600 shadow-lg shadow-blue-500/50"
+                  : "w-2.5 bg-white/40 hover:bg-white/70 hover:w-4"
               }`}
               aria-label={`Go to slide ${idx + 1}`}
-            />
+            >
+              {idx === index && (
+                <div 
+                  className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-300 to-blue-500 transition-all duration-100"
+                  style={{ width: `${progress}%` }}
+                />
+              )}
+            </button>
           ))}
         </div>
       )}
 
-      {/* Counter */}
+      {/* Enhanced counter */}
       {len > 1 && (
-        <div className="pointer-events-none absolute top-4 right-4 z-20 rounded-full bg-black/50 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md">
-          {index + 1} / {len}
+        <div className="pointer-events-none absolute top-6 right-6 z-20 flex items-center gap-2 rounded-full bg-gradient-to-br from-black/60 to-black/40 px-5 py-2.5 backdrop-blur-md ring-1 ring-white/10">
+          <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
+          <span className="text-sm font-bold text-white">
+            {index + 1} <span className="text-white/60">/</span> {len}
+          </span>
         </div>
       )}
+
+      {/* Decorative corner accents */}
+      <div className="pointer-events-none absolute top-0 left-0 h-32 w-32 bg-gradient-to-br from-blue-500/10 to-transparent rounded-br-full" />
+      <div className="pointer-events-none absolute bottom-0 right-0 h-32 w-32 bg-gradient-to-tl from-purple-500/10 to-transparent rounded-tl-full" />
     </div>
   );
 }
