@@ -33,42 +33,52 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Only cache GET requests
-  if (event.request.method !== 'GET') return;
+  // 1. Skip non-GET or chrome-extension/data etc.
+  if (event.request.method !== 'GET' || !event.request.url.startsWith('http')) return;
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
+      // 2. Return from cache if found
+      if (cachedResponse) return cachedResponse;
 
+      // 3. Otherwise try network
       return fetch(event.request)
         .then((response) => {
-          // Don't cache if not a valid response
+          // If not dynamic contents, just return
           if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
 
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            // Only cache certain assets like images or static chunks
-            if (
-              event.request.url.includes('.png') ||
-              event.request.url.includes('.jpg') ||
-              event.request.url.includes('.svg') ||
-              event.request.url.includes('_next/static')
-            ) {
+          // 4. Cache static assets for future offline use
+          const url = event.request.url;
+          if (
+            url.includes('.png') ||
+            url.includes('.jpg') ||
+            url.includes('.svg') ||
+            url.includes('_next/static') ||
+            url.includes('/fonts/')
+          ) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
               cache.put(event.request, responseToCache);
-            }
-          });
+            });
+          }
 
           return response;
         })
-        .catch(() => {
-          // If fetch fails and it's a page request, show offline page
+        .catch((err) => {
+          console.warn('[SW] Fetch failed:', err);
+
+          // 5. Fallback for navigation requests
           if (event.request.mode === 'navigate') {
             return caches.match('/offline.html');
           }
+          
+          // 6. Return a generic error response instead of undefined to avoid browser crash
+          return new Response('Network error occurred', {
+            status: 408,
+            headers: { 'Content-Type': 'text/plain' },
+          });
         });
     })
   );
