@@ -394,12 +394,12 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
   }, [musicPopupOpen]);
 
   return (
-    <div className="min-h-screen w-screen max-w-none overflow-x-hidden bg-black text-white">
+    <div className="min-h-screen w-screen max-w-none overflow-x-hidden">
       {/* Hidden audio player */}
       <audio ref={audioRef} preload="auto" playsInline />
 
       {/* TOP NAV BAR (GLOBAL) */}
-      <header className="sticky top-0 z-[70] w-full border-b border-white/10 bg-black">
+      <header className="sticky top-0 z-[70] w-full border-b border-[var(--border-primary)] bg-[var(--bg-primary)]">
         <div className="flex items-center justify-between px-3 py-2">
           {/* LEFT: Hamburger + Logo + Brand */}
           <div className="flex items-center gap-3">
@@ -435,17 +435,17 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
               </div>
 
               {/* Brand text */}
-              <span className="text-sm font-semibold tracking-tight text-white">
+              <span className="text-sm font-semibold tracking-tight text-[var(--text-primary)]">
                 8JJCRICKET
               </span>
             </Link>
           </div>
 
-          <div className="ml-5 inline-flex h-9 items-center justify-center rounded-full border border-white/15 bg-white/5 px-3 text-sm font-semibold text-white hover:bg-white/10">
+          <div className="ml-5 inline-flex h-9 items-center justify-center rounded-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors">
             <select
               value={lang}
               onChange={(e) => handleLanguageChange(e.target.value)}
-              className="h-9 bg-transparent text-white outline-none [&>option]:text-black"
+              className="h-9 bg-transparent text-[var(--text-primary)] outline-none [&>option]:text-black"
               aria-label="Google Translate language"
             >
               <option value="en">English</option>
@@ -470,11 +470,12 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
               inline-flex items-center justify-center
               h-8 w-8
               rounded-full
-              border border-white/15
-              bg-white/5
-              text-sm font-semibold text-white
-              hover:bg-white/10
+              border border-[var(--border-primary)]
+              bg-[var(--bg-secondary)]
+              text-sm font-semibold text-[var(--text-primary)]
+              hover:bg-[var(--bg-tertiary)]
               active:scale-95
+              transition-colors
             "
             aria-label="Toggle music"
             aria-pressed={musicEnabled}

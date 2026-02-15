@@ -38,6 +38,51 @@
 
 :root {
   color-scheme: light dark;
+
+  /* Dark theme (default) */
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #1a1a1a;
+  --bg-card: rgba(15, 15, 15, 0.6);
+  --bg-card-hover: rgba(20, 20, 20, 0.8);
+
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --text-tertiary: rgba(255, 255, 255, 0.6);
+
+  --border-primary: rgba(255, 255, 255, 0.1);
+  --border-secondary: rgba(255, 255, 255, 0.05);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+/* Light theme */
+[data-theme="light"] {
+  color-scheme: light;
+
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --bg-card-hover: rgba(245, 245, 245, 1);
+
+  --text-primary: #1a1a2e;
+  --text-secondary: rgba(26, 26, 46, 0.8);
+  --text-tertiary: rgba(26, 26, 46, 0.6);
+
+  --border-primary: rgba(0, 0, 0, 0.1);
+  --border-secondary: rgba(0, 0, 0, 0.05);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+}
+
+/* Smooth theme transitions */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 ::selection {
@@ -63,6 +108,8 @@ body {
   overflow-y: scroll;
   scroll-snap-type: none;
   /* IMPORTANT: disable native snap to avoid conflicts */
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 /* Optional: keep for semantics, not required when snap-type is none */
@@ -86,33 +133,38 @@ a {
 }
 
 .card {
-  @apply rounded-2xl border border-white/10 bg-india-charcoal/80 p-4 shadow-lg backdrop-blur-md;
+  @apply rounded-2xl border p-4 shadow-lg backdrop-blur-md;
+  background-color: var(--bg-card);
+  border-color: var(--border-primary);
 }
 
 /* New India Theme Utilities */
 .india-card {
-  @apply relative rounded-xl border border-white/10 bg-india-charcoal/90 p-4 shadow-xl backdrop-blur-xl transition-all duration-300;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  @apply relative rounded-xl border p-4 shadow-xl backdrop-blur-xl transition-all duration-300;
+  background-color: var(--bg-card);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.india-card:hover {
+  background-color: var(--bg-card-hover);
+  box-shadow: var(--shadow-lg);
 }
 
 .india-card-gold {
-  @apply india-card border-india-gold/30;
-  box-shadow: 0 4px 20px -2px rgba(255, 215, 0, 0.15);
+  @apply india-card border-india-gold/40;
 }
 
 .india-card-saffron {
-  @apply india-card border-india-saffron/30;
-  box-shadow: 0 4px 20px -2px rgba(255, 153, 51, 0.15);
+  @apply india-card border-india-saffron/40;
 }
 
 .india-card-green {
-  @apply india-card border-india-green/30;
-  box-shadow: 0 4px 20px -2px rgba(19, 136, 8, 0.15);
+  @apply india-card border-india-green/40;
 }
 
 .india-card-blue {
-  @apply india-card border-india-blue/30;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 128, 0.25);
+  @apply india-card border-india-blue/40;
 }
 
 .india-gradient-text {
@@ -195,7 +247,9 @@ body {
 
 /* Enhanced India Theme Utilities */
 .india-gradient-bg {
-  @apply bg-gradient-to-br from-india-charcoal via-slate-900 to-india-charcoal;
+  background-color: var(--bg-primary);
+  background-image: radial-gradient(circle at top right, var(--bg-secondary), transparent),
+    radial-gradient(circle at bottom left, var(--bg-tertiary), transparent);
 }
 
 .india-card-gradient {

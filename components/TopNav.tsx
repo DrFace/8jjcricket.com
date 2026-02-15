@@ -369,10 +369,10 @@ export default function TopNav() {
 
   return (
     <>
-      <div className="w-full border-b border-white/10 bg-black/40 backdrop-blur-xl">
-        <div className="flex w-full items-center gap-4 px-4 py-2 text-sm text-sky-100">
+      <div className="w-full border-b border-[var(--border-primary)] bg-[var(--bg-secondary)]">
+        <div className="flex w-full items-center gap-4 px-4 py-2 text-sm text-[var(--text-secondary)]">
           <div className="flex items-center gap-2">
-            <Megaphone className="h-5 w-5 text-amber-400" />
+            <Megaphone className="h-5 w-5 text-india-saffron" />
           </div>
           <div className="flex-1">
             <NewsTicker />
@@ -380,11 +380,11 @@ export default function TopNav() {
         </div>
       </div>
 
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-black/60 backdrop-blur-xl shadow-lg">
+      <header className="sticky top-0 z-50 border-b border-[var(--border-primary)] bg-[var(--bg-card)] backdrop-blur-xl shadow-lg">
         <div className="flex w-full items-center justify-between px-2 lg:px-4 py-2">
           <Link
             href="/"
-            className="flex items-center gap-2 text-lg lg:text-xl font-bold text-white shrink-0"
+            className="flex items-center gap-2 text-lg lg:text-xl font-bold text-[var(--text-primary)] shrink-0"
           >
             <Image
               src="/8jjlogo.png"
@@ -437,11 +437,11 @@ export default function TopNav() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <div className="inline-flex h-9 items-center justify-center rounded-full border border-white/15 bg-white/5 px-3 text-sm font-semibold text-white hover:bg-white/10">
+            <div className="inline-flex h-9 items-center justify-center rounded-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors">
               <select
                 value={lang}
                 onChange={(e) => handleLanguageChange(e.target.value)}
-                className="h-9 bg-transparent text-white outline-none [&>option]:text-black"
+                className="h-9 bg-transparent text-[var(--text-primary)] outline-none [&>option]:text-black"
                 aria-label="Google Translate language"
               >
                 <option value="en">English</option>
