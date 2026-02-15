@@ -181,7 +181,7 @@ function PortraitSlideshow({
   if (!len) return null;
 
   return (
-    <div className="group/carousel relative h-full w-full overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 to-slate-800">
+    <div className="group/carousel relative h-full w-full overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 via-slate-800 to-india-saffron/20 border border-india-gold/40 shadow-2xl shadow-india-gold/20">
       {/* Sliding container - FIXED: Use proper flex layout */}
       <div
         className="flex h-full transition-transform duration-700 ease-out"
@@ -227,10 +227,10 @@ function PortraitSlideshow({
                 <div className={`pointer-events-none absolute bottom-0 left-0 right-0 p-8 text-white transition-all duration-700 ${
                   isActive ? "translate-y-0" : "translate-y-4"
                 } opacity-0 group-hover/carousel:opacity-100`}>
-                  <h3 className="text-3xl font-bold drop-shadow-2xl mb-2 transform transition-transform duration-500 group-hover/slide:translate-x-2">
+                  <h3 className="text-3xl font-bold drop-shadow-2xl mb-2 transform transition-transform duration-500 group-hover/slide:translate-x-2 text-transparent bg-clip-text bg-gradient-to-r from-india-gold to-white">
                     {item.title}
                   </h3>
-                  <div className="h-1 w-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transform transition-all duration-500 group-hover/slide:w-32" />
+                  <div className="h-1 w-20 bg-gradient-to-r from-india-saffron to-india-gold rounded-full transform transition-all duration-500 group-hover/slide:w-32" />
                 </div>
               </a>
             </div>
@@ -249,7 +249,7 @@ function PortraitSlideshow({
           disabled={!canGo}
           className={`group relative h-16 w-16 overflow-hidden rounded-full transition-all duration-300 ${
             canGo
-              ? "bg-gradient-to-br from-blue-500 to-blue-700 shadow-2xl shadow-blue-500/50 hover:shadow-blue-500/70 hover:scale-110 active:scale-95"
+              ? "bg-gradient-to-br from-india-saffron to-india-red shadow-2xl shadow-india-saffron/50 hover:shadow-india-saffron/70 hover:scale-110 active:scale-95"
               : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
           }`}
           type="button"
@@ -282,7 +282,7 @@ function PortraitSlideshow({
           disabled={!canGo}
           className={`group relative h-16 w-16 overflow-hidden rounded-full transition-all duration-300 ${
             canGo
-              ? "bg-gradient-to-br from-blue-500 to-blue-700 shadow-2xl shadow-blue-500/50 hover:shadow-blue-500/70 hover:scale-110 active:scale-95"
+              ? "bg-gradient-to-br from-india-saffron to-india-red shadow-2xl shadow-india-saffron/50 hover:shadow-india-saffron/70 hover:scale-110 active:scale-95"
               : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
           }`}
           type="button"
@@ -318,14 +318,14 @@ function PortraitSlideshow({
               }}
               className={`relative h-2.5 rounded-full transition-all duration-300 ${
                 idx === index
-                  ? "w-10 bg-gradient-to-r from-blue-400 to-blue-600 shadow-lg shadow-blue-500/50"
+                  ? "w-10 bg-gradient-to-r from-india-saffron to-india-gold shadow-lg shadow-india-gold/50"
                   : "w-2.5 bg-white/40 hover:bg-white/70 hover:w-4"
               }`}
               aria-label={`Go to slide ${idx + 1}`}
             >
               {idx === index && (
                 <div 
-                  className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-300 to-blue-500 transition-all duration-100"
+                  className="absolute inset-0 rounded-full bg-gradient-to-r from-india-gold to-india-saffron transition-all duration-100"
                   style={{ width: `${progress}%` }}
                 />
               )}
@@ -335,8 +335,8 @@ function PortraitSlideshow({
       )}
 
       {/* Decorative corner accents */}
-      <div className="pointer-events-none absolute top-0 left-0 h-32 w-32 bg-gradient-to-br from-blue-500/10 to-transparent rounded-br-full" />
-      <div className="pointer-events-none absolute bottom-0 right-0 h-32 w-32 bg-gradient-to-tl from-purple-500/10 to-transparent rounded-tl-full" />
+      <div className="pointer-events-none absolute top-0 left-0 h-32 w-32 bg-gradient-to-br from-india-saffron/20 to-transparent rounded-br-full" />
+      <div className="pointer-events-none absolute bottom-0 right-0 h-32 w-32 bg-gradient-to-tl from-india-green/20 to-transparent rounded-tl-full" />
     </div>
   );
 }
@@ -447,12 +447,12 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
 
         <div className="relative ml-[46%] flex h-full flex-col gap-7 p-8 pt-16">
           {/* TOP: Replace BannerCarouselNew with portrait_image_path slideshow + buttons */}
-          <div className="group relative h-[40%] overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-white/20 transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/30">
+          <div className="group relative h-[40%] overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-india-gold/50 transition-all duration-500 hover:ring-india-gold/70 hover:shadow-india-gold/50">
             <PortraitSlideshow items={slideshowItems} />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </div>
 
-          <div className="relative h-[45%] overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-800/30 to-slate-900/30 shadow-xl ring-1 ring-white/10 backdrop-blur-sm mt-8 bg-white-500">
+          <div className="relative h-[45%] overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-800/40 to-slate-900/40 shadow-xl ring-1 ring-india-gold/40 backdrop-blur-sm mt-8 bg-white-500">
             <div className="grid h-full grid-cols-4 gap-2 p-6 pr-24 bg-white-500 w-full">
               {visiblePages.map((p) => {
                 const thumb = getMainPortrait(p) || getHero(p) || getHover(p);
@@ -466,7 +466,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     href={isHttp ? p.slug : `/portraits/${p.slug}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="group relative h-full w-full max-w-[460px] mx-auto overflow-hidden rounded-[1.75rem]  shadow-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-blue-500/30"
+                    className="group relative h-full w-full max-w-[460px] mx-auto overflow-hidden rounded-[1.75rem]  shadow-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-india-gold/50"
                     onMouseEnter={() => onPortraitHover(p)}
                     onMouseLeave={onPortraitLeave}
                     title={p.title}
@@ -474,7 +474,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     <div
                       className={`w-full pointer-events-none absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${
                         isHovered
-                          ? "ring-[3px] ring-blue-400/70 shadow-lg shadow-blue-400/40"
+                          ? "ring-[3px] ring-india-gold shadow-lg shadow-india-gold/60"
                           : "ring-1 ring-black/5"
                       }`}
                     />
@@ -487,7 +487,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                         loading="lazy"
                       />
                     ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50" />
+                      <div className="absolute inset-0 bg-gradient-to-br from-india-saffron/20 via-white/10 to-india-green/20" />
                     )}
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                   </a>
@@ -501,7 +501,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                 disabled={!canPrev}
                 className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${
                   canPrev
-                    ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
+                    ? "bg-gradient-to-br from-india-saffron to-india-red shadow-lg shadow-india-saffron/30 hover:shadow-xl hover:shadow-india-saffron/40 hover:scale-110"
                     : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
                 }`}
                 type="button"
@@ -529,7 +529,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                 disabled={!canNext}
                 className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${
                   canNext
-                    ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
+                    ? "bg-gradient-to-br from-india-saffron to-india-red shadow-lg shadow-india-saffron/30 hover:shadow-xl hover:shadow-india-saffron/40 hover:scale-110"
                     : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
                 }`}
                 type="button"
@@ -553,8 +553,8 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
           </div>
         </div>
 
-        <div className="pointer-events-none absolute -left-20 top-20 h-64 w-64 rounded-full bg-blue-500/0 blur-[100px]" />
-        <div className="pointer-events-none absolute -right-20 bottom-20 h-64 w-64 rounded-full bg-purple-500/0 blur-[100px]" />
+        <div className="pointer-events-none absolute -left-20 top-20 h-64 w-64 rounded-full bg-india-saffron/10 blur-[100px]" />
+        <div className="pointer-events-none absolute -right-20 bottom-20 h-64 w-64 rounded-full bg-india-green/10 blur-[100px]" />
       </div>
     </section>
   );

@@ -216,7 +216,7 @@ export default async function HomePage() {
             );
           })()}
           <SponsorBar />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-india-saffron/20 to-transparent" />
         </section>
 
         <section
@@ -230,7 +230,7 @@ export default async function HomePage() {
             />
             <div className="absolute inset-0 bg-black/70" />
 
-            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
+            <div className="relative w-full rounded-2xl border border-india-gold/40 bg-slate-900/80 p-4 shadow-2xl backdrop-blur-2xl shadow-india-saffron/20">
               <PortraitShowcaseSection />
             </div>
           </div>
@@ -241,13 +241,9 @@ export default async function HomePage() {
           className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
         >
           <div className="relative h-full w-full flex items-center">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
-            />
-            <div className="absolute inset-0 bg-black/70" />
+            {/* Background removed as per request */}
 
-            <div className="relative w-full max-w-[1480px] mx-auto rounded-2xl border border-white/15 bg-slate-900/70 p-6 shadow-2xl backdrop-blur-2xl">
+            <div className="relative w-full max-w-[1480px] mx-auto rounded-2xl border border-india-green/30 bg-gradient-to-br from-slate-900/95 via-slate-900/90 to-india-green/10 p-6 shadow-2xl backdrop-blur-xl shadow-india-green/10 ring-1 ring-white/5">
               <HomeNewsShowcase />
             </div>
           </div>
@@ -258,13 +254,9 @@ export default async function HomePage() {
           className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
         >
           <div className="relative h-full w-full flex items-center">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
-            />
-            <div className="absolute inset-0 bg-black/70" />
+            {/* Background removed as per request */}
 
-            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
+            <div className="relative w-full rounded-2xl border border-india-blue/30 bg-gradient-to-br from-slate-900/95 via-slate-900/90 to-india-blue/10 p-4 shadow-2xl backdrop-blur-xl shadow-india-blue/10 ring-1 ring-white/5">
               <HomeFeedbackSection />
             </div>
           </div>

@@ -69,8 +69,8 @@ export default async function HomeNewsShowcase() {
         {/* LEFT — Featured */}
         <Link
           href={`/news/${featured.slug}`}
-          className="group relative overflow-hidden rounded-3xl bg-white/5 ring-1 ring-white/10 shadow-2xl transition
-                     hover:bg-white/7 hover:ring-white/15"
+          className="group relative overflow-hidden rounded-3xl bg-white/5 ring-1 ring-india-green/30 shadow-2xl transition
+                     hover:bg-white/7 hover:ring-india-green/50 hover:shadow-india-green/20"
         >
           {/* Image */}
           <div
@@ -82,7 +82,7 @@ export default async function HomeNewsShowcase() {
                          group-hover:scale-[1.03]"
               style={{ backgroundImage: `url(${featured.image_url})` }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-india-green/40 to-transparent" />
 
             {/* subtle shine */}
             <div
@@ -93,7 +93,7 @@ export default async function HomeNewsShowcase() {
 
           {/* Content */}
           <div className="p-6 lg:p-7">
-            <div className="text-sm text-white/60">
+            <div className="text-sm text-india-gold font-medium mb-1">
               {formatDate(featured.published_at)}
             </div>
 
@@ -108,9 +108,9 @@ export default async function HomeNewsShowcase() {
             {/* CTA */}
             <div className="mt-5">
               <div
-                className="block w-full rounded-xl bg-amber-400/15 py-3 text-center text-sm font-semibold text-amber-200
-                           ring-1 ring-amber-300/20 transition
-                           hover:bg-amber-400/20"
+                className="block w-full rounded-xl bg-india-gold/15 py-3 text-center text-sm font-semibold text-india-gold
+                           ring-1 ring-india-gold/20 transition
+                           hover:bg-india-gold/20"
               >
                 Read more
               </div>
@@ -127,9 +127,9 @@ export default async function HomeNewsShowcase() {
 
           <Link
             href="/news"
-            className="mt-4 flex items-center justify-center rounded-2xl bg-white/5 py-4 text-sm font-semibold text-white/70
-                       ring-1 ring-white/10 transition
-                       hover:bg-white/10 hover:ring-white/15 hover:-translate-y-[1px] active:translate-y-0"
+            className="mt-4 flex items-center justify-center rounded-2xl bg-white/5 py-4 text-sm font-semibold text-india-green
+                       ring-1 ring-india-green/20 transition
+                       hover:bg-white/10 hover:ring-india-green/30 hover:-translate-y-[1px] active:translate-y-0"
           >
             View more →
           </Link>

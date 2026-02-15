@@ -95,7 +95,7 @@ export default function HomeFeedbackSection({
       {/* TOP: Two panels */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* LEFT: Open policy text */}
-        <div className="rounded-2xl border border-white/15 bg-slate-900/55 p-6 shadow-2xl backdrop-blur-2xl">
+        <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-slate-800/50 to-slate-900/50 p-6 shadow-lg backdrop-blur-md">
           <h2 className="text-2xl font-semibold text-white">Open Policy</h2>
 
           <ul className="mt-4 space-y-3 text-sm leading-relaxed text-white/85">
@@ -113,7 +113,7 @@ export default function HomeFeedbackSection({
               <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" />
               <p>
                 This{" "}
-                <span className="font-semibold text-amber-300">FEEDBACK</span>{" "}
+                <span className="font-semibold text-india-gold">FEEDBACK</span>{" "}
                 area was built based on that idea.
               </p>
             </li>
@@ -145,7 +145,7 @@ export default function HomeFeedbackSection({
         </div>
 
         {/* RIGHT: Feedback form */}
-        <div className="rounded-2xl border border-white/15 bg-slate-900/55 p-6 shadow-2xl backdrop-blur-2xl">
+        <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-slate-800/50 to-slate-900/50 p-6 shadow-lg backdrop-blur-md">
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-2xl font-semibold text-white">Feedback</h2>
@@ -154,13 +154,13 @@ export default function HomeFeedbackSection({
               </p>
             </div>
 
-            <div className="hidden sm:flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-black/30">
-              <MailIcon className="h-5 w-5 text-white/80" />
+            <div className="hidden sm:flex h-10 w-10 items-center justify-center rounded-xl border border-india-gold/30 bg-black/30">
+              <MailIcon className="h-5 w-5 text-india-saffron" />
             </div>
           </div>
 
           <form onSubmit={handleSendFeedback} className="mt-5 space-y-4">
-            <div className="rounded-xl border border-white/10 bg-black/25 px-4 py-3">
+            <div className="rounded-xl border border-white/5 bg-black/40 px-4 py-3 focus-within:border-india-gold/50 focus-within:ring-1 focus-within:ring-india-gold/50 transition-all shadow-inner">
               <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -171,7 +171,7 @@ export default function HomeFeedbackSection({
               />
             </div>
 
-            <div className="rounded-xl border border-white/10 bg-black/25 px-4 py-3">
+            <div className="rounded-xl border border-white/5 bg-black/40 px-4 py-3 focus-within:border-india-gold/50 focus-within:ring-1 focus-within:ring-india-gold/50 transition-all shadow-inner">
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -196,7 +196,7 @@ export default function HomeFeedbackSection({
             <button
               type="submit"
               disabled={!canSend}
-              className="group w-full rounded-full bg-amber-500 px-6 py-3 text-sm font-bold text-slate-900 shadow-xl transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
+              className="group w-full rounded-full bg-india-saffron px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:bg-india-saffron/90 disabled:cursor-not-allowed disabled:opacity-60"
             >
               Send feedback →
             </button>
@@ -224,7 +224,7 @@ export default function HomeFeedbackSection({
         </div>
 
         {/* RIGHT: long feedback email bar */}
-        <div className="rounded-2xl border border-white/15 bg-slate-900/55 p-5 shadow-2xl backdrop-blur-2xl">
+        <div className="rounded-2xl border border-white/10 bg-slate-900/55 p-6 shadow-lg backdrop-blur-md">
           <p className="text-sm font-semibold text-white">
             If your feedback is long, please send it by email
           </p>
@@ -232,8 +232,8 @@ export default function HomeFeedbackSection({
             We will receive it and support you as best as possible. Thank you!
           </p>
 
-          <div className="mt-4 flex items-center gap-3 rounded-2xl border border-amber-400/30 bg-black/25 p-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500 text-slate-900">
+          <div className="mt-4 flex items-center gap-3 rounded-2xl border border-india-blue/30 bg-black/25 p-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-india-blue text-white">
               <MailIcon className="h-6 w-6" />
             </div>
 
@@ -246,7 +246,7 @@ export default function HomeFeedbackSection({
             <button
               type="button"
               onClick={handleLongFeedbackSend}
-              className="rounded-xl border border-amber-400/40 bg-amber-500/20 px-5 py-3 text-sm font-bold text-amber-200 hover:bg-amber-500/30"
+              className="rounded-xl border border-india-blue/40 bg-india-blue/20 px-5 py-3 text-sm font-bold text-blue-200 hover:bg-india-blue/30"
             >
               Send
             </button>
