@@ -223,10 +223,10 @@ function PortraitSlideshow({
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30 opacity-0 transition-opacity duration-500 group-hover/slide:opacity-100" />
                 
-                {/* Title overlay with animation */}
+                {/* Title overlay with animation - only visible on hover */}
                 <div className={`pointer-events-none absolute bottom-0 left-0 right-0 p-8 text-white transition-all duration-700 ${
-                  isActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-                }`}>
+                  isActive ? "translate-y-0" : "translate-y-4"
+                } opacity-0 group-hover/carousel:opacity-100`}>
                   <h3 className="text-3xl font-bold drop-shadow-2xl mb-2 transform transition-transform duration-500 group-hover/slide:translate-x-2">
                     {item.title}
                   </h3>
@@ -305,9 +305,9 @@ function PortraitSlideshow({
         </button>
       </div>
 
-      {/* Enhanced dot indicators */}
+      {/* Enhanced dot indicators - only visible on hover */}
       {len > 1 && (
-        <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-3 rounded-full bg-black/30 px-4 py-3 backdrop-blur-md">
+        <div className="absolute top-6 left-1/2 z-20 flex -translate-x-1/2 gap-3 rounded-full bg-black/40 px-4 py-3 backdrop-blur-md opacity-0 transition-opacity duration-300 group-hover/carousel:opacity-100">
           {items.map((_, idx) => (
             <button
               key={idx}
@@ -331,16 +331,6 @@ function PortraitSlideshow({
               )}
             </button>
           ))}
-        </div>
-      )}
-
-      {/* Enhanced counter */}
-      {len > 1 && (
-        <div className="pointer-events-none absolute top-6 right-6 z-20 flex items-center gap-2 rounded-full bg-gradient-to-br from-black/60 to-black/40 px-5 py-2.5 backdrop-blur-md ring-1 ring-white/10">
-          <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
-          <span className="text-sm font-bold text-white">
-            {index + 1} <span className="text-white/60">/</span> {len}
-          </span>
         </div>
       )}
 
