@@ -1,7 +1,6 @@
 // public/sw.js
-const CACHE_NAME = '8jj-cache-v1';
+const CACHE_NAME = '8jj-cache-v2';
 const STATIC_ASSETS = [
-  '/',
   '/site.webmanifest',
   '/favicon.ico',
   '/8jjlogo.png',
