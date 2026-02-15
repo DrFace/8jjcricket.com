@@ -164,7 +164,7 @@ export default async function HomePage() {
       <HomeVerticalSwiper>
         <section
           data-snap
-          className="SectionScroll sticky top-0 xl:h-[90vh] lg:h-[84vh] w-full overflow-hidden"
+          className="SectionScroll sticky top-0 h-[75vh] lg:h-[84vh] xl:h-[90vh] w-full overflow-hidden"
         >
           {/* SEO-Optimized H1 for India & South Asia */}
           <h1 className="sr-only">
@@ -221,7 +221,7 @@ export default async function HomePage() {
 
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex w-full items-center px-6 xl:mt-0 lg:mt-10"
+          className="SectionScroll sticky top-0 flex w-full items-center px-6 mt-4 lg:mt-8 xl:mt-0 min-h-[85vh] lg:h-screen"
         >
           <div className="relative h-full w-full flex items-center">
             <div
@@ -238,7 +238,7 @@ export default async function HomePage() {
         {/* News */}
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
+          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6"
         >
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
@@ -251,7 +251,7 @@ export default async function HomePage() {
 
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
+          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6"
         >
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
