@@ -86,8 +86,8 @@ export default function PlayerDetailPage() {
             </div>
           ) : (
             <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
-              <div className="flex flex-col items-center gap-8 md:flex-row mt-3">
-                <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-slate-900 shadow-md">
+              <div className="flex flex-col items-center gap-8 md:flex-row mt-3 rounded-3xl border border-india-gold/30 bg-gradient-to-br from-india-charcoal via-slate-900 to-india-blue/20 p-8 shadow-2xl backdrop-blur-xl">
+                <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-white/5 border border-india-gold/20 shadow-lg">
                   <Image
                     src={player?.image_path || "/placeholder.png"}
                     alt={player ? GetDisplayName(player) : ""}
@@ -97,36 +97,39 @@ export default function PlayerDetailPage() {
                 </div>
 
                 <div>
-                  <h1 className="text-3xl font-bold text-white">
+                  <h1 className="text-4xl font-bold text-white india-header-text mb-2">
                     {player ? GetDisplayName(player) : ""}
                   </h1>
-                  <p className="text-amber-300">
+                  <p className="text-xl font-bold text-india-gold">
                     {player.country?.name ?? "Unknown Country"}
                   </p>
 
-                  <div className="mt-3 space-y-1 text-sm text-sky-100/70">
+                  <div className="mt-4 flex flex-wrap gap-4 text-sm">
                     {player.dateofbirth && (
-                      <p>
-                        <strong>DOB:</strong> {player.dateofbirth}
-                      </p>
+                      <div className="bg-slate-900/60 rounded-lg px-4 py-2 border border-white/10">
+                        <span className="text-india-gold font-semibold">DOB: </span>
+                        <span className="text-white">{player.dateofbirth}</span>
+                      </div>
                     )}
                     {player.battingstyle && (
-                      <p>
-                        <strong>Batting Style:</strong> {player.battingstyle}
-                      </p>
+                      <div className="bg-slate-900/60 rounded-lg px-4 py-2 border border-white/10">
+                        <span className="text-india-gold font-semibold">Batting: </span>
+                        <span className="text-white">{player.battingstyle}</span>
+                      </div>
                     )}
                     {player.bowlingstyle && (
-                      <p>
-                        <strong>Bowling Style:</strong> {player.bowlingstyle}
-                      </p>
+                      <div className="bg-slate-900/60 rounded-lg px-4 py-2 border border-white/10">
+                        <span className="text-india-gold font-semibold">Bowling: </span>
+                        <span className="text-white">{player.bowlingstyle}</span>
+                      </div>
                     )}
                   </div>
                 </div>
               </div>
 
               {careers.length > 0 ? (
-                <div className="mt-10">
-                  <h2 className="mb-4 text-2xl font-semibold text-white">
+                <div className="mt-8">
+                  <h2 className="mb-4 text-2xl font-bold text-india-gold india-header-text">
                     Career Statistics
                   </h2>
 

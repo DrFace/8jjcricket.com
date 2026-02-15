@@ -127,16 +127,16 @@ export default async function GalleryPage() {
       <main className="min-h-screen bg-black text-white">
         <div className="mx-auto w-full max-w-7xl px-4 py-8">
           {/* HERO */}
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-6 sm:p-10">
+          <div className="relative overflow-hidden rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 p-6 sm:p-10 shadow-2xl backdrop-blur-xl">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold tracking-widest text-white/70">
+                <p className="text-xs font-bold tracking-widest text-india-gold">
                   8JJ SPORTS • GALLERY
                 </p>
-                <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">
+                <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl text-white india-header-text">
                   Moments. Matches. Memories.
                 </h1>
-                <p className="mt-2 max-w-2xl text-sm text-white/65">
+                <p className="mt-2 max-w-2xl text-sm text-sky-100/70">
                   Browse images by category and album. Click any photo to view
                   fullscreen.
                 </p>
@@ -156,7 +156,7 @@ export default async function GalleryPage() {
 
               <Link
                 href="/"
-                className="shrink-0 rounded-full bg-white/10 px-4 py-2 text-[11px] font-semibold text-white/85 ring-1 ring-white/15 hover:bg-white/15"
+                className="shrink-0 rounded-full bg-gradient-to-r from-india-saffron to-india-gold px-4 py-2 text-[11px] font-bold text-black hover:shadow-lg transition-all"
               >
                 Back Home
               </Link>
@@ -166,7 +166,7 @@ export default async function GalleryPage() {
           {/* BODY */}
           <div className="mt-8">
             {categories.length === 0 ? (
-              <div className="rounded-2xl bg-white/5 p-8 text-sm text-white/60 ring-1 ring-white/10">
+              <div className="rounded-2xl bg-slate-900/60 backdrop-blur-md p-8 text-sm text-sky-100/60 border border-india-gold/20 shadow-lg">
                 No categories found.
               </div>
             ) : (

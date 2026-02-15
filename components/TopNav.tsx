@@ -336,10 +336,10 @@ export default function TopNav() {
       </div>
 
       <header className="sticky top-0 z-50 border-b border-white/10 bg-black/60 backdrop-blur-xl shadow-lg">
-        <div className="flex w-full items-center justify-between px-4 py-2">
+        <div className="flex w-full items-center justify-between px-2 lg:px-4 py-2">
           <Link
             href="/"
-            className="flex items-center gap-2 text-xl font-bold text-white"
+            className="flex items-center gap-2 text-lg lg:text-xl font-bold text-white shrink-0"
           >
             <Image
               src="/8jjlogo.png"
@@ -351,7 +351,7 @@ export default function TopNav() {
             <span>8jjcricket</span>
           </Link>
 
-          <nav className="hidden gap-6 text-[15px] font-semibold md:flex">
+          <nav className="hidden gap-3 lg:gap-5 xl:gap-8 text-[13px] lg:text-[14px] xl:text-[15px] font-semibold md:flex whitespace-nowrap">
             <NavItem href="/" label="Home" active={isActive("/")} />
             <NavItem
               href="/livescore"

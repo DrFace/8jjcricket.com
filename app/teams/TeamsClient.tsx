@@ -225,17 +225,17 @@ export default function TeamsClient() {
           ) : (
             <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
               {/* Header */}
-              <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 p-6 md:p-8 shadow-2xl backdrop-blur-xl mt-5">
+              <div className="rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 p-6 md:p-8 shadow-2xl backdrop-blur-xl mt-5">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                   <div className="flex items-center gap-4">
                     <button
                       onClick={goBack}
-                      className="flex items-center justify-center w-10 h-10 bg-black/40 hover:bg-amber-950/60 border border-amber-400/30 rounded-full transition-all duration-300 hover:scale-110 group shadow-lg backdrop-blur-sm flex-shrink-0"
+                      className="flex items-center justify-center w-10 h-10 bg-black/40 hover:bg-india-gold/60 border border-india-gold/30 rounded-full transition-all duration-300 hover:scale-110 group shadow-lg backdrop-blur-sm flex-shrink-0"
                       aria-label="Go back"
                       type="button"
                     >
                       <svg
-                        className="w-5 h-5 text-amber-300 group-hover:-translate-x-0.5 transition-transform"
+                        className="w-5 h-5 text-india-gold group-hover:-translate-x-0.5 transition-transform"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -250,10 +250,10 @@ export default function TeamsClient() {
                     </button>
 
                     <div>
-                      <p className="text-xs font-semibold tracking-[0.18em] text-amber-300 mb-1">
+                      <p className="text-xs font-bold tracking-[0.18em] text-india-gold mb-1">
                         8JJCRICKET · TEAMS
                       </p>
-                      <h1 className="text-2xl md:text-3xl font-bold text-white">
+                      <h1 className="text-2xl md:text-3xl font-bold text-white india-header-text">
                         Cricket Teams
                       </h1>
                       <p className="text-sky-100/80 text-sm md:text-base mt-1">
@@ -269,7 +269,7 @@ export default function TeamsClient() {
                         id="league-select"
                         value={leagueId ?? "all"}
                         onChange={(e) => onLeagueChange(e.target.value)}
-                        className="w-full lg:w-80 pl-4 pr-10 py-3.5 bg-black/40 border border-white/20 rounded-xl shadow-sm text-amber-200 font-medium text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-amber-400/50 transition-all duration-200 cursor-pointer hover:bg-black/60 backdrop-blur-sm appearance-none"
+                        className="w-full lg:w-80 pl-4 pr-10 py-3.5 bg-black/40 border border-white/20 rounded-xl shadow-sm text-india-gold font-medium text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-india-gold/50 transition-all duration-200 cursor-pointer hover:bg-black/60 backdrop-blur-sm appearance-none"
                       >
                         <option value="all" className="bg-slate-900">
                           All Teams - All Series/Leagues
@@ -308,11 +308,11 @@ export default function TeamsClient() {
                     key={tab.key}
                     type="button"
                     onClick={() => setActiveTab(tab.key)}
-                    className={`px-4 py-2 rounded-xl border text-sm font-semibold transition-all
+                    className={`px-4 py-2 rounded-xl border text-sm font-bold transition-all
                     ${
                       activeTab === tab.key
-                        ? "bg-amber-400/20 border-amber-400/60 text-amber-200"
-                        : "bg-black/30 border-white/15 text-sky-100/70 hover:text-sky-100 hover:border-amber-400/40"
+                        ? "bg-india-saffron/20 border-india-saffron/60 text-india-gold shadow-lg shadow-india-saffron/20"
+                        : "bg-black/30 border-white/10 text-slate-300 hover:text-white hover:border-india-gold/40"
                     }`}
                   >
                     {tab.label}
@@ -322,13 +322,13 @@ export default function TeamsClient() {
 
               {/* Empty state */}
               {visibleTeamsCount === 0 && leagueId ? (
-                <div className="rounded-2xl border border-amber-400/30 bg-gradient-to-br from-slate-900/90 via-amber-900/10 to-orange-900/20 backdrop-blur-xl p-12 text-center shadow-2xl">
+                <div className="rounded-2xl border border-india-gold/30 bg-gradient-to-br from-slate-900/90 via-india-charcoal/80 to-india-blue/20 backdrop-blur-xl p-12 text-center shadow-2xl">
                   <p className="text-2xl font-bold text-white mb-3">
                     No Teams Data Available
                   </p>
                   <button
                     onClick={() => router.push("/teams")}
-                    className="px-6 py-3 bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-bold rounded-lg"
+                    className="px-6 py-3 bg-gradient-to-r from-india-saffron via-india-gold to-india-orange text-black font-bold rounded-lg shadow-lg hover:brightness-110 transition-all"
                     type="button"
                   >
                     View All Cricket Teams Instead
@@ -340,10 +340,10 @@ export default function TeamsClient() {
                   {visibleNational.length > 0 && (
                     <section>
                       <div className="flex items-center gap-3 mb-5">
-                        <h2 className="text-xl md:text-2xl font-bold text-amber-300">
+                        <h2 className="text-xl md:text-2xl font-bold text-india-gold india-header-text">
                           International Teams
                         </h2>
-                        <span className="px-3 py-1.5 text-amber-300 text-xs font-bold rounded-full border border-amber-400/40 shadow-lg">
+                        <span className="px-3 py-1.5 text-india-gold text-xs font-bold rounded-full border border-india-gold/40 shadow-lg bg-india-gold/10">
                           {pagedInternational.length}
                         </span>
                       </div>
@@ -366,10 +366,10 @@ export default function TeamsClient() {
                   {visibleDomestic.length > 0 && (
                     <section>
                       <div className="flex items-center gap-3 mb-5">
-                        <h2 className="text-xl md:text-2xl font-bold text-amber-300">
+                        <h2 className="text-xl md:text-2xl font-bold text-india-gold india-header-text">
                           Domestic Teams
                         </h2>
-                        <span className="px-3 py-1.5 text-amber-300 text-xs font-bold rounded-full border border-amber-400/40 shadow-lg">
+                        <span className="px-3 py-1.5 text-india-gold text-xs font-bold rounded-full border border-india-gold/40 shadow-lg bg-india-gold/10">
                           {pagedDomestic.length}
                         </span>
                       </div>

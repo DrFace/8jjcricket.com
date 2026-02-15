@@ -171,28 +171,29 @@ export default async function ArticlePage({ params }: Props) {
                 Back to news
               </Link>
 
-              {/* Share button + popup */}
+            {/* Share button + popup */}
               <ShareButton slug={article.slug} title={article.title} />
             </div>
 
             <h1
-              className="text-3xl md:text-4xl font-bold mt-4 mb-3 text-slate-100 
-                                      bg-gradient-to-r from-amber-200 via-yellow-100 to-orange-200 
-                                      bg-clip-text text-transparent h-[130px] "
+              className="text-3xl md:text-4xl font-bold mt-4 mb-3 india-header-text leading-tight"
             >
               {article.title}
             </h1>
 
             {article.published_at && (
               <p className="text-xs text-slate-400 mb-4">
-                {new Date(article.published_at).toLocaleString()}
+                {new Intl.DateTimeFormat("en-IN", {
+                  dateStyle: "full",
+                  timeStyle: "short",
+                  timeZone: "Asia/Kolkata",
+                }).format(new Date(article.published_at))}
               </p>
             )}
 
             {imgSrc && (
               <div
-                className="group mb-6 overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md
-                                          transition-all duration-300 hover:border-amber-400/30 hover:shadow-lg hover:shadow-amber-500/10"
+                className="group mb-6 overflow-hidden rounded-2xl india-card-blue-glow transition-all duration-300 hover:shadow-lg hover:shadow-india-blue/20"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -205,18 +206,17 @@ export default async function ArticlePage({ params }: Props) {
             )}
 
             <div
-              className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-6 
-                                       transition-all duration-300 hover:border-white/15"
+              className="rounded-2xl india-card-gradient p-6"
             >
               {/* FIX: render HTML body */}
               <div
                 className="prose prose-invert max-w-none 
                                           prose-p:text-slate-300 prose-p:leading-relaxed
-                                          prose-headings:text-slate-100 prose-headings:font-bold
-                                          prose-a:text-amber-400 prose-a:no-underline hover:prose-a:text-amber-300 hover:prose-a:underline
-                                          prose-strong:text-amber-200 prose-strong:font-semibold
+                                          prose-headings:text-india-gold prose-headings:font-bold
+                                          prose-a:text-india-saffron prose-a:no-underline hover:prose-a:text-india-gold hover:prose-a:underline
+                                          prose-strong:text-white prose-strong:font-semibold
                                           prose-ul:text-slate-300 prose-ol:text-slate-300
-                                          prose-li:marker:text-amber-400"
+                                          prose-li:marker:text-india-saffron"
                 dangerouslySetInnerHTML={{ __html: safeBodyHtml }}
               />
             </div>
@@ -226,11 +226,11 @@ export default async function ArticlePage({ params }: Props) {
               <Link
                 href="/news"
                 className="group relative overflow-hidden inline-flex items-center gap-2 rounded-full
-                                          bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500
-                                          px-6 py-3 text-sm font-semibold text-black
-                                          shadow-lg shadow-amber-500/40
+                                          bg-gradient-to-r from-india-saffron to-india-gold
+                                          px-6 py-3 text-sm font-bold text-black
+                                          shadow-lg shadow-india-saffron/40
                                           transition-all duration-300
-                                          hover:brightness-110 hover:shadow-xl hover:shadow-amber-500/50 
+                                          hover:brightness-110 hover:shadow-xl hover:shadow-india-saffron/50 
                                           hover:-translate-y-[2px]
                                           active:scale-95 active:translate-y-0"
               >
@@ -252,3 +252,4 @@ export default async function ArticlePage({ params }: Props) {
     </DesktopOnly>
   );
 }
+

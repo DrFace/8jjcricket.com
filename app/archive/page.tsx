@@ -78,13 +78,13 @@ function Pagination({
   };
 
   return (
-    <div className="rounded-2xl border border-white/15 bg-black/50 backdrop-blur-xl p-6 shadow-2xl">
+    <div className="rounded-3xl border border-india-gold/30 bg-slate-900/50 backdrop-blur-xl p-6 shadow-2xl">
       {/* Info text */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-sky-100/70">
-          Showing <span className="font-semibold text-amber-300">{from}</span>{" "}
-          to <span className="font-semibold text-amber-300">{to}</span> of{" "}
-          <span className="font-semibold text-amber-300">{totalMatches}</span>{" "}
+          Showing <span className="font-bold text-india-gold">{from}</span>{" "}
+          to <span className="font-bold text-india-gold">{to}</span> of{" "}
+          <span className="font-bold text-india-gold">{totalMatches}</span>{" "}
           matches
         </p>
       </div>
@@ -95,10 +95,10 @@ function Pagination({
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
             currentPage === 1
               ? "bg-slate-800/50 text-slate-500 cursor-not-allowed"
-              : "bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/30"
+              : "bg-gradient-to-r from-india-saffron/20 to-india-orange/20 text-india-gold hover:from-india-saffron/30 hover:to-india-orange/30 border border-india-gold/30 shadow-md"
           }`}
           aria-label="Previous page"
         >
@@ -112,7 +112,7 @@ function Pagination({
               return (
                 <span
                   key={`ellipsis-${index}`}
-                  className="px-3 py-2 text-sky-100/50"
+                  className="px-3 py-2 text-sky-100/50 font-medium"
                 >
                   ...
                 </span>
@@ -126,10 +126,10 @@ function Pagination({
               <button
                 key={pageNum}
                 onClick={() => handlePageChange(pageNum)}
-                className={`min-w-[40px] h-10 rounded-lg text-sm font-medium transition-all ${
+                className={`min-w-[40px] h-10 rounded-xl text-sm font-medium transition-all ${
                   isActive
-                    ? "bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-500 text-black font-bold shadow-lg shadow-amber-500/30"
-                    : "bg-slate-800/50 text-sky-100 hover:bg-slate-700/70 border border-white/10"
+                    ? "bg-gradient-to-r from-india-saffron via-india-gold to-india-orange text-black font-extrabold shadow-lg shadow-india-gold/30"
+                    : "bg-slate-800/50 text-sky-100/80 hover:bg-slate-700/70 border border-white/10 hover:border-india-gold/30"
                 }`}
                 aria-label={`Page ${pageNum}`}
                 aria-current={isActive ? "page" : undefined}
@@ -144,10 +144,10 @@ function Pagination({
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === lastPage}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
             currentPage === lastPage
               ? "bg-slate-800/50 text-slate-500 cursor-not-allowed"
-              : "bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/30"
+              : "bg-gradient-to-r from-india-saffron/20 to-india-orange/20 text-india-gold hover:from-india-saffron/30 hover:to-india-orange/30 border border-india-gold/30 shadow-md"
           }`}
           aria-label="Next page"
         >
@@ -343,7 +343,7 @@ export default function ArchivePage() {
               <div>
                 <label
                   htmlFor="category"
-                  className="block text-xs font-medium text-amber-200 mb-2"
+                  className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
                 >
                   Category
                 </label>
@@ -367,7 +367,7 @@ export default function ArchivePage() {
               <div>
                 <label
                   htmlFor="format"
-                  className="block text-xs font-medium text-amber-200 mb-2"
+                  className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
                 >
                   Format
                 </label>
@@ -392,7 +392,7 @@ export default function ArchivePage() {
               <div>
                 <label
                   htmlFor="date"
-                  className="block text-xs font-medium text-amber-200 mb-2"
+                  className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
                 >
                   Match Date
                 </label>
@@ -424,9 +424,9 @@ export default function ArchivePage() {
 
           {/* Empty state message */}
           <div className="min-h-[40vh] flex items-center justify-center">
-            <div className="max-w-md w-full rounded-2xl border border-white/15 bg-black/70 backdrop-blur-xl px-6 py-8 shadow-2xl text-center">
-              <div className="text-5xl mb-4">🏏</div>
-              <h2 className="text-xl font-semibold text-amber-200 mb-2">
+            <div className="max-w-md w-full rounded-3xl border border-india-gold/20 bg-slate-900/60 backdrop-blur-xl px-6 py-8 shadow-2xl text-center">
+              <div className="text-5xl mb-4 grayscale opacity-50">🏏</div>
+              <h2 className="text-xl font-bold text-india-gold mb-2">
                 No matches found
               </h2>
               <p className="text-sm text-sky-100/80">
@@ -437,7 +437,7 @@ export default function ArchivePage() {
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="mt-4 px-4 py-2 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 transition-colors text-sm font-medium border border-amber-500/30"
+                  className="mt-4 px-6 py-2 rounded-xl bg-india-gold/10 text-india-gold hover:bg-india-gold/20 transition-all text-sm font-bold border border-india-gold/30 hover:shadow-[0_0_15px_rgba(255,153,51,0.2)]"
                 >
                   Clear All Filters
                 </button>
@@ -462,13 +462,13 @@ export default function ArchivePage() {
         {/* Main content */}
         <main className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[82%] 2xl:ml-[9%] xl:ml-[4%] lg:ml-[1%]">
           {/* Hero */}
-          <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
+          <div className="rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold tracking-[0.18em] text-amber-400">
+                <p className="text-xs font-bold tracking-[0.18em] text-india-gold">
                   8JJCRICKET · ARCHIVE
                 </p>
-                <h1 className="mt-2 text-2xl md:text-3xl font-semibold text-white">
+                <h1 className="mt-2 text-2xl md:text-3xl font-bold text-white india-header-text">
                   Cricket Archives
                 </h1>
                 <p className="mt-2 text-sm md:text-base text-sky-100/90 max-w-xl">
@@ -476,11 +476,11 @@ export default function ArchivePage() {
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-950/40 backdrop-blur-sm px-3 py-1 text-xs font-medium text-emerald-300 shadow-sm">
+                <span className="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-950/40 backdrop-blur-sm px-3 py-1 text-xs font-bold text-emerald-300 shadow-sm">
                   <span className="mr-2 h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
                   {data?.total} matches
                 </span>
-                <span className="inline-flex items-center rounded-full border border-amber-400/30 bg-amber-950/40 backdrop-blur-sm px-3 py-1 text-xs font-medium text-amber-300 shadow-sm">
+                <span className="inline-flex items-center rounded-full border border-india-gold/30 bg-india-gold/10 backdrop-blur-sm px-3 py-1 text-xs font-bold text-india-gold shadow-sm">
                   🏏 All formats
                 </span>
               </div>
@@ -494,7 +494,7 @@ export default function ArchivePage() {
               <div>
                 <label
                   htmlFor="category"
-                  className="block text-xs font-medium text-amber-200 mb-2"
+                  className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
                 >
                   Category
                 </label>
@@ -518,7 +518,7 @@ export default function ArchivePage() {
               <div>
                 <label
                   htmlFor="format"
-                  className="block text-xs font-medium text-amber-200 mb-2"
+                  className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
                 >
                   Format
                 </label>
@@ -543,7 +543,7 @@ export default function ArchivePage() {
               <div>
                 <label
                   htmlFor="date"
-                  className="block text-xs font-medium text-amber-200 mb-2"
+                  className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
                 >
                   Match Date
                 </label>
@@ -594,27 +594,27 @@ export default function ArchivePage() {
         </main>
         {data ? (
           <aside className="2xl:w-[15%] xl:w-[15%] lg:w-[16%] mr-[1%]">
-            <div className="rounded-2xl border border-white/15 bg-black/50 backdrop-blur-xl p-5 shadow-2xl space-y-4 sticky top-6">
+            <div className="rounded-2xl border border-india-gold/30 bg-slate-900/50 backdrop-blur-xl p-5 shadow-2xl space-y-4 sticky top-6">
               <div>
-                <h2 className="text-sm font-semibold tracking-tight text-amber-200 mb-2">
+                <h2 className="text-sm font-bold tracking-tight text-india-gold mb-2 uppercase border-b border-india-gold/20 pb-2">
                   Quick Stats
                 </h2>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-sky-100/70">Total Matches</span>
-                    <span className="font-bold text-amber-300">
+                    <span className="text-sky-100/70 font-medium">Total Matches</span>
+                    <span className="font-bold text-white">
                       {data.total}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-sky-100/70">Current Page</span>
-                    <span className="font-bold text-amber-300">
+                    <span className="text-sky-100/70 font-medium">Current Page</span>
+                    <span className="font-bold text-white">
                       {data.current_page} / {data.last_page}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-sky-100/70">Per Page</span>
-                    <span className="font-bold text-amber-300">
+                    <span className="text-sky-100/70 font-medium">Per Page</span>
+                    <span className="font-bold text-white">
                       {data.per_page}
                     </span>
                   </div>
@@ -622,13 +622,13 @@ export default function ArchivePage() {
               </div>
 
               <div className="border-t border-white/10 pt-4">
-                <h2 className="text-sm font-semibold tracking-tight text-amber-200 mb-3">
+                <h2 className="text-sm font-bold tracking-tight text-india-gold mb-3 uppercase border-b border-india-gold/20 pb-2">
                   Active Filters
                 </h2>
                 <div className="space-y-2">
                   {category && (
-                    <div className="flex items-center justify-between bg-amber-500/10 rounded-lg px-3 py-2 border border-amber-500/20">
-                      <span className="text-xs text-amber-300">Category</span>
+                    <div className="flex items-center justify-between bg-india-gold/10 rounded-lg px-3 py-2 border border-india-gold/20">
+                      <span className="text-xs text-india-gold font-medium">Category</span>
                       <span className="text-xs font-bold text-white">
                         {category}
                       </span>
@@ -636,7 +636,7 @@ export default function ArchivePage() {
                   )}
                   {format && (
                     <div className="flex items-center justify-between bg-purple-500/10 rounded-lg px-3 py-2 border border-purple-500/20">
-                      <span className="text-xs text-purple-300">Format</span>
+                      <span className="text-xs text-purple-300 font-medium">Format</span>
                       <span className="text-xs font-bold text-white">
                         {format}
                       </span>
@@ -644,14 +644,14 @@ export default function ArchivePage() {
                   )}
                   {date && (
                     <div className="flex items-center justify-between bg-blue-500/10 rounded-lg px-3 py-2 border border-blue-500/20">
-                      <span className="text-xs text-blue-300">Date</span>
+                      <span className="text-xs text-blue-300 font-medium">Date</span>
                       <span className="text-xs font-bold text-white">
                         {date}
                       </span>
                     </div>
                   )}
                   {!hasActiveFilters && (
-                    <p className="text-xs text-sky-100/50 italic">
+                    <p className="text-xs text-sky-100/50 italic text-center py-2">
                       No filters applied
                     </p>
                   )}
