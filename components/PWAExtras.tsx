@@ -9,8 +9,8 @@ export default function PWAExtras() {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
 
   useEffect(() => {
-    // 1. Register Service Worker (Always do this for offline support)
-    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+    // 1. Register Service Worker (Only in production to avoid dev issues)
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
       navigator.serviceWorker.register('/sw.js')
         .then((reg) => console.log('PWA: Service Worker registered', reg.scope))
         .catch((err) => console.error('PWA: Service Worker failed', err));
