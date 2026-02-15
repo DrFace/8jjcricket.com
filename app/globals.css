@@ -6,6 +6,11 @@
   color-scheme: light dark;
 }
 
+::selection {
+  background-color: #FF9933; /* india-saffron */
+  color: #1A1A2E; /* india-charcoal */
+}
+
 html,
 body {
   height: 100%;

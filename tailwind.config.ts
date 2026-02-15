@@ -8,6 +8,8 @@ export default {
   theme: {
     extend: {
       colors: {
+        'india-maroon': '#800000',
+        'india-charcoal': '#1A1A2E', // Deep dark blue/charcoal for contrast
         'india-saffron': '#FF9933',
         'india-green': '#138808',
         'india-gold': '#FFD700',

@@ -216,7 +216,7 @@ export default async function HomePage() {
             );
           })()}
           <SponsorBar />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-india-saffron/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </section>
 
         <section
@@ -230,7 +230,7 @@ export default async function HomePage() {
             />
             <div className="absolute inset-0 bg-black/70" />
 
-            <div className="relative w-full rounded-2xl border border-india-gold/40 bg-slate-900/80 p-4 shadow-2xl backdrop-blur-2xl shadow-india-saffron/20">
+            <div className="relative w-full rounded-2xl border border-india-gold bg-slate-900/60 p-4 shadow-2xl backdrop-blur-md shadow-vibrant-orange/50">
               <PortraitShowcaseSection />
             </div>
           </div>
@@ -243,7 +243,7 @@ export default async function HomePage() {
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
 
-            <div className="relative w-full max-w-[1480px] mx-auto rounded-2xl border border-india-green/30 bg-gradient-to-br from-slate-900/95 via-slate-900/90 to-india-green/10 p-6 shadow-2xl backdrop-blur-xl shadow-india-green/10 ring-1 ring-white/5">
+            <div className="relative w-full max-w-[1480px] mx-auto rounded-2xl border border-india-green bg-gradient-to-br from-slate-900 via-india-green/20 to-india-gold/20 p-6 shadow-2xl backdrop-blur-xl shadow-india-green/40 ring-1 ring-india-gold/40">
               <HomeNewsShowcase />
             </div>
           </div>
@@ -256,7 +256,7 @@ export default async function HomePage() {
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
 
-            <div className="relative w-full rounded-2xl border border-india-blue/30 bg-gradient-to-br from-slate-900/95 via-slate-900/90 to-india-blue/10 p-4 shadow-2xl backdrop-blur-xl shadow-india-blue/10 ring-1 ring-white/5">
+            <div className="relative w-full rounded-2xl border border-india-blue bg-gradient-to-br from-slate-900 via-india-blue/30 to-vibrant-pink/30 p-4 shadow-2xl backdrop-blur-xl shadow-vibrant-pink/40 ring-1 ring-white/20">
               <HomeFeedbackSection />
             </div>
           </div>

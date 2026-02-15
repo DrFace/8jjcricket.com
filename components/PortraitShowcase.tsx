@@ -181,7 +181,7 @@ function PortraitSlideshow({
   if (!len) return null;
 
   return (
-    <div className="group/carousel relative h-full w-full overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 via-slate-800 to-india-saffron/20 border border-india-gold/40 shadow-2xl shadow-india-gold/20">
+    <div className="group/carousel relative h-full w-full overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 via-slate-800 to-india-saffron/30 border border-india-gold/60 shadow-2xl shadow-india-gold/30">
       {/* Sliding container - FIXED: Use proper flex layout */}
       <div
         className="flex h-full transition-transform duration-700 ease-out"
@@ -452,8 +452,8 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </div>
 
-          <div className="relative h-[45%] overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-800/40 to-slate-900/40 shadow-xl ring-1 ring-india-gold/40 backdrop-blur-sm mt-8 bg-white-500">
-            <div className="grid h-full grid-cols-4 gap-2 p-6 pr-24 bg-white-500 w-full">
+          <div className="relative h-[45%] overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-800/60 to-slate-900/60 shadow-xl ring-1 ring-india-gold/60 backdrop-blur-md mt-8 bg-white/5">
+            <div className="grid h-full grid-cols-4 gap-2 p-6 pr-24 w-full">
               {visiblePages.map((p) => {
                 const thumb = getMainPortrait(p) || getHero(p) || getHover(p);
                 const isHovered = hoveredId === p.id;
@@ -466,7 +466,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     href={isHttp ? p.slug : `/portraits/${p.slug}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="group relative h-full w-full max-w-[460px] mx-auto overflow-hidden rounded-[1.75rem]  shadow-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-india-gold/50"
+                    className="group relative h-full w-full max-w-[460px] mx-auto overflow-hidden rounded-[1.75rem] shadow-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-india-gold/70"
                     onMouseEnter={() => onPortraitHover(p)}
                     onMouseLeave={onPortraitLeave}
                     title={p.title}
@@ -474,7 +474,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     <div
                       className={`w-full pointer-events-none absolute inset-0 rounded-[1.75rem] transition-all duration-500 ${
                         isHovered
-                          ? "ring-[3px] ring-india-gold shadow-lg shadow-india-gold/60"
+                          ? "ring-[3px] ring-india-gold shadow-lg shadow-india-gold/80"
                           : "ring-1 ring-black/5"
                       }`}
                     />
