@@ -19,7 +19,7 @@ export default function UpcomingCard({ f }: { f: Match }) {
   return (
     <div className="relative group">
       {/* Base card with dark glassmorphism and visible border */}
-      <div className="absolute inset-0 rounded-xl border-2 border-white/20 bg-slate-900/80 backdrop-blur-sm shadow-xl group-hover:border-amber-400/60 group-hover:shadow-2xl transition-all" />
+      <div className="absolute inset-0 rounded-xl india-card-blue-glow group-hover:border-india-blue/60 group-hover:shadow-[0_0_20px_rgba(0,0,128,0.3)] transition-all" />
 
       {/* Subtle amber glow on hover (outside border only) */}
       <div
@@ -28,7 +28,7 @@ export default function UpcomingCard({ f }: { f: Match }) {
           absolute -inset-px rounded-[18px]
           opacity-0 group-hover:opacity-100
           transition-opacity duration-300
-          bg-gradient-to-r from-amber-400/20 via-yellow-400/20 to-orange-500/20
+          bg-gradient-to-r from-india-blue/20 via-indigo-400/20 to-blue-500/20
           blur-md
         "
       />
@@ -37,13 +37,13 @@ export default function UpcomingCard({ f }: { f: Match }) {
         {/* Top row: title + status */}
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="text-sm font-semibold text-white truncate">
+            <h3 className="text-sm font-semibold text-white truncate group-hover:text-india-gold transition-colors">
               {homeLabel} vs {awayLabel}
             </h3>
 
-            <p className="text-xs text-amber-200 mt-0.5">{metaLine}</p>
+            <p className="text-xs text-india-gold mt-0.5">{metaLine}</p>
 
-            <p className="text-[11px] text-sky-100/70 mt-0.5">{dateLine}</p>
+            <p className="text-[11px] text-gray-400 mt-0.5">{dateLine}</p>
           </div>
 
           <div className="text-right flex flex-col items-end gap-1">
@@ -51,15 +51,15 @@ export default function UpcomingCard({ f }: { f: Match }) {
               className={cn(
                 "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold",
                 f.live
-                  ? "bg-red-500/20 text-red-300 border border-red-500/30"
-                  : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                  ? "bg-india-red/20 text-red-300 border border-india-red/30 animate-pulse"
+                  : "bg-india-blue/20 text-blue-300 border border-india-blue/30"
               )}
             >
               {f.live ? "LIVE" : "Soon"}
             </span>
 
             {f.status && (
-              <div className="text-[11px] text-amber-200/80">{f.status}</div>
+              <div className="text-[11px] text-india-gold/80">{f.status}</div>
             )}
           </div>
         </div>
@@ -70,7 +70,7 @@ export default function UpcomingCard({ f }: { f: Match }) {
             <TeamBadge team={home} className="justify-start" />
           </div>
 
-          <div className="px-2 text-[11px] text-amber-300 uppercase tracking-wide font-semibold">
+          <div className="px-2 text-[11px] text-india-saffron uppercase tracking-wide font-semibold">
             vs
           </div>
 
@@ -81,9 +81,10 @@ export default function UpcomingCard({ f }: { f: Match }) {
 
         {/* Optional note */}
         {f.note && (
-          <p className="text-xs sm:text-sm mt-2 text-sky-100/80">{f.note}</p>
+          <p className="text-xs sm:text-sm mt-2 text-gray-400 italic">{f.note}</p>
         )}
       </div>
     </div>
   );
 }
+

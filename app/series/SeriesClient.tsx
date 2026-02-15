@@ -242,16 +242,16 @@ export default function SeriesPage() {
             ) : (
               <>
                 {/* Tabs */}
-                <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl shadow-2xl overflow-hidden">
+                <div className="rounded-2xl india-card-gradient overflow-hidden">
                   <div className="flex overflow-x-auto">
                     {SERIES_TABS.map((tab) => (
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`px-6 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                        className={`px-6 py-3 text-sm font-bold whitespace-nowrap border-b-2 transition-colors ${
                           activeTab === tab.id
-                            ? "border-amber-400 text-amber-300 bg-amber-950/30"
-                            : "border-transparent text-sky-100/70 hover:text-white hover:bg-white/5"
+                            ? "border-india-saffron text-india-gold bg-india-saffron/10"
+                            : "border-transparent text-slate-300 hover:text-white hover:bg-white/5"
                         }`}
                       >
                         {tab.label}
@@ -263,11 +263,11 @@ export default function SeriesPage() {
                 {activeTab === "series" && (
                   <>
                     {/* SEO Content Section */}
-                    <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
-                      <p className="text-xs font-semibold tracking-[0.18em] text-amber-400">
+                    <div className="rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
+                      <p className="text-xs font-bold tracking-[0.18em] text-india-gold">
                         8JJCRICKET · SERIES
                       </p>
-                      <h1 className="mt-2 text-3xl font-bold text-white">
+                      <h1 className="mt-2 text-3xl font-bold text-white india-header-text">
                         Cricket Series Schedule 2026 | 8jjcricket
                       </h1>
                       <p className="mt-2 text-sky-100/90">
@@ -289,14 +289,14 @@ export default function SeriesPage() {
                           return (
                             <div
                               key={league.id}
-                              className={`rounded-2xl border p-6 hover:shadow-[0_20px_50px_rgba(251,191,36,0.2)] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center group relative cursor-pointer backdrop-blur-xl ${
+                              className={`rounded-2xl border p-6 hover:shadow-[0_20px_50px_rgba(255,153,51,0.2)] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center group relative cursor-pointer backdrop-blur-xl ${
                                 isActive
-                                  ? "border-amber-400/60 bg-slate-900/90 ring-2 ring-amber-400/20"
-                                  : "border-white/20 bg-slate-900/80 hover:border-amber-400/40"
+                                  ? "border-india-gold/60 bg-india-charcoal/90 ring-2 ring-india-gold/20"
+                                  : "border-white/10 bg-india-charcoal/80 hover:border-india-gold/40"
                               }`}
                             >
                               {isActive && (
-                                <span className="absolute top-2 right-2 px-2 py-0.5 bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black text-xs font-bold rounded-full">
+                                <span className="absolute top-2 right-2 px-2 py-0.5 bg-gradient-to-r from-india-saffron via-india-gold to-india-orange text-black text-xs font-bold rounded-full shadow-lg">
                                   LIVE
                                 </span>
                               )}
@@ -316,7 +316,7 @@ export default function SeriesPage() {
                                     }}
                                   />
                                 ) : (
-                                  <div className="w-full h-full bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center text-black font-bold text-xl shadow-lg">
+                                  <div className="w-full h-full bg-gradient-to-br from-india-saffron to-india-gold rounded-lg flex items-center justify-center text-black font-bold text-xl shadow-lg">
                                     {league?.code
                                       ?.substring(0, 2)
                                       .toUpperCase()}
@@ -324,25 +324,25 @@ export default function SeriesPage() {
                                 )}
                               </div>
 
-                              <h3 className="font-medium text-white text-sm line-clamp-2 mb-1">
+                              <h3 className="font-bold text-white text-sm line-clamp-2 mb-1 group-hover:text-india-gold transition-colors">
                                 {league.name}
                               </h3>
 
-                              <p className="text-xs text-amber-200/80 uppercase font-medium mb-3">
+                              <p className="text-xs text-india-gold/80 uppercase font-medium mb-3">
                                 {league.code}
                               </p>
 
                               <div className="flex gap-2 mt-auto w-full">
                                 <Link
                                   href={`/series/${league.sportmonks_league_id}`}
-                                  className="flex-1 px-3 py-1.5 text-xs font-medium text-amber-300 border border-amber-400/50 rounded-xl hover:bg-amber-950/40 transition-colors backdrop-blur-sm"
+                                  className="flex-1 px-3 py-1.5 text-xs font-bold text-india-gold border border-india-gold/50 rounded-xl hover:bg-india-gold/10 transition-colors backdrop-blur-sm"
                                   aria-label={`View ${league.name} details at 8jjcricket`}
                                 >
                                   Details
                                 </Link>
                                 <Link
                                   href={`/teams?league=${league.sportmonks_league_id}`}
-                                  className="flex-1 px-3 py-1.5 text-xs font-medium text-black bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 rounded-xl hover:brightness-110 transition-all shadow-lg"
+                                  className="flex-1 px-3 py-1.5 text-xs font-bold text-black bg-gradient-to-r from-india-saffron via-india-gold to-india-orange rounded-xl hover:brightness-110 transition-all shadow-lg"
                                   aria-label={`View ${league.name} teams`}
                                 >
                                   Teams
@@ -366,7 +366,7 @@ export default function SeriesPage() {
                       <ol
                         itemScope
                         itemType="https://schema.org/BreadcrumbList"
-                        className="flex items-center space-x-2 text-sky-100/60"
+                        className="flex items-center space-x-2 text-slate-400"
                       >
                         <li
                           itemProp="itemListElement"
@@ -376,13 +376,13 @@ export default function SeriesPage() {
                           <Link
                             itemProp="item"
                             href="https://8jjcricket.com"
-                            className="hover:text-amber-300"
+                            className="hover:text-india-gold transition-colors"
                           >
                             <span itemProp="name">8jjcricket</span>
                           </Link>
                           <meta itemProp="position" content="1" />
                         </li>
-                        <li className="before:content-['>'] before:mx-2">
+                        <li className="before:content-['>'] before:mx-2 text-slate-500">
                           <span itemProp="name">Cricket Series</span>
                           <meta itemProp="position" content="2" />
                         </li>
@@ -393,9 +393,9 @@ export default function SeriesPage() {
 
                 {/* Current Matches Tab */}
                 {activeTab === "current" && (
-                  <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-8 text-center shadow-2xl">
+                  <div className="rounded-2xl india-card-gradient p-8 text-center shadow-2xl">
                     <svg
-                      className="w-16 h-16 text-amber-300/50 mx-auto mb-4"
+                      className="w-16 h-16 text-india-gold/50 mx-auto mb-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -407,15 +407,15 @@ export default function SeriesPage() {
                         d="M13 10V3L4 14h7v7l9-11h-7z"
                       />
                     </svg>
-                    <h3 className="text-lg font-medium text-white mb-2">
+                    <h3 className="text-lg font-bold text-white mb-2">
                       Live Matches
                     </h3>
-                    <p className="text-sky-100/80">
+                    <p className="text-slate-300 mb-4">
                       Check the home page for live cricket matches at 8jjcricket
                     </p>
                     <Link
                       href="/"
-                      className="inline-block mt-4 px-4 py-2 bg-gradient-to-r from-emerald-400 to-emerald-500 text-black font-medium rounded-lg hover:brightness-110 transition-all shadow-lg"
+                      className="inline-block px-4 py-2 bg-gradient-to-r from-india-green to-emerald-600 text-white font-bold rounded-lg hover:brightness-110 transition-all shadow-lg"
                     >
                       View Live Matches
                     </Link>
@@ -424,9 +424,9 @@ export default function SeriesPage() {
 
                 {/* Matches By Day Tab */}
                 {activeTab === "byDay" && (
-                  <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-8 text-center shadow-2xl">
+                  <div className="rounded-2xl india-card-gradient p-8 text-center shadow-2xl">
                     <svg
-                      className="w-16 h-16 text-amber-300/50 mx-auto mb-4"
+                      className="w-16 h-16 text-india-gold/50 mx-auto mb-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -438,23 +438,23 @@ export default function SeriesPage() {
                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                       />
                     </svg>
-                    <h3 className="text-lg font-medium text-white mb-2">
+                    <h3 className="text-lg font-bold text-white mb-2">
                       Matches Schedule
                     </h3>
-                    <p className="text-sky-100/80 mb-4">
+                    <p className="text-slate-300 mb-4">
                       View matches organized by date on the Recent and Upcoming
                       pages
                     </p>
                     <div className="flex gap-3 justify-center">
                       <Link
                         href="/recent"
-                        className="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors"
+                        className="px-4 py-2 bg-slate-700 text-white font-semibold rounded-lg hover:bg-slate-600 transition-colors border border-white/10"
                       >
                         Recent Matches
                       </Link>
                       <Link
                         href="/upcoming"
-                        className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                        className="px-4 py-2 bg-gradient-to-r from-india-blue to-blue-600 text-white font-semibold rounded-lg hover:brightness-110 transition-colors shadow-lg"
                       >
                         Upcoming Matches
                       </Link>
@@ -464,9 +464,9 @@ export default function SeriesPage() {
 
                 {/* Teams Tab */}
                 {activeTab === "teams" && (
-                  <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-8 text-center shadow-2xl">
+                  <div className="rounded-2xl india-card-gradient p-8 text-center shadow-2xl">
                     <svg
-                      className="w-16 h-16 text-amber-300/50 mx-auto mb-4"
+                      className="w-16 h-16 text-india-gold/50 mx-auto mb-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -478,15 +478,15 @@ export default function SeriesPage() {
                         d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                       />
                     </svg>
-                    <h3 className="text-lg font-medium text-white mb-2">
+                    <h3 className="text-lg font-bold text-white mb-2">
                       Cricket Teams
                     </h3>
-                    <p className="text-sky-100/80 mb-4">
+                    <p className="text-slate-300 mb-4">
                       Browse all international and domestic cricket teams
                     </p>
                     <Link
                       href="/teams"
-                      className="inline-block px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                      className="inline-block px-4 py-2 bg-gradient-to-r from-india-saffron to-india-gold text-black font-bold rounded-lg hover:brightness-110 transition-colors shadow-lg"
                     >
                       View All Teams
                     </Link>
@@ -495,9 +495,9 @@ export default function SeriesPage() {
 
                 {/* Archive Tab */}
                 {activeTab === "archive" && (
-                  <div className="rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-8 text-center shadow-2xl">
+                  <div className="rounded-2xl india-card-gradient p-8 text-center shadow-2xl">
                     <svg
-                      className="w-16 h-16 text-amber-300/50 mx-auto mb-4"
+                      className="w-16 h-16 text-india-gold/50 mx-auto mb-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -509,15 +509,15 @@ export default function SeriesPage() {
                         d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
                       />
                     </svg>
-                    <h3 className="text-lg font-medium text-white mb-2">
+                    <h3 className="text-lg font-bold text-white mb-2">
                       Series Archive
                     </h3>
-                    <p className="text-sky-100/80 mb-4">
+                    <p className="text-slate-300 mb-4">
                       Browse past cricket series and tournaments
                     </p>
                     <Link
                       href="/archive"
-                      className="inline-block px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors"
+                      className="inline-block px-4 py-2 bg-slate-700 text-white font-semibold rounded-lg hover:bg-slate-600 transition-colors border border-white/10"
                     >
                       View Archive
                     </Link>

@@ -230,7 +230,7 @@ export default async function HomePage() {
             />
             <div className="absolute inset-0 bg-black/70" />
 
-            <div className="relative w-full rounded-2xl border border-india-gold/50 bg-slate-900/90 p-4 shadow-2xl backdrop-blur-2xl shadow-vibrant-orange/30">
+            <div className="relative w-full india-card-gold-glow p-4">
               <PortraitShowcaseSection />
             </div>
           </div>
@@ -243,7 +243,7 @@ export default async function HomePage() {
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
 
-            <div className="relative w-full max-w-[1480px] mx-auto rounded-2xl border border-india-green/50 bg-slate-900/90 p-6 shadow-2xl backdrop-blur-2xl shadow-india-green/30 ring-1 ring-india-gold/20">
+            <div className="relative w-full max-w-[1480px] mx-auto india-card-green-glow p-6">
               <HomeNewsShowcase />
             </div>
           </div>
@@ -256,7 +256,7 @@ export default async function HomePage() {
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
 
-            <div className="relative w-full rounded-2xl border border-vibrant-pink/50 bg-slate-900/90 p-4 shadow-2xl backdrop-blur-2xl shadow-vibrant-pink/30 ring-1 ring-white/10">
+            <div className="relative w-full india-card-saffron-glow p-4">
               <HomeFeedbackSection />
             </div>
           </div>

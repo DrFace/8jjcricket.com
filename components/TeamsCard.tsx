@@ -8,10 +8,10 @@ type TeamsCardProps = {
 
 export default function TeamsCard({ team }: TeamsCardProps) {
   return (
-    <div aria-label={`View team ${team.name}`} className="block cursor-default">
-      <div className="flex items-center h-full gap-3 rounded-xl border border-white/20 bg-gradient-to-br from-slate-900/80 via-slate-800/70 to-slate-900/80 backdrop-blur-xl p-3 shadow-lg">
+    <div aria-label={`View team ${team.name}`} className="block cursor-default group">
+      <div className="flex items-center h-full gap-3 rounded-xl india-card-gradient p-3 shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_20px_rgba(255,153,51,0.3)]">
         {/* Circle container */}
-        <div className="relative w-10 h-10 rounded-full bg-white/30 overflow-hidden shrink-0">
+        <div className="relative w-10 h-10 rounded-full bg-white/10 overflow-hidden shrink-0 border border-india-gold/20">
           <Image
             src={GetTeamImageSrc(team.image_path)}
             alt={team.name}
@@ -20,7 +20,7 @@ export default function TeamsCard({ team }: TeamsCardProps) {
           />
         </div>
 
-        <span className="font-semibold text-white truncate text-sm">
+        <span className="font-bold text-white truncate text-sm group-hover:text-india-gold transition-colors">
           {team.name}
         </span>
       </div>

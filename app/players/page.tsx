@@ -188,32 +188,32 @@ export default function PlayersPage() {
       <TopNav />
 
       <div className="mx-auto px-4 py-8 md:py-10">
-        <header className="mb-6 rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
-          <h1 className="text-2xl font-bold text-white">Players</h1>
-          <p className="mt-1 text-xs font-semibold tracking-[0.18em] text-amber-400">
+        <header className="mb-6 rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
+          <h1 className="text-2xl font-bold text-white india-header-text">Players</h1>
+          <p className="mt-1 text-xs font-bold tracking-[0.18em] text-india-gold">
             Browse players. Use search and filters to find them faster.
           </p>
         </header>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
           <aside className="md:col-span-1">
-            <div className="sticky top-4 space-y-4 rounded-2xl border border-white/15 bg-black/50 p-4 text-sm shadow-2xl backdrop-blur-xl">
+            <div className="sticky top-4 space-y-4 rounded-2xl border border-india-gold/20 bg-black/50 p-4 text-sm shadow-2xl backdrop-blur-xl">
               <div className="space-y-1">
-                <label className="font-medium text-amber-200">
+                <label className="font-bold text-india-gold">
                   Search by name
                 </label>
                 <input
                   type="text"
                   placeholder="e.g. Ahmed, Sharma..."
-                  className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white placeholder:text-slate-400 outline-none focus:border-amber-400/50 focus:ring-amber-400/30"
+                  className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white placeholder:text-slate-400 outline-none focus:border-india-gold/50 focus:ring-india-gold/30 transition-all"
                   onChange={(e) => debouncedSetQ(e.target.value)}
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="font-medium text-amber-200">Country</label>
+                <label className="font-bold text-india-gold">Country</label>
                 <select
-                  className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none focus:border-amber-400/50 focus:ring-amber-400/30"
+                  className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none focus:border-india-gold/50 focus:ring-india-gold/30 transition-all"
                   value={countryId}
                   onChange={(e) => {
                     setCountryId(e.target.value);
@@ -235,7 +235,7 @@ export default function PlayersPage() {
             {loading && (
               <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
                 Loading players…
-                <div className="mt-4 mx-auto h-6 w-6 animate-spin rounded-full border-4 border-amber-400 border-t-transparent"></div>
+                <div className="mt-4 mx-auto h-6 w-6 animate-spin rounded-full border-4 border-india-gold border-t-transparent"></div>
               </div>
             )}
 
@@ -255,7 +255,7 @@ export default function PlayersPage() {
                   <>
                     <div className="mb-3 text-xs text-sky-100/60">
                       Showing{" "}
-                      <span className="font-medium text-amber-300">
+                      <span className="font-bold text-india-gold">
                         {filteredByRole.length}
                       </span>{" "}
                       players on this page.
@@ -263,7 +263,7 @@ export default function PlayersPage() {
                         <>
                           {" "}
                           Total:{" "}
-                          <span className="font-medium text-amber-300">
+                          <span className="font-bold text-india-gold">
                             {pager.total}
                           </span>
                         </>
@@ -295,12 +295,12 @@ export default function PlayersPage() {
                         <button
                           disabled={page === 1}
                           onClick={() => setPage((x) => Math.max(1, x - 1))}
-                          className="rounded-full border border-amber-400/30 bg-slate-900/80 px-3 py-1.5 text-amber-200 backdrop-blur-sm hover:bg-slate-800/80 hover:border-amber-400/50 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="rounded-full border border-india-gold/30 bg-slate-900/80 px-3 py-1.5 text-india-gold backdrop-blur-sm hover:bg-slate-800/80 hover:border-india-gold/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all font-bold"
                         >
                           Prev
                         </button>
 
-                        <span className="rounded-full border border-white/20 bg-black/50 px-3 py-1.5 text-amber-300 backdrop-blur-xl">
+                        <span className="rounded-full border border-white/20 bg-black/50 px-3 py-1.5 text-india-gold backdrop-blur-xl font-medium">
                           Page {page} of {totalPages}
                         </span>
 
@@ -309,7 +309,7 @@ export default function PlayersPage() {
                           onClick={() =>
                             setPage((x) => Math.min(totalPages, x + 1))
                           }
-                          className="rounded-full border border-amber-400/30 bg-slate-900/80 px-3 py-1.5 text-amber-200 backdrop-blur-sm hover:bg-slate-800/80 hover:border-amber-400/50 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="rounded-full border border-india-gold/30 bg-slate-900/80 px-3 py-1.5 text-india-gold backdrop-blur-sm hover:bg-slate-800/80 hover:border-india-gold/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all font-bold"
                         >
                           Next
                         </button>

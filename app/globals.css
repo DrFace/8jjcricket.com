@@ -7,8 +7,10 @@
 }
 
 ::selection {
-  background-color: #FF9933; /* india-saffron */
-  color: #1A1A2E; /* india-charcoal */
+  background-color: #FF9933;
+  /* india-saffron */
+  color: #1A1A2E;
+  /* india-charcoal */
 }
 
 html,
@@ -50,11 +52,53 @@ a {
 }
 
 .card {
-  @apply rounded-2xl border border-white/10 bg-white/5 p-4 shadow backdrop-blur-lg;
+  @apply rounded-2xl border border-white/10 bg-india-charcoal/80 p-4 shadow-lg backdrop-blur-md;
+}
+
+/* New India Theme Utilities */
+.india-card {
+  @apply relative rounded-xl border border-white/10 bg-india-charcoal/90 p-4 shadow-xl backdrop-blur-xl transition-all duration-300;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+}
+
+.india-card-gold {
+  @apply india-card border-india-gold/30;
+  box-shadow: 0 4px 20px -2px rgba(255, 215, 0, 0.15);
+}
+
+.india-card-saffron {
+  @apply india-card border-india-saffron/30;
+  box-shadow: 0 4px 20px -2px rgba(255, 153, 51, 0.15);
+}
+
+.india-card-green {
+  @apply india-card border-india-green/30;
+  box-shadow: 0 4px 20px -2px rgba(19, 136, 8, 0.15);
+}
+
+.india-card-blue {
+  @apply india-card border-india-blue/30;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 128, 0.25);
+}
+
+.india-gradient-text {
+  @apply bg-gradient-to-r from-india-saffron via-white to-india-green bg-clip-text text-transparent;
 }
 
 .badge {
-  @apply inline-block rounded-full px-2 py-0.5 text-xs font-medium;
+  @apply inline-block rounded-full px-2.5 py-0.5 text-xs font-bold tracking-wide shadow-sm;
+}
+
+.badge-saffron {
+  @apply bg-india-saffron/20 text-india-saffron border border-india-saffron/30;
+}
+
+.badge-green {
+  @apply bg-india-green/20 text-india-green border border-india-green/30;
+}
+
+.badge-blue {
+  @apply bg-india-blue/20 text-blue-300 border border-india-blue/30;
 }
 
 .Sh-screen {
@@ -63,11 +107,15 @@ a {
 
 /* Hide scrollbar but keep scroll */
 .scrollbar-hide {
-  -ms-overflow-style: none; /* IE/Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
+
 .scrollbar-hide::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  display: none;
+  /* Chrome/Safari */
 }
 
 .backdrop-blur-2xl {
@@ -105,12 +153,57 @@ body {
 
 
 
-.Font-Size-mid p {
-    margin-bottom: 10px;
+.Font-Size-mid h1 {
+  margin-bottom: 5px;
+  line-height: normal;
+  font-size: 22px;
 }
 
-.Font-Size-mid h1 {
-    margin-bottom: 5px;
-    line-height: normal;
-    font-size: 22px;
+/* Enhanced India Theme Utilities */
+.india-gradient-bg {
+  @apply bg-gradient-to-br from-india-charcoal via-slate-900 to-india-charcoal;
+}
+
+.india-card-gradient {
+  @apply bg-gradient-to-br from-india-charcoal/95 via-slate-900/95 to-india-charcoal/95 border border-white/10 backdrop-blur-xl shadow-lg;
+}
+
+.india-card-gold-glow {
+  @apply india-card-gradient border-india-gold/30 shadow-[0_0_15px_rgba(255_215_0/0.1)];
+}
+
+.india-card-saffron-glow {
+  @apply india-card-gradient border-india-saffron/30 shadow-[0_0_15px_rgba(255_153_51/0.1)];
+}
+
+.india-card-green-glow {
+  @apply india-card-gradient border-india-green/30 shadow-[0_0_15px_rgba(19_136_8/0.1)];
+}
+
+.india-card-blue-glow {
+  @apply india-card-gradient border-india-blue/30 shadow-[0_0_15px_rgba(0_0_128/0.15)];
+}
+
+.india-header-text {
+  @apply bg-gradient-to-r from-india-saffron via-white to-india-green bg-clip-text text-transparent font-bold;
+}
+
+.india-btn {
+  @apply px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg;
+}
+
+.india-btn-primary {
+  @apply india-btn bg-gradient-to-r from-india-saffron to-india-gold text-india-charcoal hover:shadow-india-saffron/40;
+}
+
+.india-btn-secondary {
+  @apply india-btn bg-gradient-to-r from-india-blue to-indigo-900 text-white border border-india-blue/50 hover:shadow-india-blue/40;
+}
+
+.india-btn-accent {
+  @apply india-btn bg-gradient-to-r from-india-green to-emerald-600 text-white hover:shadow-india-green/40;
+}
+
+.india-btn-danger {
+  @apply india-btn bg-gradient-to-r from-india-red to-rose-600 text-white hover:shadow-india-red/40;
 }

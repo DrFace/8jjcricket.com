@@ -177,7 +177,7 @@ export default async function MobileHomePage() {
 
       <section className="w-full snap-start scroll-mt-3">
         <Reveal>
-          <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
+          <div className="relative w-full overflow-hidden rounded-2xl border border-india-gold/20 bg-slate-900/60 backdrop-blur-md shadow-lg">
             <div className="h-[180px] w-full sm:h-[220px]">
               {(() => {
                 const raw = videos?.[0]?.video_path ?? "";
@@ -256,21 +256,21 @@ export default async function MobileHomePage() {
         {/* <Reveal> */}
         <div className="mb-2 flex w-full items-center justify-between px-4">
           <div className="mb-3 flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-yellow-400" />
-            <h2 className="text-sm font-semibold">Player Portraits</h2>
+            <span className="h-2 w-2 rounded-full bg-india-gold" />
+            <h2 className="text-sm font-bold text-white">Player Portraits</h2>
           </div>
 
           <Link
             href="/mobile/portraits"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs font-semibold text-sky-400"
+            className="text-xs font-bold text-india-gold hover:text-india-saffron transition-colors"
           >
             View all →
           </Link>
         </div>
 
-        <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
+        <div className="relative w-full rounded-2xl border border-india-gold/20 bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 p-4 shadow-2xl backdrop-blur-xl">
           <MobilePortraitShowcaseSection />
         </div>
         {/* </Reveal> */}
@@ -281,15 +281,15 @@ export default async function MobileHomePage() {
         {/* <Reveal> */}
         <div className="mb-2 flex w-full items-center justify-between px-4">
           <div className="mb-3 flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-yellow-400" />
-            <h2 className="text-sm font-semibold">Hot Minigames</h2>
+            <span className="h-2 w-2 rounded-full bg-india-gold" />
+            <h2 className="text-sm font-bold text-white">Hot Minigames</h2>
           </div>
 
           <Link
             href="/mobile/minigames"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs font-semibold text-sky-400"
+            className="text-xs font-bold text-india-gold hover:text-india-saffron transition-colors"
           >
             View all →
           </Link>
@@ -302,7 +302,7 @@ export default async function MobileHomePage() {
           const placeholders = remainder === 0 ? 0 : COLS - remainder;
 
           return (
-            <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-white/5 p-4">
+            <div className="w-full overflow-hidden rounded-2xl border border-india-gold/20 bg-slate-900/60 backdrop-blur-md p-4 shadow-lg">
               {visibleGames.length === 0 ? (
                 <div className="text-sm text-white/70">
                   No minigames available right now.
@@ -343,7 +343,7 @@ export default async function MobileHomePage() {
 
                   <Link
                     href="/mobile/minigames"
-                    className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-xs font-bold text-black"
+                    className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-india-saffron to-india-gold px-4 py-2 text-xs font-bold text-black shadow-md hover:shadow-lg transition-all"
                   >
                     Play Minigames
                   </Link>
@@ -359,8 +359,8 @@ export default async function MobileHomePage() {
         {/* <Reveal> */}
         <div className="mb-2 flex w-full items-center justify-between px-4">
           <div className="mb-3 flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-yellow-400" />
-            <h2 className="text-sm font-semibold">Follow Us</h2>
+            <span className="h-2 w-2 rounded-full bg-india-gold" />
+            <h2 className="text-sm font-bold text-white">Follow Us</h2>
           </div>
         </div>
         <MobileSocialBox />
@@ -370,7 +370,7 @@ export default async function MobileHomePage() {
       {newsWithImages.length > 0 && (
         <section className="mt-5 w-full snap-start scroll-mt-3">
           {/* <Reveal> */}
-          <h2 className="mb-2 text-sm font-semibold">Latest News</h2>
+          <h2 className="mb-2 text-sm font-bold text-white flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-india-gold" />Latest News</h2>
           <MobileNewsListCards items={newsWithImages} />
           {/* </Reveal> */}
         </section>

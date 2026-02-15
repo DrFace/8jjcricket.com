@@ -88,7 +88,7 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
       {/* Back Button */}
       <Link 
         href="/teams" 
-        className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 text-sm font-medium mb-6 transition-colors"
+        className="inline-flex items-center gap-2 text-india-gold hover:text-india-saffron text-sm font-bold mb-6 transition-colors"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -97,10 +97,10 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
       </Link>
 
       {/* Team Header */}
-      <div className="bg-gradient-to-r from-slate-800/90 via-slate-900/90 to-slate-800/90 rounded-3xl border border-amber-400/30 p-8 mb-6 backdrop-blur-xl shadow-2xl">
+      <div className="rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 p-8 mb-6 backdrop-blur-xl shadow-2xl">
         <div className="flex flex-col md:flex-row items-center gap-6">
           {/* Team Logo */}
-          <div className="relative w-32 h-32 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-4 flex items-center justify-center">
+          <div className="relative w-32 h-32 rounded-2xl bg-white/5 backdrop-blur-sm border border-india-gold/20 p-4 flex items-center justify-center shadow-[0_0_30px_rgba(255,153,51,0.1)]">
             {teamData.image_path ? (
               <Image
                 src={teamData.image_path}
@@ -110,7 +110,7 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
                 className="object-contain"
               />
             ) : (
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-india-saffron to-india-gold flex items-center justify-center">
                 <span className="text-4xl font-black text-slate-900">
                   {teamData.code || teamData.name.substring(0, 2).toUpperCase()}
                 </span>
@@ -121,11 +121,11 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
           {/* Team Info */}
           <div className="flex-1 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-              <h1 className="text-3xl md:text-4xl font-bold text-white">
+              <h1 className="text-3xl md:text-4xl font-bold text-white india-header-text">
                 {teamData.name}
               </h1>
               {teamData.national_team && (
-                <span className="px-3 py-1 bg-amber-500/20 border border-amber-400/50 text-amber-300 text-xs font-bold rounded-full">
+                <span className="px-3 py-1 bg-india-saffron/20 border border-india-saffron/50 text-india-gold text-xs font-bold rounded-full shadow-lg">
                   NATIONAL TEAM
                 </span>
               )}
@@ -139,23 +139,23 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
                     alt={teamData.country.name}
                     width={24}
                     height={16}
-                    className="rounded"
+                    className="rounded shadow-sm"
                   />
                 )}
-                <p className="text-sky-200 text-lg">
+                <p className="text-slate-300 text-lg font-medium">
                   {teamData.country.name}
                 </p>
               </div>
             )}
 
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm">
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/10">
-                <span className="text-amber-300 font-semibold">Code: </span>
+              <div className="bg-slate-900/40 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/10 shadow-inner">
+                <span className="text-india-gold font-bold">Code: </span>
                 <span className="text-white font-bold">{teamData.code}</span>
               </div>
               {squad.length > 0 && (
-                <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/10">
-                  <span className="text-amber-300 font-semibold">Squad: </span>
+                <div className="bg-slate-900/40 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/10 shadow-inner">
+                  <span className="text-india-gold font-bold">Squad: </span>
                   <span className="text-white font-bold">{squad.length} Players</span>
                 </div>
               )}
@@ -165,18 +165,18 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
       </div>
 
       {/* Squad Section */}
-      <div className="bg-slate-900/80 rounded-2xl border border-white/20 backdrop-blur-xl shadow-2xl overflow-hidden">
-        <div className="bg-gradient-to-r from-slate-800/80 to-slate-900/80 border-b border-amber-400/30 px-6 py-4">
-          <h2 className="text-2xl font-bold text-amber-300">Squad</h2>
+      <div className="bg-slate-900/80 rounded-2xl border border-india-gold/20 backdrop-blur-xl shadow-2xl overflow-hidden">
+        <div className="bg-gradient-to-r from-india-charcoal via-slate-900 to-india-charcoal border-b border-india-gold/30 px-6 py-4">
+          <h2 className="text-2xl font-bold text-india-gold india-header-text">Squad</h2>
         </div>
 
         {squad.length === 0 ? (
           <div className="p-12 text-center">
-            <svg className="w-16 h-16 text-amber-300/50 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-16 h-16 text-india-gold/50 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
-            <p className="text-white font-medium">No squad information available</p>
-            <p className="text-sm text-sky-100/70 mt-2">Squad details will appear here when available</p>
+            <p className="text-white font-bold text-lg">No squad information available</p>
+            <p className="text-sm text-slate-400 mt-2">Squad details will appear here when available</p>
           </div>
         ) : (
           <div className="p-6">
@@ -185,11 +185,11 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
                 <Link
                   key={player.id}
                   href={`/players/${player.id}`}
-                  className="bg-slate-800/60 rounded-xl p-4 border border-white/10 hover:border-amber-400/50 hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_40px_rgba(251,191,36,0.2)]"
+                  className="bg-slate-800/40 rounded-xl p-4 border border-white/5 hover:border-india-gold/50 hover:bg-slate-800/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_40px_rgba(255,153,51,0.15)] group"
                 >
                   <div className="flex items-center gap-4">
                     {/* Player Avatar */}
-                    <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-india-saffron to-india-gold flex items-center justify-center overflow-hidden flex-shrink-0 border-2 border-white/10 group-hover:border-india-gold transition-colors">
                       {player.image_path ? (
                         <Image
                           src={player.image_path}
@@ -207,23 +207,23 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
 
                     {/* Player Info */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-white font-bold text-sm truncate">
+                      <h3 className="text-white font-bold text-sm truncate group-hover:text-india-gold transition-colors">
                         {player.fullname}
                       </h3>
                       {player.position?.name && (
-                        <p className="text-amber-300 text-xs font-medium mt-1">
+                        <p className="text-india-gold/90 text-xs font-medium mt-1 uppercase tracking-wide">
                           {player.position.name}
                         </p>
                       )}
                       <div className="flex flex-wrap gap-2 mt-2">
                         {player.battingstyle && (
-                          <span className="px-2 py-0.5 bg-sky-500/20 border border-sky-400/30 text-sky-200 text-xs rounded">
-                            {player.battingstyle}
+                          <span className="px-2 py-0.5 bg-blue-500/10 border border-blue-400/30 text-blue-200 text-[10px] font-bold rounded uppercase">
+                            Bat
                           </span>
                         )}
                         {player.bowlingstyle && (
-                          <span className="px-2 py-0.5 bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 text-xs rounded">
-                            {player.bowlingstyle}
+                          <span className="px-2 py-0.5 bg-india-green/10 border border-india-green/30 text-india-green text-[10px] font-bold rounded uppercase">
+                            Bowl
                           </span>
                         )}
                       </div>
