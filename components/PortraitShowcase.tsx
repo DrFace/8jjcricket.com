@@ -75,47 +75,125 @@ function PortraitSlideshow({
   items: { src: string; href: string; title: string }[];
 }) {
   const [index, setIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const len = items.length;
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (index >= len) setIndex(0);
   }, [index, len]);
 
+  // Auto-play functionality
+  useEffect(() => {
+    if (len <= 1) return;
+
+    const startAutoPlay = () => {
+      autoPlayRef.current = setInterval(() => {
+        setIndex((i) => (i + 1) % len);
+      }, 4000); // Change slide every 4 seconds
+    };
+
+    startAutoPlay();
+
+    return () => {
+      if (autoPlayRef.current) {
+        clearInterval(autoPlayRef.current);
+      }
+    };
+  }, [len]);
+
   const canGo = len > 1;
 
   const prev = useCallback(() => {
-    if (!len) return;
+    if (!len || isTransitioning) return;
+    setIsTransitioning(true);
     setIndex((i) => (i - 1 + len) % len);
-  }, [len]);
+    
+    // Reset auto-play timer
+    if (autoPlayRef.current) {
+      clearInterval(autoPlayRef.current);
+      autoPlayRef.current = setInterval(() => {
+        setIndex((i) => (i + 1) % len);
+      }, 4000);
+    }
+    
+    setTimeout(() => setIsTransitioning(false), 600);
+  }, [len, isTransitioning]);
 
   const next = useCallback(() => {
-    if (!len) return;
+    if (!len || isTransitioning) return;
+    setIsTransitioning(true);
     setIndex((i) => (i + 1) % len);
-  }, [len]);
+    
+    // Reset auto-play timer
+    if (autoPlayRef.current) {
+      clearInterval(autoPlayRef.current);
+      autoPlayRef.current = setInterval(() => {
+        setIndex((i) => (i + 1) % len);
+      }, 4000);
+    }
+    
+    setTimeout(() => setIsTransitioning(false), 600);
+  }, [len, isTransitioning]);
+
+  const goToSlide = useCallback((slideIndex: number) => {
+    if (isTransitioning || slideIndex === index) return;
+    setIsTransitioning(true);
+    setIndex(slideIndex);
+    
+    // Reset auto-play timer
+    if (autoPlayRef.current) {
+      clearInterval(autoPlayRef.current);
+      autoPlayRef.current = setInterval(() => {
+        setIndex((i) => (i + 1) % len);
+      }, 4000);
+    }
+    
+    setTimeout(() => setIsTransitioning(false), 600);
+  }, [isTransitioning, index, len]);
 
   if (!len) return null;
 
-  const active = items[index];
-
   return (
     <div className="relative h-full w-full overflow-hidden rounded-[2rem]">
-      {/* Click opens in NEW TAB to relevant portrait page */}
-      <a
-        href={active.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="absolute inset-0 block"
-        title={active.title}
+      {/* Sliding container */}
+      <div
+        className="flex h-full transition-transform duration-700 ease-in-out"
+        style={{
+          transform: `translateX(-${index * 100}%)`,
+          width: `${len * 100}%`,
+        }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={active.src}
-          alt={active.title}
-          className="h-full w-full object-cover object-center transition-opacity duration-500"
-          draggable={false}
-        />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-      </a>
+        {items.map((item, idx) => (
+          <div
+            key={idx}
+            className="relative h-full flex-shrink-0"
+            style={{ width: `${100 / len}%` }}
+          >
+            <a
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute inset-0 block"
+              title={item.title}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={item.src}
+                alt={item.title}
+                className="h-full w-full object-cover object-center"
+                draggable={false}
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+              
+              {/* Title overlay */}
+              <div className="pointer-events-none absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-2xl font-bold drop-shadow-lg">{item.title}</h3>
+              </div>
+            </a>
+          </div>
+        ))}
+      </div>
 
       {/* Prev / Next buttons */}
       <div className="absolute inset-y-0 left-4 z-20 flex items-center">
@@ -126,16 +204,16 @@ function PortraitSlideshow({
             prev();
           }}
           disabled={!canGo}
-          className={`group relative h-12 w-12 overflow-hidden rounded-2xl transition-all duration-300 ${
+          className={`group relative h-14 w-14 overflow-hidden rounded-full transition-all duration-300 ${
             canGo
-              ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
+              ? "bg-gradient-to-br from-blue-500/90 to-blue-600/90 shadow-lg shadow-blue-500/40 hover:shadow-xl hover:shadow-blue-500/50 hover:scale-110 backdrop-blur-sm"
               : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
           }`}
           type="button"
           aria-label="Previous slide"
         >
           <svg
-            className="absolute inset-0 m-auto h-6 w-6 text-white"
+            className="absolute inset-0 m-auto h-7 w-7 text-white transition-transform group-hover:-translate-x-0.5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -158,16 +236,16 @@ function PortraitSlideshow({
             next();
           }}
           disabled={!canGo}
-          className={`group relative h-12 w-12 overflow-hidden rounded-2xl transition-all duration-300 ${
+          className={`group relative h-14 w-14 overflow-hidden rounded-full transition-all duration-300 ${
             canGo
-              ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-110"
+              ? "bg-gradient-to-br from-blue-500/90 to-blue-600/90 shadow-lg shadow-blue-500/40 hover:shadow-xl hover:shadow-blue-500/50 hover:scale-110 backdrop-blur-sm"
               : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
           }`}
           type="button"
           aria-label="Next slide"
         >
           <svg
-            className="absolute inset-0 m-auto h-6 w-6 text-white"
+            className="absolute inset-0 m-auto h-7 w-7 text-white transition-transform group-hover:translate-x-0.5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -182,9 +260,31 @@ function PortraitSlideshow({
         </button>
       </div>
 
-      {/* small counter */}
+      {/* Dot indicators */}
       {len > 1 && (
-        <div className="pointer-events-none absolute bottom-4 right-4 z-20 rounded-xl bg-black/40 px-3 py-1 text-xs text-white backdrop-blur">
+        <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+          {items.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                goToSlide(idx);
+              }}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                idx === index
+                  ? "w-8 bg-blue-500 shadow-lg shadow-blue-500/50"
+                  : "w-2 bg-white/50 hover:bg-white/80"
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Counter */}
+      {len > 1 && (
+        <div className="pointer-events-none absolute top-4 right-4 z-20 rounded-full bg-black/50 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md">
           {index + 1} / {len}
         </div>
       )}
