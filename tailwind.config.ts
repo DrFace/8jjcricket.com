@@ -18,6 +18,11 @@ export default {
         'vibrant-pink': '#FF007F',
         'vibrant-orange': '#FF5E0E',
       },
+      animation: {
+        'shimmer': 'shimmer 2s infinite linear',
+        'pulse-ring': 'pulse-ring 1.5s cubic-bezier(0,0,0.2,1) infinite',
+        'slide-up': 'slide-up 0.3s ease-out',
+      },
     },
   },
   plugins: [],

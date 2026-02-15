@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { SITE } from "@/lib/seo";
 import Script from "next/script";
+import { ToastProvider } from "@/components/ToastProvider";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -91,7 +92,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen overflow-x-hidden bg-gray-950 text-gray-50 antialiased selection:bg-blue-100 selection:text-blue-800">
-        {children}
+        <ToastProvider>
+          {children}
+        </ToastProvider>
 
         {/* Analytics */}
         <Script
