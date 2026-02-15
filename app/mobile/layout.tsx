@@ -396,7 +396,7 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen w-screen max-w-none overflow-x-hidden bg-black text-white">
       {/* Hidden audio player */}
-      <audio ref={audioRef} loop preload="auto" playsInline />
+      <audio ref={audioRef} preload="auto" playsInline />
 
       {/* TOP NAV BAR (GLOBAL) */}
       <header className="sticky top-0 z-[70] w-full border-b border-white/10 bg-black">
