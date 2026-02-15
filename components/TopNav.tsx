@@ -40,6 +40,53 @@ function NavItem({
   );
 }
 
+// ✅ Keep dropdown options constant (never in state, never mutated)
+const LANGUAGE_OPTIONS = [
+  { value: "en", label: "English" },
+  { value: "hi", label: "Hindi" },
+  { value: "bn", label: "Bengali" },
+  { value: "ur", label: "Urdu" },
+  { value: "pa", label: "Punjabi" },
+  { value: "ta", label: "Tamil" },
+  { value: "te", label: "Telugu" },
+] as const;
+
+const LANG_STORAGE_KEY = "siteLang";
+
+function normalizeLang(code: string | null | undefined) {
+  const v = (code || "en").toLowerCase().trim();
+  const ok = LANGUAGE_OPTIONS.some((o) => o.value === v);
+  return ok ? v : "en";
+}
+
+// Read googtrans cookie language (e.g. "/en/hi" -> "hi")
+function readGoogTransCookieLang(): string | null {
+  if (typeof document === "undefined") return null;
+
+  const cookieStr = `; ${document.cookie}`;
+  const parts = cookieStr.split(`; googtrans=`);
+  if (parts.length < 2) return null;
+
+  const raw = parts.pop()?.split(";")[0] ?? ""; // e.g. "/en/hi"
+  const segs = raw.split("/").filter(Boolean); // ["en","hi"]
+  const last = segs[segs.length - 1];
+  if (!last) return null;
+
+  return last;
+}
+
+// Build cookie attributes (helps in production)
+function cookieAttrs(path: string, domain?: string) {
+  const attrs: string[] = [];
+  attrs.push(`path=${path}`);
+  if (domain) attrs.push(`domain=${domain}`);
+  attrs.push("SameSite=Lax");
+  if (typeof window !== "undefined" && window.location.protocol === "https:") {
+    attrs.push("Secure");
+  }
+  return attrs.join("; ");
+}
+
 export default function TopNav() {
   const pathname = usePathname();
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -57,91 +104,105 @@ export default function TopNav() {
   const [musicEnabled, setMusicEnabled] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
 
-  // Check if a cookie exists on page load, otherwise default to "en"
+  // ✅ Determine initial language:
+  // 1) googtrans cookie
+  // 2) localStorage fallback (so it survives cookie quirks in prod)
   const [lang, setLang] = useState<string>(() => {
-    if (typeof document !== "undefined") {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; googtrans=`);
-      if (parts.length === 2) {
-        const cookieValue = parts.pop()?.split(";")[0]; // e.g., "/en/hi"
-        const code = cookieValue?.split("/").pop(); // e.g., "hi"
-        return code || "en";
-      }
-    }
-    return "en";
+    if (typeof window === "undefined") return "en";
+
+    const fromCookie = readGoogTransCookieLang();
+    if (fromCookie) return normalizeLang(fromCookie);
+
+    const fromStorage = window.localStorage.getItem(LANG_STORAGE_KEY);
+    return normalizeLang(fromStorage);
   });
 
-  // Helper function to clear ALL googtrans cookies across all domains and paths
+  // Helper function to clear ALL googtrans cookies across domain/path variants
   const clearAllGoogTransCookies = () => {
     const hostname = window.location.hostname;
+    const bare = hostname.replace("www.", "");
+
     const domainVariants = [
-      "", // No domain (current path only)
-      `domain=${hostname}`,
-      `domain=.${hostname}`,
-      `domain=${hostname.replace("www.", "")}`,
-      `domain=.${hostname.replace("www.", "")}`,
+      undefined, // no domain attribute
+      hostname,
+      `.${hostname}`,
+      bare,
+      `.${bare}`,
     ];
 
-    const pathVariants = ["path=/", "path=/minigames", ""];
+    const pathVariants = ["/", "/minigames", "/mobile"];
 
-    // Clear cookies with all possible domain and path combinations
-    domainVariants.forEach((domain) => {
-      pathVariants.forEach((path) => {
-        const attributes = [
-          "expires=Thu, 01 Jan 1970 00:00:00 GMT",
-          path,
-          domain,
-        ]
-          .filter(Boolean)
-          .join("; ");
-
-        document.cookie = `googtrans=; ${attributes}`;
+    domainVariants.forEach((dom) => {
+      pathVariants.forEach((p) => {
+        const attrs = [
+          `expires=Thu, 01 Jan 1970 00:00:00 GMT`,
+          cookieAttrs(p, dom),
+        ].join("; ");
+        document.cookie = `googtrans=; ${attrs}`;
       });
     });
   };
 
+  // ✅ Force English in a production-safe way:
+  // clear conflicts, set googtrans=/en/en across domain variants, save to localStorage, reload
+  const forceEnglishCookie = () => {
+    const hostname = window.location.hostname;
+    const bare = hostname.replace("www.", "");
+    const targetValue = `/en/en`;
+
+    const domains = [undefined, hostname, `.${hostname}`, bare, `.${bare}`];
+
+    domains.forEach((dom) => {
+      const attrs = cookieAttrs("/", dom);
+      document.cookie = `googtrans=${targetValue}; ${attrs}`;
+    });
+  };
+
+  const setGoogTransCookie = (targetValue: string) => {
+    const hostname = window.location.hostname;
+    const bare = hostname.replace("www.", "");
+    const domains = [undefined, hostname, `.${hostname}`, bare, `.${bare}`];
+
+    domains.forEach((dom) => {
+      const attrs = cookieAttrs("/", dom);
+      document.cookie = `googtrans=${targetValue}; ${attrs}`;
+    });
+  };
+
   const handleLanguageChange = (selectedLang: string) => {
-    console.log("Selected Value from Dropdown:", selectedLang);
+    const next = normalizeLang(selectedLang);
 
-    if (selectedLang === "en" || selectedLang === "eng") {
-      console.log(
-        "LOG: Switching to English - Clearing ALL translation cookies",
-      );
+    // ✅ Save selection (helps in production if cookie is blocked/misread)
+    window.localStorage.setItem(LANG_STORAGE_KEY, next);
 
-      // Clear ALL possible googtrans cookies
+    // ✅ English: force reset to /en/en
+    if (next === "en") {
       clearAllGoogTransCookies();
 
-      // Wait a bit to ensure cookies are cleared
       setTimeout(() => {
+        forceEnglishCookie();
         setLang("en");
 
-        // Double-check and force reload
         setTimeout(() => {
           window.location.reload();
-        }, 50);
+        }, 80);
       }, 50);
-    } else {
-      console.log("LOG: Switching to Language:", selectedLang);
 
-      // First clear all existing cookies to avoid conflicts
-      clearAllGoogTransCookies();
+      return;
+    }
+
+    // ✅ Other languages: set /en/{lang}
+    clearAllGoogTransCookies();
+
+    setTimeout(() => {
+      const targetValue = `/en/${next}`;
+      setGoogTransCookie(targetValue);
+      setLang(next);
 
       setTimeout(() => {
-        const targetValue = `/en/${selectedLang}`;
-        const hostname = window.location.hostname;
-
-        // Set new language cookie with multiple domain variants to ensure it works
-        document.cookie = `googtrans=${targetValue}; path=/;`;
-        document.cookie = `googtrans=${targetValue}; path=/; domain=${hostname}`;
-        document.cookie = `googtrans=${targetValue}; path=/; domain=.${hostname}`;
-
-        setLang(selectedLang);
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
-      }, 50);
-    }
+        window.location.reload();
+      }, 100);
+    }, 50);
   };
 
   useEffect(() => {
@@ -443,14 +504,18 @@ export default function TopNav() {
                 onChange={(e) => handleLanguageChange(e.target.value)}
                 className="h-9 bg-transparent text-[var(--text-primary)] outline-none [&>option]:text-black"
                 aria-label="Google Translate language"
+                translate="no"
               >
-                <option value="en">English</option>
-                <option value="hi">Hindi</option>
-                <option value="bn">Bengali</option>
-                <option value="ur">Urdu</option>
-                <option value="pa">Punjabi</option>
-                <option value="ta">Tamil</option>
-                <option value="te">Telugu</option>
+                {LANGUAGE_OPTIONS.map((opt) => (
+                  <option
+                    key={opt.value}
+                    value={opt.value}
+                    className="notranslate"
+                    translate="no"
+                  >
+                    {opt.label}
+                  </option>
+                ))}
               </select>
             </div>
 
