@@ -69,8 +69,8 @@ export default async function HomeNewsShowcase() {
         {/* LEFT — Featured */}
         <Link
           href={`/news/${featured.slug}`}
-          className="group relative overflow-hidden rounded-3xl bg-white/5 ring-1 ring-india-green/30 shadow-2xl transition
-                     hover:bg-white/7 hover:ring-india-green/50 hover:shadow-india-green/20"
+          className="group relative overflow-hidden rounded-3xl bg-white/5 ring-1 ring-india-green/50 shadow-2xl transition
+                     hover:bg-white/10 hover:ring-india-green/80 hover:shadow-india-green/40"
         >
           {/* Image */}
           <div
@@ -97,7 +97,7 @@ export default async function HomeNewsShowcase() {
               {formatDate(featured.published_at)}
             </div>
 
-            <h3 className="mt-3 line-clamp-2 text-2xl lg:text-[28px] font-extrabold text-white">
+            <h3 className="mt-3 line-clamp-2 text-2xl lg:text-[28px] font-extrabold text-india-gold">
               {featured.title}
             </h3>
 
@@ -127,8 +127,8 @@ export default async function HomeNewsShowcase() {
 
           <Link
             href="/news"
-            className="mt-4 flex items-center justify-center rounded-2xl bg-white/5 py-4 text-sm font-semibold text-india-green
-                       ring-1 ring-india-green/20 transition
+            className="mt-4 flex items-center justify-center rounded-2xl bg-white/5 py-4 text-sm font-semibold text-india-gold
+                        ring-1 ring-india-green/40 transition
                        hover:bg-white/10 hover:ring-india-green/30 hover:-translate-y-[1px] active:translate-y-0"
           >
             View more →

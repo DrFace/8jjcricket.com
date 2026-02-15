@@ -230,7 +230,7 @@ export default async function HomePage() {
             />
             <div className="absolute inset-0 bg-black/70" />
 
-            <div className="relative w-full rounded-2xl border border-india-gold bg-slate-900/60 p-4 shadow-2xl backdrop-blur-md shadow-vibrant-orange/50">
+            <div className="relative w-full rounded-2xl border border-india-gold/50 bg-slate-900/90 p-4 shadow-2xl backdrop-blur-2xl shadow-vibrant-orange/30">
               <PortraitShowcaseSection />
             </div>
           </div>
@@ -243,7 +243,7 @@ export default async function HomePage() {
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
 
-            <div className="relative w-full max-w-[1480px] mx-auto rounded-2xl border border-india-green bg-gradient-to-br from-slate-900 via-india-green/20 to-india-gold/20 p-6 shadow-2xl backdrop-blur-xl shadow-india-green/40 ring-1 ring-india-gold/40">
+            <div className="relative w-full max-w-[1480px] mx-auto rounded-2xl border border-india-green/50 bg-slate-900/90 p-6 shadow-2xl backdrop-blur-2xl shadow-india-green/30 ring-1 ring-india-gold/20">
               <HomeNewsShowcase />
             </div>
           </div>
@@ -256,7 +256,7 @@ export default async function HomePage() {
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
 
-            <div className="relative w-full rounded-2xl border border-india-blue bg-gradient-to-br from-slate-900 via-india-blue/30 to-vibrant-pink/30 p-4 shadow-2xl backdrop-blur-xl shadow-vibrant-pink/40 ring-1 ring-white/20">
+            <div className="relative w-full rounded-2xl border border-vibrant-pink/50 bg-slate-900/90 p-4 shadow-2xl backdrop-blur-2xl shadow-vibrant-pink/30 ring-1 ring-white/10">
               <HomeFeedbackSection />
             </div>
           </div>

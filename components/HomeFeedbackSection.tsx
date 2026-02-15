@@ -95,8 +95,8 @@ export default function HomeFeedbackSection({
       {/* TOP: Two panels */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* LEFT: Open policy text */}
-        <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-slate-800/50 to-slate-900/50 p-6 shadow-lg backdrop-blur-md">
-          <h2 className="text-2xl font-semibold text-white">Open Policy</h2>
+        <div className="rounded-2xl border border-india-blue/30 bg-slate-800/50 p-6 shadow-lg backdrop-blur-md">
+          <h2 className="text-2xl font-semibold text-india-gold">Open Policy</h2>
 
           <ul className="mt-4 space-y-3 text-sm leading-relaxed text-white/85">
             <li className="flex gap-2">
@@ -145,17 +145,17 @@ export default function HomeFeedbackSection({
         </div>
 
         {/* RIGHT: Feedback form */}
-        <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-slate-800/50 to-slate-900/50 p-6 shadow-lg backdrop-blur-md">
+        <div className="rounded-2xl border border-vibrant-pink/30 bg-slate-800/50 p-6 shadow-lg backdrop-blur-md">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h2 className="text-2xl font-semibold text-white">Feedback</h2>
+              <h2 className="text-2xl font-semibold text-vibrant-pink">Feedback</h2>
               <p className="mt-1 text-sm text-white/70">
                 Log in to submit feedback and receive valuable rewards!
               </p>
             </div>
 
             <div className="hidden sm:flex h-10 w-10 items-center justify-center rounded-xl border border-india-gold/30 bg-black/30">
-              <MailIcon className="h-5 w-5 text-india-saffron" />
+              <MailIcon className="h-5 w-5 text-vibrant-pink" />
             </div>
           </div>
 
@@ -196,7 +196,7 @@ export default function HomeFeedbackSection({
             <button
               type="submit"
               disabled={!canSend}
-              className="group w-full rounded-full bg-india-saffron px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:bg-india-saffron/90 disabled:cursor-not-allowed disabled:opacity-60"
+              className="group w-full rounded-full bg-vibrant-pink px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:bg-vibrant-pink/90 disabled:cursor-not-allowed disabled:opacity-60"
             >
               Send feedback →
             </button>
