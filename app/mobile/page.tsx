@@ -260,14 +260,7 @@ export default async function MobileHomePage() {
             <h2 className="text-sm font-bold text-white">Player Portraits</h2>
           </div>
 
-          <Link
-            href="/mobile/portraits"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs font-bold text-india-gold hover:text-india-saffron transition-colors"
-          >
-            View all →
-          </Link>
+        
         </div>
 
         <div className="relative w-full rounded-2xl border border-india-gold/20 bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 p-4 shadow-2xl backdrop-blur-xl">
