@@ -231,7 +231,7 @@ body {
 }
 
 .india-card-gradient {
-  @apply bg-gradient-to-br from-india-charcoal/95 via-slate-900/95 to-india-charcoal/95 border border-white/10 backdrop-blur-xl shadow-lg;
+  @apply bg-gradient-to-br from-india-charcoal/95 via-slate-900/95 to-india-charcoal/95 border border-white/10 backdrop-blur-xl shadow-lg rounded-3xl;
 }
 
 .india-card-gold-glow {

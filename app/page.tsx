@@ -230,7 +230,9 @@ export default async function HomePage() {
             />
             <div className="absolute inset-0 bg-black/70" />
 
-            <div className="relative w-full india-card-gold-glow p-4">
+```tsx
+            <div className="relative w-full bg-transparent p-4">
+```
               <PortraitShowcaseSection />
             </div>
           </div>
@@ -243,7 +245,7 @@ export default async function HomePage() {
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
 
-            <div className="relative w-full india-card-green-glow p-4">
+            <div className="relative w-full bg-transparent p-4">
               <HomeNewsShowcase />
             </div>
           </div>
@@ -256,7 +258,7 @@ export default async function HomePage() {
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
 
-            <div className="relative w-full india-card-saffron-glow p-4">
+            <div className="relative w-full bg-transparent p-4">
               <HomeFeedbackSection />
             </div>
           </div>
