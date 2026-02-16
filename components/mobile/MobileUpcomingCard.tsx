@@ -29,10 +29,6 @@ export default function MobileUpcomingCard({ f }: { f: Fixture }) {
             "bg-gradient-to-br from-[#0E1118] via-[#0B0E14] to-black"
           )}
         >
-          {/* LIVE glow */}
-          {f.live && (
-            <div className="absolute inset-0 rounded-2xl ring-1 ring-red-500/30 animate-pulse" />
-          )}
 
           {/* Header */}
           <div className="relative z-10 flex items-start justify-between gap-3">
@@ -54,20 +50,6 @@ export default function MobileUpcomingCard({ f }: { f: Fixture }) {
               </p>
             </div>
 
-            {/* LIVE badge */}
-            <span
-              className={cn(
-                "relative shrink-0 rounded-full px-3 py-1 text-[10px] font-extrabold",
-                f.live
-                  ? "bg-red-500 text-white shadow-md shadow-red-500/40"
-                  : "bg-white/10 text-sky-100/70"
-              )}
-            >
-              {f.live && (
-                <span className="absolute -left-1 -top-1 h-2 w-2 rounded-full bg-red-400 animate-ping" />
-              )}
-              {f.live ? "LIVE" : "FINISHED"}
-            </span>
           </div>
 
           {/* Divider */}

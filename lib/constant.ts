@@ -31,5 +31,13 @@ export const GOOGLE_PLAY_STORE = [
   },
 ];
 
+export const APPLE_APP_STORE = [
+  {
+    url: "https://apps.apple.com/us/app/8jj-cricket/id6758034492",
+    img: "/images/Apple-Store-Logo.png", // Assuming this path or similar icon exists
+    alt: "App Store",
+  },
+];
+
 export const HOME_NEWS_PARAM = "?category=events&page=1&per_page=20";
 export const STORAGE_BASE_URL = "https://8jjcricket.com/storage/";

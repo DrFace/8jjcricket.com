@@ -65,24 +65,6 @@ export default function LiveScoreCard({ f }: { f: Fixture }) {
               )}
             </div>
 
-            <div className="flex flex-col gap-2 items-end">
-              <span
-                className={cn(
-                  "inline-flex items-center rounded-full px-3 py-1 text-xs font-bold tracking-wider",
-                  f.live
-                    ? "bg-india-red/20 text-red-300 border border-india-red/50 shadow-[0_0_12px_rgba(218,37,29,0.3)] animate-pulse"
-                    : "bg-india-gold/20 text-india-gold border border-india-gold/40",
-                )}
-              >
-                {f.live ? "● LIVE" : "UPCOMING"}
-              </span>
-
-              {target !== null && (
-                <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold tracking-wider bg-india-blue/25 text-blue-200 border border-india-blue/60 shadow-[0_0_12px_rgba(0,0,128,0.2)]">
-                  🎯 TARGET {target}
-                </span>
-              )}
-            </div>
           </div>
 
           <div className="h-px w-full bg-gradient-to-r from-india-gold/20 via-india-gold/40 to-india-gold/20 my-3" />
@@ -159,6 +141,11 @@ export default function LiveScoreCard({ f }: { f: Fixture }) {
 
             {/* Center VS */}
             <div className="flex flex-col items-center gap-1">
+              {target !== null && (
+                <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold tracking-wider bg-india-blue/25 text-blue-200 border border-india-blue/60 shadow-[0_0_12px_rgba(0,0,128,0.2)]">
+                  🎯 TARGET {target}
+                </span>
+              )}
               <span className="text-[10px] text-india-gold/60 font-bold uppercase tracking-wider">
                 vs
               </span>
