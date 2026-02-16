@@ -28,28 +28,15 @@ export default function PlayStore() {
   return (
     <div
       className="
-        relative w-full h-full overflow-hidden rounded-2xl
-        border border-white/10
-        bg-gradient-to-br from-slate-950/70 via-slate-900/45 to-amber-950/20
-        shadow-[0_20px_60px_rgba(0,0,0,0.55)]
-        backdrop-blur-2xl
+        india-card-gold-glow p-6 transition-all duration-500 
+        hover:rotate-x-3 hover:translate-z-10 hover:scale-[1.02] hover:shadow-2xl
       "
     >
-      {/* subtle glows */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-20 -left-16 h-56 w-56 rounded-full bg-amber-400/8 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-24 -right-20 h-64 w-64 rounded-full bg-cyan-400/8 blur-3xl"
-      />
-
-      <div className="p-4">
+      <div className="relative">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-center gap-2.5">
-            <div className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-black/30">
+            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-black/30">
               <Image
                 src="/8jjlogo.png"
                 alt="8jjcricket logo"
@@ -129,11 +116,11 @@ export default function PlayStore() {
             </motion.div>
           )}
         </div>
-
-        <p className="mt-4 text-center text-[10px] text-white/25 font-medium">
-          Official 8JJ Cricket Application
-        </p>
       </div>
+
+      <p className="mt-4 text-center text-[10px] text-white/25 font-medium">
+        Official 8JJ Cricket Application
+      </p>
     </div>
   );
 }

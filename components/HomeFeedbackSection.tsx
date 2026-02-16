@@ -205,30 +205,26 @@ export default function HomeFeedbackSection({
       </div>
 
       {/* BOTTOM: two cards + long feedback bar */}
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+      <div className="mt-6 grid gap-6 lg:grid-cols-2 lg:items-start">
         {/* LEFT: two action cards */}
         <div className="grid gap-6 sm:grid-cols-2">
-          <Reveal className="h-full">
-            <PlayStore />
-          </Reveal>
+          <PlayStore />
 
-          <Reveal delay={0.1} className="h-full">
-            <SocialBox />
-          </Reveal>
+          <SocialBox />
         </div>
 
         {/* RIGHT: long feedback email bar */}
-        <div className="india-card-blue-glow p-4 flex flex-col justify-between h-full">
+        <div className="india-card-blue-glow p-6 transition-all duration-500 hover:rotate-x-3 hover:translate-z-10 hover:scale-[1.02] hover:shadow-2xl">
           <div>
-            <p className="text-sm font-semibold text-white">
+            <p className="text-base font-semibold text-white">
               If your feedback is long, please send it by email
             </p>
-            <p className="mt-1 text-[11px] text-gray-300">
+            <p className="mt-1 text-sm text-gray-300">
               We will receive it and support you as best as possible. Thank you!
             </p>
           </div>
 
-          <div className="mt-3 flex items-center gap-3 rounded-2xl border border-india-blue/30 bg-black/25 p-2.5">
+          <div className="mt-4 flex items-center gap-3 rounded-2xl border border-india-blue/30 bg-black/25 p-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-india-blue text-white">
               <MailIcon className="h-5 w-5" />
             </div>
@@ -242,7 +238,7 @@ export default function HomeFeedbackSection({
             <button
               type="button"
               onClick={handleLongFeedbackSend}
-              className="india-btn-secondary py-1.5 px-3 text-xs shadow-none"
+              className="india-btn-secondary py-1.5 px-3 text-xs shadow-none hover:translate-y-0 hover:scale-100"
             >
               Send
             </button>
