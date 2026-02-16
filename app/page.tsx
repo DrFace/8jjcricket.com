@@ -243,7 +243,7 @@ export default async function HomePage() {
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
 
-            <div className="relative w-full max-w-[1480px] mx-auto india-card-green-glow p-6">
+            <div className="relative w-full india-card-green-glow p-4">
               <HomeNewsShowcase />
             </div>
           </div>

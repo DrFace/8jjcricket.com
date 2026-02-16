@@ -64,7 +64,7 @@ export default async function HomeNewsShowcase() {
   }));
 
   return (
-    <div className="mx-auto w-full max-w-[1480px]">
+    <div className="w-full">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-[1.25fr,0.75fr]">
         {/* LEFT — Featured */}
         <Link
@@ -73,7 +73,7 @@ export default async function HomeNewsShowcase() {
         >
           {/* Image */}
           <div
-            className="relative w-full h-[22vw] max-h-[340px] min-h-[220px]
+            className="relative w-full h-[28vw] max-h-[440px] min-h-[260px]
                        overflow-hidden rounded-t-2xl"
           >
             <div
