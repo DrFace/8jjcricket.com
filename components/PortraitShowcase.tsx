@@ -212,7 +212,7 @@ function PortraitSlideshow({
                   <img
                     src={item.src}
                     alt={item.title}
-                    className={`h-full w-full object-cover object-center transition-all duration-700 ${
+                    className={`h-full w-full object-fill object-center transition-all duration-700 ${
                       isActive ? "scale-100" : "scale-105"
                     } group-hover/slide:scale-105`}
                     draggable={false}
