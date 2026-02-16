@@ -447,7 +447,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
 
         <div className="relative ml-[46%] flex h-full flex-col gap-7 p-8 pt-16">
           {/* TOP: Replace BannerCarouselNew with portrait_image_path slideshow + buttons */}
-          <div className="group relative h-[40%] overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-india-gold/50 transition-all duration-500 hover:ring-india-gold/70 hover:shadow-india-gold/50">
+          <div className="group relative h-[40%] overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-india-gold/50 transition-all duration-500 hover:ring-india-gold/70 hover:shadow-india-gold/50 hover:rotate-x-1 hover:scale-[1.01]">
             <PortraitSlideshow items={slideshowItems} />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </div>
@@ -466,7 +466,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     href={isHttp ? p.slug : `/portraits/${p.slug}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="group relative h-full w-full max-w-[460px] mx-auto overflow-hidden rounded-[1.75rem] shadow-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-india-gold/70"
+                    className="group relative h-full w-full max-w-[460px] mx-auto overflow-hidden rounded-[1.75rem] shadow-2xl transition-all duration-500 hover:scale-[1.05] hover:rotate-x-2 hover:shadow-india-gold/70"
                     onMouseEnter={() => onPortraitHover(p)}
                     onMouseLeave={onPortraitLeave}
                     title={p.title}

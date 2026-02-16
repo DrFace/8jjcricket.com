@@ -95,7 +95,7 @@ export default function HomeFeedbackSection({
       {/* TOP: Two panels */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* LEFT: Open policy text */}
-        <div className="india-card-blue-glow p-6">
+        <div className="india-card-blue-glow p-6 transition-all duration-500 hover:rotate-x-3 hover:translate-z-10 hover:scale-[1.02] hover:shadow-2xl">
           <h2 className="text-2xl india-header-text">Open Policy</h2>
 
           <ul className="mt-4 space-y-3 text-sm leading-relaxed text-gray-200">
@@ -145,7 +145,7 @@ export default function HomeFeedbackSection({
         </div>
 
         {/* RIGHT: Feedback form */}
-        <div className="india-card-saffron-glow p-6">
+        <div className="india-card-saffron-glow p-6 transition-all duration-500 hover:rotate-x-3 hover:translate-z-10 hover:scale-[1.02] hover:shadow-2xl">
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-2xl font-bold text-india-gold">Feedback</h2>
@@ -208,14 +208,14 @@ export default function HomeFeedbackSection({
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         {/* LEFT: two action cards */}
         <div className="grid gap-6 sm:grid-cols-2">
-          <div className="group relative india-card-gold-glow p-5 hover:scale-[1.02] transition-transform">
+          <div className="group relative india-card-gold-glow p-5">
             {/* Play Store */}
             <Reveal>
               <PlayStore />
             </Reveal>
           </div>
 
-          <div className="group relative india-card-saffron-glow p-5 hover:scale-[1.02] transition-transform">
+          <div className="group relative india-card-saffron-glow p-5 ">
             {/* social media */}
             <Reveal>
               <SocialBox />

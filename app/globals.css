@@ -231,7 +231,16 @@ body {
 }
 
 .india-card-gradient {
-  @apply bg-gradient-to-br from-india-charcoal/95 via-slate-900/95 to-india-charcoal/95 border border-white/10 backdrop-blur-xl shadow-lg rounded-3xl;
+  @apply bg-gradient-to-br from-india-charcoal/95 via-slate-900/95 to-india-charcoal/95 border border-white/10 backdrop-blur-xl shadow-lg rounded-3xl transition-all duration-500;
+  transform-style: preserve-3d;
+}
+
+.perspective-2000 {
+  perspective: 2000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
 }
 
 .india-card-gold-glow {

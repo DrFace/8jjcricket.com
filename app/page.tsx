@@ -221,18 +221,15 @@ export default async function HomePage() {
 
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex w-full items-center px-6 mt-4 lg:mt-8 xl:mt-0 min-h-[85vh] lg:h-screen"
+          className="SectionScroll sticky top-0 flex w-full items-center px-6 mt-4 lg:mt-8 xl:mt-0 min-h-[85vh] lg:h-screen perspective-2000 preserve-3d"
         >
           <div className="relative h-full w-full flex items-center">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
-            />
-            <div className="absolute inset-0 bg-black/70" />
+        
+            <div className="absolute inset-0 bg-black/90" />
 
-```tsx
+
             <div className="relative w-full bg-transparent p-4">
-```
+
               <PortraitShowcaseSection />
             </div>
           </div>
@@ -244,19 +241,22 @@ export default async function HomePage() {
         >
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
+            <div className="absolute inset-0 bg-black/90" />
 
             <div className="relative w-full bg-transparent p-4">
               <HomeNewsShowcase />
             </div>
+            
           </div>
         </section>
 
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6"
+          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6 perspective-2000 preserve-3d"
         >
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
+            <div className="absolute inset-0 bg-black/90" />
 
             <div className="relative w-full bg-transparent p-4">
               <HomeFeedbackSection />
