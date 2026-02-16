@@ -19,8 +19,9 @@ export default function NewsListCards({ items }: { items: NewsItem[] }) {
           key={n.id}
           href={`/news/${n.slug}`}
           className="group flex items-center gap-4 rounded-2xl bg-white/5 p-3.5 ring-1 ring-white/10
-                     transition-all duration-200
-                     hover:bg-white/10 hover:ring-white/15 hover:-translate-y-[1px]"
+                     transition-all duration-500 shadow-md
+                     hover:bg-white/10 hover:ring-white/15 hover:scale-[1.03] hover:rotate-y-2 hover:translate-z-10 hover:shadow-2xl"
+          style={{ transformStyle: "preserve-3d" }}
         >
           {/* Thumbnail */}
           <div className="relative h-[64px] flex-shrink-0 overflow-hidden rounded-2xl bg-black/40 ring-1 ring-white/10">

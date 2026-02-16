@@ -4,8 +4,9 @@
 import React, { useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
-import { Mousewheel } from "swiper/modules";
+import { Mousewheel, EffectCreative } from "swiper/modules";
 import "swiper/css";
+import "swiper/css/effect-creative";
 
 export default function HomeVerticalSwiper({
   children,
@@ -18,21 +19,29 @@ export default function HomeVerticalSwiper({
     document.documentElement.style.overscrollBehavior = "none";
     document.body.style.overscrollBehavior = "none";
     document.body.style.margin = "0";
-
-    const s = swiperRef.current;
-    if (s?.wrapperEl) {
-      (s.wrapperEl as HTMLElement).style.transitionTimingFunction =
-        "cubic-bezier(0.34, 1.56, 0.64, 1)";
-    }
   }, []);
 
   return (
     <Swiper
       direction="vertical"
       slidesPerView={1}
-      speed={800}
-      modules={[Mousewheel]}
-      style={{ height: "100vh" }}
+      speed={1000}
+      modules={[Mousewheel, EffectCreative]}
+      effect="creative"
+      creativeEffect={{
+        prev: {
+          shadow: true,
+          translate: [0, "-30%", -800],
+          rotate: [15, 0, 0],
+          opacity: 0.3,
+        },
+        next: {
+          shadow: true,
+          translate: [0, "100%", 0],
+          rotate: [0, 0, 0],
+        },
+      }}
+      style={{ height: "100vh", background: "#000", perspective: "2000px" }}
       mousewheel={{
         forceToAxis: true,
         releaseOnEdges: true,
@@ -44,12 +53,12 @@ export default function HomeVerticalSwiper({
       touchStartPreventDefault={false}
       onSwiper={(s) => {
         swiperRef.current = s;
-        (s.wrapperEl as HTMLElement).style.transitionTimingFunction =
-          "cubic-bezier(0.34, 1.56, 0.64, 1)";
       }}
     >
       {React.Children.map(children, (child, idx) => (
-        <SwiperSlide key={idx}>{child}</SwiperSlide>
+        <SwiperSlide key={idx} className="overflow-hidden">
+          {child}
+        </SwiperSlide>
       ))}
     </Swiper>
   );
