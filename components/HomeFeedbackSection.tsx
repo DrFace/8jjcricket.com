@@ -208,37 +208,33 @@ export default function HomeFeedbackSection({
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         {/* LEFT: two action cards */}
         <div className="grid gap-6 sm:grid-cols-2">
-          <div className="group relative india-card-gold-glow p-5">
-            {/* Play Store */}
-            <Reveal>
-              <PlayStore />
-            </Reveal>
-          </div>
+          <Reveal className="h-full">
+            <PlayStore />
+          </Reveal>
 
-          <div className="group relative india-card-saffron-glow p-5 ">
-            {/* social media */}
-            <Reveal>
-              <SocialBox />
-            </Reveal>
-          </div>
+          <Reveal delay={0.1} className="h-full">
+            <SocialBox />
+          </Reveal>
         </div>
 
         {/* RIGHT: long feedback email bar */}
-        <div className="india-card-blue-glow p-6">
-          <p className="text-sm font-semibold text-white">
-            If your feedback is long, please send it by email
-          </p>
-          <p className="mt-1 text-sm text-gray-300">
-            We will receive it and support you as best as possible. Thank you!
-          </p>
+        <div className="india-card-blue-glow p-4 flex flex-col justify-between h-full">
+          <div>
+            <p className="text-sm font-semibold text-white">
+              If your feedback is long, please send it by email
+            </p>
+            <p className="mt-1 text-[11px] text-gray-300">
+              We will receive it and support you as best as possible. Thank you!
+            </p>
+          </div>
 
-          <div className="mt-4 flex items-center gap-3 rounded-2xl border border-india-blue/30 bg-black/25 p-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-india-blue text-white">
-              <MailIcon className="h-6 w-6" />
+          <div className="mt-3 flex items-center gap-3 rounded-2xl border border-india-blue/30 bg-black/25 p-2.5">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-india-blue text-white">
+              <MailIcon className="h-5 w-5" />
             </div>
 
-            <div className="flex-1">
-              <div className="rounded-xl bg-white/5 px-4 py-3 text-sm text-white/90">
+            <div className="flex-1 min-w-0">
+              <div className="rounded-xl bg-white/5 px-4 py-2 text-xs text-white/90 truncate">
                 {LONG_FEEDBACK_EMAIL}
               </div>
             </div>
@@ -246,7 +242,7 @@ export default function HomeFeedbackSection({
             <button
               type="button"
               onClick={handleLongFeedbackSend}
-              className="india-btn-secondary py-2 px-4 shadow-none"
+              className="india-btn-secondary py-1.5 px-3 text-xs shadow-none"
             >
               Send
             </button>

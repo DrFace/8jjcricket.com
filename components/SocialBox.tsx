@@ -8,7 +8,7 @@ export default function SocialBox() {
   return (
     <div
       className="
-        relative w-full overflow-hidden rounded-2xl
+        relative w-full h-full overflow-hidden rounded-2xl
         border border-white/10
         bg-gradient-to-br from-slate-950/70 via-slate-900/45 to-amber-950/20
         shadow-[0_20px_60px_rgba(0,0,0,0.55)]
