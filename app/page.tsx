@@ -12,6 +12,7 @@ import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
 // --- IMPORT SEO DATA ---
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
 import SponsorBar from "@/components/SponsorBar";
+import ScaleToFit from "@/components/ScaleToFit";
 
 // --- EXPORT METADATA (This sets the <head> tags) ---
 export const metadata = homeMetadata;
@@ -224,16 +225,16 @@ export default async function HomePage() {
           className="SectionScroll sticky top-0 flex w-full items-center px-6 mt-4 lg:mt-8 xl:mt-0 min-h-[85vh] lg:h-screen perspective-2000 preserve-3d"
         >
           <div className="relative h-full w-full flex items-center">
-        
             <div className="absolute inset-0 bg-black/90" />
-
-
-            <div className="relative w-full bg-transparent p-4">
-
-              <PortraitShowcaseSection />
-            </div>
+            
+            <ScaleToFit className="w-full h-full pt-20 pb-4">
+              <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+                <PortraitShowcaseSection />
+              </div>
+            </ScaleToFit>
           </div>
         </section>
+        
         {/* News */}
         <section
           data-snap
@@ -243,10 +244,11 @@ export default async function HomePage() {
             {/* Background removed as per request */}
             <div className="absolute inset-0 bg-black/90" />
 
-            <div className="relative w-full bg-transparent p-4">
-              <HomeNewsShowcase />
-            </div>
-            
+            <ScaleToFit className="w-full h-full pt-20 pb-4">
+               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+                 <HomeNewsShowcase />
+               </div>
+            </ScaleToFit>
           </div>
         </section>
 
@@ -258,9 +260,11 @@ export default async function HomePage() {
             {/* Background removed as per request */}
             <div className="absolute inset-0 bg-black/90" />
 
-            <div className="relative w-full bg-transparent p-4">
-              <HomeFeedbackSection />
-            </div>
+            <ScaleToFit className="w-full h-full pt-20 pb-4">
+              <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+                <HomeFeedbackSection />
+              </div>
+            </ScaleToFit>
           </div>
         </section>
       </HomeVerticalSwiper>
