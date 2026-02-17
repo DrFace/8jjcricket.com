@@ -5,11 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import NewsTicker from "@/components/NewsTicker";
 import { Megaphone, VolumeOff, Music2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { ApiBase } from "@/lib/utils";
-import MusicPopup, { type AudioItem } from "@/components/MusicPopup";
-import { GetGlobalAudio, SetGlobalAudioVolume } from "@/lib/audio";
+import { useAudio } from "@/context/AudioContext";
+import { GetGlobalAudio } from "@/lib/audio";
 
 function NavItem({
   href,
@@ -89,20 +88,18 @@ function cookieAttrs(path: string, domain?: string) {
 
 export default function TopNav() {
   const pathname = usePathname();
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const MUSIC_KEY = "musicEnabled";
-  const MUSIC_VOLUME_KEY = "musicVolume";
-  const MUSIC_SELECTED_ID_KEY = "musicSelectedAudioId";
+  const { isMuted, setIsMuted, currentTrack } = useAudio();
 
-  const [audios, setAudios] = useState<AudioItem[]>([]);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [volume, setVolume] = useState<number>(0.7);
-  const [musicPopupOpen, setMusicPopupOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const [audioData, setAudioData] = useState<any>(null);
-  const [musicEnabled, setMusicEnabled] = useState(true);
-  const [hasInteracted, setHasInteracted] = useState(false);
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+
+    // Optional: immediately update audio element (extra safety)
+    // if (currentTrack) {
+    //   const audio = GetGlobalAudio(currentTrack);
+    //   if (audio) audio.muted = !isMuted;
+    // }
+  };
 
   // ✅ Determine initial language:
   // 1) googtrans cookie
@@ -205,227 +202,6 @@ export default function TopNav() {
     }, 50);
   };
 
-  useEffect(() => {
-    setMounted(true);
-
-    const load = async () => {
-      try {
-        const res = await fetch(`/api/audios`, { cache: "no-store" });
-        const data = (await res.json()) as AudioItem[];
-
-        const list = Array.isArray(data) ? data : [];
-        setAudios(list);
-
-        if (list.length === 0) return;
-
-        // restore preferences
-        const savedEnabled = window.localStorage.getItem(MUSIC_KEY);
-        const isEnabled = savedEnabled === null ? true : savedEnabled === "true";
-        setMusicEnabled(isEnabled);
-
-        const savedVol = window.localStorage.getItem(MUSIC_VOLUME_KEY);
-        const vol = savedVol ? Number(savedVol) : 0.7;
-        const safeVol = Number.isFinite(vol)
-          ? Math.max(0, Math.min(1, vol))
-          : 0.7;
-        setVolume(safeVol);
-
-        const savedId = window.localStorage.getItem(MUSIC_SELECTED_ID_KEY);
-        const parsedId = savedId ? Number(savedId) : NaN;
-        const initial =
-          Number.isFinite(parsedId) && list.some((x) => x.id === parsedId)
-            ? parsedId
-            : list[0].id;
-
-        setSelectedId(initial);
-
-        const selected = list.find((x) => x.id === initial) || list[0];
-        setAudioData(selected);
-
-        const audio = GetGlobalAudio(selected);
-        if (!audio) return;
-
-        audioRef.current = audio;
-
-        // IMPORTANT: disable loop so "ended" fires and we can go next
-        audio.loop = false;
-
-        audio.preload = "auto";
-        audio.muted = !isEnabled;
-
-        SetGlobalAudioVolume(safeVol);
-      } catch (e) {
-        console.error("Audio load failed:", e);
-      }
-    };
-
-    load();
-  }, []);
-
-  useEffect(() => {
-    setMounted(true);
-
-    // IMPORTANT:
-    // Do not overwrite audioRef/global audio here without a selected track,
-    // otherwise it can reset src and make it look like "only one song" exists.
-    const saved = window.localStorage.getItem(MUSIC_KEY);
-    if (saved !== null) setMusicEnabled(saved === "true");
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-    window.localStorage.setItem(MUSIC_KEY, String(musicEnabled));
-  }, [musicEnabled, mounted]);
-
-  useEffect(() => {
-    if (!mounted) return;
-    window.localStorage.setItem(MUSIC_VOLUME_KEY, String(volume));
-    SetGlobalAudioVolume(volume);
-  }, [volume, mounted]);
-
-  useEffect(() => {
-    if (!mounted) return;
-    if (selectedId == null) return;
-    window.localStorage.setItem(MUSIC_SELECTED_ID_KEY, String(selectedId));
-  }, [selectedId, mounted]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const onFirstInteraction = async () => {
-      setHasInteracted(true);
-
-      if (musicEnabled) {
-        audio.muted = false;
-        try {
-          await audio.play();
-        } catch {
-          audio.muted = true;
-          audio.play().catch(() => {});
-        }
-      }
-    };
-
-    window.addEventListener("touchstart", onFirstInteraction, { once: true });
-    window.addEventListener("click", onFirstInteraction, { once: true });
-
-    return () => {
-      window.removeEventListener("touchstart", onFirstInteraction);
-      window.removeEventListener("click", onFirstInteraction);
-    };
-  }, [musicEnabled]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (!musicEnabled) {
-      audio.pause();
-      return;
-    }
-
-    if (hasInteracted) {
-      audio.muted = false;
-      audio.play().catch(() => {});
-    } else {
-      audio.muted = true;
-      audio.play().catch(() => {});
-    }
-  }, [musicEnabled, hasInteracted]);
-
-  const toggleMusic = async () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const nextEnabled = !musicEnabled;
-    setMusicEnabled(nextEnabled);
-
-    if (!hasInteracted) setHasInteracted(true);
-
-    if (!nextEnabled) {
-      audio.pause();
-      audio.muted = true;
-      return;
-    }
-
-    audio.muted = !hasInteracted;
-
-    try {
-      await audio.play();
-      if (hasInteracted) audio.muted = false;
-    } catch {
-      audio.muted = true;
-      audio.play().catch(() => {});
-    }
-  };
-
-  const applySelectedSong = async (id: number) => {
-    setSelectedId(id);
-
-    const selected = audios.find((x) => x.id === id);
-    if (!selected) return;
-
-    setAudioData(selected);
-
-    const audio = GetGlobalAudio(selected);
-    if (!audio) return;
-
-    audioRef.current = audio;
-
-    // IMPORTANT: disable loop so "ended" fires and we can go next
-    audio.loop = false;
-
-    audio.preload = "auto";
-
-    SetGlobalAudioVolume(volume);
-
-    if (!musicEnabled) {
-      audio.pause();
-      audio.muted = true;
-      return;
-    }
-
-    audio.muted = !hasInteracted;
-    try {
-      await audio.play();
-      if (hasInteracted) audio.muted = false;
-    } catch {
-      audio.muted = true;
-      audio.play().catch(() => {});
-    }
-  };
-
-  // NEW: autoplay next song when current ends
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const onEnded = () => {
-      if (!audios || audios.length === 0) return;
-
-      const currentIndex =
-        selectedId == null ? 0 : audios.findIndex((x) => x.id === selectedId);
-
-      const safeIndex = currentIndex >= 0 ? currentIndex : 0;
-      const nextIndex = (safeIndex + 1) % audios.length;
-      const next = audios[nextIndex];
-      if (!next) return;
-
-      applySelectedSong(next.id).catch(() => {});
-    };
-
-    audio.addEventListener("ended", onEnded);
-    return () => {
-      audio.removeEventListener("ended", onEnded);
-    };
-  }, [audios, selectedId, musicEnabled, hasInteracted, volume]);
-
-  const openMusicPopup = () => {
-    if (!hasInteracted) setHasInteracted(true);
-    setMusicPopupOpen(true);
-  };
-
   const isActive = (href: string) => pathname === href;
 
   return (
@@ -518,25 +294,17 @@ export default function TopNav() {
                 ))}
               </select>
             </div>
-
-            {audioData && (
+            {currentTrack && (
               <button
                 type="button"
-                onClick={openMusicPopup}
+                onClick={toggleMute}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-sm font-semibold text-white hover:bg-white/10 active:scale-95"
                 aria-label="Toggle music"
-                aria-pressed={musicEnabled}
+                aria-pressed={!isMuted}
               >
-                {!mounted ? (
-                  <span className="inline-block h-[18px] w-[18px]" />
-                ) : musicEnabled ? (
-                  <Music2 size={18} />
-                ) : (
-                  <VolumeOff size={18} />
-                )}
+                {!isMuted ? <Music2 size={18} /> : <VolumeOff size={18} />}
               </button>
             )}
-
             <Link
               href="/minigames"
               className="rounded-full bg-gradient-to-r from-[#FACC15] via-[#F97316] to-[#EA580C] px-4 py-2 text-sm font-semibold text-black shadow-lg shadow-amber-500/40 ring-1 ring-white/20 hover:brightness-110 active:scale-95"
@@ -546,18 +314,6 @@ export default function TopNav() {
           </div>
         </div>
       </header>
-
-      <MusicPopup
-        open={musicPopupOpen}
-        onClose={() => setMusicPopupOpen(false)}
-        audios={audios}
-        selectedId={selectedId}
-        onSelect={(id) => applySelectedSong(id)}
-        musicEnabled={musicEnabled}
-        onToggleMusic={toggleMusic}
-        volume={volume}
-        onChangeVolume={(v) => setVolume(v)}
-      />
     </>
   );
 }

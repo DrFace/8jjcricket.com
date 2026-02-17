@@ -1,0 +1,112 @@
+"use client";
+
+// components/FloatingSupport.tsx
+import { MessageCircle, Info, Plus, Headphones, Radio } from "lucide-react";
+import MusicPopup from "@/components/MusicPopup";
+import { useState } from "react";
+import { useAudio } from "@/context/AudioContext";
+import LivePopup from "./LivePopup";
+
+export default function FloatingSupport() {
+  const {
+    audios,
+    currentTrack,
+    setCurrentTrack,
+    isPlaying,
+    setIsPlaying,
+    setIsMuted,
+    isMuted,
+    volume,
+    setVolume,
+  } = useAudio();
+  const [musicPopupOpen, setMusicPopupOpen] = useState(false);
+  const [livePopupOpen, setLivePopupOpen] = useState(false);
+
+  const openMusicPopup = () => setMusicPopupOpen(true);
+  const openLivePopup = () => setLivePopupOpen(true);
+  const handleSelectTrack = (id: number) => {
+    const track = audios.find((a) => a.id === id);
+    if (!track) return;
+    setCurrentTrack(track);
+    setIsPlaying(true);
+  };
+
+  const togglePlay = () => setIsPlaying(!isPlaying);
+  const toggleMute = () => setIsMuted(!isMuted);
+
+  return (
+    <div className="fixed right-0 top-1/3 z-50 flex flex-col items-center">
+      {/* Main Vertical Button */}
+      {/* <div className="bg-black text-yellow-400 rounded-2xl px-3 py-6 flex flex-col items-center shadow-xl">
+        <span className="rotate-90 tracking-widest font-semibold text-sm">
+          ONLINE 24/7
+        </span>
+      </div> */}
+
+      {/* Icon Buttons */}
+      <div className="bg-gradient-to-r from-orange-400/20 to-green-400/20 backdrop-blur-md rounded-l-2xl px-1 py-2 flex flex-col items-center gap-3 shadow-xl">
+        <button
+          className="
+          p-1 
+          rounded-full 
+          transition-all 
+          duration-200 
+          hover:scale-125 
+          hover:bg-orange-400/20 
+          active:bg-orange-500
+        "
+        >
+          <MessageCircle size={20} className="text-white" />
+        </button>
+
+        <button
+          className="
+          p-1 
+          rounded-full 
+          transition-all 
+          duration-200 
+          hover:scale-125 
+          hover:bg-orange-400/20 
+          active:bg-orange-500
+        "
+        >
+          <Info size={20} className="text-white" />
+        </button>
+
+        <button
+          className="p-1 rounded-full hover:scale-125 hover:bg-orange-400/20"
+          onClick={openLivePopup}
+          aria-label="Live Popup"
+        >
+          <Radio size={20} className="text-white" />
+        </button>
+
+        <button
+          className="p-1 rounded-full hover:scale-125 hover:bg-orange-400/20"
+          onClick={openMusicPopup}
+          aria-label="Mute/Unmute"
+          aria-pressed={!isMuted}
+        >
+          <Headphones size={20} className="text-white" />
+        </button>
+      </div>
+      <MusicPopup
+        open={musicPopupOpen}
+        onClose={() => setMusicPopupOpen(false)}
+        audios={audios}
+        selectedId={currentTrack?.id ?? null}
+        onSelect={handleSelectTrack}
+        musicEnabled={!isPlaying}
+        isMuted={isMuted}
+        onToggleMusic={togglePlay}
+        onToggleMute={toggleMute}
+        volume={volume}
+        onChangeVolume={setVolume}
+      />
+      <LivePopup
+        open={livePopupOpen}
+        onClose={() => setLivePopupOpen(false)}
+      />
+    </div>
+  );
+}
