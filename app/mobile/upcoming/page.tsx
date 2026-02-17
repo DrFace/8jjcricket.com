@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
-import type { Fixture } from "@/types/fixture";
-import BetButton from "@/components/BetButton";
 import MobileTabBar from "@/components/mobile/MobileTabBar";
 import CalenderModal from "@/components/mobile/CalenderModal";
-import MobileFixtureCard from "@/components/mobile/MobileFixtureCard";
+import { CRICKET_CATEGORIES, MOBILE_PAGE_SIZE } from "@/lib/constant";
+import { MatchCategory } from "@/lib/match-category";
+import MobileLiveCard from "@/components/mobile/MobileLiveCard";
+import MobileUpcomingCard from "@/components/mobile/MobileUpcomingCard";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -16,12 +17,13 @@ const fetcher = (u: string) => fetch(u).then((r) => r.json());
  */
 export default function UpcomingPage() {
   const { data, error, isLoading } = useSWR("/api/upcoming", fetcher);
+
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [page, setPage] = useState<number>(1);
   const title = "Upcoming Matches | 8jjcricket";
   const description =
     "Check the upcoming cricket fixtures and schedule on 8jjcricket.";
-
-  const fixtures: Fixture[] = data?.data ?? [];
-
+  const fixtures = data?.data ?? [];
   // Hooks must be before any early returns
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
@@ -41,25 +43,35 @@ export default function UpcomingPage() {
     { label: "Recent", href: "recent", active: false },
   ];
 
-  // date bounds for the picker (YYYY-MM-DD)
-  const minDate =
-    sortedFixtures.length > 0
-      ? sortedFixtures[0].starting_at.slice(0, 10)
-      : undefined;
-  const maxDate =
-    sortedFixtures.length > 0
-      ? sortedFixtures[sortedFixtures.length - 1].starting_at.slice(0, 10)
-      : undefined;
-
-  // fixtures filtered by selected date
+  // fixtures filtered by selected date and category
   const filteredFixtures = useMemo(() => {
-    if (!selectedDate) return sortedFixtures;
-    return sortedFixtures.filter(
-      (f) => f.starting_at.slice(0, 10) === selectedDate
-    );
-  }, [sortedFixtures, selectedDate]);
+    let data = sortedFixtures;
 
-  // early-return states (after hooks)
+    // 🗓 Date filter
+    if (selectedDate) {
+      data = data.filter((f) => f.starting_at.slice(0, 10) === selectedDate);
+    }
+    // 🏷 Category filter
+    if (selectedCategory !== "All") {
+      data = data.filter((f: any) => MatchCategory(f, selectedCategory));
+    }
+
+    return data;
+  }, [sortedFixtures, selectedDate, selectedCategory]);
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredFixtures.length / MOBILE_PAGE_SIZE)
+  );
+
+  const pagedFixtures = useMemo(() => {
+    const start = (page - 1) * MOBILE_PAGE_SIZE;
+    return filteredFixtures.slice(start, start + MOBILE_PAGE_SIZE);
+  }, [filteredFixtures, page]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [selectedCategory, selectedDate]);
 
   if (error)
     return (
@@ -113,6 +125,32 @@ export default function UpcomingPage() {
           <div>
             <MobileTabBar tabs={navTabs} />
           </div>
+
+          {/* Filters */}
+          <div className="w-full flex justify-center">
+            <div className="flex flex-wrap gap-1">
+              {CRICKET_CATEGORIES.map((cat) => {
+                const active = selectedCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat)}
+                    className={[
+                      "rounded-full px-3 py-1 text-[11px] font-semibold transition",
+                      "border backdrop-blur",
+                      active
+                        ? "border-amber-300/60 bg-amber-300/15 text-amber-200 shadow"
+                        : "border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100",
+                    ].join(" ")}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* RIGHT: calendar / date filter */}
 
           <aside className="lg:w-72">
@@ -123,10 +161,6 @@ export default function UpcomingPage() {
                   setParentSelectedDate={setSelectedDate}
                 />
               ) : null}
-              {/* Bet button under the calendar, aligned to the right */}
-              <div className="mt-2 flex justify-end border-t border-white/10 pt-3">
-                <BetButton />
-              </div>
             </div>
           </aside>
 
@@ -137,10 +171,36 @@ export default function UpcomingPage() {
               filter.
             </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
-              {filteredFixtures.map((f) => (
-                <MobileFixtureCard key={f.id} f={f} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {pagedFixtures.map((f) => (
+                <MobileUpcomingCard key={f.id} f={f} />
               ))}
+            </div>
+          )}
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-3 pt-4">
+              <button
+                type="button"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 disabled:opacity-40"
+              >
+                Prev
+              </button>
+
+              <span className="text-xs text-white/70">
+                Page <strong>{page}</strong> / {totalPages}
+              </span>
+
+              <button
+                type="button"
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 disabled:opacity-40"
+              >
+                Next
+              </button>
             </div>
           )}
         </main>

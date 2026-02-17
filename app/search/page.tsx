@@ -157,17 +157,20 @@ function SearchInner() {
   return (
     <div className="space-y-6 pb-8">
       {/* Header with Search Bar */}
-      <div className="bg-gradient-to-r from-blue-600 via-cyan-600 to-sky-500 rounded-2xl shadow-xl p-6 md:p-8">
+      <div className="rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 px-6 py-8 md:px-8 md:py-10 shadow-2xl backdrop-blur-xl">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold text-white text-center mb-6">
+          <h1 className="text-3xl md:text-4xl font-bold text-white text-center mb-2 india-header-text">
             Universal Search
           </h1>
+          <p className="text-center text-xs font-bold tracking-[0.18em] text-india-gold mb-6">
+            Find teams, players, series, matches, and news
+          </p>
 
           {/* Search Input */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-5 pointer-events-none">
               <svg
-                className="w-6 h-6 text-gray-400"
+                className="w-6 h-6 text-india-gold/70"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -185,15 +188,15 @@ function SearchInner() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search teams, players, series, matches, news..."
-              className="w-full pl-14 pr-6 py-4 text-lg text-gray-900 bg-white rounded-xl border-2 border-sky-200 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 outline-none transition-all placeholder:text-gray-400"
+              className="w-full pl-14 pr-6 py-4 text-lg text-white bg-slate-900/60 rounded-xl border-2 border-india-gold/30 focus:border-india-gold focus:ring-4 focus:ring-india-gold/20 outline-none transition-all placeholder:text-sky-100/50 backdrop-blur-md shadow-lg"
               autoFocus
             />
           </div>
 
           {/* Quick Stats */}
           {query && (
-            <div className="mt-4 text-center text-white/90 text-sm">
-              Found <span className="font-bold text-white">{results.length}</span>{" "}
+            <div className="mt-4 text-center text-sky-100/80 text-sm">
+              Found <span className="font-bold text-india-gold">{results.length}</span>{" "}
               results
             </div>
           )}
@@ -202,15 +205,16 @@ function SearchInner() {
 
       {/* Filter Tabs */}
       {query && (
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
           {["all", "teams", "players", "series", "news"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab as any)}
-              className={`px-5 py-2.5 rounded-xl font-semibold text-sm whitespace-nowrap transition-all ${activeTab === tab
-                  ? "bg-blue-600 text-white shadow-lg"
-                  : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
-                }`}
+              className={`px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all shadow-md ${
+                activeTab === tab
+                  ? "bg-gradient-to-r from-india-saffron via-india-gold to-india-orange text-black"
+                  : "bg-slate-900/60 text-sky-100/80 hover:bg-slate-800/80 border border-white/10 hover:border-india-gold/30"
+              }`}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
               {tab !== "all" &&
@@ -223,9 +227,9 @@ function SearchInner() {
       {/* Search Results */}
       <div>
         {!query ? (
-          <div className="text-center py-16">
+          <div className="text-center py-16 rounded-2xl bg-slate-900/40 backdrop-blur-md border border-white/10">
             <svg
-              className="w-20 h-20 text-gray-300 mx-auto mb-4"
+              className="w-20 h-20 text-india-gold/40 mx-auto mb-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -237,8 +241,8 @@ function SearchInner() {
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
-            <p className="text-gray-600 text-lg font-medium">Start typing to search</p>
-            <p className="text-gray-500 text-sm mt-2">
+            <p className="text-white text-lg font-bold mb-2">Start typing to search</p>
+            <p className="text-sky-100/60 text-sm">
               Search across teams, players, series, matches, and news
             </p>
           </div>
@@ -247,22 +251,22 @@ function SearchInner() {
             {[...Array(5)].map((_, i) => (
               <div
                 key={i}
-                className="bg-white rounded-xl p-4 border border-gray-200 animate-pulse"
+                className="bg-slate-900/40 rounded-xl p-4 border border-white/10 backdrop-blur-md animate-pulse"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gray-200 rounded-lg" />
+                  <div className="w-12 h-12 bg-white/10 rounded-lg" />
                   <div className="flex-1">
-                    <div className="h-5 bg-gray-200 rounded w-1/3 mb-2" />
-                    <div className="h-4 bg-gray-200 rounded w-1/4" />
+                    <div className="h-5 bg-white/10 rounded w-1/3 mb-2" />
+                    <div className="h-4 bg-white/10 rounded w-1/4" />
                   </div>
                 </div>
               </div>
             ))}
           </div>
         ) : filteredResults.length === 0 ? (
-          <div className="text-center py-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300">
+          <div className="text-center py-16 bg-slate-900/40 backdrop-blur-md rounded-3xl border-2 border-dashed border-india-gold/30">
             <svg
-              className="w-16 h-16 text-gray-300 mx-auto mb-4"
+              className="w-16 h-16 text-india-gold/40 mx-auto mb-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -274,8 +278,8 @@ function SearchInner() {
                 d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <p className="text-gray-700 font-semibold text-lg">No results found</p>
-            <p className="text-gray-500 text-sm mt-2">Try different keywords or check spelling</p>
+            <p className="text-white font-bold text-lg mb-2">No results found</p>
+            <p className="text-sky-100/60 text-sm">Try different keywords or check spelling</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -283,7 +287,7 @@ function SearchInner() {
               <Link
                 key={`${result.type}-${result.id}`}
                 href={result.link}
-                className="block bg-white rounded-xl p-4 border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all group"
+                className="block bg-slate-900/40 rounded-xl p-4 border border-india-gold/20 hover:border-india-gold hover:shadow-[0_0_20px_rgba(255,153,51,0.3)] transition-all group backdrop-blur-md"
               >
                 <div className="flex items-center gap-4">
                   {/* Icon/Image */}
@@ -293,32 +297,32 @@ function SearchInner() {
                       alt={result.title}
                       width={48}
                       height={48}
-                      className="rounded-lg object-cover ring-2 ring-gray-100"
+                      className="rounded-lg object-cover ring-2 ring-white/10"
                     />
                   ) : (
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-lg flex items-center justify-center text-2xl">
+                    <div className="w-12 h-12 bg-gradient-to-br from-india-saffron/20 to-india-gold/20 rounded-lg flex items-center justify-center text-2xl border border-india-gold/20">
                       {getTypeIcon(result.type)}
                     </div>
                   )}
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+                    <h3 className="font-bold text-white group-hover:text-india-gold transition-colors truncate">
                       {result.title}
                     </h3>
                     {result.subtitle && (
-                      <p className="text-sm text-gray-500 truncate">{result.subtitle}</p>
+                      <p className="text-sm text-sky-100/60 truncate">{result.subtitle}</p>
                     )}
                   </div>
 
                   {/* Type Badge */}
-                  <div className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded-full">
+                  <div className="px-3 py-1 bg-india-gold/10 text-india-gold text-xs font-bold rounded-lg border border-india-gold/20">
                     {result.type}
                   </div>
 
                   {/* Arrow */}
                   <svg
-                    className="w-5 h-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all"
+                    className="w-5 h-5 text-sky-100/40 group-hover:text-india-gold group-hover:translate-x-1 transition-all"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

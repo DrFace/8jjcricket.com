@@ -14,10 +14,11 @@ export default function LiveCard({ f }: { f: Fixture }) {
     away?.short_name || away?.name || `Team ${f.visitorteam_id}`;
 
   const metaLine = `${f.round ?? "Match"} · ${formatDate(f.starting_at)}`;
+  console.log("live card ", f);
 
   return (
     <Link
-      href={`/match/${f.id}`}
+      href={`/match/${f.fixture_id}`}
       className={cn(
         "group block rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-sm transition",
         "hover:border-amber-300/30 hover:bg-white/7"
@@ -38,16 +39,6 @@ export default function LiveCard({ f }: { f: Fixture }) {
             )}
           </div>
 
-          <span
-            className={cn(
-              "shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide",
-              f.live
-                ? "bg-red-500/15 text-red-200 border border-red-500/25"
-                : "bg-white/10 text-sky-100/70 border border-white/10"
-            )}
-          >
-            {f.live ? "LIVE" : "SOON"}
-          </span>
         </div>
 
         <div className="mt-2 h-px w-full bg-white/10" />

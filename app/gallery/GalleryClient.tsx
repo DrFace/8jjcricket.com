@@ -130,7 +130,6 @@ export default function GalleryClient({
           {activeAlbums.map((album) => {
             const albumPhotos = photosByAlbumSlug[album.slug] || [];
             const cover = albumPhotos[0]?.image_url;
-            console.log("ccc", cover);
 
             return (
               <section

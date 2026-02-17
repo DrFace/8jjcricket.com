@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { formatDate, cn } from "@/lib/utils";
 import TeamBadge from "@/components/TeamBadge";
-import type { Fixture } from "@/types/fixture";
+import { Match } from "@/lib/cricket-types";
 
-export default function ArchhiveCard({ f }: { f: Fixture }) {
+export default function ArchhiveCard({ f }: { f: Match }) {
   const home = f.localteam;
   const away = f.visitorteam;
 
@@ -58,7 +58,7 @@ export default function ArchhiveCard({ f }: { f: Fixture }) {
                   : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
               )}
             >
-              {f.live ? "LIVE" : "Finished"}
+              {f.live ? "LIVE" : "Soon"}
             </span>
 
             {f.status && (

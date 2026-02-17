@@ -42,7 +42,6 @@ export default function MobileFixtureCard({ f }: { f: Fixture }) {
 
   return (
     <div className="p-[1px] rounded-2xl bg-gradient-to-b from-[#FFD100]/50 to-transparent hover:shadow-lg">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500/80 via-blue-400/60 to-blue-500/80 opacity-75 group-hover:opacity-100" />
       <div className="bg-[#0B0E14] rounded-2xl p-4 overflow-hidden">
         <div className="relative space-y-3 pt-3">
           <div className="flex items-start justify-between gap-2">

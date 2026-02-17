@@ -2,8 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 :root {
   color-scheme: light dark;
+
+  /* Dark theme (default) */
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #1a1a1a;
+  --bg-card: rgba(15, 15, 15, 0.6);
+  --bg-card-hover: rgba(20, 20, 20, 0.8);
+
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --text-tertiary: rgba(255, 255, 255, 0.6);
+
+  --border-primary: rgba(255, 255, 255, 0.1);
+  --border-secondary: rgba(255, 255, 255, 0.05);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+/* Smooth theme transitions */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+::selection {
+  background-color: #FF9933;
+  /* india-saffron */
+  color: #1A1A2E;
+  /* india-charcoal */
 }
 
 html,
@@ -22,6 +86,8 @@ body {
   overflow-y: scroll;
   scroll-snap-type: none;
   /* IMPORTANT: disable native snap to avoid conflicts */
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 /* Optional: keep for semantics, not required when snap-type is none */
@@ -37,7 +103,7 @@ body {
 }
 
 a {
-  @apply text-blue-400 hover:underline;
+  @apply text-blue-400;
 }
 
 .container {
@@ -45,13 +111,174 @@ a {
 }
 
 .card {
-  @apply rounded-2xl border border-white/10 bg-white/5 p-4 shadow backdrop-blur-lg;
+  @apply rounded-2xl border p-4 shadow-lg backdrop-blur-md;
+  background-color: var(--bg-card);
+  border-color: var(--border-primary);
+}
+
+/* New India Theme Utilities */
+.india-card {
+  @apply relative rounded-xl border p-4 shadow-xl backdrop-blur-xl transition-all duration-300;
+  background-color: var(--bg-card);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.india-card:hover {
+  background-color: var(--bg-card-hover);
+  box-shadow: var(--shadow-lg);
+}
+
+.india-card-gold {
+  @apply india-card border-india-gold/40;
+}
+
+.india-card-saffron {
+  @apply india-card border-india-saffron/40;
+}
+
+.india-card-green {
+  @apply india-card border-india-green/40;
+}
+
+.india-card-blue {
+  @apply india-card border-india-blue/40;
+}
+
+.india-gradient-text {
+  @apply bg-gradient-to-r from-india-saffron via-white to-india-green bg-clip-text text-transparent;
 }
 
 .badge {
-  @apply inline-block rounded-full px-2 py-0.5 text-xs font-medium;
+  @apply inline-block rounded-full px-2.5 py-0.5 text-xs font-bold tracking-wide shadow-sm;
+}
+
+.badge-saffron {
+  @apply bg-india-saffron/20 text-india-saffron border border-india-saffron/30;
+}
+
+.badge-green {
+  @apply bg-india-green/20 text-india-green border border-india-green/30;
+}
+
+.badge-blue {
+  @apply bg-india-blue/20 text-blue-300 border border-india-blue/30;
 }
 
 .Sh-screen {
   height: 87vh !important;
+}
+
+/* Hide scrollbar but keep scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  /* IE/Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  /* Chrome/Safari */
+}
+
+.backdrop-blur-2xl {
+  padding: 0px;
+}
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+/* This hides the top bar area even if the class name is different */
+html {
+  top: 0 !important;
+}
+
+body {
+  top: 0 !important;
+  position: static !important;
+}
+
+/* Hide anything Google injects that isn't your content */
+.skiptranslate,
+#google_translate_element,
+.goog-te-gadget,
+.goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Sometimes Google adds a margin to the body */
+.translated-ltr,
+.translated-rtl {
+  margin-top: 0 !important;
+}
+
+
+
+.Font-Size-mid h1 {
+  margin-bottom: 5px;
+  line-height: normal;
+  font-size: 22px;
+}
+
+/* Enhanced India Theme Utilities */
+.india-gradient-bg {
+  background-color: var(--bg-primary);
+  background-image: radial-gradient(circle at top right, var(--bg-secondary), transparent),
+    radial-gradient(circle at bottom left, var(--bg-tertiary), transparent);
+}
+
+.india-card-gradient {
+  @apply bg-gradient-to-br from-india-charcoal/95 via-slate-900/95 to-india-charcoal/95 border border-white/10 backdrop-blur-xl shadow-lg rounded-3xl transition-all duration-500;
+  transform-style: preserve-3d;
+}
+
+.perspective-2000 {
+  perspective: 2000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.india-card-gold-glow {
+  @apply india-card-gradient border-india-gold/30 shadow-[0_0_15px_rgba(255_215_0/0.1)];
+}
+
+.india-card-saffron-glow {
+  @apply india-card-gradient border-india-saffron/30 shadow-[0_0_15px_rgba(255_153_51/0.1)];
+}
+
+.india-card-green-glow {
+  @apply india-card-gradient border-india-green/30 shadow-[0_0_15px_rgba(19_136_8/0.1)];
+}
+
+.india-card-blue-glow {
+  @apply india-card-gradient border-india-blue/30 shadow-[0_0_15px_rgba(0_0_128/0.15)];
+}
+
+.india-header-text {
+  @apply bg-gradient-to-r from-india-saffron via-white to-india-green bg-clip-text text-transparent font-bold;
+}
+
+.india-btn {
+  @apply px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg;
+}
+
+.india-btn-primary {
+  @apply india-btn bg-gradient-to-r from-india-saffron to-india-gold text-india-charcoal hover:shadow-india-saffron/40;
+}
+
+.india-btn-secondary {
+  @apply india-btn bg-gradient-to-r from-india-blue to-indigo-900 text-white border border-india-blue/50 hover:shadow-india-blue/40;
+}
+
+.india-btn-accent {
+  @apply india-btn bg-gradient-to-r from-india-green to-emerald-600 text-white hover:shadow-india-green/40;
+}
+
+.india-btn-danger {
+  @apply india-btn bg-gradient-to-r from-india-red to-rose-600 text-white hover:shadow-india-red/40;
 }

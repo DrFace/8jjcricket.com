@@ -1,4 +1,4 @@
-import Link from "next/link"; // Import Link component
+import Link from "next/link";
 
 interface TabBarProps {
   tabs: { label: string; href: string; active: boolean }[];
@@ -6,25 +6,28 @@ interface TabBarProps {
 
 export default function MobileTabBar({ tabs }: TabBarProps) {
   return (
-    <div className="flex w-full gap-2 mb-4">
-      {tabs.map((tab) => (
-        <Link
-          key={tab.href}
-          href={tab.href}
-          className={`w-full py-2 text-center font-bold transition-all duration-200 
-            /* Pill Shape */
-            rounded-full 
-            ${
-              tab.active
-                ? /* Active State: Gradient + Glow */
-                  "text-black bg-gradient-to-r from-[#FFD100] to-[#FF6B00] shadow-[0_0_15px_rgba(255,165,0,0.5)] border-t border-white/30"
-                : /* Inactive State: Dark/Muted */
-                  "text-gray-400 bg-gray-900 hover:text-white border border-gray-800"
-            }`}
-        >
-          {tab.label}
-        </Link>
-      ))}
+    <div className="w-full">
+      <div className="relative w-full">
+        <div className="flex gap-6 border-amber-500/40 relative z-10 lg:justify-start justify-start">
+          {tabs.map((tab) => (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              className={`relative px-4 py-1 font-bold text-lg transition-all duration-300 overflow-hidden group pb-4 rounded-2xl w-full text-center
+                ${
+                  tab.active
+                    ? /* Active: top border highlight with amber color */
+                      "text-amber-400 border-b-2 border-b-amber-400 bg-gradient-to-b from-amber-400/10 to-transparent"
+                    : /* Inactive: subtle text with hover effect */
+                      "text-gray-400 border-b-2 border-b-transparent hover:text-gray-200 hover:border-b-amber-300/50"
+                }
+              `}
+            >
+              <span className="relative z-10 text-[15px]">{tab.label}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

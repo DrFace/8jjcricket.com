@@ -1,46 +1,56 @@
-"use client"
+"use client";
 
-import Image from 'next/image'
-import { cn } from '@/lib/utils'
-import type { Team } from '@/types/team'
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
-/**
- * A reusable component that displays a team logo and name. The size of the
- * logo can be customized via the `size` prop. When `hideName` is set, only
- * the logo is shown. If a logo URL is not provided, the component renders
- * an empty box to preserve spacing.
- */
+type BadgeTeam = {
+  name?: string | null;
+  short_name?: string | null;
+  logo?: string | null;
+  image_path?: string | null;
+};
+
 export default function TeamBadge({
   team,
   size = 28,
   className,
   hideName = false,
 }: {
-  team?: Team
-  size?: number
-  className?: string
-  hideName?: boolean
+  team?: BadgeTeam;
+  size?: number;
+  className?: string;
+  hideName?: boolean;
 }) {
-  const label = team?.short_name || team?.name || 'Team'
-  const logo = team?.logo
+  const label = team?.short_name || team?.name || "Team";
+  const logo = team?.logo ?? team?.image_path ?? null;
+  const [imageError, setImageError] = useState(false);
 
   return (
-    <div className={cn('flex items-center gap-2 min-w-0', className)}>
-      {/* fixed-size box; image fills it and keeps aspect */}
+    <div className={cn("items-center gap-2 min-w-0", className)}>
       <div className="relative shrink-0" style={{ width: size, height: size }}>
-        {logo ? (
-          <Image
+        {!imageError ? (
+          <img
             alt={label}
-            src={logo}
-            fill
-            sizes={`${size}px`}
-            className="object-contain"
+            src={logo || "/images/cricket-team-placeholder.png"}
+            className="w-full h-full object-contain rounded-full"
+            onError={(e) => {
+              if (e.currentTarget.src.includes('cricket-team-placeholder.png')) {
+                setImageError(true);
+              } else {
+                e.currentTarget.src = '/images/cricket-team-placeholder.png';
+              }
+            }}
           />
         ) : (
-          <div className="w-full h-full" />
+          <div 
+            className="w-full h-full bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg"
+            style={{ fontSize: `${Math.max(8, size / 3)}px` }}
+          >
+            {label?.substring(0, 2).toUpperCase() || 'TM'}
+          </div>
         )}
       </div>
       {!hideName && <span className="truncate">{label}</span>}
     </div>
-  )
+  );
 }
