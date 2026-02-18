@@ -12,7 +12,7 @@ export default function SocialBox() {
         border border-white/10
         bg-gradient-to-br from-slate-950/70 via-slate-900/45 to-amber-950/20
         shadow-[0_20px_60px_rgba(0,0,0,0.55)]
-        backdrop-blur-2xl
+        backdrop-blur-2xl*
       "
     >
       {/* Ambient glows */}

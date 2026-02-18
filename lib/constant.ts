@@ -5,19 +5,19 @@ export const SOCIALS_LINKS = [
   {
     label: "Instagram",
     url: "https://www.instagram.com/8jj_cricket/",
-    icon: "/instagram.png",
+    icon: "/icons/instagram.png",
   },
   {
     label: "Facebook",
     url: "https://www.facebook.com/profile.php?id=61584089624639",
-    icon: "/facebook.png",
+    icon: "/icons/facebook.png",
   },
   {
     label: "Telegram",
     url: "https://t.me/Official8JJ_cricket",
-    icon: "/telegram.png",
+    icon: "/icons/telegram.png",
   },
-  { label: "X", url: "https://x.com/8jjCricket73705", icon: "/x.png" },
+  { label: "X", url: "https://x.com/8jjCricket73705", icon: "/icons/x.png" },
 ];
 
 export const MOBILE_PAGE_SIZE = 10;
@@ -28,6 +28,19 @@ export const GOOGLE_PLAY_STORE = [
     url: "https://play.google.com/store/apps/details?id=com.eightjj.cricket",
     img: "/images/Google-Play-Logo.png",
     alt: "Play Store",
+  },
+];
+
+export const MOBILE_APP = [
+  {
+    url: "https://play.google.com/store/apps/details?id=com.eightjj.cricket",
+    img: "/icons/play-store-3d.webp",
+    alt: "Play Store",
+  },
+  {
+    url: "https://apps.apple.com/us/app/8jj-cricket/id6758034492",
+    img: "/icons/app-store-3d.png",
+    alt: "App Store",
   },
 ];
 

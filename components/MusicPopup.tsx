@@ -38,6 +38,8 @@ export default function MusicPopup(props: {
     onChangeVolume,
   } = props;
 
+  console.log("musicEnabled", musicEnabled);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {

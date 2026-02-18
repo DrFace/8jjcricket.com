@@ -5,7 +5,13 @@ import { formatDate, cn } from "@/lib/utils";
 import type { Fixture } from "@/types/fixture";
 import { CalcRuns, ExtractTarget, ScoreLine } from "@/lib/match";
 
-export default function LiveScoreCardForFloating({ f }: { f: Fixture }) {
+export default function LiveScoreCardForFloating({
+  f,
+  index,
+}: {
+  f: Fixture;
+  index?: number;
+}) {
   const home = f.localteam;
   const away = f.visitorteam;
 
@@ -41,9 +47,10 @@ export default function LiveScoreCardForFloating({ f }: { f: Fixture }) {
       href={href}
       onClick={handleClick}
       aria-disabled={!matchId}
+      style={{ animationDelay: `${(index ?? 0) * 120}ms` }}
       className={cn(
-        "group block rounded-2xl transition-all duration-300 bg-transparent backdrop-blur-xl ring-1 ring-white/10 shadow-lg",
-        "hover:scale-[1.02]",
+        "group block rounded-2xl transition-all duration-300 bg-transparent backdrop-blur-xl ring-1 ring-white/10 shadow-lg animate-social-pop",
+        "hover:ring-amber-400/30 hover:shadow-2xl hover:shadow-amber-400/20",
         !matchId && "opacity-70 cursor-not-allowed hover:scale-100",
       )}
       title={!matchId ? "Match id unavailable" : undefined}

@@ -1,11 +1,12 @@
 "use client";
 
 // components/FloatingSupport.tsx
-import { MessageCircle, Info, Plus, Headphones, Radio } from "lucide-react";
+import { Headphones, Radio, Share2 } from "lucide-react";
 import MusicPopup from "@/components/MusicPopup";
 import { useState } from "react";
 import { useAudio } from "@/context/AudioContext";
 import LivePopup from "./LivePopup";
+import SocialMediaPopup from "./SocialMediaPopup";
 
 export default function FloatingSupport() {
   const {
@@ -13,7 +14,7 @@ export default function FloatingSupport() {
     currentTrack,
     setCurrentTrack,
     isPlaying,
-    setIsPlaying,
+    togglePlay,
     setIsMuted,
     isMuted,
     volume,
@@ -21,17 +22,19 @@ export default function FloatingSupport() {
   } = useAudio();
   const [musicPopupOpen, setMusicPopupOpen] = useState(false);
   const [livePopupOpen, setLivePopupOpen] = useState(false);
+  const [socialPopupOpen, setSocialPopupOpen] = useState(false);
 
   const openMusicPopup = () => setMusicPopupOpen(true);
   const openLivePopup = () => setLivePopupOpen(true);
+  const openSocialPopup = () => setSocialPopupOpen(true);
+
   const handleSelectTrack = (id: number) => {
     const track = audios.find((a) => a.id === id);
     if (!track) return;
     setCurrentTrack(track);
-    setIsPlaying(true);
+    togglePlay();
   };
 
-  const togglePlay = () => setIsPlaying(!isPlaying);
   const toggleMute = () => setIsMuted(!isMuted);
 
   return (
@@ -56,21 +59,19 @@ export default function FloatingSupport() {
           active:bg-orange-500
         "
         >
-          <MessageCircle size={20} className="text-white" />
+          <img
+            src="/icons/install_rm_bg.png"
+            alt="Install"
+            className="w-7 h-7 object-contain"
+          />
         </button>
 
         <button
-          className="
-          p-1 
-          rounded-full 
-          transition-all 
-          duration-200 
-          hover:scale-125 
-          hover:bg-orange-400/20 
-          active:bg-orange-500
-        "
+          className="p-1 rounded-full hover:scale-125 hover:bg-orange-400/20"
+          onClick={openSocialPopup}
+          aria-label="Social Popup"
         >
-          <Info size={20} className="text-white" />
+          <Share2 size={20} className="text-white" />
         </button>
 
         <button
@@ -96,16 +97,17 @@ export default function FloatingSupport() {
         audios={audios}
         selectedId={currentTrack?.id ?? null}
         onSelect={handleSelectTrack}
-        musicEnabled={!isPlaying}
+        musicEnabled={isPlaying}
         isMuted={isMuted}
         onToggleMusic={togglePlay}
         onToggleMute={toggleMute}
         volume={volume}
         onChangeVolume={setVolume}
       />
-      <LivePopup
-        open={livePopupOpen}
-        onClose={() => setLivePopupOpen(false)}
+      <LivePopup open={livePopupOpen} onClose={() => setLivePopupOpen(false)} />
+      <SocialMediaPopup
+        open={socialPopupOpen}
+        onClose={() => setSocialPopupOpen(false)}
       />
     </div>
   );

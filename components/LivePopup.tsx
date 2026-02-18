@@ -4,7 +4,6 @@
 import { useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import useSWR from "swr";
-import LiveScoreCard from "./LiveScoreCard";
 import LiveScoreCardForFloating from "./LiveScoreCardForFloating";
 
 export type AudioItem = {
@@ -24,9 +23,6 @@ export default function LivePopup(props: {
   const liveRes = useSWR("/api/live", fetcher);
 
   const liveMatches = liveRes.data?.data?.live ?? [];
-  const loading = liveRes.isLoading;
-  const error = liveRes.error;
-
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -51,25 +47,20 @@ export default function LivePopup(props: {
       {/* Gradient Border Wrapper */}
       <div
         ref={panelRef}
-        className="relative w-[92vw] max-w-md max-h-[90vh] rounded-2xl p-[1px] shadow-2xl overflow-hidden"
+        className="relative w-[92vw] max-w-md max-h-[90vh] shadow-2xl overflow-hidden"
         onMouseDown={(e) => e.stopPropagation()}
       >
         {/* Inner */}
         <div className="rounded-2xl  p-5 text-white max-h-[86vh] overflow-y-auto">
-          {/* Header */}
-          <div className="flex items-center justify-center border-b border-white/10 pb-3">
-            <button
-              onClick={onClose}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition"
-            >
-              <X size={18} />
-            </button>
-          </div>
           <div className="mb-10">
             {liveMatches.length > 0 ? (
               <div className="grid sm:grid-cols-1 lg:grid-cols-1 gap-4">
-                {liveMatches.map((match: any) => (
-                  <LiveScoreCardForFloating key={match.id} f={match} />
+                {liveMatches.map((match: any, i: number) => (
+                  <LiveScoreCardForFloating
+                    key={match.id}
+                    f={match}
+                    index={i}
+                  />
                 ))}
               </div>
             ) : (

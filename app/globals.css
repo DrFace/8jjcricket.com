@@ -273,3 +273,26 @@ body {
 .india-btn-danger {
   @apply india-btn bg-gradient-to-r from-india-red to-rose-600 text-white hover:shadow-india-red/40;
 }
+
+/* Social icons entrance animation (used in SocialMediaPopup) */
+@keyframes social-pop {
+  0% {
+    transform: translateY(8px) scale(0.98);
+    opacity: 0;
+  }
+
+  60% {
+    transform: translateY(-6px) scale(1.02);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-social-pop {
+  animation: social-pop 2s cubic-bezier(.2,.9,.2,1) both;
+  will-change: transform, opacity;
+}
