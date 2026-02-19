@@ -16,15 +16,10 @@ export default function MobileInteractiveHeroVideo({
     <>
       {/* Video Container with Click Handler */}
       <div className="relative w-full overflow-hidden rounded-2xl border border-india-gold/20 bg-slate-900/60 backdrop-blur-md shadow-lg">
-        <div 
-          className="h-[180px] w-full sm:h-[220px] relative cursor-pointer active:scale-[0.98] transition-transform"
-          onClick={() => {
-            setIsModalOpen(true);
-          }}
-        >
-          {/* Background Video - VISIBLE */}
+        <div className="h-[180px] w-full sm:h-[220px] relative">
+          {/* Background Video - STATIC, NO MOVEMENT */}
           <video
-            className="h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
             src={videoUrl}
             autoPlay
             muted
@@ -37,16 +32,19 @@ export default function MobileInteractiveHeroVideo({
           {/* Light Overlay - So video is visible */}
           <div className="pointer-events-none absolute inset-0 bg-black/10" />
 
-          {/* Play Button Overlay - SMALLER */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          {/* Clickable Play Button Area */}
+          <div 
+            className="absolute inset-0 flex items-center justify-center cursor-pointer z-10"
+            onClick={() => setIsModalOpen(true)}
+          >
             <div className="relative">
-              {/* Pulsing Ring - Smaller */}
-              <div className="absolute inset-0 animate-ping">
+              {/* Static Ring - No animation */}
+              <div className="absolute inset-0 pointer-events-none">
                 <div className="h-16 w-16 rounded-full border-2 border-orange-400/60" />
               </div>
 
               {/* Play Button - TRANSPARENT BACKGROUND */}
-              <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-transparent">
+              <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-transparent pointer-events-none">
                 {/* Orange Play Triangle Icon */}
                 <svg
                   className="h-8 w-8 text-orange-500 drop-shadow-2xl ml-0.5"
