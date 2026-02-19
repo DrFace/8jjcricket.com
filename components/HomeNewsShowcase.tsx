@@ -69,7 +69,7 @@ export default async function HomeNewsShowcase() {
         {/* LEFT — Featured */}
         <Link
           href={`/news/${featured.slug}`}
-          className="group relative overflow-hidden rounded-3xl india-card-green-glow transition hover:scale-[1.01]"
+          className="group relative overflow-hidden rounded-3xl india-card-green-glow transition-all duration-500 hover:scale-[1.05] hover:rotate-x-3 hover:translate-z-10 hover:shadow-2xl shadow-lg"
         >
           {/* Image */}
           <div

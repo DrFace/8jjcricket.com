@@ -56,3 +56,11 @@ export const APP_SOWCASE = [
 ];
 
 export const CRICKET_LOGO = "/8jjlogo.png";
+
+export const APPLE_APP_STORE = [
+  {
+    url: "https://apps.apple.com/us/app/8jj-cricket/id6758034492",
+    img: "/images/Apple-Store-Logo.png",
+    alt: "App Store",
+  },
+];

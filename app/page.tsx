@@ -8,10 +8,13 @@ import HomeVerticalSwiper from "@/components/HomeVerticalSwiper";
 import HomeNewsShowcase from "@/components/HomeNewsShowcase";
 import HomeFeedbackSection from "@/components/HomeFeedbackSection";
 import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
+import InteractiveHeroVideo from "@/components/InteractiveHeroVideo";
+import PartnersCarousel from "@/components/PartnersCarousel";
 
 // --- IMPORT SEO DATA ---
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
 import SponsorBar from "@/components/SponsorBar";
+import ScaleToFit from "@/components/ScaleToFit";
 
 // --- EXPORT METADATA (This sets the <head> tags) ---
 export const metadata = homeMetadata;
@@ -204,37 +207,29 @@ export default async function HomePage() {
 
             return (
               <>
-                <video
-                  src={safeSrc}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="absolute inset-0 h-full w-full bg-black object-contain sm:object-cover"
-                />
+                <InteractiveHeroVideo videoUrl={safeSrc} />
+                <SponsorBar />
               </>
             );
           })()}
-          <SponsorBar />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
         </section>
 
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex w-full items-center px-6 mt-4 lg:mt-8 xl:mt-0 min-h-[85vh] lg:h-screen"
+          className="SectionScroll sticky top-0 flex w-full items-center px-6 mt-4 lg:mt-8 xl:mt-0 min-h-[85vh] lg:h-screen perspective-2000 preserve-3d"
         >
           <div className="relative h-full w-full flex items-center">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
-            />
-            <div className="absolute inset-0 bg-black/70" />
-
-            <div className="relative w-full india-card-gold-glow p-4">
-              <PortraitShowcaseSection />
-            </div>
+            <div className="absolute inset-0 bg-black/90" />
+            
+            <ScaleToFit className="w-full h-full pt-20 pb-4">
+              <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+                <PortraitShowcaseSection />
+              </div>
+            </ScaleToFit>
           </div>
         </section>
+        
         {/* News */}
         <section
           data-snap
@@ -242,23 +237,45 @@ export default async function HomePage() {
         >
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
+            <div className="absolute inset-0 bg-black/90" />
 
-            <div className="relative w-full india-card-green-glow p-4">
-              <HomeNewsShowcase />
-            </div>
+            <ScaleToFit className="w-full h-full pt-20 pb-4">
+               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+                 <HomeNewsShowcase />
+               </div>
+            </ScaleToFit>
           </div>
         </section>
 
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6"
+          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6 perspective-2000 preserve-3d"
         >
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
+            <div className="absolute inset-0 bg-black/90" />
 
-            <div className="relative w-full india-card-saffron-glow p-4">
-              <HomeFeedbackSection />
-            </div>
+            <ScaleToFit className="w-full h-full pt-20 pb-4">
+              <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+                <HomeFeedbackSection />
+              </div>
+            </ScaleToFit>
+          </div>
+        </section>
+
+        {/* Partners Carousel */}
+        <section
+          data-snap
+          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6"
+        >
+          <div className="relative h-full w-full flex items-center">
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900" />
+
+            <ScaleToFit className="w-full h-full pt-20 pb-4">
+              <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+                <PartnersCarousel />
+              </div>
+            </ScaleToFit>
           </div>
         </section>
       </HomeVerticalSwiper>

@@ -13,21 +13,13 @@ export default function SocialBox() {
         bg-gradient-to-br from-slate-950/70 via-slate-900/45 to-amber-950/20
         shadow-[0_20px_60px_rgba(0,0,0,0.55)]
         backdrop-blur-2xl*
+        india-card-gold-glow p-6 transition-all duration-500 
+        hover:rotate-x-3 hover:translate-z-10 hover:scale-[1.02] hover:shadow-2xl
       "
     >
-      {/* Ambient glows */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-amber-400/10 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-cyan-400/10 blur-3xl"
-      />
-
-      <div className="p-4">
+      <div className="relative">
         {/* Header */}
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3 mb-4">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-amber-400" />

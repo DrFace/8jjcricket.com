@@ -47,21 +47,11 @@ export default function UpcomingCard({ f }: { f: Match }) {
           </div>
 
           <div className="text-right flex flex-col items-end gap-1">
-            <span
-              className={cn(
-                "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold",
-                f.live
-                  ? "bg-india-red/20 text-red-300 border border-india-red/30 animate-pulse"
-                  : "bg-india-blue/20 text-blue-300 border border-india-blue/30"
-              )}
-            >
-              {f.live ? "LIVE" : "Soon"}
-            </span>
-
             {f.status && (
               <div className="text-[11px] text-india-gold/80">{f.status}</div>
             )}
           </div>
+
         </div>
 
         {/* Middle: badges + "vs" */}

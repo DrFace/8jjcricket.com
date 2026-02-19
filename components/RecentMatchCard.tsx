@@ -37,14 +37,6 @@ export default function RecentMatchCard({ f }: { f: Fixture }) {
             )}
           </div>
 
-          <span
-            className={cn(
-              "shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide",
-              "bg-india-green/15 text-india-green border border-india-green/25"
-            )}
-          >
-            FINISHED
-          </span>
         </div>
 
         <div className="mt-2 h-px w-full bg-white/5 group-hover:bg-india-green/20 transition-colors" />
