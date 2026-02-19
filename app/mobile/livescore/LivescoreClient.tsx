@@ -3,11 +3,11 @@
 import { useState } from "react";
 import useSWR from "swr";
 
-import BetButton from "@/components/BetButton";
 import type { Fixture } from "@/types/fixture";
 import MobileTabBar from "@/components/mobile/MobileTabBar";
 import MobileLiveGrid from "@/components/mobile/MobileLiveGrid";
 import MobileLiveCard from "@/components/mobile/MobileLiveCard";
+import { CRICKET_CATEGORIES } from "@/lib/constant";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -22,8 +22,6 @@ export default function LivescoreClient() {
 
   const recentFixtures: Fixture[] = recentData?.data ?? [];
 
-  const categories = ["International", "T20", "ODI", "Test", "Leagues", "All"];
-
   const navTabs = [
     { label: "Live", href: "livescore", active: true },
     { label: "Upcoming", href: "upcoming", active: false },
@@ -32,7 +30,6 @@ export default function LivescoreClient() {
 
   return (
     <div className="flex w-full flex-col gap-3">
-      {/* Header */}
       <div className="flex flex-col gap-2">
         <div>
           <h1 className="text-lg font-extrabold text-white">Live Score</h1>
@@ -42,39 +39,36 @@ export default function LivescoreClient() {
         </div>
 
         <MobileTabBar tabs={navTabs} />
-
-        {/* Filters */}
-        <div className="flex flex-wrap gap-2">
-          {categories.map((cat) => {
-            const active = selected === cat;
-            return (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setSelected(cat)}
-                className={[
-                  "rounded-full px-3 py-1 text-[11px] font-semibold transition",
-                  "border backdrop-blur",
-                  active
-                    ? "border-amber-300/60 bg-amber-300/15 text-amber-200 shadow"
-                    : "border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100",
-                ].join(" ")}
-              >
-                {cat}
-              </button>
-            );
-          })}
+        <div className="w-full flex justify-center">
+          <div className="flex flex-wrap gap-1">
+            {CRICKET_CATEGORIES.map((cat) => {
+              const active = selected === cat;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelected(cat)}
+                  className={[
+                    "rounded-full px-3 py-1 text-[11px] font-semibold transition",
+                    "border backdrop-blur",
+                    active
+                      ? "border-amber-300/60 bg-amber-300/15 text-amber-200 shadow"
+                      : "border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100",
+                  ].join(" ")}
+                >
+                  {cat}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      {/* LIVE */}
       <div className="rounded-2xl border border-white/15 bg-black/40 shadow-2xl backdrop-blur-2xl">
-        <div className="flex items-center justify-between border-b border-white/10 bg-black/30 px-4 py-3">
-          {/* text color yellow */}
+        <div className="flex items-center justify-between px-4 py-3">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-amber-300 ">
             Live Now
           </h2>
-          <BetButton />
         </div>
 
         <div className="px-4 py-4">
@@ -82,7 +76,6 @@ export default function LivescoreClient() {
         </div>
       </div>
 
-      {/* RECENT */}
       <div className="rounded-2xl border border-white/15 bg-black/40 shadow-2xl backdrop-blur-2xl">
         <div className="border-b border-white/10 bg-black/30 px-4 py-3">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-amber-300">

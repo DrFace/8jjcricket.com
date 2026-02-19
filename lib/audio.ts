@@ -1,28 +1,39 @@
+// lib/audio.ts
 import { URLNormalize } from "./utils";
 
 let globalAudio: HTMLAudioElement | null = null;
 
-export function GetGlobalAudio(audioDataParam?: any) {
+export type AudioItem = {
+  id: number;
+  title: string;
+  file_path: string;
+};
+
+export function GetGlobalAudio(audioDataParam?: Partial<AudioItem> | null) {
   if (typeof window === "undefined") return null;
 
-  // 1. Get the URL (it might be empty string if data isn't ready)
   const audioUrl = audioDataParam?.file_path
     ? URLNormalize(audioDataParam.file_path, "audios")
     : "";
 
-  // 2. Create the object if it doesn't exist
   if (!globalAudio) {
-    globalAudio = new Audio(); // Create empty first
+    globalAudio = new Audio();
     globalAudio.loop = true;
     globalAudio.preload = "auto";
+    globalAudio.volume = 0.7;
     globalAudio.muted = true;
   }
 
-  // 3. CRITICAL: Update the source only if we have a valid URL
   if (audioUrl && globalAudio.src !== audioUrl) {
     globalAudio.src = audioUrl;
-    globalAudio.load(); // Tell the browser to load the new file
+    globalAudio.load();
   }
 
   return globalAudio;
+}
+
+export function SetGlobalAudioVolume(v: number) {
+  if (!globalAudio) return;
+  const clamped = Math.max(0, Math.min(1, v));
+  globalAudio.volume = clamped;
 }

@@ -2,11 +2,18 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import Reveal from "@/components/Reveal";
 import MobileNewsListCards from "@/components/MobileNewsListCards";
-import SocialBox from "@/components/SocialBox";
 import { fetchGames, toMinigameCards } from "@/lib/games-api";
-import MobileBannerCarousel from "@/components/mobile/MobileBannerCarousel";
 import { ApiBase } from "@/lib/utils";
 import { DEFAULT_API_BASE } from "@/lib/constant";
+import MobileSocialBox from "@/components/MobileSocialBox";
+import MobileHeroVideoSection from "@/components/mobile/MobileHeroVideoSection";
+
+// --- IMPORT SEO DATA ---
+import { homeMetadata } from "@/components/seo/HomeSeo";
+import MobileSponsorBar from "@/components/MobileSponsorBar";
+import MobilePortraitShowcaseSection from "@/components/mobile/MobilePortraitShowcaseSection";
+// --- EXPORT METADATA (This sets the <head> tags) ---
+export const metadata = homeMetadata;
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
   ssr: false,
@@ -43,16 +50,12 @@ const GAME_ITEMS = [
 const SITE_ORIGIN =
   process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
 
-/**
- * Place files like:
- *  public/homevideo.mp4
- *  public/brands/brands-bg.jpg
- *  public/brands/f168.png
- *  ...
- */
-const DOWNLOAD_URL = "https://download.9ipl.vip/normal/";
-
 const BRAND_ITEMS: { name: string; icon: string }[] = [
+  { name: "F168", icon: "/brands/f168.png" },
+  { name: "FLY88", icon: "/brands/fly88.png" },
+  { name: "CM88", icon: "/brands/cm88.png" },
+  { name: "OK8386", icon: "/brands/ok8386.png" },
+  { name: "SC88", icon: "/brands/sc88.png" },
   { name: "F168", icon: "/brands/f168.png" },
   { name: "FLY88", icon: "/brands/fly88.png" },
   { name: "CM88", icon: "/brands/cm88.png" },
@@ -175,83 +178,54 @@ export default async function MobileHomePage() {
 
       <section className="w-full snap-start scroll-mt-3">
         <Reveal>
-          <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
-            <div className="h-[180px] w-full sm:h-[220px]">
-              {(() => {
-                const raw = videos?.[0]?.video_path ?? "";
+          {(() => {
+            const raw = videos?.[0]?.video_path ?? "";
 
-                const getSafeVideoUrl = (input: string) => {
-                  if (!input) return "";
+            const getSafeVideoUrl = (input: string) => {
+              if (!input) return "";
 
-                  // Relative storage path → HTTPS domain
-                  if (input.startsWith("/")) {
-                    return `https://8jjcricket.com${input}`;
-                  }
+              // Relative storage path → HTTPS domain
+              if (input.startsWith("/")) {
+                return `https://8jjcricket.com${input}`;
+              }
 
-                  // IP-based HTTP URL → HTTPS domain
-                  if (input.startsWith("http://72.60.107.98:8001/")) {
-                    return input.replace(
-                      "http://72.60.107.98:8001",
-                      "https://8jjcricket.com"
-                    );
-                  }
-
-                  // Any other http://storage/... → force HTTPS on main domain
-                  if (input.startsWith("http://")) {
-                    try {
-                      const u = new URL(input);
-                      if (u.pathname.startsWith("/storage/")) {
-                        return `https://8jjcricket.com${u.pathname}${u.search}`;
-                      }
-                    } catch {}
-                  }
-
-                  // Already https or unknown format
-                  return input;
-                };
-
-                const safeSrc = getSafeVideoUrl(raw);
-
-                return (
-                  <video
-                    className="h-full w-full object-cover"
-                    src={safeSrc}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                  />
+              // IP-based HTTP URL → HTTPS domain
+              if (input.startsWith("http://72.60.107.98:8001/")) {
+                return input.replace(
+                  "http://72.60.107.98:8001",
+                  "https://8jjcricket.com",
                 );
-              })()}
-            </div>
+              }
 
-            <div className="pointer-events-none absolute inset-0 bg-black/10" />
-          </div>
+              // Any other http://storage/... → force HTTPS on main domain
+              if (input.startsWith("http://")) {
+                try {
+                  const u = new URL(input);
+                  if (u.pathname.startsWith("/storage/")) {
+                    return `https://8jjcricket.com${u.pathname}${u.search}`;
+                  }
+                } catch {}
+              }
+
+              // Already https or unknown format
+              return input;
+            };
+
+            const safeSrc = getSafeVideoUrl(raw);
+
+            return (
+              <MobileHeroVideoSection
+                videoUrl={safeSrc}
+                
+              />
+            );
+          })()}
         </Reveal>
       </section>
-
-      {/* SOCIALS (under video) */}
-      <section className="mt-4 w-full snap-start scroll-mt-3">
-        <Reveal>
-          <SocialBox />
-        </Reveal>
-      </section>
-
-      {/* HERO / BANNER */}
-      <section className="mt-3 w-full snap-start scroll-mt-3">
-        <Reveal>
-          <div className="w-full overflow-hidden rounded-xl">
-            <MobileBannerCarousel />
-          </div>
-        </Reveal>
-      </section>
-
       {/* SPONSORS (GRID, no scroll) */}
       <section className="mt-4 w-full snap-start scroll-mt-3">
         <Reveal>
-          <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
-            {/* Optional background image behind tiles */}
+          <div className="relative w-full overflow-hidden">
             <div
               className="absolute inset-0 opacity-30"
               style={{
@@ -262,135 +236,126 @@ export default async function MobileHomePage() {
             />
             <div className="absolute inset-0 bg-black/50" />
 
-            <div className="relative px-4 py-3">
-              <div className="mb-3 flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-yellow-400" />
-                <h3 className="text-sm font-semibold text-white">Sponsors</h3>
-              </div>
-
-              <div className="grid grid-cols-5 gap-x-3 gap-y-4">
-                {BRAND_ITEMS.map((b) => (
-                  <a
-                    key={b.name}
-                    href={DOWNLOAD_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex flex-col items-center transition active:scale-95"
-                  >
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-md">
-                      <img
-                        src={b.icon}
-                        alt={b.name}
-                        className="h-9 w-9 object-contain"
-                        loading="lazy"
-                      />
-                    </div>
-                    <span className="mt-1 text-[11px] font-medium text-white/90">
-                      {b.name}
-                    </span>
-                  </a>
-                ))}
-
-                {Array.from({ length: brandPlaceholders }).map((_, i) => (
-                  <div
-                    key={`brand-ph-${i}`}
-                    className="flex flex-col items-center"
-                  >
-                    <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
-                    <span className="mt-1 text-[11px] text-transparent">.</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <MobileSponsorBar />
           </div>
         </Reveal>
+      </section>
+
+      {/* HERO / BANNER */}
+      <section className="mt-3 w-full snap-start scroll-mt-3">
+        {/* <Reveal> */}
+        <div className="mb-2 flex w-full items-center justify-between px-4">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-india-gold" />
+            <h2 className="text-sm font-bold text-white">Player Portraits</h2>
+          </div>
+
+        
+        </div>
+
+        <div className="relative w-full rounded-2xl border border-india-gold/20 bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 p-4 shadow-2xl backdrop-blur-xl">
+          <MobilePortraitShowcaseSection />
+        </div>
+        {/* </Reveal> */}
       </section>
 
       {/* QUICK GAMES */}
       <section className="mt-5 w-full snap-start scroll-mt-3">
-        <Reveal>
-          <div className="mb-2 flex w-full items-center justify-between px-4">
-            <div className="mb-3 flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-yellow-400" />
-              <h2 className="text-sm font-semibold">Hot Minigames</h2>
-            </div>
-
-            <Link
-              href="/mobile/minigames"
-              className="text-xs font-semibold text-sky-400"
-            >
-              View all →
-            </Link>
+        {/* <Reveal> */}
+        <div className="mb-2 flex w-full items-center justify-between px-4">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-india-gold" />
+            <h2 className="text-sm font-bold text-white">Hot Minigames</h2>
           </div>
 
-          {(() => {
-            const COLS = 5;
-            const remainder = hotGames.length % COLS;
-            const placeholders = remainder === 0 ? 0 : COLS - remainder;
+          <Link
+            href="/mobile/minigames"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-bold text-india-gold hover:text-india-saffron transition-colors"
+          >
+            View all →
+          </Link>
+        </div>
 
-            return (
-              <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-white/5 p-4">
-                {hotGames.length === 0 ? (
-                  <div className="text-sm text-white/70">
-                    No minigames available right now.
-                  </div>
-                ) : (
-                  <>
-                    <div className="grid grid-cols-5 gap-x-3 gap-y-4">
-                      {hotGames.map((g) => (
-                        <Link
-                          key={g.slug}
-                          href={`/mobile/minigames/${encodeURIComponent(
-                            g.slug
-                          )}`}
-                          prefetch={false}
-                          className="flex flex-col items-center transition active:scale-95 cursor-pointer"
-                        >
-                          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-md">
-                            <img
-                              src={g.icon}
-                              alt={g.title}
-                              className="h-9 w-9 object-contain"
-                              loading="lazy"
-                            />
-                          </div>
-                        </Link>
-                      ))}
+        {(() => {
+          const COLS = 5;
+          const visibleGames = hotGames.slice(0, COLS);
+          const remainder = visibleGames.length % COLS;
+          const placeholders = remainder === 0 ? 0 : COLS - remainder;
 
-                      {Array.from({ length: placeholders }).map((_, i) => (
-                        <div
-                          key={`game-ph-${i}`}
-                          className="flex flex-col items-center"
-                        >
-                          <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
-                          <span className="mt-1 text-[11px] text-transparent">
-                            .
-                          </span>
+          return (
+            <div className="w-full overflow-hidden rounded-2xl border border-india-gold/20 bg-slate-900/60 backdrop-blur-md p-4 shadow-lg">
+              {visibleGames.length === 0 ? (
+                <div className="text-sm text-white/70">
+                  No minigames available right now.
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-5 gap-x-3 gap-y-4">
+                    {visibleGames.map((g) => (
+                      <Link
+                        key={g.slug}
+                        href={`/mobile/minigames/${encodeURIComponent(g.slug)}`}
+                        prefetch={false}
+                        className="flex flex-col items-center cursor-pointer active:scale-95"
+                      >
+                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-transparent overflow-hidden">
+                          <img
+                            src={g.icon}
+                            alt={g.title}
+                            className="h-full w-full object-contain rounded-2xl"
+                            loading="lazy"
+                          />
                         </div>
-                      ))}
-                    </div>
+                      </Link>
+                    ))}
 
-                    <Link
-                      href="/mobile/minigames"
-                      className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-xs font-bold text-black"
-                    >
-                      Play Minigames
-                    </Link>
-                  </>
-                )}
-              </div>
-            );
-          })()}
-        </Reveal>
+                    {Array.from({ length: placeholders }).map((_, i) => (
+                      <div
+                        key={`game-ph-${i}`}
+                        className="flex flex-col items-center"
+                      >
+                        <div className="h-14 w-14 rounded-2xl border border-dashed border-white/25 bg-white/5" />
+                        <span className="mt-1 text-[11px] text-transparent">
+                          .
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Link
+                    href="/mobile/minigames"
+                    className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-india-saffron to-india-gold px-4 py-2 text-xs font-bold text-black shadow-md hover:shadow-lg transition-all"
+                  >
+                    Play Minigames
+                  </Link>
+                </>
+              )}
+            </div>
+          );
+        })()}
       </section>
 
+      {/* SOCIALS (under video) */}
+      <section className="mt-4 w-full snap-start scroll-mt-3">
+        {/* <Reveal> */}
+        <div className="mb-2 flex w-full items-center justify-between px-4">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-india-gold" />
+            <h2 className="text-sm font-bold text-white">Follow Us</h2>
+          </div>
+        </div>
+        <MobileSocialBox />
+        {/* </Reveal> */}
+      </section>
       {/* NEWS */}
       {newsWithImages.length > 0 && (
         <section className="mt-5 w-full snap-start scroll-mt-3">
-          <Reveal>
-            <h2 className="mb-2 text-sm font-semibold">Latest News</h2>
-            <MobileNewsListCards items={newsWithImages} />
-          </Reveal>
+          {/* <Reveal> */}
+          <h2 className="mb-2 text-sm font-bold text-white flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-india-gold" />Latest News</h2>
+          <MobileNewsListCards items={newsWithImages} />
+          {/* </Reveal> */}
         </section>
       )}
     </>

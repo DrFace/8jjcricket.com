@@ -1,6 +1,7 @@
 // components/HomeNewsShowcase.tsx
 import Link from "next/link";
 import NewsListCards from "@/components/NewsListCards";
+import { HOME_NEWS_PARAM } from "@/lib/constant";
 
 type Article = {
   id: number;
@@ -23,49 +24,16 @@ const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
 const SITE_ORIGIN =
   process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
 
-/* =======================
-   EVENTS CONFIG
-======================= */
-const EVENTS_SLUG = "events";
-const EVENTS_NAME = "Events";
-
-function normalizeImageUrl(url: string | null): string | null {
-  if (!url) return null;
-  try {
-    const u = new URL(url, SITE_ORIGIN);
-    let pathname = u.pathname;
-    if (!pathname.startsWith("/storage/")) {
-      pathname = `/storage/${pathname.replace(/^\/+/, "")}`;
-    }
-    return `${SITE_ORIGIN}${pathname}${u.search}`;
-  } catch {
-    return `${SITE_ORIGIN}/storage/${String(url).replace(/^\/+/, "")}`;
-  }
-}
 
 function formatDate(date?: string | null) {
   if (!date) return "";
   return date.slice(0, 10);
 }
 
-/* =======================
-   EVENTS FILTER
-======================= */
-function isEvent(article: Article): boolean {
-  const slug = article.category?.slug?.toLowerCase()?.trim();
-  const name = article.category?.name?.toLowerCase()?.trim();
-  const categoryName = article.category_name?.toLowerCase()?.trim();
-
-  return (
-    slug === EVENTS_SLUG ||
-    name === EVENTS_NAME.toLowerCase() ||
-    categoryName === EVENTS_NAME.toLowerCase()
-  );
-}
 
 async function fetchNews(): Promise<Article[]> {
   const base = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE;
-  const res = await fetch(`${base.replace(/\/+$/, "")}/news`, {
+  const res = await fetch(`${base.replace(/\/+$/, "")}/news${HOME_NEWS_PARAM}`, {
     cache: "no-store",
   });
   if (!res.ok) return [];
@@ -77,76 +45,84 @@ export default async function HomeNewsShowcase() {
   const news = await fetchNews();
 
   const items = news
-    .filter(isEvent)
-    .map((n) => ({
-      ...n,
-      image_url: normalizeImageUrl(n.image_url),
-    }))
-    .filter((n) => Boolean(n.image_url));
 
-  if (items.length === 0) return null;
+  const featured = items.at(0);
 
-  const featured = items[0];
+  if (!featured) {
+    return (
+      <div className="text-white/60 text-center py-10">No news available</div>
+    );
+  }
 
   const listItems = items.slice(1, 5).map((n) => ({
     id: n.id,
     slug: n.slug,
     title: n.title,
     imgSrc: n.image_url!,
+    excerpt: n.excerpt,
     date: formatDate(n.published_at),
   }));
 
   return (
-    <div className="mx-auto w-full max-w-7xl">
-      <div className="grid gap-6 lg:grid-cols-[1.15fr,0.85fr]">
+    <div className="w-full">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-[1.25fr,0.75fr]">
         {/* LEFT — Featured */}
-        <div className="relative overflow-hidden rounded-3xl bg-white/5 ring-1 ring-white/10 shadow-2xl">
+        <Link
+          href={`/news/${featured.slug}`}
+          className="group relative overflow-hidden rounded-3xl india-card-green-glow transition-all duration-500 hover:scale-[1.05] hover:rotate-x-3 hover:translate-z-10 hover:shadow-2xl shadow-lg"
+        >
+          {/* Image */}
           <div
-            className="relative w-full 
-                h-[19.8vw] 
-                max-h-[270px] 
-                min-h-[180px]"
+            className="relative w-full h-[28vw] max-h-[440px] min-h-[260px]
+                       overflow-hidden rounded-t-2xl"
           >
             <div
-              className="absolute inset-0 bg-contain bg-top bg-no-repeat h-full"
-              style={{
-                backgroundImage: `url(${featured.image_url})`,
-              }}
+              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out
+                         group-hover:scale-[1.03]"
+              style={{ backgroundImage: `url(${featured.image_url})` }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-india-charcoal via-india-charcoal/50 to-transparent" />
+
+            {/* subtle shine */}
+            <div
+              className="pointer-events-none absolute -inset-x-24 -top-24 h-48 rotate-12 bg-india-saffron/20 blur-2xl opacity-0
+                         transition-opacity duration-700 group-hover:opacity-100"
+            />
           </div>
 
-          <div className="p-6">
-            <div className="text-sm text-white/60">
+          {/* Content */}
+          <div className="p-6 lg:p-7">
+            <div className="india-header-text text-sm mb-1 inline-block">
               {formatDate(featured.published_at)}
             </div>
 
-            <h3 className="mt-3 line-clamp-2 text-2xl font-extrabold text-white">
+            <h3 className="mt-3 line-clamp-2 text-2xl lg:text-[28px] font-extrabold text-white group-hover:text-india-gold transition-colors">
               {featured.title}
             </h3>
 
-            <p className="mt-2 line-clamp-2 text-sm text-white/60">
+            <p className="mt-2 line-clamp-2 text-sm text-gray-300">
               {featured.excerpt || featured.title}
             </p>
-          </div>
 
-          <div className="px-6 pb-6">
-            <Link
-              href={`/news/${featured.slug}`}
-              className="block w-full rounded-xl bg-amber-400/15 py-3 text-center text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20 hover:bg-amber-400/20"
-            >
-              Read more
-            </Link>
+            {/* CTA */}
+            <div className="mt-5">
+              <div
+                className="india-btn-primary inline-block text-sm"
+              >
+                Read more
+              </div>
+            </div>
           </div>
-        </div>
+        </Link>
 
         {/* RIGHT — List */}
         <div className="flex flex-col">
-        
           <NewsListCards items={listItems} />
+
           <Link
             href="/news"
-            className="mt-4 flex items-center justify-center rounded-2xl bg-white/5 py-4 text-sm font-semibold text-white/70 ring-1 ring-white/10 hover:bg-white/10"
+            className="mt-4 flex items-center justify-center rounded-2xl india-card-gold-glow py-4 text-sm font-semibold text-india-gold
+                        transition hover:scale-[1.01]"
           >
             View more →
           </Link>
@@ -155,3 +131,4 @@ export default async function HomeNewsShowcase() {
     </div>
   );
 }
+

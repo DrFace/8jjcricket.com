@@ -41,14 +41,12 @@ async function fetchPortrait(slug: string) {
   const json = await res.json();
   return (json?.data ?? json) as any;
 }
-
 export default async function PortraitDetailsPage({
   params,
 }: {
   params: { slug: string };
 }) {
   const data = await fetchPortrait(params.slug);
-
   if (!data) {
     return (
       <>
@@ -181,10 +179,19 @@ export default async function PortraitDetailsPage({
           </div> */}
 
           {/* HERO */}
-          <section className="group relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20">
+          <section className="group relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20 bg-gray-100">
             {topHero ? (
               <div
-                className="h-[42vh] min-h-[280px] w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.02]"
+                className="
+                  w-full
+                  aspect-[2210/590]
+                  bg-contain
+                  bg-center
+                  bg-no-repeat
+                  transition-transform
+                  duration-700
+                  group-hover:scale-[1.02]
+                "
                 style={{ backgroundImage: `url(${topHero})` }}
               />
             ) : (
@@ -197,18 +204,15 @@ export default async function PortraitDetailsPage({
             {/* Shine effect */}
             <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-[100%]" />
 
-            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="h-1 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500" />
-                <p className="text-xs font-bold tracking-[0.2em] text-blue-300 uppercase">
-                  Player Profile
-                </p>
-              </div>
-              <h1 className="text-4xl font-black tracking-tight sm:text-5xl bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent drop-shadow-lg">
+            <div className="absolute bottom-10 left-10 h-50">
+              <h1
+                className="text-4xl font-black bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent drop-shadow-lg"
+                style={{ height: 45 }}
+              >
                 {title}
               </h1>
               {subtitle ? (
-                <p className="mt-3 max-w-2xl text-base text-white/85 leading-relaxed">
+                <p className="mt-1 max-w-2xl text-base text-white/85 leading-relaxed">
                   {subtitle}
                 </p>
               ) : null}
@@ -219,9 +223,7 @@ export default async function PortraitDetailsPage({
           <section className="mt-10 grid gap-8 lg:grid-cols-[360px,1fr]">
             {/* LEFT STICKY */}
             <aside className="lg:sticky lg:top-6 lg:self-start">
-              
               <div className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900/60 to-slate-800/60 ring-1 ring-white/20 backdrop-blur-xl shadow-2xl">
-                                    
                 {/* Background banner */}
                 <img
                   src="/bg.png"
@@ -230,7 +232,6 @@ export default async function PortraitDetailsPage({
 
                 {mainPortrait ? (
                   <div className="relative group/portrait z-10">
-                    
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={mainPortrait}
@@ -312,48 +313,50 @@ export default async function PortraitDetailsPage({
                         "-mx-1 px-1",
                       ].join(" ")}
                     >
-                    {slider_images.map((s: any, idx: number) => {
-                      const img = toStorageUrl(pickFirst(s?.url, s?.path, s?.image_url));
+                      {slider_images.map((s: any, idx: number) => {
+                        const img = toStorageUrl(
+                          pickFirst(s?.url, s?.path, s?.image_url)
+                        );
 
-                      return (
-                        <a
-                          key={idx}
-                          href="https://8jjcricket.com/news"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={[
-                            "flex-none snap-start",
-                            "w-[280px] sm:w-[320px]",
-                            "overflow-hidden rounded-[1.75rem]",
-                            "bg-gradient-to-br from-slate-900/60 to-slate-800/60",
-                            "ring-1 ring-white/20 backdrop-blur-xl shadow-xl",
-                            "transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20",
-                          ].join(" ")}
-                        >
-                          {img ? (
-                            <div className="relative overflow-hidden">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img
-                                src={img}
-                                alt={s?.alt || ""}
-                                className="h-44 w-full object-cover transition-transform duration-700 hover:scale-110"
-                                loading="lazy"
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                              <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 hover:translate-x-[100%]" />
-                            </div>
-                          ) : (
-                            <div className="h-44 w-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
-                          )}
+                        return (
+                          <a
+                            key={idx}
+                            href="https://8jjcricket.com/news"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={[
+                              "flex-none snap-start",
+                              "w-[280px] sm:w-[320px]",
+                              "overflow-hidden rounded-[1.75rem]",
+                              "bg-gradient-to-br from-slate-900/60 to-slate-800/60",
+                              "ring-1 ring-white/20 backdrop-blur-xl shadow-xl",
+                              "transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20",
+                            ].join(" ")}
+                          >
+                            {img ? (
+                              <div className="relative overflow-hidden">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={img}
+                                  alt={s?.alt || ""}
+                                  className="h-44 w-full object-cover transition-transform duration-700 hover:scale-110"
+                                  loading="lazy"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 hover:translate-x-[100%]" />
+                              </div>
+                            ) : (
+                              <div className="h-44 w-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
+                            )}
 
-                          <div className="p-4">
-                            <div className="text-sm font-bold text-white/90">
-                              {s?.alt || `Highlight ${idx + 1}`}
+                            <div className="p-4">
+                              <div className="text-sm font-bold text-white/90">
+                                {s?.alt || `Highlight ${idx + 1}`}
+                              </div>
                             </div>
-                          </div>
-                        </a>
-                      );
-                    })}
+                          </a>
+                        );
+                      })}
                     </div>
                   </div>
                 </section>
@@ -524,21 +527,29 @@ export default async function PortraitDetailsPage({
                   </div>
                 </section>
               ) : null}
-             
-            </div> 
-          </section> 
+            </div>
+          </section>
 
           {/* FOOTER BANNER */}
           <section className="mt-8 group relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/20 shadow-2xl transition-all duration-500 hover:ring-white/30 hover:shadow-blue-500/20">
-          {footerBanner ? (
-            <div
-              className="h-[42vh] min-h-[280px] w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.02]"
-              style={{ backgroundImage: `url(${footerBanner})` }}
-            />
-          ) : (
-            <div className="h-[42vh] min-h-[280px] w-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
-          )}
-        </section> 
+            {footerBanner ? (
+              <div
+                className="
+                w-full
+                aspect-[2210/590]
+                bg-no-repeat
+                bg-center
+                bg-contain
+                transition-transform
+                duration-700
+                group-hover:scale-[1.02]
+              "
+                style={{ backgroundImage: `url(${footerBanner})` }}
+              />
+            ) : (
+              <div className="w-full aspect-[2210/590] bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20" />
+            )}
+          </section>
         </div>
       </main>
 

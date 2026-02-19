@@ -72,31 +72,31 @@ export default function RankingsPage() {
       <title>{title}</title>
       <meta name="description" content={description} />
       <div className="space-y-8">
-        <h1 className="text-2xl font-semibold mb-4">ICC Team Rankings</h1>
+        <h1 className="text-2xl font-bold text-white india-header-text mb-4">ICC Team Rankings</h1>
         {sortedTypes.map((type) => {
           const teams = groups[type]
           return (
             <div key={type} className="overflow-x-auto">
-              <h2 className="text-xl font-semibold mb-2 capitalize">
+              <h2 className="text-xl font-bold text-india-gold mb-3 capitalize">
                 {type} Rankings
               </h2>
-              <table className="min-w-full border divide-y divide-gray-200 bg-white rounded-lg">
-                <thead className="bg-gray-50">
+              <table className="min-w-full border border-india-gold/20 divide-y divide-white/10 bg-slate-900/60 backdrop-blur-md rounded-2xl overflow-hidden shadow-lg">
+                <thead className="bg-gradient-to-r from-india-saffron via-india-gold to-india-orange text-black">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Pos</th>
-                    <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Team</th>
-                    <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Matches</th>
-                    <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Points</th>
-                    <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Rating</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">Pos</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">Team</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">Matches</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">Points</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">Rating</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-white/5">
                   {teams.map((t) => (
-                    <tr key={t.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 whitespace-nowrap font-medium text-gray-700">
+                    <tr key={t.id} className="hover:bg-slate-800/60 transition-colors">
+                      <td className="px-4 py-3 whitespace-nowrap font-bold text-india-gold">
                         {t.ranking.position}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap flex items-center gap-2">
+                      <td className="px-4 py-3 whitespace-nowrap flex items-center gap-2">
                         <Image
                           src={t.image_path}
                           alt={t.name}
@@ -104,15 +104,15 @@ export default function RankingsPage() {
                           height={24}
                           className="object-contain"
                         />
-                        <span>{t.name}</span>
+                        <span className="text-white font-medium">{t.name}</span>
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-gray-700">
+                      <td className="px-4 py-3 whitespace-nowrap text-sky-100/80">
                         {t.ranking.matches}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-gray-700">
+                      <td className="px-4 py-3 whitespace-nowrap text-sky-100/80">
                         {t.ranking.points}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-gray-700 font-semibold">
+                      <td className="px-4 py-3 whitespace-nowrap text-white font-bold">
                         {t.ranking.rating}
                       </td>
                     </tr>

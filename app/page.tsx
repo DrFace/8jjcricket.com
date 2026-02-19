@@ -8,6 +8,15 @@ import HomeVerticalSwiper from "@/components/HomeVerticalSwiper";
 import HomeNewsShowcase from "@/components/HomeNewsShowcase";
 import HomeFeedbackSection from "@/components/HomeFeedbackSection";
 import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
+import HeroVideoSection from "@/components/HeroVideoSection";
+
+// --- IMPORT SEO DATA ---
+import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
+import SponsorBar from "@/components/SponsorBar";
+import ScaleToFit from "@/components/ScaleToFit";
+
+// --- EXPORT METADATA (This sets the <head> tags) ---
+export const metadata = homeMetadata;
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
   ssr: false,
@@ -39,7 +48,7 @@ const SITE_ORIGIN =
 function apiBase() {
   return (process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE).replace(
     /\/+$/,
-    ""
+    "",
   );
 }
 
@@ -78,45 +87,6 @@ async function getNewsPreview(): Promise<Article[]> {
   }
 }
 
-const latest: { slug: string; title: string; desc: string }[] = [
-  {
-    slug: "cricket-legends",
-    title: "Cricket Legends",
-    desc: "Career mode with levels & characters.",
-  },
-  {
-    slug: "cricket-superover",
-    title: "Cricket Super Over",
-    desc: "6 balls, pure timing — hit for 6s!",
-  },
-  { slug: "tictactoe", title: "Tic Tac Toe", desc: "Classic 3×3 duel." },
-  { slug: "flappysquare", title: "Flappy Square", desc: "Click to fly!" },
-];
-
-function gameInitials(title: string) {
-  return title
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 3)
-    .map((w) => w[0]?.toUpperCase())
-    .join("");
-}
-
-const DOWNLOAD_URL = "https://download.9ipl.vip/normal/";
-const BRAND_ITEMS = [
-  "MB66",
-  "OK9",
-  "78win",
-  "QQ88",
-  "F168",
-  "FLY88",
-  "CM88",
-  "OK8386",
-  "SC88",
-  "C168",
-  "iP88",
-];
-
 export default async function HomePage() {
   const news = await getNewsPreview();
   const [videosRaw] = await Promise.all([fetchVideos()]);
@@ -139,7 +109,7 @@ export default async function HomePage() {
     }))
     .filter(
       (a: { id: number; slug: string; title: string; imgSrc: string | null }) =>
-        a.imgSrc
+        a.imgSrc,
     ) as {
     id: number;
     slug: string;
@@ -149,7 +119,6 @@ export default async function HomePage() {
 
   function normalizeVideoUrl(url: string | null): string | null {
     if (!url) return null;
-    // Remove '/api' from backend_url if present
     let backend_url = apiBase().replace(/\/api$/, "");
     try {
       const u = new URL(url, backend_url);
@@ -180,6 +149,12 @@ export default async function HomePage() {
 
   return (
     <SmoothScroller>
+      {/* --- INJECT SCHEMA JSON-LD --- */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
+      />
+
       <DesktopOnly>
         <WelcomePopup />
       </DesktopOnly>
@@ -187,49 +162,43 @@ export default async function HomePage() {
       <BottomNav />
       <TopNav />
 
-      {/* Swiper vertical scroll effect wrapper (no content changes inside) */}
+      {/* Swiper vertical scroll effect wrapper */}
       <HomeVerticalSwiper>
         <section
           data-snap
-          className="SectionScroll sticky top-0 Sh-screen w-full overflow-hidden "
+          className="SectionScroll sticky top-0 h-[75vh] lg:h-[84vh] xl:h-[90vh] w-full overflow-hidden"
         >
-          {/* Build a safe HTTPS URL for the video without changing backend/env */}
+          {/* SEO-Optimized H1 for India & South Asia */}
+          <h1 className="sr-only">
+            8JJ Cricket - Live Cricket Scores, IPL Updates & Match News for
+            India & South Asia
+          </h1>
+
           {(() => {
             const raw = videos?.[0]?.video_path ?? "";
 
-            // Convert IP-based HTTP storage URLs to your HTTPS domain storage URL
             const getSafeVideoUrl = (input: string) => {
               if (!input) return "";
-
-              // If backend returns a relative path like "/storage/....mp4"
               if (input.startsWith("/")) {
                 return `https://8jjcricket.com${input}`;
               }
-
-              // If backend returns full URL with the IP + port over http
-              // e.g. http://72.60.107.98:8001/storage/home_videos/xxx.mp4
               if (input.startsWith("http://72.60.107.98:8001/")) {
                 return input.replace(
                   "http://72.60.107.98:8001",
-                  "https://8jjcricket.com"
+                  "https://8jjcricket.com",
                 );
               }
-
-              // If any other http URL, try to remap just the /storage/... portion to your HTTPS domain
               if (input.startsWith("http://")) {
                 try {
                   const u = new URL(input);
                   if (u.pathname.startsWith("/storage/")) {
                     return `https://8jjcricket.com${u.pathname}${u.search}`;
                   }
-                  // If it's some other path, still force https on same host (best effort)
                   return `https://${u.host}${u.pathname}${u.search}`;
                 } catch {
                   return input;
                 }
               }
-
-              // Already https or something else
               return input;
             };
 
@@ -237,103 +206,62 @@ export default async function HomePage() {
 
             return (
               <>
-                <video
-                  src={safeSrc}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="absolute inset-0 h-full w-full bg-black object-contain sm:object-cover"
+                <HeroVideoSection
+                  videoUrl={safeSrc}
+                  
                 />
+                <SponsorBar />
               </>
             );
           })()}
-
-          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-transparent" />
-
-          <div className="pointer-events-auto absolute bottom-4 left-0 right-0 z-20 flex justify-center px-4 ">
-            <div className="inline-flex min-w-0 max-w-full items-center justify-center gap-2 overflow-x-auto rounded-full border border-white/20 bg-black/70 px-3 py-2 shadow-2xl backdrop-blur-xl ">
-              {BRAND_ITEMS.map((name: string) => (
-                <a
-                  key={name}
-                  href={DOWNLOAD_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="whitespace-nowrap rounded-full bg-slate-200/90 px-4 py-1.5 text-xs font-semibold text-slate-900 shadow-md transition hover:bg-white sm:text-sm"
-                >
-                  {name}
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
-        <section
-          data-snap
-          className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
-        >
-          <div className="relative h-full w-full flex items-center">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
-            />
-            <div className="absolute inset-0 bg-black/70" />
-
-            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
-              <PortraitShowcaseSection />
-            </div>
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </section>
 
-        {/* SLIDE — GALLERY SHOWCASE */}
-        {/* <section
-          data-snap
-          className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
-        >
-          <div className="relative h-full w-full flex items-center">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
-            />
-            <div className="absolute inset-0 bg-black/70" />
-
-            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
-              <HomeGalleryShowcase />
-            </div>
-          </div>
-        </section> */}
-
-        {/* SLIDE — NEWS */}
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
+          className="SectionScroll sticky top-0 flex w-full items-center px-6 mt-4 lg:mt-8 xl:mt-0 min-h-[85vh] lg:h-screen perspective-2000 preserve-3d"
         >
           <div className="relative h-full w-full flex items-center">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
-            />
-            <div className="absolute inset-0 bg-black/70" />
-            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
-              <HomeNewsShowcase />
-            </div>
+            <div className="absolute inset-0 bg-black/90" />
+            
+            <ScaleToFit className="w-full h-full pt-20 pb-4">
+              <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+                <PortraitShowcaseSection />
+              </div>
+            </ScaleToFit>
+          </div>
+        </section>
+        
+        {/* News */}
+        <section
+          data-snap
+          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6"
+        >
+          <div className="relative h-full w-full flex items-center">
+            {/* Background removed as per request */}
+            <div className="absolute inset-0 bg-black/90" />
+
+            <ScaleToFit className="w-full h-full pt-20 pb-4">
+               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+                 <HomeNewsShowcase />
+               </div>
+            </ScaleToFit>
           </div>
         </section>
 
-        {/* SLIDE — FEEDBACK */}
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex h-screen w-full items-center px-6"
+          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6 perspective-2000 preserve-3d"
         >
           <div className="relative h-full w-full flex items-center">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/CricketBG.jpg)" }}
-            />
-            <div className="absolute inset-0 bg-black/70" />
+            {/* Background removed as per request */}
+            <div className="absolute inset-0 bg-black/90" />
 
-            <div className="relative w-full rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-2xl backdrop-blur-2xl">
-              <HomeFeedbackSection />
-            </div>
+            <ScaleToFit className="w-full h-full pt-20 pb-4">
+              <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+                <HomeFeedbackSection />
+              </div>
+            </ScaleToFit>
           </div>
         </section>
       </HomeVerticalSwiper>

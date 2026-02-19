@@ -132,21 +132,21 @@ export default async function GalleryMobilePage() {
       <div className="mx-auto w-full max-w-2xl px-0 py-5">
         {/* Mobile hero */}
         <div className="px-4">
-          <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
+          <div className="rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
             <div className="space-y-3">
-              <p className="text-xs font-semibold tracking-[0.18em] text-amber-400">
+              <p className="text-xs font-bold tracking-[0.18em] text-india-gold">
                 8JJ SPORTS • GALLERY
               </p>
 
-              <h1 className="mt-2 text-2xl font-bold text-white">
+              <h1 className="mt-2 text-2xl font-bold text-white india-header-text">
                 Moments. Matches. Memories.
               </h1>
 
-              <p className="text-sm text-white/65">
+              <p className="text-sm text-sky-100/70">
                 Browse by category and album. Tap any photo to view fullscreen.
               </p>
 
-              <div className="flex flex-wrap gap-2 text-[11px]">
+              {/* <div className="flex flex-wrap gap-2 text-[11px]">
                 <span className="rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
                   {categories.length} Categories
                 </span>
@@ -156,12 +156,12 @@ export default async function GalleryMobilePage() {
                 <span className="rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
                   {totalPhotos} Photos
                 </span>
-              </div>
+              </div> */}
 
               <div className="pt-1">
                 <Link
                   href="/"
-                  className="inline-flex rounded-full bg-white/10 px-4 py-2 text-[11px] font-semibold text-white/85 ring-1 ring-white/15 hover:bg-white/15"
+                  className="inline-flex rounded-full bg-gradient-to-r from-india-saffron to-india-gold px-4 py-2 text-[11px] font-bold text-black hover:shadow-lg transition-all"
                 >
                   Back Home
                 </Link>
@@ -174,7 +174,7 @@ export default async function GalleryMobilePage() {
         <div className="mt-4">
           {categories.length === 0 ? (
             <div className="px-4">
-              <div className="rounded-2xl bg-white/5 p-6 text-sm text-white/60 ring-1 ring-white/10 text-center">
+              <div className="rounded-2xl bg-slate-900/60 backdrop-blur-md p-6 text-sm text-sky-100/60 border border-india-gold/20 shadow-lg text-center">
                 No categories found.
               </div>
             </div>
