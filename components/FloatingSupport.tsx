@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useAudio } from "@/context/AudioContext";
 import LivePopup from "./LivePopup";
 import SocialMediaPopup from "./SocialMediaPopup";
+import Link from "next/link";
 
 export default function FloatingSupport() {
   const {
@@ -54,7 +55,7 @@ export default function FloatingSupport() {
 
       {/* Icon Buttons */}
       <div className="bg-gradient-to-r from-orange-400/20 to-green-400/20 backdrop-blur-md rounded-l-2xl px-1 py-2 flex flex-col items-center gap-3 shadow-xl">
-        <button
+        <Link
           className="
           p-1 
           rounded-full 
@@ -64,13 +65,15 @@ export default function FloatingSupport() {
           hover:bg-orange-400/20 
           active:bg-orange-500
         "
+        target="blank"
+          href="/app-showcase"
         >
           <img
             src="/icons/install_rm_bg.png"
             alt="Install"
             className="w-7 h-7 object-contain"
           />
-        </button>
+        </Link>
 
         <button
           className="p-1 rounded-full hover:scale-125 hover:bg-orange-400/20"
