@@ -1,7 +1,17 @@
 "use client";
 
 import { useEffect } from "react";
-import { X, Music2, VolumeOff, Play, Pause } from "lucide-react";
+import {
+  X,
+  Music2,
+  VolumeOff,
+  Play,
+  Pause,
+  Shuffle,
+  SkipBack,
+  SkipForward,
+  Repeat,
+} from "lucide-react";
 import MusicSelector from "./MusicSelector";
 
 export type AudioItem = {
@@ -21,6 +31,12 @@ export default function MusicPopup(props: {
   onToggleMute: () => void;
   musicEnabled: boolean;
   onToggleMusic: () => void;
+  onNext: () => void;
+  onPrev: () => void;
+  shuffle: boolean;
+  onToggleShuffle: () => void;
+  repeatMode: "off" | "all" | "one";
+  onCycleRepeat: () => void;
   volume: number;
   onChangeVolume: (v: number) => void;
 }) {
@@ -33,12 +49,16 @@ export default function MusicPopup(props: {
     musicEnabled,
     onToggleMusic,
     onToggleMute,
+    onNext,
+    onPrev,
+    shuffle,
+    onToggleShuffle,
+    repeatMode,
+    onCycleRepeat,
     isMuted,
     volume,
     onChangeVolume,
   } = props;
-
-  console.log("musicEnabled", musicEnabled);
 
   useEffect(() => {
     if (!open) return;
@@ -60,13 +80,13 @@ export default function MusicPopup(props: {
       />
 
       {/* Gradient Border Wrapper */}
-      <div className="relative w-[92vw] max-w-md rounded-2xl bg-transparent backdrop-blur-sm p-[1px] shadow-2xl">
+      <div className="relative rounded-2xl bg-transparent backdrop-blur-sm p-[1px] shadow-2xl">
         {/* Inner */}
         <div className="rounded-2xl bg-[#0f172a] p-5 text-white">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-white/10 pb-3">
-            <div className="text-xl font-bold bg-gradient-to-r from-[#FF9F43] to-[#FFD000] bg-clip-text text-transparent">
-              🎵 Music Settings
+          <div className="flex items-center justify-between border-b border-white/10 pb-3 gap-3">
+            <div className="text-xl font-bold bg-gradient-to-r from-[#FF9F43] to-[#FFD000] bg-clip-text text-transparent ">
+              🎵 Music Player
             </div>
 
             <button
@@ -78,32 +98,97 @@ export default function MusicPopup(props: {
           </div>
 
           {/* Controls */}
-          <div className="mt-6 flex items-center gap-6">
-            {/* Mute Button */}
-            <button
-              onClick={onToggleMute}
-              className="flex h-14 w-14 items-center justify-center rounded-full 
-              bg-gradient-to-br from-[#FF9F43] to-[#FFD000] 
-              text-black shadow-lg 
-              hover:scale-110 transition"
-            >
-              {isMuted ? <VolumeOff size={22} /> : <Music2 size={22} />}
-            </button>
-            {/* Play Button */}
-            {!isMuted ? (
+          <div className="mt-4">
+            <div className="flex items-center justify-between ">
+              {/* Previous */}
+              <button
+                onClick={onPrev}
+                className={`flex h-10 w-10 items-center justify-center rounded-full bg-white/5 hover:scale-105 transition ${isMuted ? "opacity-50 cursor-not-allowed" : ""}`}
+                title="Previous"
+                disabled={isMuted}
+              >
+                <SkipBack size={18} />
+              </button>
+
               <button
                 onClick={onToggleMusic}
-                className="flex h-14 w-14 items-center justify-center rounded-full 
-              bg-gradient-to-br from-[#FF9F43] to-[#FFD000] 
-              text-black shadow-lg 
-              hover:scale-110 transition"
+                className={`flex h-10 w-10 items-center justify-center rounded-full 
+                  text-black shadow-lg 
+                  hover:scale-110 transition ${isMuted ? "bg-white/5" : "bg-gradient-to-br from-[#FF9F43] to-[#FFD000]"}`}
+                disabled={isMuted}
+                title={musicEnabled ? "Pause" : "Play"}
               >
                 {musicEnabled ? <Pause size={22} /> : <Play size={22} />}
               </button>
-            ) : null}
 
+              {/* Next */}
+              <button
+                onClick={onNext}
+                className={`flex h-10 w-10 items-center justify-center rounded-full bg-white/5 hover:scale-105 transition ${isMuted ? "opacity-50 cursor-not-allowed" : ""}`}
+                title="Next"
+                disabled={isMuted}
+              >
+                <SkipForward size={18} />
+              </button>
+            </div>
+            <div className="flex items-center mt-3 justify-between">
+              {/* Shuffle */}
+              <button
+                onClick={onToggleShuffle}
+                aria-pressed={shuffle}
+                title={shuffle ? "Shuffle ON" : "Shuffle OFF"}
+                className={`flex h-10 w-10 items-center justify-center rounded-full transition ${
+                  {
+                    true: "bg-[#FFD000]/20",
+                    false: "bg-white/5",
+                  }[String(shuffle as any)]
+                } hover:scale-105`}
+              >
+                <Shuffle
+                  size={18}
+                  className={shuffle ? "text-[#FFD000]" : "text-white/70"}
+                />
+              </button>
+              {/* Mute / Unmute (restored) */}
+              <button
+                onClick={onToggleMute}
+                title={isMuted ? "Unmute" : "Mute"}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#FF9F43] to-[#FFD000] text-black shadow-lg hover:scale-110 transition"
+              >
+                {isMuted ? <VolumeOff size={22} /> : <Music2 size={22} />}
+              </button>
+              {/* Repeat (off / all / one) */}
+              <button
+                onClick={onCycleRepeat}
+                aria-pressed={repeatMode !== "off"}
+                title={`Repeat: ${repeatMode}`}
+                className={`flex h-10 w-10 items-center justify-center rounded-full transition ${
+                  {
+                    off: "bg-white/5",
+                    all: "bg-[#FFD000]/20",
+                    one: "bg-[#FFD000]/40",
+                  }[repeatMode]
+                }`}
+              >
+                <div className="relative">
+                  <Repeat
+                    size={18}
+                    className={
+                      repeatMode === "off" ? "text-white/70" : "text-[#FFD000]"
+                    }
+                  />
+                  {repeatMode === "one" ? (
+                    <span className="absolute -right-2 -top-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#FF9F43] text-black text-[10px] font-semibold">
+                      1
+                    </span>
+                  ) : null}
+                </div>
+              </button>
+            </div>
+          </div>
+          <div className="mt-4 flex items-center justify-center gap-8">
             {/* Volume */}
-            <div className="w-auto flex-1">
+            <div className="w-auto flex-1 ">
               <input
                 type="range"
                 min={0}
@@ -115,9 +200,8 @@ export default function MusicPopup(props: {
               />
             </div>
           </div>
-
           {/* Quick dropdown selector */}
-          <div className="mt-6">
+          <div>
             <MusicSelector
               audios={audios}
               selectedId={selectedId}

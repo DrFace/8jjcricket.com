@@ -15,6 +15,12 @@ export default function FloatingSupport() {
     setCurrentTrack,
     isPlaying,
     togglePlay,
+    nextTrack,
+    previousTrack,
+    shuffle,
+    toggleShuffle,
+    repeatMode,
+    cycleRepeatMode,
     setIsMuted,
     isMuted,
     volume,
@@ -101,6 +107,12 @@ export default function FloatingSupport() {
         isMuted={isMuted}
         onToggleMusic={togglePlay}
         onToggleMute={toggleMute}
+        onNext={nextTrack}
+        onPrev={previousTrack}
+        shuffle={shuffle}
+        onToggleShuffle={toggleShuffle}
+        repeatMode={repeatMode}
+        onCycleRepeat={cycleRepeatMode}
         volume={volume}
         onChangeVolume={setVolume}
       />

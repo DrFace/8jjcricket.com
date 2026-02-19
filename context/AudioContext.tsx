@@ -10,6 +10,7 @@ import {
 } from "react";
 import { type AudioItem } from "@/components/MusicPopup";
 
+type RepeatMode = "off" | "all" | "one";
 interface AudioContextProps {
   audioRef: React.RefObject<HTMLAudioElement | null>;
   audios: AudioItem[];
@@ -17,9 +18,15 @@ interface AudioContextProps {
   isPlaying: boolean;
   isMuted: boolean;
   volume: number;
+  shuffle: boolean;
+  repeatMode: RepeatMode;
   setAudios: React.Dispatch<React.SetStateAction<AudioItem[]>>;
   setCurrentTrack: React.Dispatch<React.SetStateAction<AudioItem | null>>;
   togglePlay: () => void;
+  nextTrack: () => void;
+  previousTrack: () => void;
+  toggleShuffle: () => void;
+  cycleRepeatMode: () => void;
   setIsMuted: React.Dispatch<React.SetStateAction<boolean>>;
   setVolume: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -36,6 +43,26 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isPlaying, setIsPlaying] = useState(false); // start false
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(0.7);
+
+  // Playback options
+  const [shuffle, setShuffle] = useState<boolean>(() => {
+    try {
+      return window.localStorage.getItem("audio:shuffle") === "true";
+    } catch {
+      return false;
+    }
+  });
+  const [repeatMode, setRepeatMode] = useState<RepeatMode>(() => {
+    try {
+      const v = window.localStorage.getItem("audio:repeatMode");
+      return v === "all" || v === "one" ? (v as RepeatMode) : "off";
+    } catch {
+      return "off";
+    }
+  });
+
+  // Play history to support Previous while shuffling
+  const playHistoryRef = useRef<number[]>([]);
 
   /* ===============================
      1️⃣ Load audio list
@@ -58,6 +85,9 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
 
     loadAudios();
   }, []);
+
+  // Track whether user has interacted
+  const hasInteractedRef = useRef(false);
 
   /* ===============================
    2️⃣ Update source when track changes
@@ -82,41 +112,50 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       audio.src = trackUrlWithBase;
       audio.load();
 
-      // ✅ Auto-play after loading
-      audio.play().catch((err) => {
-        console.warn("Autoplay blocked by browser:", err);
-      });
+      // Only autoplay if user has already interacted
+      if (hasInteractedRef.current) {
+        audio.play().catch((err) => console.warn("Play failed:", err));
+      }
     }
   }, [currentTrack]);
 
   /* ===============================
-     3️⃣ Sync React state from Audio Element
-  =============================== */
+   🆕 One-time interaction listener to unlock audio
+=============================== */
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    const unlockAudio = () => {
+      if (hasInteractedRef.current) return;
+      hasInteractedRef.current = true;
 
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
-    const handleEnded = () => {
-      const idx = audios.findIndex((a) => a.id === currentTrack?.id);
-      if (idx >= 0 && idx < audios.length - 1) {
-        setCurrentTrack(audios[idx + 1]);
-      } else {
-        setIsPlaying(false);
+      const audio = audioRef.current;
+      if (audio && audio.paused && currentTrack) {
+        audio
+          .play()
+          .catch((err) => console.warn("Play after interaction failed:", err));
       }
+
+      // Clean up all listeners after first interaction
+      INTERACTION_EVENTS.forEach((event) =>
+        document.removeEventListener(event, unlockAudio),
+      );
     };
 
-    audio.addEventListener("play", handlePlay);
-    audio.addEventListener("pause", handlePause);
-    audio.addEventListener("ended", handleEnded);
+    const INTERACTION_EVENTS = [
+      "click",
+      "keydown",
+      "touchstart",
+      "pointerdown",
+    ];
+    INTERACTION_EVENTS.forEach((event) =>
+      document.addEventListener(event, unlockAudio, { once: true }),
+    );
 
     return () => {
-      audio.removeEventListener("play", handlePlay);
-      audio.removeEventListener("pause", handlePause);
-      audio.removeEventListener("ended", handleEnded);
+      INTERACTION_EVENTS.forEach((event) =>
+        document.removeEventListener(event, unlockAudio),
+      );
     };
-  }, [audios, currentTrack]);
+  }, [currentTrack]); // re-registers if track changes before first interaction
 
   /* ===============================
      4️⃣ Toggle Play (Single Source of Truth)
@@ -133,6 +172,137 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       audio.pause();
     }
   }, []);
+
+  // Helpers for next/previous + shuffle/repeat
+  const getIndexById = useCallback(
+    (id?: number | null) => audios.findIndex((a) => a.id === id),
+    [audios],
+  );
+
+  const nextTrack = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audios.length) return;
+
+    // repeat-one => restart current
+    if (repeatMode === "one" && currentTrack) {
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+        setIsPlaying(true);
+      }
+      return;
+    }
+
+    // add to history for previous
+    if (currentTrack) {
+      const last = playHistoryRef.current[playHistoryRef.current.length - 1];
+      if (last !== currentTrack.id) {
+        playHistoryRef.current.push(currentTrack.id);
+        if (playHistoryRef.current.length > 100) playHistoryRef.current.shift();
+      }
+    }
+
+    if (shuffle) {
+      // pick a random index (try to avoid immediate repeat)
+      if (audios.length === 1) {
+        setCurrentTrack(audios[0]);
+        return;
+      }
+      let nextIdx = Math.floor(Math.random() * audios.length);
+      let attempts = 0;
+      while (audios[nextIdx].id === currentTrack?.id && attempts < 5) {
+        nextIdx = Math.floor(Math.random() * audios.length);
+        attempts++;
+      }
+      setCurrentTrack(audios[nextIdx]);
+      return;
+    }
+
+    const idx = getIndexById(currentTrack?.id);
+    if (idx >= 0 && idx < audios.length - 1) {
+      setCurrentTrack(audios[idx + 1]);
+    } else {
+      if (repeatMode === "all") {
+        setCurrentTrack(audios[0]);
+      } else {
+        if (audio) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+        setIsPlaying(false);
+      }
+    }
+  }, [audios, currentTrack, shuffle, repeatMode, getIndexById]);
+
+  const previousTrack = useCallback(() => {
+    if (!audios.length) return;
+
+    // Prefer history (works well when shuffled)
+    const hist = playHistoryRef.current;
+    while (hist.length) {
+      const prevId = hist.pop();
+      const prev = audios.find((a) => a.id === prevId);
+      if (prev) {
+        setCurrentTrack(prev);
+        return;
+      }
+    }
+
+    const idx = getIndexById(currentTrack?.id);
+    if (idx > 0) {
+      setCurrentTrack(audios[idx - 1]);
+    } else if (repeatMode === "all") {
+      setCurrentTrack(audios[audios.length - 1]);
+    } else {
+      const audio = audioRef.current;
+      if (audio) audio.currentTime = 0;
+    }
+  }, [audios, currentTrack, repeatMode, getIndexById]);
+
+  const toggleShuffle = useCallback(() => {
+    setShuffle((s) => {
+      const next = !s;
+      try {
+        window.localStorage.setItem("audio:shuffle", String(next));
+      } catch {}
+      return next;
+    });
+  }, []);
+
+  const cycleRepeatMode = useCallback(() => {
+    setRepeatMode((r) => {
+      const next = r === "off" ? "all" : r === "all" ? "one" : "off";
+      try {
+        window.localStorage.setItem("audio:repeatMode", next);
+      } catch {}
+      return next;
+    });
+  }, []);
+
+  /* ===============================
+     3️⃣ Sync React state from Audio Element
+  =============================== */
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    const handleEnded = () => {
+      // delegate to nextTrack (handles repeat/shuffle)
+      nextTrack();
+    };
+
+    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("pause", handlePause);
+    audio.addEventListener("ended", handleEnded);
+
+    return () => {
+      audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("pause", handlePause);
+      audio.removeEventListener("ended", handleEnded);
+    };
+  }, [audios, currentTrack, nextTrack]);
 
   /* ===============================
      5️⃣ Volume & Mute Sync
@@ -154,15 +324,26 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
         isPlaying,
         isMuted,
         volume,
+        shuffle,
+        repeatMode,
         setAudios,
         setCurrentTrack,
         togglePlay,
+        nextTrack,
+        previousTrack,
+        toggleShuffle,
+        cycleRepeatMode,
         setIsMuted,
         setVolume,
       }}
     >
       {children}
-      <audio ref={audioRef} style={{ display: "none" }} />
+      <audio
+        ref={audioRef}
+        preload="auto"
+        playsInline
+        style={{ display: "none" }}
+      />
     </AudioContext.Provider>
   );
 };

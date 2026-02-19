@@ -42,7 +42,7 @@ export default function MusicSelector({ audios, selectedId, onSelect }: Props) {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative mt-6">
+    <div ref={containerRef} className="relative mt-4">
       <label className="mb-2 block text-xs font-semibold text-white/60 tracking-wider">
         Select Music
       </label>
@@ -51,7 +51,7 @@ export default function MusicSelector({ audios, selectedId, onSelect }: Props) {
       <button
         onClick={() => setOpen(!open)}
         className="relative w-full rounded-xl border border-white/10 
-          bg-[#0f172a] px-4 py-3 text-left text-sm text-white 
+          bg-[#0f172a] px-4 py-2 text-left text-sm text-white 
           hover:border-[#FF9F43]/60 
           focus:outline-none focus:ring-2 focus:ring-[#FF9F43]/40 
           transition"
@@ -83,7 +83,7 @@ export default function MusicSelector({ audios, selectedId, onSelect }: Props) {
               placeholder="Search music..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-transparent pl-9 pr-3 py-3 text-sm text-white 
+              className="w-full bg-transparent pl-9 pr-3 py-2 text-sm text-white 
               placeholder:text-white/40 focus:outline-none"
             />
           </div>
@@ -91,7 +91,7 @@ export default function MusicSelector({ audios, selectedId, onSelect }: Props) {
           {/* Scrollable list */}
           <div className="max-h-[40vh] overflow-y-auto custom-scroll">
             {filteredAudios.length === 0 ? (
-              <div className="px-4 py-4 text-sm text-white/60">
+              <div className="px-4 py-2 text-sm text-white/60">
                 No songs found
               </div>
             ) : (
@@ -106,7 +106,7 @@ export default function MusicSelector({ audios, selectedId, onSelect }: Props) {
                       setOpen(false);
                       setSearch("");
                     }}
-                    className={`w-full px-4 py-3 text-left text-sm transition ${
+                    className={`w-full px-4 py-2 text-left text-sm transition ${
                       active
                         ? "bg-gradient-to-r from-[#FF9F43]/20 to-[#FFD000]/20 text-[#FFD000] font-semibold"
                         : "hover:bg-white/5"
