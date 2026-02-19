@@ -8,6 +8,8 @@ import HomeVerticalSwiper from "@/components/HomeVerticalSwiper";
 import HomeNewsShowcase from "@/components/HomeNewsShowcase";
 import HomeFeedbackSection from "@/components/HomeFeedbackSection";
 import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
+import InteractiveHeroVideo from "@/components/InteractiveHeroVideo";
+import PartnersCarousel from "@/components/PartnersCarousel";
 
 // --- IMPORT SEO DATA ---
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
@@ -205,19 +207,12 @@ export default async function HomePage() {
 
             return (
               <>
-                <video
-                  src={safeSrc}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="absolute inset-0 h-full w-full bg-black object-contain sm:object-cover"
-                />
+                <InteractiveHeroVideo videoUrl={safeSrc} />
+                <SponsorBar />
               </>
             );
           })()}
-          <SponsorBar />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
         </section>
 
         <section
@@ -263,6 +258,22 @@ export default async function HomePage() {
             <ScaleToFit className="w-full h-full pt-20 pb-4">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
                 <HomeFeedbackSection />
+              </div>
+            </ScaleToFit>
+          </div>
+        </section>
+
+        {/* Partners Carousel */}
+        <section
+          data-snap
+          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6"
+        >
+          <div className="relative h-full w-full flex items-center">
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900" />
+
+            <ScaleToFit className="w-full h-full pt-20 pb-4">
+              <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+                <PartnersCarousel />
               </div>
             </ScaleToFit>
           </div>

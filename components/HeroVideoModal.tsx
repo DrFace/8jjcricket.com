@@ -1,34 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useEffect } from "react";
 
-interface HeroPopupProps {
+interface HeroVideoModalProps {
   isOpen: boolean;
   onClose: () => void;
   videoUrl: string;
-  playerName?: string;
-  teamColors?: {
-    primary: string;
-    secondary: string;
-  };
 }
 
-//new
-
-
-export default function HeroPopup({
+export default function HeroVideoModal({
   isOpen,
   onClose,
   videoUrl,
-  playerName = "8JJ Cricket",
-  teamColors = {
-    primary: "from-blue-600 to-indigo-700",
-    secondary: "from-orange-500 to-red-600",
-  },
-}: HeroPopupProps) {
+}: HeroVideoModalProps) {
   useEffect(() => {
-    console.log('HeroPopup - isOpen:', isOpen);
     if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -41,11 +26,8 @@ export default function HeroPopup({
   }, [isOpen]);
 
   if (!isOpen) {
-    console.log('HeroPopup - not rendering (isOpen is false)');
     return null;
   }
-
-  console.log('HeroPopup - rendering popup with videoUrl:', videoUrl);
 
   return (
     <div
@@ -78,8 +60,6 @@ export default function HeroPopup({
             controls
             className="absolute inset-0 h-full w-full object-contain sm:object-cover"
           />
-          
-
           
           {/* Animated Background Pattern (behind video) */}
           <div className="absolute inset-0 opacity-10 pointer-events-none">
