@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+
 import HeroPopup from "./HeroPopup";
 
 interface HeroVideoSectionProps {
