@@ -1,3 +1,18 @@
+/**
+ * PartnersCarousel Component
+ * 
+ * Displays strategic partners in an animated circular carousel with API integration.
+ * Re-committed on: Feb 19, 2026 for homeVi branch as requested by tech lead.
+ * 
+ * Features:
+ * - Auto-rotating carousel (4 second intervals)
+ * - Smooth cubic-bezier transitions
+ * - Dynamic data fetching from backend API
+ * - Loading, error, and empty states
+ * - Click-to-navigate functionality
+ * - Responsive design with gradient overlays
+ */
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";

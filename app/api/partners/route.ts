@@ -1,3 +1,13 @@
+/**
+ * Partners API Route
+ * 
+ * Proxy endpoint for fetching partners data from backend.
+ * Re-committed on: Feb 19, 2026 for homeVi branch as requested by tech lead.
+ * 
+ * Endpoint: GET /api/partners
+ * Backend: /api/home-partners
+ */
+
 import { NextResponse } from "next/server";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "https://8jjcricket.com";
