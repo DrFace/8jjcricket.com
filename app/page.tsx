@@ -8,6 +8,7 @@ import HomeVerticalSwiper from "@/components/HomeVerticalSwiper";
 import HomeNewsShowcase from "@/components/HomeNewsShowcase";
 import HomeFeedbackSection from "@/components/HomeFeedbackSection";
 import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
+import HeroVideoSection from "@/components/HeroVideoSection";
 
 // --- IMPORT SEO DATA ---
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
@@ -205,18 +206,14 @@ export default async function HomePage() {
 
             return (
               <>
-                <video
-                  src={safeSrc}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="absolute inset-0 h-full w-full bg-black object-contain sm:object-cover"
+                <HeroVideoSection
+                  videoUrl={safeSrc}
+                  
                 />
+                <SponsorBar />
               </>
             );
           })()}
-          <SponsorBar />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </section>
 
