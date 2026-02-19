@@ -2,19 +2,17 @@
 
 import { useEffect } from "react";
 
-interface VideoModalProps {
+interface HeroVideoModalProps {
   isOpen: boolean;
   onClose: () => void;
   videoUrl: string;
-  playerName?: string;
 }
 
-export default function VideoModal({
+export default function HeroVideoModal({
   isOpen,
   onClose,
   videoUrl,
-  playerName = "8JJ Cricket",
-}: VideoModalProps) {
+}: HeroVideoModalProps) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -27,7 +25,9 @@ export default function VideoModal({
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div

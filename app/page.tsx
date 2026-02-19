@@ -8,12 +8,13 @@ import HomeVerticalSwiper from "@/components/HomeVerticalSwiper";
 import HomeNewsShowcase from "@/components/HomeNewsShowcase";
 import HomeFeedbackSection from "@/components/HomeFeedbackSection";
 import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
+import InteractiveHeroVideo from "@/components/InteractiveHeroVideo";
+import PartnersCarousel from "@/components/PartnersCarousel";
 
 // --- IMPORT SEO DATA ---
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
 import SponsorBar from "@/components/SponsorBar";
 import ScaleToFit from "@/components/ScaleToFit";
-import InteractiveVideoHero from "@/components/InteractiveVideoHero";
 
 // --- EXPORT METADATA (This sets the <head> tags) ---
 export const metadata = homeMetadata;
@@ -205,14 +206,13 @@ export default async function HomePage() {
             const safeSrc = getSafeVideoUrl(raw);
 
             return (
-              <InteractiveVideoHero 
-                videoUrl={safeSrc} 
-                playerName="8JJ Cricket - Live Highlights" 
-              />
+              <>
+                <InteractiveHeroVideo videoUrl={safeSrc} />
+                <SponsorBar />
+              </>
             );
           })()}
-          <SponsorBar />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
         </section>
 
         <section

@@ -6,7 +6,7 @@ import { fetchGames, toMinigameCards } from "@/lib/games-api";
 import { ApiBase } from "@/lib/utils";
 import { DEFAULT_API_BASE } from "@/lib/constant";
 import MobileSocialBox from "@/components/MobileSocialBox";
-import MobileVideoHero from "@/components/mobile/MobileVideoHero";
+import MobileInteractiveHeroVideo from "@/components/mobile/MobileInteractiveHeroVideo";
 
 // --- IMPORT SEO DATA ---
 import { homeMetadata } from "@/components/seo/HomeSeo";
@@ -178,54 +178,43 @@ export default async function MobileHomePage() {
 
       <section className="w-full snap-start scroll-mt-3">
         <Reveal>
-          <div className="relative w-full overflow-hidden rounded-2xl border border-india-gold/20 bg-slate-900/60 backdrop-blur-md shadow-lg">
-            <div className="h-[180px] w-full sm:h-[220px]">
-              {(() => {
-                const raw = videos?.[0]?.video_path ?? "";
+          {(() => {
+            const raw = videos?.[0]?.video_path ?? "";
 
-                const getSafeVideoUrl = (input: string) => {
-                  if (!input) return "";
+            const getSafeVideoUrl = (input: string) => {
+              if (!input) return "";
 
-                  // Relative storage path → HTTPS domain
-                  if (input.startsWith("/")) {
-                    return `https://8jjcricket.com${input}`;
-                  }
+              // Relative storage path → HTTPS domain
+              if (input.startsWith("/")) {
+                return `https://8jjcricket.com${input}`;
+              }
 
-                  // IP-based HTTP URL → HTTPS domain
-                  if (input.startsWith("http://72.60.107.98:8001/")) {
-                    return input.replace(
-                      "http://72.60.107.98:8001",
-                      "https://8jjcricket.com",
-                    );
-                  }
-
-                  // Any other http://storage/... → force HTTPS on main domain
-                  if (input.startsWith("http://")) {
-                    try {
-                      const u = new URL(input);
-                      if (u.pathname.startsWith("/storage/")) {
-                        return `https://8jjcricket.com${u.pathname}${u.search}`;
-                      }
-                    } catch {}
-                  }
-
-                  // Already https or unknown format
-                  return input;
-                };
-
-                const safeSrc = getSafeVideoUrl(raw);
-
-                return (
-                  <MobileVideoHero 
-                    videoUrl={safeSrc} 
-                    playerName="8JJ Cricket - Live Highlights" 
-                  />
+              // IP-based HTTP URL → HTTPS domain
+              if (input.startsWith("http://72.60.107.98:8001/")) {
+                return input.replace(
+                  "http://72.60.107.98:8001",
+                  "https://8jjcricket.com",
                 );
-              })()}
-            </div>
+              }
 
-            <div className="pointer-events-none absolute inset-0 bg-black/10" />
-          </div>
+              // Any other http://storage/... → force HTTPS on main domain
+              if (input.startsWith("http://")) {
+                try {
+                  const u = new URL(input);
+                  if (u.pathname.startsWith("/storage/")) {
+                    return `https://8jjcricket.com${u.pathname}${u.search}`;
+                  }
+                } catch {}
+              }
+
+              // Already https or unknown format
+              return input;
+            };
+
+            const safeSrc = getSafeVideoUrl(raw);
+
+            return <MobileInteractiveHeroVideo videoUrl={safeSrc} />;
+          })()}
         </Reveal>
       </section>
       {/* SPONSORS (GRID, no scroll) */}

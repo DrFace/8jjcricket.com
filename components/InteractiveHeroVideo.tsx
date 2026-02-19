@@ -1,23 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import VideoModal from "./VideoModal";
+import HeroVideoModal from "./HeroVideoModal";
 
-interface InteractiveVideoHeroProps {
+interface InteractiveHeroVideoProps {
   videoUrl: string;
-  playerName?: string;
 }
 
-export default function InteractiveVideoHero({
+export default function InteractiveHeroVideo({
   videoUrl,
-  playerName = "Cricket Highlights",
-}: InteractiveVideoHeroProps) {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+}: InteractiveHeroVideoProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsPopupOpen(true);
+    setIsModalOpen(true);
   };
 
   return (
@@ -64,51 +62,14 @@ export default function InteractiveVideoHero({
             </div>
           </div>
         </div>
-
-        {/* Floating Particles */}
-        {[...Array(10)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute animate-float-up"
-            style={{
-              left: `${Math.random() * 100}%`,
-              bottom: `${Math.random() * 20}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${3 + Math.random() * 2}s`,
-            }}
-          >
-            <div className="h-2 w-2 rounded-full bg-yellow-400/60 blur-sm" />
-          </div>
-        ))}
       </div>
 
-      {/* Video Modal */}
-      <VideoModal
-        isOpen={isPopupOpen}
-        onClose={() => setIsPopupOpen(false)}
+      {/* Hero Video Modal */}
+      <HeroVideoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         videoUrl={videoUrl}
-        playerName={playerName}
       />
-
-      <style jsx>{`
-        @keyframes float-up {
-          0% {
-            transform: translateY(0) scale(1);
-            opacity: 0;
-          }
-          50% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(-100px) scale(0.5);
-            opacity: 0;
-          }
-        }
-
-        .animate-float-up {
-          animation: float-up 4s ease-in-out infinite;
-        }
-      `}</style>
     </>
   );
 }

@@ -1,18 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import VideoModal from "../VideoModal";
+import HeroVideoModal from "../HeroVideoModal";
 
-interface MobileVideoHeroProps {
+interface MobileInteractiveHeroVideoProps {
   videoUrl: string;
-  playerName?: string;
 }
 
-export default function MobileVideoHero({
+export default function MobileInteractiveHeroVideo({
   videoUrl,
-  playerName = "Cricket Highlights",
-}: MobileVideoHeroProps) {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+}: MobileInteractiveHeroVideoProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <>
@@ -21,7 +19,7 @@ export default function MobileVideoHero({
         <div 
           className="h-[180px] w-full sm:h-[220px] relative cursor-pointer active:scale-[0.98] transition-transform"
           onClick={() => {
-            setIsPopupOpen(true);
+            setIsModalOpen(true);
           }}
         >
           {/* Background Video - VISIBLE */}
@@ -60,52 +58,15 @@ export default function MobileVideoHero({
               </div>
             </div>
           </div>
-
-          {/* Floating Sparkles */}
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute animate-float-up"
-              style={{
-                left: `${20 + Math.random() * 60}%`,
-                bottom: `${Math.random() * 30}%`,
-                animationDelay: `${Math.random() * 2}s`,
-                animationDuration: `${2 + Math.random() * 1}s`,
-              }}
-            >
-              <div className="h-1.5 w-1.5 rounded-full bg-yellow-300/80" />
-            </div>
-          ))}
         </div>
       </div>
 
-      {/* Video Modal */}
-      <VideoModal
-        isOpen={isPopupOpen}
-        onClose={() => setIsPopupOpen(false)}
+      {/* Hero Video Modal */}
+      <HeroVideoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         videoUrl={videoUrl}
-        playerName={playerName}
       />
-
-      <style jsx>{`
-        @keyframes float-up {
-          0% {
-            transform: translateY(0) scale(1);
-            opacity: 0;
-          }
-          50% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(-60px) scale(0.3);
-            opacity: 0;
-          }
-        }
-
-        .animate-float-up {
-          animation: float-up 3s ease-in-out infinite;
-        }
-      `}</style>
     </>
   );
 }
