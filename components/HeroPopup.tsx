@@ -14,6 +14,9 @@ interface HeroPopupProps {
   };
 }
 
+//new
+
+
 export default function HeroPopup({
   isOpen,
   onClose,
@@ -76,6 +79,8 @@ export default function HeroPopup({
             className="absolute inset-0 h-full w-full object-contain sm:object-cover"
           />
           
+
+          
           {/* Animated Background Pattern (behind video) */}
           <div className="absolute inset-0 opacity-10 pointer-events-none">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(251,191,36,0.1),transparent_50%)]" />
@@ -85,4 +90,3 @@ export default function HeroPopup({
     </div>
   );
 }
-//
