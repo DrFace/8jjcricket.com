@@ -8,6 +8,11 @@ export default function SocialBox() {
   return (
     <div
       className="
+        relative w-full overflow-hidden rounded-2xl
+        border border-white/10
+        bg-gradient-to-br from-slate-950/70 via-slate-900/45 to-amber-950/20
+        shadow-[0_20px_60px_rgba(0,0,0,0.55)]
+        backdrop-blur-2xl*
         india-card-gold-glow p-6 transition-all duration-500 
         hover:rotate-x-3 hover:translate-z-10 hover:scale-[1.02] hover:shadow-2xl
       "

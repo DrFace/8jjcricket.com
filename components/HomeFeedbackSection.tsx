@@ -3,8 +3,6 @@
 import { useMemo, useState } from "react";
 import Reveal from "./Reveal";
 import SocialBox from "./SocialBox";
-import Image from "next/image";
-import { GOOGLE_PLAY_STORE } from "@/lib/constant";
 import PlayStore from "./PlayStore";
 
 const LONG_FEEDBACK_EMAIL = "8jjcricket@gmail.com";
@@ -113,7 +111,9 @@ export default function HomeFeedbackSection({
               <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-india-gold" />
               <p>
                 This{" "}
-                <span className="font-semibold text-india-saffron">FEEDBACK</span>{" "}
+                <span className="font-semibold text-india-saffron">
+                  FEEDBACK
+                </span>{" "}
                 area was built based on that idea.
               </p>
             </li>
@@ -248,4 +248,3 @@ export default function HomeFeedbackSection({
     </section>
   );
 }
-
