@@ -5,6 +5,8 @@ import { SITE } from "@/lib/seo";
 import Script from "next/script";
 import { ToastProvider } from "@/components/ToastProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import FloatingSupport from "@/components/FloatingSupport";
+import { AudioProvider } from "@/context/AudioContext";
 import PWAExtras from "@/components/PWAExtras";
 
 export const metadata: Metadata = {
@@ -96,7 +98,10 @@ export default function RootLayout({
       <body className="min-h-screen overflow-x-hidden antialiased selection:bg-blue-100 selection:text-blue-800">
         <ThemeProvider>
           <ToastProvider>
-            {children}
+            <AudioProvider>
+              {children}
+              <FloatingSupport />
+            </AudioProvider>
             <PWAExtras />
           </ToastProvider>
         </ThemeProvider>
