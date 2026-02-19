@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+
 import HeroPopup from "./HeroPopup";
 
 interface HeroVideoSectionProps {
@@ -93,7 +94,7 @@ export default function HeroVideoSection({
         playerName={playerName}
       />
 
-      <style>{`
+      <style jsx>{`
         @keyframes float-up {
           0% {
             transform: translateY(0) scale(1);
