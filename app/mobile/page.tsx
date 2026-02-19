@@ -6,6 +6,7 @@ import { fetchGames, toMinigameCards } from "@/lib/games-api";
 import { ApiBase } from "@/lib/utils";
 import { DEFAULT_API_BASE } from "@/lib/constant";
 import MobileSocialBox from "@/components/MobileSocialBox";
+import MobileVideoHero from "@/components/mobile/MobileVideoHero";
 
 // --- IMPORT SEO DATA ---
 import { homeMetadata } from "@/components/seo/HomeSeo";
@@ -215,14 +216,9 @@ export default async function MobileHomePage() {
                 const safeSrc = getSafeVideoUrl(raw);
 
                 return (
-                  <video
-                    className="h-full w-full object-cover"
-                    src={safeSrc}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
+                  <MobileVideoHero 
+                    videoUrl={safeSrc} 
+                    playerName="8JJ Cricket - Live Highlights" 
                   />
                 );
               })()}

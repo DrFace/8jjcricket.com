@@ -13,6 +13,7 @@ import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
 import SponsorBar from "@/components/SponsorBar";
 import ScaleToFit from "@/components/ScaleToFit";
+import InteractiveVideoHero from "@/components/InteractiveVideoHero";
 
 // --- EXPORT METADATA (This sets the <head> tags) ---
 export const metadata = homeMetadata;
@@ -204,16 +205,10 @@ export default async function HomePage() {
             const safeSrc = getSafeVideoUrl(raw);
 
             return (
-              <>
-                <video
-                  src={safeSrc}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="absolute inset-0 h-full w-full bg-black object-contain sm:object-cover"
-                />
-              </>
+              <InteractiveVideoHero 
+                videoUrl={safeSrc} 
+                playerName="8JJ Cricket - Live Highlights" 
+              />
             );
           })()}
           <SponsorBar />
