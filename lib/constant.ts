@@ -48,11 +48,11 @@ export const HOME_NEWS_PARAM = "?category=events&page=1&per_page=20";
 export const STORAGE_BASE_URL = "https://8jjcricket.com/storage/";
 
 export const APP_SOWCASE = [
-  { src: "/images/mobile/IMG_0058.png", alt: "Home Screen" },
-  { src: "/images/mobile/IMG_0059.png", alt: "Quick Access" },
-  { src: "/images/mobile/IMG_0060.png", alt: "Live Matches" },
-  { src: "/images/mobile/IMG_0064.png", alt: "Cricket News" },
-  { src: "/images/mobile/IMG_0063.png", alt: "Player" },
+  { src: "/images/mobile/IMG_0058.PNG", alt: "Home Screen" },
+  { src: "/images/mobile/IMG_0059.PNG", alt: "Quick Access" },
+  { src: "/images/mobile/IMG_0060.PNG", alt: "Live Matches" },
+  { src: "/images/mobile/IMG_0064.PNG", alt: "Cricket News" },
+  { src: "/images/mobile/IMG_0063.PNG", alt: "Player" },
 ];
 
 export const CRICKET_LOGO = "/8jjlogo.png";
