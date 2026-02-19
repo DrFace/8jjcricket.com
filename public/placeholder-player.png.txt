@@ -1,0 +1,11 @@
+This is a placeholder. Replace with actual PNG image.
+To add a player image:
+1. Get a PNG image of a cricket player (transparent background recommended)
+2. Save it as: public/players/hero-player.png
+3. Use it in the component: playerImage="/players/hero-player.png"
+
+Recommended image specs:
+- Format: PNG with transparent background
+- Height: 800-1200px
+- Full body or 3/4 pose
+- Player in cricket uniform
