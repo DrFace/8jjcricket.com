@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   8JJCRICKET — GLOBAL STYLES
+   Theme: Night Stadium · Saffron × Gold × Electric Blue
+   Background: Multi-layer floodlight gradient over deep void
+   Accent hierarchy: Gold > Saffron > Orange > Blue (secondary)
+   Purple: REMOVED — not used in UI
+   ============================================================ */
+
+
+/* ── KEYFRAMES ──────────────────────────────────────────────── */
+
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -36,38 +47,115 @@
   }
 }
 
-:root {
-  color-scheme: light dark;
+/* Ambient floodlight breathing — body::before */
+@keyframes floodlight-breathe {
 
-  /* Dark theme (default) */
-  --bg-primary: #000000;
-  --bg-secondary: #0a0a0a;
-  --bg-tertiary: #1a1a1a;
-  --bg-card: rgba(15, 15, 15, 0.6);
-  --bg-card-hover: rgba(20, 20, 20, 0.8);
+  0%,
+  100% {
+    opacity: 0.50;
+  }
 
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.8);
-  --text-tertiary: rgba(255, 255, 255, 0.6);
-
-  --border-primary: rgba(255, 255, 255, 0.1);
-  --border-secondary: rgba(255, 255, 255, 0.05);
-
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  50% {
+    opacity: 0.85;
+  }
 }
 
-/* Smooth theme transitions */
+
+/* ── CSS CUSTOM PROPERTIES ──────────────────────────────────── */
+
+:root {
+  color-scheme: dark;
+
+  /*
+   * BACKGROUND SYSTEM
+   * ─────────────────────────────────────────────────────────
+   * Layer stack (bottom → top):
+   *   1. Deep void base  — rich near-black with warm brown-black tint
+   *   2. Left floodlight — saffron/amber cone from top-left corner
+   *   3. Right floodlight— electric-blue cone from top-right corner
+   *   4. Center warmth   — soft golden bloom at mid-screen
+   *   5. Bottom glow     — deep amber rising from below (pitch heat)
+   *   6. Body::before    — slow-breathing animated overlay (separate layer)
+   *   7. Body::after     — 3% film grain for cinematic depth
+   *
+   * Result: looks like a floodlit cricket stadium at night —
+   * warm saffron-gold on the left, cool blue on the right,
+   * meeting in a warm amber center. No purple anywhere.
+   */
+
+--bg-primary:
+    /* Gold — bottom-left, reaches center */
+    radial-gradient(ellipse 130% 120% at 0% 100%,
+      rgba(255, 200, 80, 0.55) 0%,
+      rgba(255, 170, 40, 0.38) 35%,
+      rgba(255, 150, 20, 0.20) 60%,
+      rgba(255, 150, 20, 0.10) 75%,
+      transparent 92%),
+
+    /* Sky blue — top-right, reaches center */
+    radial-gradient(ellipse 130% 120% at 100% 0%,
+      rgba(135, 206, 250, 0.55) 0%,
+      rgba(70, 170, 255, 0.38) 35%,
+      rgba(0, 140, 255, 0.20) 60%,
+      rgba(0, 140, 255, 0.10) 75%,
+      transparent 92%),
+
+    /* Dark base */
+    linear-gradient(180deg, #05070A 0%, #0B141C 100%);
+
+      
+
+
+  /* Secondary & tertiary surfaces */
+  --bg-secondary: #0D0A04;
+  --bg-tertiary: #141008;
+
+  /* Card surfaces — warm dark tint (replaces cold rgba(15,15,15)) */
+  --bg-card: rgba(18, 13, 4, 0.68);
+  --bg-card-hover: rgba(26, 18, 5, 0.85);
+
+  /* Typography */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.80);
+  --text-tertiary: rgba(255, 255, 255, 0.55);
+
+  /* Borders — warm tint instead of cold white */
+  --border-primary: rgba(255, 200, 100, 0.10);
+  --border-secondary: rgba(255, 200, 100, 0.05);
+
+  /* Accent colors — the only palette you need */
+  --gold: #FFB800;
+  --gold-deep: #E09000;
+  --saffron: #FF8C00;
+  --saffron-hot: #FF6600;
+  --amber: #FF9F1C;
+  --blue-accent: #00AAFF;
+  /* secondary only — floodlight edge, NOT hero */
+  --green-accent: #138808;
+  /* India flag green — used sparingly */
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.40);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.70);
+
+  /* Glow shadows — gold/saffron dominant */
+  --glow-gold: 0 0 18px rgba(255, 184, 0, 0.40), 0 0 50px rgba(255, 184, 0, 0.12);
+  --glow-saffron: 0 0 18px rgba(255, 140, 0, 0.40), 0 0 50px rgba(255, 140, 0, 0.12);
+  --glow-amber: 0 0 18px rgba(255, 159, 28, 0.35), 0 0 50px rgba(255, 159, 28, 0.10);
+  --glow-blue: 0 0 18px rgba(0, 170, 255, 0.30), 0 0 50px rgba(0, 170, 255, 0.08);
+}
+
+
+/* ── GLOBAL RESETS ──────────────────────────────────────────── */
+
 * {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 ::selection {
-  background-color: #FF9933;
-  /* india-saffron */
-  color: #1A1A2E;
-  /* india-charcoal */
+  background-color: #FF8C00;
+  color: #0D0A04;
 }
 
 html,
@@ -77,30 +165,80 @@ body {
 
 html {
   scrollbar-width: none;
-  /* Firefox */
   scroll-behavior: auto;
   /* Lenis controls smoothness */
+  top: 0 !important;
 }
 
 body {
   overflow-y: scroll;
   scroll-snap-type: none;
-  /* IMPORTANT: disable native snap to avoid conflicts */
-  background-color: var(--bg-primary);
+  /* IMPORTANT: disable native snap */
+  background: var(--bg-primary);
+  background-attachment: fixed;
   color: var(--text-primary);
+  top: 0 !important;
+  position: static !important;
+  isolation: isolate;
+  
 }
 
-/* Optional: keep for semantics, not required when snap-type is none */
+/* ── ANIMATED AMBIENT OVERLAY ───────────────────────────────── */
+/* Slow-breathing floodlight pulse — feels alive, not static    */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 50% 28% at 10% 4%, rgba(255, 140, 0, 0.16) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 28% at 90% 4%, rgba(0, 170, 255, 0.14) 0%, transparent 70%),
+    radial-gradient(ellipse 35% 25% at 50% 50%, rgba(255, 184, 0, 0.05) 0%, transparent 70%);
+  animation: floodlight-breathe 7s ease-in-out infinite;
+}
+
+/* ── FILM GRAIN ─────────────────────────────────────────────── */
+/* 3% noise — adds cinematic texture, invisible at a glance     */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+  background-repeat: repeat;
+}
+
+
+/* ── SCROLLBAR ──────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* ── SNAP ───────────────────────────────────────────────────── */
+
 [data-snap] {
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
 
-/* Hide scrollbars but keep scrolling */
-::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
+
+/* ── BASE ELEMENTS ──────────────────────────────────────────── */
 
 a {
   @apply text-blue-400;
@@ -110,13 +248,18 @@ a {
   @apply mx-auto max-w-6xl px-4;
 }
 
+
+/* ── CARD ───────────────────────────────────────────────────── */
+
 .card {
   @apply rounded-2xl border p-4 shadow-lg backdrop-blur-md;
   background-color: var(--bg-card);
   border-color: var(--border-primary);
 }
 
-/* New India Theme Utilities */
+
+/* ── INDIA CARD SYSTEM ──────────────────────────────────────── */
+
 .india-card {
   @apply relative rounded-xl border p-4 shadow-xl backdrop-blur-xl transition-all duration-300;
   background-color: var(--bg-card);
@@ -129,110 +272,219 @@ a {
   box-shadow: var(--shadow-lg);
 }
 
+/* Accent-border variants */
 .india-card-gold {
-  @apply india-card border-india-gold/40;
+  @apply india-card;
+  border-color: rgba(255, 184, 0, 0.38);
 }
 
 .india-card-saffron {
-  @apply india-card border-india-saffron/40;
+  @apply india-card;
+  border-color: rgba(255, 140, 0, 0.38);
 }
 
 .india-card-green {
-  @apply india-card border-india-green/40;
+  @apply india-card;
+  border-color: rgba(19, 136, 8, 0.35);
 }
 
 .india-card-blue {
-  @apply india-card border-india-blue/40;
+  @apply india-card;
+  border-color: rgba(0, 170, 255, 0.30);
 }
 
-.india-gradient-text {
-  @apply bg-gradient-to-r from-india-saffron via-white to-india-green bg-clip-text text-transparent;
+
+/* ── GRADIENT CARD BASE ─────────────────────────────────────── */
+/* Replaces india-card-gradient — warm dark tint, no cold slate */
+
+.india-card-gradient {
+  @apply relative rounded-3xl border backdrop-blur-xl shadow-lg transition-all duration-500;
+  background: linear-gradient(140deg,
+      rgba(20, 14, 4, 0.96) 0%,
+      rgba(28, 18, 5, 0.92) 50%,
+      rgba(20, 14, 4, 0.96) 100%);
+  border-color: var(--border-primary);
+  transform-style: preserve-3d;
 }
+
+/* Glow variants — gold/saffron/amber dominant */
+.india-card-gold-glow {
+  @apply india-card-gradient;
+  border-color: rgba(255, 184, 0, 0.32);
+  box-shadow: 0 0 18px rgba(255, 184, 0, 0.12), var(--shadow-md);
+}
+
+.india-card-gold-glow:hover {
+  box-shadow: var(--glow-gold), var(--shadow-lg);
+  border-color: rgba(255, 184, 0, 0.50);
+}
+
+.india-card-saffron-glow {
+  @apply india-card-gradient;
+  border-color: rgba(255, 140, 0, 0.30);
+  box-shadow: 0 0 18px rgba(255, 140, 0, 0.10), var(--shadow-md);
+}
+
+.india-card-saffron-glow:hover {
+  box-shadow: var(--glow-saffron), var(--shadow-lg);
+  border-color: rgba(255, 140, 0, 0.50);
+}
+
+.india-card-green-glow {
+  @apply india-card-gradient;
+  border-color: rgba(19, 136, 8, 0.28);
+  box-shadow: 0 0 18px rgba(19, 136, 8, 0.08), var(--shadow-md);
+}
+
+.india-card-green-glow:hover {
+  box-shadow: 0 0 28px rgba(19, 136, 8, 0.20), var(--shadow-lg);
+  border-color: rgba(19, 136, 8, 0.45);
+}
+
+.india-card-blue-glow {
+  @apply india-card-gradient;
+  border-color: rgba(0, 170, 255, 0.25);
+  box-shadow: 0 0 18px rgba(0, 170, 255, 0.08), var(--shadow-md);
+}
+
+.india-card-blue-glow:hover {
+  box-shadow: var(--glow-blue), var(--shadow-lg);
+  border-color: rgba(0, 170, 255, 0.42);
+}
+
+
+/* ── TEXT UTILITIES ─────────────────────────────────────────── */
+
+/* India flag tricolor gradient text */
+.india-gradient-text {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(90deg,
+      #FF8C00 0%,
+      #FFB800 30%,
+      #ffffff 55%,
+      #138808 100%);
+}
+
+/* Hero header text — saffron → gold → white → green */
+.india-header-text {
+  @apply bg-clip-text text-transparent font-bold;
+  background-image: linear-gradient(90deg,
+      #FF6600 0%,
+      #FFB800 38%,
+      #FFFFFF 58%,
+      #138808 100%);
+}
+
+/* Animated shimmer — use on hero headlines */
+.text-shimmer {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(90deg,
+      #FF8C00 0%,
+      #FFB800 20%,
+      #FFE066 40%,
+      #FFFFFF 50%,
+      #FFB800 65%,
+      #FF8C00 80%,
+      #FF6600 100%);
+  background-size: 200% auto;
+  animation: shimmer 4s linear infinite;
+}
+
+
+/* ── BADGE SYSTEM ───────────────────────────────────────────── */
 
 .badge {
   @apply inline-block rounded-full px-2.5 py-0.5 text-xs font-bold tracking-wide shadow-sm;
 }
 
 .badge-saffron {
-  @apply bg-india-saffron/20 text-india-saffron border border-india-saffron/30;
+  background: rgba(255, 140, 0, 0.14);
+  color: #FF8C00;
+  border: 1px solid rgba(255, 140, 0, 0.35);
 }
 
 .badge-green {
-  @apply bg-india-green/20 text-india-green border border-india-green/30;
+  background: rgba(19, 136, 8, 0.14);
+  color: #22c55e;
+  border: 1px solid rgba(19, 136, 8, 0.35);
 }
 
 .badge-blue {
-  @apply bg-india-blue/20 text-blue-300 border border-india-blue/30;
+  background: rgba(0, 170, 255, 0.14);
+  color: #38bdf8;
+  border: 1px solid rgba(0, 170, 255, 0.28);
 }
+
+/* New gold badge — matches site's primary accent */
+.badge-gold {
+  background: rgba(255, 184, 0, 0.14);
+  color: #FFB800;
+  border: 1px solid rgba(255, 184, 0, 0.35);
+}
+
+
+/* ── BUTTON SYSTEM ──────────────────────────────────────────── */
+
+.india-btn {
+  @apply px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg;
+}
+
+/* Primary — gold/saffron gradient, dark text */
+.india-btn-primary {
+  @apply india-btn;
+  background: linear-gradient(135deg, #FF8C00, #FFB800);
+  color: #0D0A04;
+  box-shadow: 0 4px 16px rgba(255, 140, 0, 0.35);
+}
+
+.india-btn-primary:hover {
+  box-shadow: var(--glow-saffron);
+}
+
+/* Secondary — deep navy, blue accent border */
+.india-btn-secondary {
+  @apply india-btn text-white;
+  background: linear-gradient(135deg, #0B2A5A, #081840);
+  border: 1px solid rgba(0, 170, 255, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 100, 220, 0.20);
+}
+
+.india-btn-secondary:hover {
+  box-shadow: var(--glow-blue);
+  border-color: rgba(0, 170, 255, 0.55);
+}
+
+/* Accent — India green */
+.india-btn-accent {
+  @apply india-btn text-white;
+  background: linear-gradient(135deg, #138808, #0a5e06);
+  box-shadow: 0 4px 16px rgba(19, 136, 8, 0.28);
+}
+
+.india-btn-accent:hover {
+  box-shadow: 0 0 24px rgba(19, 136, 8, 0.40);
+}
+
+/* Danger — deep red */
+.india-btn-danger {
+  @apply india-btn text-white;
+  background: linear-gradient(135deg, #CC2200, #991800);
+  box-shadow: 0 4px 16px rgba(200, 34, 0, 0.30);
+}
+
+.india-btn-danger:hover {
+  box-shadow: 0 0 24px rgba(200, 34, 0, 0.45);
+}
+
+
+/* ── UTILITY CLASSES ────────────────────────────────────────── */
 
 .Sh-screen {
   height: 87vh !important;
 }
 
-/* Hide scrollbar but keep scroll */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  /* IE/Edge */
-  scrollbar-width: none;
-  /* Firefox */
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-  /* Chrome/Safari */
-}
-
 .backdrop-blur-2xl {
   padding: 0px;
-}
-
-.goog-te-banner-frame.skiptranslate {
-  display: none !important;
-}
-
-/* This hides the top bar area even if the class name is different */
-html {
-  top: 0 !important;
-}
-
-body {
-  top: 0 !important;
-  position: static !important;
-}
-
-/* Hide anything Google injects that isn't your content */
-.skiptranslate,
-#google_translate_element,
-.goog-te-gadget,
-.goog-te-banner-frame {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-/* Sometimes Google adds a margin to the body */
-.translated-ltr,
-.translated-rtl {
-  margin-top: 0 !important;
-}
-
-
-
-.Font-Size-mid h1 {
-  margin-bottom: 5px;
-  line-height: normal;
-  font-size: 22px;
-}
-
-/* Enhanced India Theme Utilities */
-.india-gradient-bg {
-  background-color: var(--bg-primary);
-  background-image: radial-gradient(circle at top right, var(--bg-secondary), transparent),
-    radial-gradient(circle at bottom left, var(--bg-tertiary), transparent);
-}
-
-.india-card-gradient {
-  @apply bg-gradient-to-br from-india-charcoal/95 via-slate-900/95 to-india-charcoal/95 border border-white/10 backdrop-blur-xl shadow-lg rounded-3xl transition-all duration-500;
-  transform-style: preserve-3d;
 }
 
 .perspective-2000 {
@@ -243,65 +495,37 @@ body {
   transform-style: preserve-3d;
 }
 
-.india-card-gold-glow {
-  @apply india-card-gradient border-india-gold/30 shadow-[0_0_15px_rgba(255_215_0/0.1)];
+/* Gradient background helper — uses fixed bg for scroll parallax */
+.india-gradient-bg {
+  background: var(--bg-primary);
+  background-attachment: fixed;
 }
 
-.india-card-saffron-glow {
-  @apply india-card-gradient border-india-saffron/30 shadow-[0_0_15px_rgba(255_153_51/0.1)];
+
+/* ── FONT SIZE OVERRIDES ─────────────────────────────────────── */
+
+.Font-Size-mid h1 {
+  margin-bottom: 5px;
+  line-height: normal;
+  font-size: 22px;
 }
 
-.india-card-green-glow {
-  @apply india-card-gradient border-india-green/30 shadow-[0_0_15px_rgba(19_136_8/0.1)];
+
+/* ── GOOGLE TRANSLATE SUPPRESSION ───────────────────────────── */
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
 }
 
-.india-card-blue-glow {
-  @apply india-card-gradient border-india-blue/30 shadow-[0_0_15px_rgba(0_0_128/0.15)];
+.skiptranslate,
+#google_translate_element,
+.goog-te-gadget,
+.goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
 }
 
-.india-header-text {
-  @apply bg-gradient-to-r from-india-saffron via-white to-india-green bg-clip-text text-transparent font-bold;
-}
-
-.india-btn {
-  @apply px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg;
-}
-
-.india-btn-primary {
-  @apply india-btn bg-gradient-to-r from-india-saffron to-india-gold text-india-charcoal hover:shadow-india-saffron/40;
-}
-
-.india-btn-secondary {
-  @apply india-btn bg-gradient-to-r from-india-blue to-indigo-900 text-white border border-india-blue/50 hover:shadow-india-blue/40;
-}
-
-.india-btn-accent {
-  @apply india-btn bg-gradient-to-r from-india-green to-emerald-600 text-white hover:shadow-india-green/40;
-}
-
-.india-btn-danger {
-  @apply india-btn bg-gradient-to-r from-india-red to-rose-600 text-white hover:shadow-india-red/40;
-}
-
-/* Social icons entrance animation (used in SocialMediaPopup) */
-@keyframes social-pop {
-  0% {
-    transform: translateY(8px) scale(0.98);
-    opacity: 0;
-  }
-
-  60% {
-    transform: translateY(-6px) scale(1.02);
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-}
-
-.animate-social-pop {
-  animation: social-pop 2s cubic-bezier(.2,.9,.2,1) both;
-  will-change: transform, opacity;
+.translated-ltr,
+.translated-rtl {
+  margin-top: 0 !important;
 }
