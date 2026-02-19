@@ -73,7 +73,7 @@ export default async function HomeNewsShowcase() {
         >
           {/* Image */}
           <div
-            className="relative w-full h-[28vw] max-h-[440px] min-h-[260px]
+            className="relative w-full h-[350px] min-h-[260px]
                        overflow-hidden rounded-t-2xl"
           >
             <div
@@ -81,7 +81,7 @@ export default async function HomeNewsShowcase() {
                          group-hover:scale-[1.03]"
               style={{ backgroundImage: `url(${featured.image_url})` }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-india-charcoal via-india-charcoal/50 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-india-charcoal via-india-charcoal/50 to-transparent" />
 
             {/* subtle shine */}
             <div

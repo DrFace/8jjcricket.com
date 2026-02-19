@@ -30,7 +30,7 @@ export default function WelcomePopup() {
                 {/* Banner Image */}
                 <div className="relative aspect-[16/9] w-full">
                     <Image
-                        src="/banner004.png"
+                        src="/banner004.jpeg"
                         alt="Welcome banner"
                         fill
                         className="object-cover"
