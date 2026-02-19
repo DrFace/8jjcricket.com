@@ -14,6 +14,9 @@ interface HeroPopupProps {
   };
 }
 
+//new
+
+
 export default function HeroPopup({
   isOpen,
   onClose,
