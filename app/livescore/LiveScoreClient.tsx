@@ -3,9 +3,6 @@
 import { useMemo, useState } from "react";
 import useSWR from "swr";
 import { cn } from "@/lib/utils";
-import DesktopOnly from "@/components/DesktopOnly";
-import RecentMatchCard from "@/components/RecentMatchCard";
-import LiveCard from "@/components/LiveCard";
 import { MatchCategory } from "@/lib/match-category";
 import UpcomingCard from "@/components/UpcomingCard";
 import { CRICKET_CATEGORIES } from "@/lib/constant";
@@ -30,7 +27,7 @@ function Calendar({
 }) {
   const initialMonth = selectedDate ? new Date(selectedDate) : new Date();
   const [viewMonth, setViewMonth] = useState<Date>(
-    new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1)
+    new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1),
   );
 
   const min = minDate ? new Date(minDate) : undefined;
@@ -40,7 +37,7 @@ function Calendar({
     const startOfMonth = new Date(
       viewMonth.getFullYear(),
       viewMonth.getMonth(),
-      1
+      1,
     );
     const startDay = startOfMonth.getDay();
     const gridStart = new Date(startOfMonth);
@@ -74,7 +71,7 @@ function Calendar({
           className="rounded-md px-2 py-1 text-white/70 hover:bg-white/10"
           onClick={() =>
             setViewMonth(
-              new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1)
+              new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1),
             )
           }
         >
@@ -89,7 +86,7 @@ function Calendar({
           className="rounded-md px-2 py-1 text-white/70 hover:bg-white/10"
           onClick={() =>
             setViewMonth(
-              new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1)
+              new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1),
             )
           }
         >
@@ -189,14 +186,14 @@ export default function LiveScoreHome() {
   const error = liveRes.error || recentRes.error || upcomingRes.error;
 
   const [activeTab, setActiveTab] = useState<"Live" | "Upcoming" | "Recent">(
-    "Live"
+    "Live",
   );
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   // ✅ Calendar for ALL tabs
   const [selectedDateLive, setSelectedDateLive] = useState<string | null>(null);
   const [selectedDateRecent, setSelectedDateRecent] = useState<string | null>(
-    null
+    null,
   );
   const [selectedDateUpcoming, setSelectedDateUpcoming] = useState<
     string | null
@@ -210,13 +207,13 @@ export default function LiveScoreHome() {
 
   const recentSorted = useMemo(() => {
     return [...recentMatches].sort(
-      (a: any, b: any) => +new Date(b.starting_at) - +new Date(a.starting_at)
+      (a: any, b: any) => +new Date(b.starting_at) - +new Date(a.starting_at),
     );
   }, [recentMatches]);
 
   const upcomingSorted = useMemo(() => {
     return [...upcomingMatches].sort(
-      (a: any, b: any) => +new Date(a.starting_at) - +new Date(b.starting_at)
+      (a: any, b: any) => +new Date(a.starting_at) - +new Date(b.starting_at),
     );
   }, [upcomingMatches]);
 
@@ -232,7 +229,7 @@ export default function LiveScoreHome() {
     let data = [...recentSorted];
     if (selectedDateLive)
       data = data.filter(
-        (m: any) => String(m.starting_at).slice(0, 10) === selectedDateLive
+        (m: any) => String(m.starting_at).slice(0, 10) === selectedDateLive,
       );
     if (selectedCategory !== "All")
       data = data.filter((m: any) => MatchCategory(m, selectedCategory));
@@ -244,7 +241,7 @@ export default function LiveScoreHome() {
     let data = [...recentSorted];
     if (selectedDateRecent)
       data = data.filter(
-        (m: any) => String(m.starting_at).slice(0, 10) === selectedDateRecent
+        (m: any) => String(m.starting_at).slice(0, 10) === selectedDateRecent,
       );
     if (selectedCategory !== "All")
       data = data.filter((m: any) => MatchCategory(m, selectedCategory));
@@ -253,7 +250,7 @@ export default function LiveScoreHome() {
 
   const recentTotalPages = Math.max(
     1,
-    Math.ceil(filteredRecentAll.length / RECENT_PAGE_SIZE)
+    Math.ceil(filteredRecentAll.length / RECENT_PAGE_SIZE),
   );
   const recentPaged = useMemo(() => {
     const start = (recentPage - 1) * RECENT_PAGE_SIZE;
@@ -265,7 +262,7 @@ export default function LiveScoreHome() {
     let data = [...upcomingSorted];
     if (selectedDateUpcoming)
       data = data.filter(
-        (m: any) => String(m.starting_at).slice(0, 10) === selectedDateUpcoming
+        (m: any) => String(m.starting_at).slice(0, 10) === selectedDateUpcoming,
       );
     if (selectedCategory !== "All")
       data = data.filter((m: any) => MatchCategory(m, selectedCategory));
@@ -274,7 +271,7 @@ export default function LiveScoreHome() {
 
   const upcomingTotalPages = Math.max(
     1,
-    Math.ceil(filteredUpcomingAll.length / UPCOMING_PAGE_SIZE)
+    Math.ceil(filteredUpcomingAll.length / UPCOMING_PAGE_SIZE),
   );
   const upcomingPaged = useMemo(() => {
     const start = (upcomingPage - 1) * UPCOMING_PAGE_SIZE;
@@ -343,7 +340,11 @@ export default function LiveScoreHome() {
         </div>
 
         {error && <div className="text-india-red">Failed to load data.</div>}
-        {!error && loading && <div className="text-india-gold animate-pulse">Loading matches...</div>}
+        {!error && loading && (
+          <div className="text-india-gold animate-pulse">
+            Loading matches...
+          </div>
+        )}
 
         {!error && !loading && (
           <>
@@ -437,7 +438,7 @@ export default function LiveScoreHome() {
                           }
                           onNext={() =>
                             setUpcomingPage((p) =>
-                              Math.min(upcomingTotalPages, p + 1)
+                              Math.min(upcomingTotalPages, p + 1),
                             )
                           }
                         />
@@ -489,7 +490,7 @@ export default function LiveScoreHome() {
                           }
                           onNext={() =>
                             setRecentPage((p) =>
-                              Math.min(recentTotalPages, p + 1)
+                              Math.min(recentTotalPages, p + 1),
                             )
                           }
                         />

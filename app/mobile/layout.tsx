@@ -460,7 +460,7 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
       <audio ref={audioRef} preload="auto" playsInline />
 
       {/* TOP NAV BAR (GLOBAL) */}
-      <header className="sticky top-0 z-[70] w-full border-b border-[var(--border-primary)] bg-[var(--bg-primary)]">
+      <header className="sticky top-0 z-[70] w-full border-b border-[var(--border-primary)] [background:var(--bg-primary)]">
         <div className="flex items-center justify-between px-3 py-2">
           {/* LEFT: Hamburger + Logo + Brand */}
           <div className="flex items-center gap-3">
