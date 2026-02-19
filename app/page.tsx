@@ -269,7 +269,7 @@ export default async function HomePage() {
           className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6"
         >
           <div className="relative h-full w-full flex items-center">
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900" />
+            <div className="absolute inset-0" style={{ background: "var(--bg-primary)" }} />
 
             <ScaleToFit className="w-full h-full pt-20 pb-4">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">

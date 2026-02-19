@@ -177,45 +177,43 @@ export default async function MobileHomePage() {
       <WelcomePopup />
 
       <section className="w-full snap-start scroll-mt-3">
-        <Reveal>
-          {(() => {
-            const raw = videos?.[0]?.video_path ?? "";
+        {(() => {
+          const raw = videos?.[0]?.video_path ?? "";
 
-            const getSafeVideoUrl = (input: string) => {
-              if (!input) return "";
+          const getSafeVideoUrl = (input: string) => {
+            if (!input) return "";
 
-              // Relative storage path → HTTPS domain
-              if (input.startsWith("/")) {
-                return `https://8jjcricket.com${input}`;
-              }
+            // Relative storage path → HTTPS domain
+            if (input.startsWith("/")) {
+              return `https://8jjcricket.com${input}`;
+            }
 
-              // IP-based HTTP URL → HTTPS domain
-              if (input.startsWith("http://72.60.107.98:8001/")) {
-                return input.replace(
-                  "http://72.60.107.98:8001",
-                  "https://8jjcricket.com",
-                );
-              }
+            // IP-based HTTP URL → HTTPS domain
+            if (input.startsWith("http://72.60.107.98:8001/")) {
+              return input.replace(
+                "http://72.60.107.98:8001",
+                "https://8jjcricket.com",
+              );
+            }
 
-              // Any other http://storage/... → force HTTPS on main domain
-              if (input.startsWith("http://")) {
-                try {
-                  const u = new URL(input);
-                  if (u.pathname.startsWith("/storage/")) {
-                    return `https://8jjcricket.com${u.pathname}${u.search}`;
-                  }
-                } catch {}
-              }
+            // Any other http://storage/... → force HTTPS on main domain
+            if (input.startsWith("http://")) {
+              try {
+                const u = new URL(input);
+                if (u.pathname.startsWith("/storage/")) {
+                  return `https://8jjcricket.com${u.pathname}${u.search}`;
+                }
+              } catch {}
+            }
 
-              // Already https or unknown format
-              return input;
-            };
+            // Already https or unknown format
+            return input;
+          };
 
-            const safeSrc = getSafeVideoUrl(raw);
+          const safeSrc = getSafeVideoUrl(raw);
 
-            return <MobileInteractiveHeroVideo videoUrl={safeSrc} />;
-          })()}
-        </Reveal>
+          return <MobileInteractiveHeroVideo videoUrl={safeSrc} />;
+        })()}
       </section>
       {/* SPONSORS (GRID, no scroll) */}
       <section className="mt-4 w-full snap-start scroll-mt-3">
