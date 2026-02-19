@@ -107,7 +107,7 @@ export default function PartnersCarousel() {
   // Loading state
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-black to-neutral-900">
+      <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-orange-500 mx-auto mb-4"></div>
           <p className="text-white/60 text-sm">Loading partners...</p>
@@ -119,7 +119,7 @@ export default function PartnersCarousel() {
   // Error state
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-black to-neutral-900">
+      <div className="flex items-center justify-center min-h-screen">
         <div className="text-center max-w-md px-6">
           <div className="text-red-500 text-5xl mb-4">⚠</div>
           <h3 className="text-white text-xl font-bold mb-2">Failed to Load Partners</h3>
@@ -138,7 +138,7 @@ export default function PartnersCarousel() {
   // No partners available
   if (partners.length === 0) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-black to-neutral-900">
+      <div className="flex items-center justify-center min-h-screen">
         <p className="text-white/60">No partners available</p>
       </div>
     );
@@ -161,10 +161,6 @@ export default function PartnersCarousel() {
           min-height: 100vh;
           display: flex; flex-direction: column; align-items: center; justify-content: center;
           position: relative; overflow: hidden;
-          background:
-            radial-gradient(ellipse 90% 60% at 50% 38%, rgba(245, 159, 88, 0.36) 0%, transparent 70%),
-            radial-gradient(ellipse 70% 50% at 50% 90%, rgba(249,115,22,0.2) 0%, transparent 65%),
-            linear-gradient(165deg, #0f0f0f 0%, #1a1a1a 30%, #0a0a0a 65%, #000000 100%);
         }
         .geo { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
         .title-area { position: relative; z-index: 10; text-align: center; margin-bottom: 50px; }
