@@ -1,7 +1,7 @@
 "use client";
 
 // components/FloatingSupport.tsx
-import { Headphones, Radio, Share2 } from "lucide-react";
+import { Headphones, Radio, Share2, Music2, VolumeOff } from "lucide-react";
 import MusicPopup from "@/components/MusicPopup";
 import { useState } from "react";
 import { useAudio } from "@/context/AudioContext";
@@ -65,7 +65,7 @@ export default function FloatingSupport() {
           hover:bg-orange-400/20 
           active:bg-orange-500
         "
-        target="blank"
+          target="blank"
           href="/app-showcase"
         >
           <img
@@ -98,6 +98,14 @@ export default function FloatingSupport() {
           aria-pressed={!isMuted}
         >
           <Headphones size={20} className="text-white" />
+        </button>
+        {/* Mute / Unmute (restored) */}
+        <button
+          onClick={toggleMute}
+          title={isMuted ? "Unmute" : "Mute"}
+          className="p-1 rounded-full hover:scale-125 hover:bg-orange-400/20"
+        >
+          {isMuted ? <VolumeOff size={20} /> : <Music2 size={20} />}
         </button>
       </div>
       <MusicPopup

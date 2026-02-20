@@ -10,7 +10,6 @@
    Purple: REMOVED — not used in UI
    ============================================================ */
 
-
 /* ── KEYFRAMES ──────────────────────────────────────────────── */
 
 @keyframes shimmer {
@@ -49,17 +48,15 @@
 
 /* Ambient floodlight breathing — body::before */
 @keyframes floodlight-breathe {
-
   0%,
   100% {
-    opacity: 0.50;
+    opacity: 0.5;
   }
 
   50% {
     opacity: 0.85;
   }
 }
-
 
 /* ── CSS CUSTOM PROPERTIES ──────────────────────────────────── */
 
@@ -83,31 +80,29 @@
    * meeting in a warm amber center. No purple anywhere.
    */
 
---bg-primary:
+  --bg-primary:
     /* Gold — bottom-left, reaches center */
-    radial-gradient(ellipse 130% 120% at 0% 100%,
+    radial-gradient(
+      ellipse 130% 120% at 0% 100%,
       rgba(255, 200, 80, 0.55) 0%,
       rgba(255, 170, 40, 0.38) 35%,
-      rgba(255, 150, 20, 0.20) 60%,
-      rgba(255, 150, 20, 0.10) 75%,
-      transparent 92%),
-
+      rgba(255, 150, 20, 0.2) 60%,
+      rgba(255, 150, 20, 0.1) 75%,
+      transparent 92%
+    ),
     /* Sky blue — top-right, reaches center */
-    radial-gradient(ellipse 130% 120% at 100% 0%,
-      rgba(135, 206, 250, 0.55) 0%,
-      rgba(70, 170, 255, 0.38) 35%,
-      rgba(0, 140, 255, 0.20) 60%,
-      rgba(0, 140, 255, 0.10) 75%,
-      transparent 92%),
-
-    /* Dark base */
-    linear-gradient(180deg, #05070A 0%, #0B141C 100%);
-
-      
-
+    radial-gradient(
+        ellipse 130% 120% at 100% 0%,
+        rgba(135, 206, 250, 0.55) 0%,
+        rgba(70, 170, 255, 0.38) 35%,
+        rgba(0, 140, 255, 0.2) 60%,
+        rgba(0, 140, 255, 0.1) 75%,
+        transparent 92%
+      ),
+    /* Dark base */ linear-gradient(180deg, #05070a 0%, #0b141c 100%);
 
   /* Secondary & tertiary surfaces */
-  --bg-secondary: #0D0A04;
+  --bg-secondary: #0d0a04;
   --bg-tertiary: #141008;
 
   /* Card surfaces — warm dark tint (replaces cold rgba(15,15,15)) */
@@ -116,46 +111,52 @@
 
   /* Typography */
   --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.80);
+  --text-secondary: rgba(255, 255, 255, 0.8);
   --text-tertiary: rgba(255, 255, 255, 0.55);
 
   /* Borders — warm tint instead of cold white */
-  --border-primary: rgba(255, 200, 100, 0.10);
+  --border-primary: rgba(255, 200, 100, 0.1);
   --border-secondary: rgba(255, 200, 100, 0.05);
 
   /* Accent colors — the only palette you need */
-  --gold: #FFB800;
-  --gold-deep: #E09000;
-  --saffron: #FF8C00;
-  --saffron-hot: #FF6600;
-  --amber: #FF9F1C;
-  --blue-accent: #00AAFF;
+  --gold: #ffb800;
+  --gold-deep: #e09000;
+  --saffron: #ff8c00;
+  --saffron-hot: #ff6600;
+  --amber: #ff9f1c;
+  --blue-accent: #00aaff;
   /* secondary only — floodlight edge, NOT hero */
   --green-accent: #138808;
   /* India flag green — used sparingly */
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.40);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.55);
-  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.70);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.7);
 
   /* Glow shadows — gold/saffron dominant */
-  --glow-gold: 0 0 18px rgba(255, 184, 0, 0.40), 0 0 50px rgba(255, 184, 0, 0.12);
-  --glow-saffron: 0 0 18px rgba(255, 140, 0, 0.40), 0 0 50px rgba(255, 140, 0, 0.12);
-  --glow-amber: 0 0 18px rgba(255, 159, 28, 0.35), 0 0 50px rgba(255, 159, 28, 0.10);
-  --glow-blue: 0 0 18px rgba(0, 170, 255, 0.30), 0 0 50px rgba(0, 170, 255, 0.08);
+  --glow-gold:
+    0 0 18px rgba(255, 184, 0, 0.4), 0 0 50px rgba(255, 184, 0, 0.12);
+  --glow-saffron:
+    0 0 18px rgba(255, 140, 0, 0.4), 0 0 50px rgba(255, 140, 0, 0.12);
+  --glow-amber:
+    0 0 18px rgba(255, 159, 28, 0.35), 0 0 50px rgba(255, 159, 28, 0.1);
+  --glow-blue:
+    0 0 18px rgba(0, 170, 255, 0.3), 0 0 50px rgba(0, 170, 255, 0.08);
 }
-
 
 /* ── GLOBAL RESETS ──────────────────────────────────────────── */
 
 * {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 ::selection {
-  background-color: #FF8C00;
-  color: #0D0A04;
+  background-color: #ff8c00;
+  color: #0d0a04;
 }
 
 html,
@@ -180,28 +181,39 @@ body {
   top: 0 !important;
   position: static !important;
   isolation: isolate;
-  
 }
 
 /* ── ANIMATED AMBIENT OVERLAY ───────────────────────────────── */
 /* Slow-breathing floodlight pulse — feels alive, not static    */
 body::before {
-  content: '';
+  content: "";
   position: fixed;
   inset: 0;
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 50% 28% at 10% 4%, rgba(255, 140, 0, 0.16) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 28% at 90% 4%, rgba(0, 170, 255, 0.14) 0%, transparent 70%),
-    radial-gradient(ellipse 35% 25% at 50% 50%, rgba(255, 184, 0, 0.05) 0%, transparent 70%);
+    radial-gradient(
+      ellipse 50% 28% at 10% 4%,
+      rgba(255, 140, 0, 0.16) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 50% 28% at 90% 4%,
+      rgba(0, 170, 255, 0.14) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 35% 25% at 50% 50%,
+      rgba(255, 184, 0, 0.05) 0%,
+      transparent 70%
+    );
   animation: floodlight-breathe 7s ease-in-out infinite;
 }
 
 /* ── FILM GRAIN ─────────────────────────────────────────────── */
 /* 3% noise — adds cinematic texture, invisible at a glance     */
 body::after {
-  content: '';
+  content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
@@ -211,7 +223,6 @@ body::after {
   background-size: 128px 128px;
   background-repeat: repeat;
 }
-
 
 /* ── SCROLLBAR ──────────────────────────────────────────────── */
 
@@ -229,14 +240,12 @@ body::after {
   display: none;
 }
 
-
 /* ── SNAP ───────────────────────────────────────────────────── */
 
 [data-snap] {
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
-
 
 /* ── BASE ELEMENTS ──────────────────────────────────────────── */
 
@@ -248,7 +257,6 @@ a {
   @apply mx-auto max-w-6xl px-4;
 }
 
-
 /* ── CARD ───────────────────────────────────────────────────── */
 
 .card {
@@ -256,7 +264,6 @@ a {
   background-color: var(--bg-card);
   border-color: var(--border-primary);
 }
-
 
 /* ── INDIA CARD SYSTEM ──────────────────────────────────────── */
 
@@ -290,19 +297,20 @@ a {
 
 .india-card-blue {
   @apply india-card;
-  border-color: rgba(0, 170, 255, 0.30);
+  border-color: rgba(0, 170, 255, 0.3);
 }
-
 
 /* ── GRADIENT CARD BASE ─────────────────────────────────────── */
 /* Replaces india-card-gradient — warm dark tint, no cold slate */
 
 .india-card-gradient {
   @apply relative rounded-3xl border backdrop-blur-xl shadow-lg transition-all duration-500;
-  background: linear-gradient(140deg,
-      rgba(20, 14, 4, 0.96) 0%,
-      rgba(28, 18, 5, 0.92) 50%,
-      rgba(20, 14, 4, 0.96) 100%);
+  background: linear-gradient(
+    140deg,
+    rgba(20, 14, 4, 0.96) 0%,
+    rgba(28, 18, 5, 0.92) 50%,
+    rgba(20, 14, 4, 0.96) 100%
+  );
   border-color: var(--border-primary);
   transform-style: preserve-3d;
 }
@@ -311,40 +319,50 @@ a {
 .india-card-gold-glow {
   @apply india-card-gradient;
   border-color: rgba(255, 184, 0, 0.32);
-  box-shadow: 0 0 18px rgba(255, 184, 0, 0.12), var(--shadow-md);
+  box-shadow:
+    0 0 18px rgba(255, 184, 0, 0.12),
+    var(--shadow-md);
 }
 
 .india-card-gold-glow:hover {
   box-shadow: var(--glow-gold), var(--shadow-lg);
-  border-color: rgba(255, 184, 0, 0.50);
+  border-color: rgba(255, 184, 0, 0.5);
 }
 
 .india-card-saffron-glow {
   @apply india-card-gradient;
-  border-color: rgba(255, 140, 0, 0.30);
-  box-shadow: 0 0 18px rgba(255, 140, 0, 0.10), var(--shadow-md);
+  border-color: rgba(255, 140, 0, 0.3);
+  box-shadow:
+    0 0 18px rgba(255, 140, 0, 0.1),
+    var(--shadow-md);
 }
 
 .india-card-saffron-glow:hover {
   box-shadow: var(--glow-saffron), var(--shadow-lg);
-  border-color: rgba(255, 140, 0, 0.50);
+  border-color: rgba(255, 140, 0, 0.5);
 }
 
 .india-card-green-glow {
   @apply india-card-gradient;
   border-color: rgba(19, 136, 8, 0.28);
-  box-shadow: 0 0 18px rgba(19, 136, 8, 0.08), var(--shadow-md);
+  box-shadow:
+    0 0 18px rgba(19, 136, 8, 0.08),
+    var(--shadow-md);
 }
 
 .india-card-green-glow:hover {
-  box-shadow: 0 0 28px rgba(19, 136, 8, 0.20), var(--shadow-lg);
+  box-shadow:
+    0 0 28px rgba(19, 136, 8, 0.2),
+    var(--shadow-lg);
   border-color: rgba(19, 136, 8, 0.45);
 }
 
 .india-card-blue-glow {
   @apply india-card-gradient;
   border-color: rgba(0, 170, 255, 0.25);
-  box-shadow: 0 0 18px rgba(0, 170, 255, 0.08), var(--shadow-md);
+  box-shadow:
+    0 0 18px rgba(0, 170, 255, 0.08),
+    var(--shadow-md);
 }
 
 .india-card-blue-glow:hover {
@@ -352,44 +370,48 @@ a {
   border-color: rgba(0, 170, 255, 0.42);
 }
 
-
 /* ── TEXT UTILITIES ─────────────────────────────────────────── */
 
 /* India flag tricolor gradient text */
 .india-gradient-text {
   @apply bg-clip-text text-transparent;
-  background-image: linear-gradient(90deg,
-      #FF8C00 0%,
-      #FFB800 30%,
-      #ffffff 55%,
-      #138808 100%);
+  background-image: linear-gradient(
+    90deg,
+    #ff8c00 0%,
+    #ffb800 30%,
+    #ffffff 55%,
+    #138808 100%
+  );
 }
 
 /* Hero header text — saffron → gold → white → green */
 .india-header-text {
   @apply bg-clip-text text-transparent font-bold;
-  background-image: linear-gradient(90deg,
-      #FF6600 0%,
-      #FFB800 38%,
-      #FFFFFF 58%,
-      #138808 100%);
+  background-image: linear-gradient(
+    90deg,
+    #ff6600 0%,
+    #ffb800 38%,
+    #ffffff 58%,
+    #138808 100%
+  );
 }
 
 /* Animated shimmer — use on hero headlines */
 .text-shimmer {
   @apply bg-clip-text text-transparent;
-  background-image: linear-gradient(90deg,
-      #FF8C00 0%,
-      #FFB800 20%,
-      #FFE066 40%,
-      #FFFFFF 50%,
-      #FFB800 65%,
-      #FF8C00 80%,
-      #FF6600 100%);
+  background-image: linear-gradient(
+    90deg,
+    #ff8c00 0%,
+    #ffb800 20%,
+    #ffe066 40%,
+    #ffffff 50%,
+    #ffb800 65%,
+    #ff8c00 80%,
+    #ff6600 100%
+  );
   background-size: 200% auto;
   animation: shimmer 4s linear infinite;
 }
-
 
 /* ── BADGE SYSTEM ───────────────────────────────────────────── */
 
@@ -399,7 +421,7 @@ a {
 
 .badge-saffron {
   background: rgba(255, 140, 0, 0.14);
-  color: #FF8C00;
+  color: #ff8c00;
   border: 1px solid rgba(255, 140, 0, 0.35);
 }
 
@@ -418,10 +440,9 @@ a {
 /* New gold badge — matches site's primary accent */
 .badge-gold {
   background: rgba(255, 184, 0, 0.14);
-  color: #FFB800;
+  color: #ffb800;
   border: 1px solid rgba(255, 184, 0, 0.35);
 }
-
 
 /* ── BUTTON SYSTEM ──────────────────────────────────────────── */
 
@@ -432,8 +453,8 @@ a {
 /* Primary — gold/saffron gradient, dark text */
 .india-btn-primary {
   @apply india-btn;
-  background: linear-gradient(135deg, #FF8C00, #FFB800);
-  color: #0D0A04;
+  background: linear-gradient(135deg, #ff8c00, #ffb800);
+  color: #0d0a04;
   box-shadow: 0 4px 16px rgba(255, 140, 0, 0.35);
 }
 
@@ -444,9 +465,9 @@ a {
 /* Secondary — deep navy, blue accent border */
 .india-btn-secondary {
   @apply india-btn text-white;
-  background: linear-gradient(135deg, #0B2A5A, #081840);
+  background: linear-gradient(135deg, #0b2a5a, #081840);
   border: 1px solid rgba(0, 170, 255, 0.35);
-  box-shadow: 0 4px 16px rgba(0, 100, 220, 0.20);
+  box-shadow: 0 4px 16px rgba(0, 100, 220, 0.2);
 }
 
 .india-btn-secondary:hover {
@@ -462,20 +483,19 @@ a {
 }
 
 .india-btn-accent:hover {
-  box-shadow: 0 0 24px rgba(19, 136, 8, 0.40);
+  box-shadow: 0 0 24px rgba(19, 136, 8, 0.4);
 }
 
 /* Danger — deep red */
 .india-btn-danger {
   @apply india-btn text-white;
-  background: linear-gradient(135deg, #CC2200, #991800);
-  box-shadow: 0 4px 16px rgba(200, 34, 0, 0.30);
+  background: linear-gradient(135deg, #cc2200, #991800);
+  box-shadow: 0 4px 16px rgba(200, 34, 0, 0.3);
 }
 
 .india-btn-danger:hover {
   box-shadow: 0 0 24px rgba(200, 34, 0, 0.45);
 }
-
 
 /* ── UTILITY CLASSES ────────────────────────────────────────── */
 
@@ -501,7 +521,6 @@ a {
   background-attachment: fixed;
 }
 
-
 /* ── FONT SIZE OVERRIDES ─────────────────────────────────────── */
 
 .Font-Size-mid h1 {
@@ -509,7 +528,6 @@ a {
   line-height: normal;
   font-size: 22px;
 }
-
 
 /* ── GOOGLE TRANSLATE SUPPRESSION ───────────────────────────── */
 
@@ -528,4 +546,8 @@ a {
 .translated-ltr,
 .translated-rtl {
   margin-top: 0 !important;
+}
+
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf {
+  display: none !important;
 }

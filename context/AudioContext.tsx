@@ -1,5 +1,6 @@
 "use client";
 
+import { AudioItem } from "@/types/audio";
 import {
   createContext,
   useContext,
@@ -8,7 +9,6 @@ import {
   useState,
   useCallback,
 } from "react";
-import { type AudioItem } from "@/components/MusicPopup";
 
 type RepeatMode = "off" | "all" | "one";
 interface AudioContextProps {
@@ -33,10 +33,13 @@ interface AudioContextProps {
 
 const AudioContext = createContext<AudioContextProps | undefined>(undefined);
 
+const AUDIO_PERSIST_KEY = "globalAudioState";
+
 export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const shouldAutoPlayRef = useRef(false);
 
   const [audios, setAudios] = useState<AudioItem[]>([]);
   const [currentTrack, setCurrentTrack] = useState<AudioItem | null>(null);
@@ -75,8 +78,48 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
 
         setAudios(data);
 
-        if (data.length) {
+        if (!data.length) return;
+
+        try {
+          const saved = localStorage.getItem(AUDIO_PERSIST_KEY);
+
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            const foundTrack = data.find((a) => a.id === parsed.trackId);
+
+            if (foundTrack) {
+              setCurrentTrack(foundTrack);
+
+              shouldAutoPlayRef.current = parsed.isPlaying ?? false;
+
+              setTimeout(() => {
+                const audio = audioRef.current;
+                if (!audio) return;
+
+                audio.currentTime = parsed.currentTime || 0;
+                audio.muted = parsed.isMuted ?? false;
+                audio.volume = parsed.volume ?? 0.7;
+                setIsMuted(parsed.isMuted ?? false);
+                setVolume(parsed.volume ?? 0.7);
+              }, 300);
+
+              return;
+            }
+            localStorage.removeItem(AUDIO_PERSIST_KEY);
+            // ✅ No valid saved state → first visit
+            setCurrentTrack(data[0]);
+            shouldAutoPlayRef.current = true;
+            // setIsMuted(false);
+            setVolume(0.7);
+          }
+
+          // ✅ No saved state → first visit
           setCurrentTrack(data[0]);
+          shouldAutoPlayRef.current = true;
+        } catch {
+          // If JSON fails, fallback safely
+          setCurrentTrack(data[0]);
+          shouldAutoPlayRef.current = true;
         }
       } catch (err) {
         console.error("Audio load failed:", err);
@@ -113,7 +156,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       audio.load();
 
       // Only autoplay if user has already interacted
-      if (hasInteractedRef.current) {
+      if (hasInteractedRef.current && shouldAutoPlayRef.current) {
         audio.play().catch((err) => console.warn("Play failed:", err));
       }
     }
@@ -128,7 +171,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       hasInteractedRef.current = true;
 
       const audio = audioRef.current;
-      if (audio && audio.paused && currentTrack) {
+
+      if (audio && audio.paused && currentTrack && shouldAutoPlayRef.current) {
         audio
           .play()
           .catch((err) => console.warn("Play after interaction failed:", err));
@@ -314,6 +358,39 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
     audio.muted = isMuted;
     audio.volume = Math.max(0, Math.min(1, volume));
   }, [isMuted, volume]);
+
+  /* ===============================
+   Persist Audio State
+=============================== */
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !currentTrack) return;
+
+    const saveState = () => {
+      const state = {
+        trackId: currentTrack.id,
+        currentTime: audio.currentTime,
+        isPlaying: !audio.paused,
+        isMuted,
+        volume,
+      };
+
+      try {
+        localStorage.setItem(AUDIO_PERSIST_KEY, JSON.stringify(state));
+      } catch {}
+    };
+
+    // Save every 1 second
+    const interval = setInterval(saveState, 1000);
+
+    // Also save when page is about to unload
+    window.addEventListener("beforeunload", saveState);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("beforeunload", saveState);
+    };
+  }, [currentTrack, isMuted, volume]);
 
   return (
     <AudioContext.Provider

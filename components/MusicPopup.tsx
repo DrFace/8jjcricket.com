@@ -13,12 +13,7 @@ import {
   Repeat,
 } from "lucide-react";
 import MusicSelector from "./MusicSelector";
-
-export type AudioItem = {
-  id: number;
-  title: string;
-  file_path: string;
-};
+import { AudioItem } from "@/types/audio";
 
 export default function MusicPopup(props: {
   open: boolean;

@@ -95,7 +95,6 @@ function BannerSlideshow({
               className="h-full w-full object-cover"
               draggable={false}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/10" />
           </Link>
         ))}
       </div>

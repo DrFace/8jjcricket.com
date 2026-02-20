@@ -294,17 +294,7 @@ export default function TopNav() {
                 ))}
               </select>
             </div>
-            {currentTrack && (
-              <button
-                type="button"
-                onClick={toggleMute}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-sm font-semibold text-white hover:bg-white/10 active:scale-95"
-                aria-label="Toggle music"
-                aria-pressed={!isMuted}
-              >
-                {!isMuted ? <Music2 size={18} /> : <VolumeOff size={18} />}
-              </button>
-            )}
+
             <Link
               href="/minigames"
               className="rounded-full bg-gradient-to-r from-[#FACC15] via-[#F97316] to-[#EA580C] px-4 py-2 text-sm font-semibold text-black shadow-lg shadow-amber-500/40 ring-1 ring-white/20 hover:brightness-110 active:scale-95"
