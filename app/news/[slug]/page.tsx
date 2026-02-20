@@ -117,13 +117,12 @@ export default async function ArticlePage({ params }: Props) {
             <div className="max-w-3xl mx-auto">
               <Link
                 href="/news"
-                className="group relative overflow-hidden inline-flex items-center gap-2 rounded-full
+                className="group relative overflow-hidden inline-flex items-center gap-2 rounded-xl
                                           bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500
-                                          px-5 py-2.5 text-sm font-semibold text-black
-                                          shadow-lg shadow-amber-500/40
-                                          ring-1 ring-white/20
+                                          px-5 py-2.5 text-sm font-bold text-black
+                                          shadow-lg shadow-amber-500/30
                                           transition-all duration-300
-                                          hover:brightness-110 hover:shadow-xl hover:shadow-amber-500/50 
+                                          hover:brightness-110 hover:shadow-xl hover:shadow-amber-500/40 
                                           hover:-translate-y-[2px]
                                           active:scale-95 active:translate-y-0"
               >
@@ -162,13 +161,23 @@ export default async function ArticlePage({ params }: Props) {
             <div className="flex items-center justify-between gap-3">
               <Link
                 href="/news"
-                className="group inline-flex items-center gap-2 text-amber-400 font-medium
-                                          hover:text-amber-300 transition-all duration-300 hover:-translate-x-1"
+                className="group relative overflow-hidden inline-flex items-center gap-2 rounded-xl
+                                          bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500
+                                          px-4 py-2 text-sm font-bold text-black
+                                          shadow-lg shadow-amber-500/30
+                                          transition-all duration-300
+                                          hover:brightness-110 hover:shadow-xl hover:shadow-amber-500/40 
+                                          hover:-translate-y-[2px]
+                                          active:scale-95 active:translate-y-0"
               >
-                <span className="transition-transform duration-300 group-hover:-translate-x-1">
+                <span className="relative z-10 transition-transform duration-300 group-hover:-translate-x-1">
                   ←
                 </span>
-                Back to news
+                <span className="relative z-10">Back to news</span>
+                <div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent 
+                                               -translate-x-full group-hover:translate-x-full transition-transform duration-700"
+                />
               </Link>
 
             {/* Share button + popup */}
@@ -225,12 +234,12 @@ export default async function ArticlePage({ params }: Props) {
             <div className="mt-8 flex justify-center">
               <Link
                 href="/news"
-                className="group relative overflow-hidden inline-flex items-center gap-2 rounded-full
-                                          bg-gradient-to-r from-india-saffron to-india-gold
+                className="group relative overflow-hidden inline-flex items-center gap-2 rounded-xl
+                                          bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500
                                           px-6 py-3 text-sm font-bold text-black
-                                          shadow-lg shadow-india-saffron/40
+                                          shadow-lg shadow-amber-500/30
                                           transition-all duration-300
-                                          hover:brightness-110 hover:shadow-xl hover:shadow-india-saffron/50 
+                                          hover:brightness-110 hover:shadow-xl hover:shadow-amber-500/40 
                                           hover:-translate-y-[2px]
                                           active:scale-95 active:translate-y-0"
               >
