@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link";
 import Scoreboard from "@/components/Scoreboard"
 import TopNav from "@/components/TopNav"
 import Footer from "@/components/Footer"
@@ -23,6 +24,27 @@ export default function MatchPage({ params }: { params: { id: string } }) {
       <TopNav />
 
       <main className="mx-auto w-full max-w-7xl px-4 pb-16 pt-8">
+        <div className="mb-6">
+          <Link
+            href="/archive"
+            className="inline-flex items-center gap-2 rounded-xl border border-india-gold/30 bg-white/5 px-4 py-2 text-sm font-bold text-india-gold transition-all hover:bg-white/10 hover:border-india-gold/50"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Archive
+          </Link>
+        </div>
+
         {/* Hero / Header band (matches 8jjcricket page feel) */}
         <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-r from-[#0B1222] via-[#120B15] to-[#1A0F0E] px-6 py-8">
           <p className="text-xs font-semibold tracking-[0.2em] text-[#F7B731]/90">

@@ -41,9 +41,62 @@ export default function PlayersPage() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
-  const [q, setQ] = useState("");
-  const [countryId, setCountryId] = useState<string>(""); // will be set to India once countries load
-  const [page, setPage] = useState<number>(1);
+  const [q, setQ] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return sessionStorage.getItem("mobile-players-query") || "";
+  });
+  const [searchValue, setSearchValue] = useState(q);
+  const [countryId, setCountryId] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    return sessionStorage.getItem("mobile-players-country") || "";
+  });
+  const [page, setPage] = useState<number>(() => {
+    if (typeof window === "undefined") return 1;
+    const p = sessionStorage.getItem("mobile-players-page");
+    return p ? parseInt(p, 10) : 1;
+  });
+  const [isRestored, setIsRestored] = useState(false);
+
+  // Sync searchValue with q initially and when q changes externally (e.g. restore)
+  useEffect(() => {
+    setSearchValue(q);
+  }, [q]);
+
+  // Mark as restored on mount
+  useEffect(() => {
+    setIsRestored(true);
+  }, []);
+
+  // Save state to sessionStorage
+  useEffect(() => {
+    if (!isRestored) return;
+    sessionStorage.setItem("mobile-players-query", q);
+    sessionStorage.setItem("mobile-players-country", countryId);
+    sessionStorage.setItem("mobile-players-page", String(page));
+  }, [q, countryId, page, isRestored]);
+
+  // Save scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isRestored) {
+        sessionStorage.setItem("mobile-players-scroll-pos", window.scrollY.toString());
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isRestored]);
+
+  // Restore scroll position after players are loaded
+  useEffect(() => {
+    if (isRestored && !loading && players.length > 0) {
+      const savedScroll = sessionStorage.getItem("mobile-players-scroll-pos");
+      if (savedScroll) {
+        setTimeout(() => {
+          window.scrollTo(0, parseInt(savedScroll, 10));
+        }, 100);
+      }
+    }
+  }, [isRestored, loading, players.length]);
 
   // ensure default country set only once
   const didSetDefaultCountry = useRef(false);
@@ -76,8 +129,10 @@ export default function PlayersPage() {
       const fetchedCountries: Country[] = json.countries ?? [];
       setCountries(fetchedCountries);
 
-      // default country India only once (only if user hasn't selected anything)
-      if (!didSetDefaultCountry.current && !cId) {
+      // default country India only once (only if user hasn't selected anything AND no session exists)
+      const hasSavedCountry = typeof window !== "undefined" && sessionStorage.getItem("mobile-players-country") !== null;
+
+      if (!didSetDefaultCountry.current && !cId && !hasSavedCountry) {
         const india = fetchedCountries.find(
           (c) => c.name?.toLowerCase() === DEFAULT_COUNTRY_NAME.toLowerCase()
         );
@@ -141,7 +196,11 @@ export default function PlayersPage() {
                   type="text"
                   placeholder="e.g. Ahmed, Sharma..."
                   className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white placeholder:text-slate-400 outline-none focus:border-amber-400/50 focus:ring-amber-400/30"
-                  onChange={(e) => debouncedSetQ(e.target.value)}
+                  value={searchValue}
+                  onChange={(e) => {
+                    setSearchValue(e.target.value);
+                    debouncedSetQ(e.target.value);
+                  }}
                 />
               </div>
 
@@ -153,6 +212,7 @@ export default function PlayersPage() {
                   onChange={(e) => {
                     setCountryId(e.target.value);
                     setPage(1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                 >
                   <option value="">All</option>
@@ -230,7 +290,10 @@ export default function PlayersPage() {
                       <div className="mt-6 flex items-center justify-center gap-3 text-sm">
                         <button
                           disabled={page === 1}
-                          onClick={() => setPage((x) => Math.max(1, x - 1))}
+                          onClick={() => {
+                            setPage((x) => Math.max(1, x - 1));
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                          }}
                           className="rounded-full border border-amber-400/30 bg-slate-900/80 px-3 py-1.5 text-amber-200 backdrop-blur-sm hover:bg-slate-800/80 hover:border-amber-400/50 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           Prev
@@ -242,9 +305,10 @@ export default function PlayersPage() {
 
                         <button
                           disabled={page === totalPages}
-                          onClick={() =>
-                            setPage((x) => Math.min(totalPages, x + 1))
-                          }
+                          onClick={() => {
+                            setPage((x) => Math.min(totalPages, x + 1));
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                          }}
                           className="rounded-full border border-amber-400/30 bg-slate-900/80 px-3 py-1.5 text-amber-200 backdrop-blur-sm hover:bg-slate-800/80 hover:border-amber-400/50 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           Next

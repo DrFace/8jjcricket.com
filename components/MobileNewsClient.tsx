@@ -166,13 +166,44 @@ function MobilePagination({
 }
 
 export default function MobileNewsClient() {
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [page, setPage] = useState<number>(1);
+  const [activeCategory, setActiveCategory] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return sessionStorage.getItem("mobile-news-category") || null;
+  });
+  const [page, setPage] = useState<number>(() => {
+    if (typeof window === "undefined") return 1;
+    const p = sessionStorage.getItem("mobile-news-page");
+    return p ? parseInt(p, 10) : 1;
+  });
+  const [isRestored, setIsRestored] = useState(false);
 
-  // Reset to page 1 when category changes
+  // Mark as restored on mount
   useEffect(() => {
-    setPage(1);
-  }, [activeCategory]);
+    setIsRestored(true);
+  }, []);
+
+  // Save state to sessionStorage
+  useEffect(() => {
+    if (!isRestored) return;
+    if (activeCategory) {
+      sessionStorage.setItem("mobile-news-category", activeCategory);
+    } else {
+      sessionStorage.removeItem("mobile-news-category");
+    }
+    sessionStorage.setItem("mobile-news-page", String(page));
+  }, [activeCategory, page, isRestored]);
+
+  // Save scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isRestored) {
+        sessionStorage.setItem("mobile-news-scroll-pos", window.scrollY.toString());
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isRestored]);
+
 
   const newsUrl = useMemo(() => {
     const params = new URLSearchParams();
@@ -192,6 +223,26 @@ export default function MobileNewsClient() {
   const articles: Article[] = (data?.data || []) as Article[];
   const currentPage = data?.meta?.current_page ?? page;
   const lastPage = data?.meta?.last_page ?? 1;
+
+  // Restore scroll position after news are loaded
+  useEffect(() => {
+    if (isRestored && !isLoading && articles.length > 0) {
+      const savedScroll = sessionStorage.getItem("mobile-news-scroll-pos");
+      if (savedScroll) {
+        setTimeout(() => {
+          window.scrollTo(0, parseInt(savedScroll, 10));
+        }, 100);
+      }
+    }
+  }, [isRestored, isLoading, articles.length]);
+
+  // Reset to page 1 when category changes
+  useEffect(() => {
+    if (isRestored) {
+      setPage(1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [activeCategory, isRestored]);
 
   return (
     <main className="min-h-screen bg-black text-white px-4 pt-6 pb-24">
