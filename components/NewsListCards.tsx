@@ -24,7 +24,10 @@ export default function NewsListCards({ items }: { items: NewsItem[] }) {
           style={{ transformStyle: "preserve-3d" }}
         >
           {/* Thumbnail */}
-          <div className="relative h-[64px] flex-shrink-0 overflow-hidden rounded-2xl bg-black/40 ring-1 ring-white/10">
+          {/* ✅ SAFARI FIX: Added explicit w-[96px] — Safari does not infer flex-shrink-0
+              element width from the child <img> like Chrome does, so without a width the
+              thumbnail expands to fill all available space, hiding the text column. */}
+          <div className="relative h-[64px] w-[96px] flex-shrink-0 overflow-hidden rounded-2xl bg-black/40 ring-1 ring-white/10">
             <img
               src={n.imgSrc}
               alt={n.title}
