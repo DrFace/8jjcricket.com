@@ -20,8 +20,10 @@ export default function SnapDots({
                             aria-label={`Go to section ${i + 1}`}
                             onClick={() => onGoTo(i)}
                             className={[
-                                "h-2.5 w-2.5 rounded-full transition",
-                                active ? "bg-amber-300" : "bg-white/30 hover:bg-white/60",
+                                "h-2 w-2 rounded-full transition-all duration-300",
+                                active 
+                                    ? "bg-india-gold scale-150 shadow-[0_0_8px_rgba(255,153,51,0.6)]" 
+                                    : "bg-white/20 hover:bg-white/40",
                             ].join(" ")}
                         />
                     );

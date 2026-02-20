@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import useSWR from 'swr';
 import Link from 'next/link';
+import PrimaryButton from './ui/PrimaryButton';
+import SecondaryButton from './ui/SecondaryButton';
 
 import LiveGrid from './LiveGrid';
 import LiveCard from './LiveCard';
@@ -37,27 +39,17 @@ export default function MatchCentre() {
                     </p>
                 </div>
 
-                {/* Filters */}
                 <div className="flex flex-wrap gap-2">
-                    {categories.map((cat) => {
-                        const active = selected === cat;
-                        return (
-                            <button
-                                key={cat}
-                                type="button"
-                                onClick={() => setSelected(cat)}
-                                className={[
-                                    'rounded-full px-3 py-1 text-[11px] font-semibold transition sm:text-xs',
-                                    'border backdrop-blur',
-                                    active
-                                        ? 'border-amber-300/60 bg-amber-300/15 text-amber-200 shadow'
-                                        : 'border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100',
-                                ].join(' ')}
-                            >
-                                {cat}
-                            </button>
-                        );
-                    })}
+                    {categories.map((cat) => (
+                        <SecondaryButton
+                            key={cat}
+                            onClick={() => setSelected(cat)}
+                            active={selected === cat}
+                            size="sm"
+                        >
+                            {cat}
+                        </SecondaryButton>
+                    ))}
                 </div>
             </div>
 
@@ -108,12 +100,12 @@ export default function MatchCentre() {
                                 <h2 className="text-xs font-semibold uppercase tracking-wide text-sky-100/70 sm:text-sm">
                                     Recent Results
                                 </h2>
-                                <Link
+                                <PrimaryButton
                                     href="/recent"
-                                    className="text-[11px] font-semibold text-amber-300 hover:text-amber-200 sm:text-xs"
+                                    size="sm"
                                 >
                                     View all →
-                                </Link>
+                                </PrimaryButton>
                             </div>
 
                             {recentError && (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import IconButton from "./ui/IconButton";
 
 type PortraitPage = {
   id: number;
@@ -240,69 +241,59 @@ function PortraitSlideshow({
 
       {/* Enhanced Prev / Next buttons */}
       <div className="absolute inset-y-0 left-6 z-20 flex items-center opacity-0 transition-opacity duration-300 group-hover/carousel:opacity-100">
-        <button
-          onClick={(e) => {
+        <IconButton
+          onClick={(e: React.MouseEvent) => {
             e.preventDefault();
             e.stopPropagation();
             prev();
           }}
           disabled={!canGo}
-          className={`group relative h-16 w-16 overflow-hidden rounded-full transition-all duration-300 ${
-            canGo
-              ? "bg-gradient-to-br from-india-saffron to-india-red shadow-2xl shadow-india-saffron/50 hover:shadow-india-saffron/70 hover:scale-110 active:scale-95"
-              : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
-          }`}
-          type="button"
-          aria-label="Previous slide"
-        >
-          <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
-          <svg
-            className="absolute inset-0 m-auto h-8 w-8 text-white transition-transform group-hover:-translate-x-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={3}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </button>
+          ariaLabel="Previous slide"
+          size="lg"
+          icon={
+            <svg
+              className="h-8 w-8 text-white transition-transform group-hover:-translate-x-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={3}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          }
+        />
       </div>
 
       <div className="absolute inset-y-0 right-6 z-20 flex items-center opacity-0 transition-opacity duration-300 group-hover/carousel:opacity-100">
-        <button
-          onClick={(e) => {
+        <IconButton
+          onClick={(e: React.MouseEvent) => {
             e.preventDefault();
             e.stopPropagation();
             next();
           }}
           disabled={!canGo}
-          className={`group relative h-16 w-16 overflow-hidden rounded-full transition-all duration-300 ${
-            canGo
-              ? "bg-gradient-to-br from-india-saffron to-india-red shadow-2xl shadow-india-saffron/50 hover:shadow-india-saffron/70 hover:scale-110 active:scale-95"
-              : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
-          }`}
-          type="button"
-          aria-label="Next slide"
-        >
-          <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
-          <svg
-            className="absolute inset-0 m-auto h-8 w-8 text-white transition-transform group-hover:translate-x-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={3}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </button>
+          ariaLabel="Next slide"
+          size="lg"
+          icon={
+            <svg
+              className="h-8 w-8 text-white transition-transform group-hover:translate-x-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={3}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          }
+        />
       </div>
 
       {/* Enhanced dot indicators - only visible on hover */}
@@ -496,59 +487,51 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
             </div>
 
             <div className="absolute right-6 top-1/2 z-20 -translate-y-1/2 flex flex-col gap-4">
-              <button
+              <IconButton
                 onClick={() => setPageIndex((p) => Math.max(0, p - 1))}
                 disabled={!canPrev}
-                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${
-                  canPrev
-                    ? "bg-gradient-to-br from-india-saffron to-india-red shadow-lg shadow-india-saffron/30 hover:shadow-xl hover:shadow-india-saffron/40 hover:scale-110"
-                    : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
-                }`}
-                type="button"
-                aria-label="Previous"
-              >
-                <svg
-                  className="absolute inset-0 m-auto h-6 w-6 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M5 15l7-7 7 7"
-                  />
-                </svg>
-              </button>
+                ariaLabel="Previous"
+                className="h-14 w-14 rounded-2xl"
+                icon={
+                  <svg
+                    className="h-6 w-6 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M5 15l7-7 7 7"
+                    />
+                  </svg>
+                }
+              />
 
-              <button
+              <IconButton
                 onClick={() =>
                   setPageIndex((p) => Math.min(pageCount - 1, p + 1))
                 }
                 disabled={!canNext}
-                className={`group relative h-14 w-14 overflow-hidden rounded-2xl transition-all duration-300 ${
-                  canNext
-                    ? "bg-gradient-to-br from-india-saffron to-india-red shadow-lg shadow-india-saffron/30 hover:shadow-xl hover:shadow-india-saffron/40 hover:scale-110"
-                    : "bg-gradient-to-br from-gray-600/40 to-gray-700/40 cursor-not-allowed"
-                }`}
-                type="button"
-                aria-label="Next"
-              >
-                <svg
-                  className="absolute inset-0 m-auto h-6 w-6 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
+                ariaLabel="Next"
+                className="h-14 w-14 rounded-2xl"
+                icon={
+                  <svg
+                    className="h-6 w-6 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                }
+              />
             </div>
           </div>
         </div>

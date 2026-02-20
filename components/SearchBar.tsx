@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import IconButton from './ui/IconButton'
 
 /**
  * Universal Search Bar Component
@@ -39,15 +40,16 @@ export default function SearchBar({
         className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
       />
       {query && (
-        <button
-          type="button"
+        <IconButton
+          ariaLabel="Clear search"
           onClick={() => setQuery('')}
-          className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+          className="absolute inset-y-0 right-0 h-full w-10 border-none bg-transparent hover:bg-transparent"
+          icon={
+            <svg className="w-5 h-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          }
+        />
       )}
     </form>
   )

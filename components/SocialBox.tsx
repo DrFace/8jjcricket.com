@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { SOCIALS_LINKS } from "@/lib/constant";
+import IconButton from "./ui/IconButton";
 
 export default function SocialBox() {
   return (
@@ -39,38 +40,21 @@ export default function SocialBox() {
         <div className="mt-4">
           <div className="grid w-full grid-cols-4 gap-3">
             {SOCIALS_LINKS.map((s) => (
-              <Link
+              <IconButton
                 key={s.url}
                 href={s.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={s.label}
-                className="
-                  group relative flex h-11 w-11 items-center justify-center
-                  rounded-2xl border border-white/10
-                  bg-black/25
-                  shadow-lg shadow-black/30
-                  transition
-                  hover:-translate-y-0.5 hover:border-amber-400/30 hover:bg-black/35
-                  active:translate-y-0 active:scale-[0.96]
-                "
-              >
-                <span
-                  aria-hidden
-                  className="
-                    pointer-events-none absolute inset-0 rounded-2xl
-                    bg-gradient-to-br from-amber-500/0 via-amber-500/15 to-orange-500/0
-                    opacity-0 transition-opacity group-hover:opacity-100
-                  "
-                />
-                <Image
-                  src={s.icon}
-                  alt={s.label}
-                  width={24}
-                  height={24}
-                  className="relative object-contain"
-                />
-              </Link>
+                ariaLabel={s.label}
+                className="h-11 w-11 rounded-2xl"
+                icon={
+                  <Image
+                    src={s.icon}
+                    alt={s.label}
+                    width={24}
+                    height={24}
+                    className="relative object-contain"
+                  />
+                }
+              />
             ))}
           </div>
 

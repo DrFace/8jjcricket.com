@@ -6,6 +6,8 @@ import Image from "next/image";
 import NewsTicker from "@/components/NewsTicker";
 import { Megaphone, VolumeOff, Music2 } from "lucide-react";
 import { useState } from "react";
+import IconButton from "./ui/IconButton";
+import PrimaryButton from "./ui/PrimaryButton";
 import { usePathname } from "next/navigation";
 import { useAudio } from "@/context/AudioContext";
 import { GetGlobalAudio } from "@/lib/audio";
@@ -295,22 +297,21 @@ export default function TopNav() {
               </select>
             </div>
             {currentTrack && (
-              <button
-                type="button"
+              <IconButton
                 onClick={toggleMute}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-sm font-semibold text-white hover:bg-white/10 active:scale-95"
-                aria-label="Toggle music"
-                aria-pressed={!isMuted}
-              >
-                {!isMuted ? <Music2 size={18} /> : <VolumeOff size={18} />}
-              </button>
+                ariaLabel="Toggle music"
+                className="bg-white/5 border-white/15"
+                size="sm"
+                icon={!isMuted ? <Music2 size={18} /> : <VolumeOff size={18} />}
+              />
             )}
-            <Link
+            <PrimaryButton
               href="/minigames"
-              className="rounded-full bg-gradient-to-r from-[#FACC15] via-[#F97316] to-[#EA580C] px-4 py-2 text-sm font-semibold text-black shadow-lg shadow-amber-500/40 ring-1 ring-white/20 hover:brightness-110 active:scale-95"
+              size="sm"
+              className="px-4 py-2"
             >
               Play Now
-            </Link>
+            </PrimaryButton>
           </div>
         </div>
       </header>
