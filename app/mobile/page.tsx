@@ -242,8 +242,6 @@ export default async function MobileHomePage() {
             <span className="h-2 w-2 rounded-full bg-india-gold" />
             <h2 className="text-sm font-bold text-white">Player Portraits</h2>
           </div>
-
-        
         </div>
 
         <div className="relative w-full rounded-2xl border border-india-gold/20 bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 p-4 shadow-2xl backdrop-blur-xl">
@@ -346,7 +344,10 @@ export default async function MobileHomePage() {
       {newsWithImages.length > 0 && (
         <section className="mt-5 w-full snap-start scroll-mt-3">
           {/* <Reveal> */}
-          <h2 className="mb-2 text-sm font-bold text-white flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-india-gold" />Latest News</h2>
+          <h2 className="mb-2 text-sm font-bold text-white flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-india-gold" />
+            Latest News
+          </h2>
           <MobileNewsListCards items={newsWithImages} />
           {/* </Reveal> */}
         </section>

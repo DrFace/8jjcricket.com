@@ -2,25 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-
-const socials = [
-  {
-    label: "Instagram",
-    url: "https://www.instagram.com/8jj_cricket/",
-    icon: "/instagram.png",
-  },
-  {
-    label: "Facebook",
-    url: "https://www.facebook.com/profile.php?id=61584089624639",
-    icon: "/facebook.png",
-  },
-  {
-    label: "Telegram",
-    url: "https://t.me/Official8JJ_cricket",
-    icon: "/telegram.png",
-  },
-  { label: "X", url: "https://x.com/8jjCricket73705", icon: "/x.png" },
-];
+import { SOCIALS_LINKS } from "@/lib/constant";
 
 export default function MobileSocialBox() {
   return (
@@ -34,7 +16,7 @@ export default function MobileSocialBox() {
     >
       {/* Icons */}
       <div className="grid grid-cols-4 gap-4 place-items-center">
-        {socials.map((s) => (
+        {SOCIALS_LINKS.map((s) => (
           <Link
             key={s.url}
             href={s.url}

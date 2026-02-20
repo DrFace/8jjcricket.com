@@ -5,6 +5,7 @@ import { SITE } from "@/lib/seo";
 import Script from "next/script";
 import { ToastProvider } from "@/components/ToastProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import DesktopOnly from "@/components/DesktopOnly";
 import FloatingSupport from "@/components/FloatingSupport";
 import { AudioProvider } from "@/context/AudioContext";
 import PWAExtras from "@/components/PWAExtras";
@@ -100,7 +101,9 @@ export default function RootLayout({
           <ToastProvider>
             <AudioProvider>
               {children}
-              <FloatingSupport />
+              <DesktopOnly>
+                <FloatingSupport />
+              </DesktopOnly>
             </AudioProvider>
             <PWAExtras />
           </ToastProvider>
