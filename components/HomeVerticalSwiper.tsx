@@ -1,7 +1,7 @@
 // components/HomeVerticalSwiper.tsx
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import { Mousewheel, EffectCreative } from "swiper/modules";
@@ -15,11 +15,22 @@ export default function HomeVerticalSwiper({
 }) {
   const swiperRef = useRef<SwiperType | null>(null);
 
+  const [initialIndex, setInitialIndex] = useState<number | null>(null);
+
   useEffect(() => {
     document.documentElement.style.overscrollBehavior = "none";
     document.body.style.overscrollBehavior = "none";
     document.body.style.margin = "0";
+
+    const savedIndex = sessionStorage.getItem("home-swiper-index");
+    if (savedIndex) {
+      setInitialIndex(parseInt(savedIndex, 10));
+    } else {
+      setInitialIndex(0);
+    }
   }, []);
+
+  if (initialIndex === null) return null;
 
   return (
     <Swiper
@@ -51,6 +62,10 @@ export default function HomeVerticalSwiper({
       preventClicks={false}
       preventClicksPropagation={false}
       touchStartPreventDefault={false}
+      initialSlide={initialIndex}
+      onSlideChange={(s) => {
+        sessionStorage.setItem("home-swiper-index", s.activeIndex.toString());
+      }}
       onSwiper={(s) => {
         swiperRef.current = s;
       }}
