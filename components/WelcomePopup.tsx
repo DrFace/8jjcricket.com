@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import IconButton from "./ui/IconButton";
+import PrimaryButton from "./ui/PrimaryButton";
+import { X } from "lucide-react";
 
 
 export default function WelcomePopup() {
@@ -19,13 +22,13 @@ export default function WelcomePopup() {
             <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white/15 bg-slate-950/90 shadow-2xl">
 
                 {/* ❌ Close Button */}
-                <button
+                <IconButton
                     onClick={() => setOpen(false)}
-                    aria-label="Close popup"
-                    className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white transition hover:bg-red-500/80"
-                >
-                    ✕
-                </button>
+                    ariaLabel="Close popup"
+                    className="absolute right-3 top-3 z-10 hover:bg-red-500/80"
+                    size="sm"
+                    icon={<X size={16} />}
+                />
 
                 {/* Banner Image */}
                 <div className="relative aspect-[16/9] w-full">
@@ -44,12 +47,12 @@ export default function WelcomePopup() {
                         Welcome to 8JJCRICKET
                     </h3>
 
-                    <button
+                    <PrimaryButton
                         onClick={() => setOpen(false)}
-                        className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 px-4 py-2 text-xs font-bold uppercase tracking-wide text-black shadow-lg hover:brightness-110 active:scale-95"
+                        className="mt-4 w-full uppercase tracking-wide text-xs h-10"
                     >
                         Continue
-                    </button>
+                    </PrimaryButton>
                 </div>
             </div>
         </div>

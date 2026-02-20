@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation"
 import useSWR from "swr"
 import Image from "next/image"
 import Link from "next/link"
+import SecondaryButton from "@/components/ui/SecondaryButton"
 
 interface SearchResult {
   id: number
@@ -207,19 +208,17 @@ function SearchInner() {
       {query && (
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
           {["all", "teams", "players", "series", "news"].map((tab) => (
-            <button
+            <SecondaryButton
               key={tab}
               onClick={() => setActiveTab(tab as any)}
-              className={`px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all shadow-md ${
-                activeTab === tab
-                  ? "bg-gradient-to-r from-india-saffron via-india-gold to-india-orange text-black"
-                  : "bg-slate-900/60 text-sky-100/80 hover:bg-slate-800/80 border border-white/10 hover:border-india-gold/30"
-              }`}
+              active={activeTab === tab}
+              size="sm"
+              className="px-5 whitespace-nowrap"
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
               {tab !== "all" &&
                 ` (${results.filter((r) => r.type === tab.slice(0, -1)).length})`}
-            </button>
+            </SecondaryButton>
           ))}
         </div>
       )}

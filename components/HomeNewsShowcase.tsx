@@ -2,6 +2,8 @@
 import Link from "next/link";
 import NewsListCards from "@/components/NewsListCards";
 import { HOME_NEWS_PARAM } from "@/lib/constant";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import SecondaryButton from "@/components/ui/SecondaryButton";
 
 type Article = {
   id: number;
@@ -106,11 +108,9 @@ export default async function HomeNewsShowcase() {
 
             {/* CTA */}
             <div className="mt-5">
-              <div
-                className="india-btn-primary inline-block text-sm"
-              >
+              <PrimaryButton size="sm">
                 Read more
-              </div>
+              </PrimaryButton>
             </div>
           </div>
         </Link>
@@ -119,13 +119,12 @@ export default async function HomeNewsShowcase() {
         <div className="flex flex-col">
           <NewsListCards items={listItems} />
 
-          <Link
+          <PrimaryButton
             href="/news"
-            className="mt-4 flex items-center justify-center rounded-2xl india-card-gold-glow py-4 text-sm font-semibold text-india-gold
-                        transition hover:scale-[1.01]"
+            className="mt-4 w-full"
           >
             View more →
-          </Link>
+          </PrimaryButton>
         </div>
       </div>
     </div>

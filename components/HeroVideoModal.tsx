@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import IconButton from "./ui/IconButton";
+import { X } from "lucide-react";
 
 interface HeroVideoModalProps {
   isOpen: boolean;
@@ -40,13 +42,13 @@ export default function HeroVideoModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
-        <button
+        <IconButton
           onClick={onClose}
-          aria-label="Close"
-          className="absolute right-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white text-2xl font-bold transition-all hover:bg-red-600 hover:scale-110 active:scale-95"
-        >
-          ✕
-        </button>
+          ariaLabel="Close"
+          className="absolute right-4 top-4 z-50 hover:bg-red-600 hover:scale-110 active:scale-95"
+          size="md"
+          icon={<X size={24} />}
+        />
 
         {/* Main Content */}
         <div className="relative aspect-video w-full overflow-hidden rounded-2xl border-4 border-india-gold/30 bg-black">

@@ -1,3 +1,5 @@
+import SecondaryButton from "../ui/SecondaryButton";
+
 export type SeriesTabId = "matches" | "points";
 
 export const seriesTabs: { id: SeriesTabId; label: string }[] = [
@@ -13,20 +15,18 @@ export default function SeriesTabs({
   onChange: (id: SeriesTabId) => void;
 }) {
   return (
-    <div className="border-t border-white/20 -mx-6 px-6 mt-4">
-      <div className="flex overflow-x-auto -mx-6 px-6">
+    <div className="border-t border-white/20 -mx-6 px-6 mt-4 pt-3">
+      <div className="flex overflow-x-auto gap-2 -mx-6 px-6 pb-2">
         {seriesTabs.map((tab) => (
-          <button
+          <SecondaryButton
             key={tab.id}
             onClick={() => onChange(tab.id)}
-            className={`px-4 py-3 text-sm font-bold whitespace-nowrap border-b-2 transition-colors ${
-              activeTab === tab.id
-                ? "border-india-saffron text-india-gold bg-india-saffron/10"
-                : "border-transparent text-slate-300 hover:text-white hover:bg-white/5"
-            }`}
+            active={activeTab === tab.id}
+            size="sm"
+            className="whitespace-nowrap rounded-lg"
           >
             {tab.label}
-          </button>
+          </SecondaryButton>
         ))}
       </div>
     </div>

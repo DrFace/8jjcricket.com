@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import SecondaryButton from "@/components/ui/SecondaryButton";
 
 // --- TYPES ---
 type Category = {
@@ -277,21 +279,19 @@ function ShareModal({
     </div>
   );
 }
-
 function ShareButton({ url, title }: { url: string; title: string }) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <button
+      <SecondaryButton
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 hover:bg-white/10 transition-all duration-300 hover:-translate-y-[1px] active:translate-y-0"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
           <path d="M18 16a3 3 0 0 0-2.4 1.2l-6.3-3.2a3 3 0 0 0 0-2l6.3-3.2A3 3 0 1 0 15 6a3 3 0 0 0 .1.8L8.8 10a3 3 0 1 0 0 4l6.3 3.2A3 3 0 1 0 18 16Z" />
         </svg>
         Share
-      </button>
+      </SecondaryButton>
       <ShareModal
         open={open}
         onClose={() => setOpen(false)}
@@ -322,34 +322,22 @@ export default function NewsClient() {
           <h2 className="text-lg font-semibold mb-3 text-slate-100">
             Categories
           </h2>
-          <button
+          <SecondaryButton
             onClick={() => setActiveCategory(null)}
-            className={`relative overflow-hidden block w-full text-left px-3 py-2 rounded-xl mb-1 transition-all duration-300 ${
-              activeCategory === null
-                ? "bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-semibold shadow-lg shadow-amber-500/30"
-                : "text-slate-200 hover:bg-white/5 hover:translate-x-1"
-            }`}
+            active={activeCategory === null}
+            className="w-full justify-start mb-1"
           >
-            <span className="relative z-10">All News</span>
-            {activeCategory === null && (
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shimmer" />
-            )}
-          </button>
+            All News
+          </SecondaryButton>
           {categories?.data?.map((cat: Category) => (
-            <button
+            <SecondaryButton
               key={cat.id}
               onClick={() => setActiveCategory(cat.slug)}
-              className={`relative overflow-hidden block w-full text-left px-3 py-2 rounded-xl mb-1 transition-all duration-300 ${
-                activeCategory === cat.slug
-                  ? "bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-semibold shadow-lg shadow-amber-500/30"
-                  : "text-slate-200 hover:bg-white/5 hover:translate-x-1"
-              }`}
+              active={activeCategory === cat.slug}
+              className="w-full justify-start mb-1"
             >
-              <span className="relative z-10">{cat.name}</span>
-              {activeCategory === cat.slug && (
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shimmer" />
-              )}
-            </button>
+              {cat.name}
+            </SecondaryButton>
           ))}
         </div>
       </aside>
@@ -411,16 +399,12 @@ export default function NewsClient() {
                     </p>
                   )}
                   <div className="mt-4 flex items-center justify-between gap-3">
-                    <Link
+                    <PrimaryButton
                       href={`/news/${item.slug}`}
-                      className="relative overflow-hidden inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black text-sm font-semibold shadow-lg shadow-amber-500/30 transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-amber-500/40 hover:-translate-y-[2px]"
+                      size="sm"
                     >
-                      <span className="relative z-10">Read more</span>
-                      <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-1">
-                        →
-                      </span>
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                    </Link>
+                      Read more →
+                    </PrimaryButton>
                     <ShareButton url={shareUrl} title={item.title} />
                   </div>
                 </article>
