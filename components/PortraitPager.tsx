@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import IconButton from "./ui/IconButton";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 export type PortraitItem = {
   id: number;
@@ -33,23 +35,23 @@ export default function PortraitPager({ portraits, onPortraitHover }: Props) {
       {/* arrows */}
       {portraits.length > pageSize && (
         <div className="absolute right-2 top-1/2 z-20 -translate-y-1/2 flex flex-col gap-2">
-          <button
-            type="button"
+          <IconButton
             onClick={() => canUp && setPage((p) => p - 1)}
             disabled={!canUp}
-            className="h-7 w-7 rounded-full bg-white/10 text-[12px] text-white ring-1 ring-white/15"
-          >
-            ↑
-          </button>
+            ariaLabel="Previous section"
+            size="sm"
+            icon={<ChevronUp size={14} />}
+            className="h-7 w-7"
+          />
 
-          <button
-            type="button"
+          <IconButton
             onClick={() => canDown && setPage((p) => p + 1)}
             disabled={!canDown}
-            className="h-7 w-7 rounded-full bg-white/10 text-[12px] text-white ring-1 ring-white/15"
-          >
-            ↓
-          </button>
+            ariaLabel="Next section"
+            size="sm"
+            icon={<ChevronDown size={14} />}
+            className="h-7 w-7"
+          />
         </div>
       )}
 

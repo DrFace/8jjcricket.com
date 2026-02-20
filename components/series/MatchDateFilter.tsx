@@ -1,5 +1,8 @@
 import { useMemo, useState } from "react";
 import { toDateString } from "@/lib/date";
+import IconButton from "../ui/IconButton";
+import PrimaryButton from "../ui/PrimaryButton";
+import SecondaryButton from "../ui/SecondaryButton";
 
 type CalendarProps = {
   selectedDate: string | null;
@@ -81,17 +84,16 @@ function Calendar({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between text-sm font-medium">
-        <button
-          type="button"
-          className="rounded-md px-2 py-1 text-india-gold hover:bg-white/10 transition-colors"
+        <IconButton
+          ariaLabel="Previous month"
           onClick={() =>
             setViewMonth(
               new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1)
             )
           }
-        >
-          ‹
-        </button>
+          icon={<span>‹</span>}
+          size="sm"
+        />
 
         <div className="flex items-center gap-1">
           <select
@@ -123,17 +125,16 @@ function Calendar({
           </select>
         </div>
 
-        <button
-          type="button"
-          className="rounded-md px-2 py-1 text-india-gold hover:bg-white/10 transition-colors"
+        <IconButton
+          ariaLabel="Next month"
           onClick={() =>
             setViewMonth(
               new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1)
             )
           }
-        >
-          ›
-        </button>
+          icon={<span>›</span>}
+          size="sm"
+        />
       </div>
 
       <div className="grid grid-cols-7 text-center text-[10px] font-medium uppercase tracking-wide text-india-gold">
@@ -182,8 +183,8 @@ function Calendar({
       </div>
 
       <div className="flex items-center justify-between pt-1">
-        <button
-          type="button"
+        <SecondaryButton
+          size="sm"
           onClick={() => {
             const today = new Date();
             const normalized = new Date(
@@ -196,17 +197,17 @@ function Calendar({
             );
             onSelectDate(toDateString(normalized));
           }}
-          className="text-[11px] font-medium text-india-gold hover:text-india-gold/80 transition-colors"
+          className="text-[10px] h-6"
         >
           Today
-        </button>
-        <button
-          type="button"
+        </SecondaryButton>
+        <SecondaryButton
+          size="sm"
           onClick={() => onSelectDate(null)}
-          className="text-[11px] font-medium text-sky-200 hover:text-white transition-colors"
+          className="text-[10px] h-6"
         >
           Clear
-        </button>
+        </SecondaryButton>
       </div>
     </div>
   );
@@ -231,12 +232,13 @@ export default function MatchDateFilter({
             Filter by Date
           </h3>
           {selectedDate && (
-            <button
+            <SecondaryButton
               onClick={() => onChange(null)}
-              className="text-xs text-sky-200 hover:text-white transition-colors font-medium"
+              size="sm"
+              className="text-[10px] h-6"
             >
               Show All
-            </button>
+            </SecondaryButton>
           )}
         </div>
 

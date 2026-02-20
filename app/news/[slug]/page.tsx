@@ -6,6 +6,8 @@ import DesktopOnly from "@/components/DesktopOnly";
 import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
 import ShareButton from "@/components/ShareButton";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import SecondaryButton from "@/components/ui/SecondaryButton";
 
 type Article = {
   id: number;
@@ -115,27 +117,13 @@ export default async function ArticlePage({ params }: Props) {
 
           <main className="flex-1 px-4 py-10">
             <div className="max-w-3xl mx-auto">
-              <Link
+              <PrimaryButton
                 href="/news"
-                className="group relative overflow-hidden inline-flex items-center gap-2 rounded-full
-                                          bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500
-                                          px-5 py-2.5 text-sm font-semibold text-black
-                                          shadow-lg shadow-amber-500/40
-                                          ring-1 ring-white/20
-                                          transition-all duration-300
-                                          hover:brightness-110 hover:shadow-xl hover:shadow-amber-500/50 
-                                          hover:-translate-y-[2px]
-                                          active:scale-95 active:translate-y-0"
+                size="md"
+                className="mb-4"
               >
-                <span className="relative z-10 transition-transform duration-300 group-hover:-translate-x-1">
-                  ←
-                </span>
-                <span className="relative z-10">Back to News</span>
-                <div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent 
-                                               -translate-x-full group-hover:translate-x-full transition-transform duration-700"
-                />
-              </Link>
+                ← Back to News
+              </PrimaryButton>
 
               <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 text-slate-300">
                 Article not found.
@@ -160,16 +148,12 @@ export default async function ArticlePage({ params }: Props) {
         <main className="flex-1 px-4 py-10">
           <div className="max-w-3xl mx-auto">
             <div className="flex items-center justify-between gap-3">
-              <Link
+              <PrimaryButton
                 href="/news"
-                className="group inline-flex items-center gap-2 text-amber-400 font-medium
-                                          hover:text-amber-300 transition-all duration-300 hover:-translate-x-1"
+                size="sm"
               >
-                <span className="transition-transform duration-300 group-hover:-translate-x-1">
-                  ←
-                </span>
-                Back to news
-              </Link>
+                ← Back to news
+              </PrimaryButton>
 
             {/* Share button + popup */}
               <ShareButton slug={article.slug} title={article.title} />
@@ -223,26 +207,12 @@ export default async function ArticlePage({ params }: Props) {
 
             {/* Back to news footer button */}
             <div className="mt-8 flex justify-center">
-              <Link
+              <PrimaryButton
                 href="/news"
-                className="group relative overflow-hidden inline-flex items-center gap-2 rounded-full
-                                          bg-gradient-to-r from-india-saffron to-india-gold
-                                          px-6 py-3 text-sm font-bold text-black
-                                          shadow-lg shadow-india-saffron/40
-                                          transition-all duration-300
-                                          hover:brightness-110 hover:shadow-xl hover:shadow-india-saffron/50 
-                                          hover:-translate-y-[2px]
-                                          active:scale-95 active:translate-y-0"
+                size="lg"
               >
-                <span className="relative z-10 transition-transform duration-300 group-hover:-translate-x-1">
-                  ←
-                </span>
-                <span className="relative z-10">Back to All News</span>
-                <div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent 
-                                               -translate-x-full group-hover:translate-x-full transition-transform duration-700"
-                />
-              </Link>
+                ← Back to All News
+              </PrimaryButton>
             </div>
           </div>
         </main>

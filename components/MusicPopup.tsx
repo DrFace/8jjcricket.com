@@ -13,6 +13,9 @@ import {
   Repeat,
 } from "lucide-react";
 import MusicSelector from "./MusicSelector";
+import IconButton from "./ui/IconButton";
+import PrimaryButton from "./ui/PrimaryButton";
+import SecondaryButton from "./ui/SecondaryButton";
 
 export type AudioItem = {
   id: number;
@@ -89,12 +92,12 @@ export default function MusicPopup(props: {
               🎵 Music Player
             </div>
 
-            <button
+            <IconButton
               onClick={onClose}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition"
-            >
-              <X size={18} />
-            </button>
+              ariaLabel="Close music player"
+              size="sm"
+              icon={<X size={18} />}
+            />
           </div>
 
           {/* Controls */}
