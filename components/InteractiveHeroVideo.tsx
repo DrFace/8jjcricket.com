@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import HeroVideoModal from "./HeroVideoModal";
 
 interface InteractiveHeroVideoProps {
@@ -11,6 +11,16 @@ export default function InteractiveHeroVideo({
   videoUrl,
 }: InteractiveHeroVideoProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // React's `muted` JSX prop is sometimes ignored by browsers.
+  // Setting it imperatively on the element guarantees silence.
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = true;
+    }
+  }, []);
+
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -22,8 +32,9 @@ export default function InteractiveHeroVideo({
     <>
       {/* Video Container with Click Handler */}
       <div className="relative h-full w-full">
-        {/* Background Video */}
+        {/* Background Video - muted both via prop and ref to ensure silence */}
         <video
+          ref={videoRef}
           src={videoUrl}
           autoPlay
           loop

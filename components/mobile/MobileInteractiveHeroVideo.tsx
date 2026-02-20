@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import HeroVideoModal from "../HeroVideoModal";
 
 interface MobileInteractiveHeroVideoProps {
@@ -11,14 +11,24 @@ export default function MobileInteractiveHeroVideo({
   videoUrl,
 }: MobileInteractiveHeroVideoProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // React's `muted` JSX prop is sometimes ignored by browsers.
+  // Setting it imperatively on the element guarantees silence.
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = true;
+    }
+  }, []);
 
   return (
     <>
       {/* Video Container with Click Handler */}
       <div className="relative w-full overflow-hidden rounded-2xl border border-india-gold/20 bg-slate-900/60 backdrop-blur-md shadow-lg">
         <div className="h-[180px] w-full sm:h-[220px] relative">
-          {/* Background Video - STATIC, NO MOVEMENT */}
+          {/* Background Video - muted both via prop and ref to ensure silence */}
           <video
+            ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
             src={videoUrl}
             autoPlay
