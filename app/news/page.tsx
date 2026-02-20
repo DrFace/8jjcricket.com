@@ -495,11 +495,52 @@ function Pagination({
 export default function NewsPage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
+  const [isRestored, setIsRestored] = useState(false);
+
+  // Restore state from sessionStorage on mount
+  useEffect(() => {
+    const savedCategory = sessionStorage.getItem("news-active-category");
+    const savedPage = sessionStorage.getItem("news-page");
+    
+    if (savedCategory !== null) {
+      setActiveCategory(savedCategory === "null" ? null : savedCategory);
+    }
+    if (savedPage) {
+      setPage(parseInt(savedPage, 10));
+    }
+    setIsRestored(true);
+  }, []);
+
+  // Save state to sessionStorage
+  useEffect(() => {
+    if (!isRestored) return;
+    sessionStorage.setItem("news-active-category", String(activeCategory));
+    sessionStorage.setItem("news-page", String(page));
+  }, [activeCategory, page, isRestored]);
 
   // Reset page when category changes
   useEffect(() => {
+    if (!isRestored) return;
     setPage(1);
-  }, [activeCategory]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [activeCategory, isRestored]);
+
+  // Scroll to top when page changes (but not on initial restore)
+  useEffect(() => {
+    if (!isRestored) return;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [page, isRestored]);
+
+  // Save scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isRestored) {
+        sessionStorage.setItem("news-scroll-pos", window.scrollY.toString());
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isRestored]);
 
   const newsUrl = useMemo(() => {
     const params = new URLSearchParams();
@@ -513,6 +554,19 @@ export default function NewsPage() {
   const { data: categories } = useSWR("/api/news/categories", fetcher);
 
   const { data, error, isLoading } = useSWR<NewsResponse>(newsUrl, fetcher);
+
+  // Restore scroll position after data is loaded
+  useEffect(() => {
+    if (isRestored && !isLoading && data) {
+      const savedScroll = sessionStorage.getItem("news-scroll-pos");
+      if (savedScroll) {
+        // Small timeout to ensure DOM is rendered
+        setTimeout(() => {
+          window.scrollTo(0, parseInt(savedScroll, 10));
+        }, 100);
+      }
+    }
+  }, [isRestored, isLoading, data]);
 
   const articles: Article[] = (data?.data || []) as Article[];
   const currentPage = data?.meta?.current_page ?? page;

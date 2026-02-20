@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { PlayerRespond } from "@/types/player";
 import LoadingState from "@/components/ui/LoadingState";
@@ -81,6 +82,27 @@ export default function PlayerDetailPage() {
             </div>
           ) : (
             <div className="space-y-6 w-full">
+              <div className="mb-4">
+                <Link
+                  href="/mobile/players"
+                  className="inline-flex items-center gap-2 text-amber-300 hover:text-amber-200 transition-colors"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                  </svg>
+                  <span>Back to Players</span>
+                </Link>
+              </div>
+
               <div className="flex flex-col items-center gap-8 md:flex-row mt-3">
                 <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-slate-900 shadow-md">
                   <Image

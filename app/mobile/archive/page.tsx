@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ArchiveFilters, ArchivesResponse } from "@/types/archive";
 import BottomNav from "@/components/BottomNav";
@@ -166,12 +166,49 @@ export default function ArchivePage() {
     "Browse archived cricket matches with results and details.";
 
   // Filter states
-  const [category, setCategory] = useState<"" | "International" | "Leagues">(
-    "",
-  );
-  const [format, setFormat] = useState<"" | "T20" | "ODI" | "Test">("");
-  const [date, setDate] = useState<string>("");
-  const [page, setPage] = useState<number>(1);
+  const [category, setCategory] = useState<"" | "International" | "Leagues">(() => {
+    if (typeof window === "undefined") return "";
+    return (sessionStorage.getItem("mobile-archive-category") as "" | "International" | "Leagues") || "";
+  });
+  const [format, setFormat] = useState<"" | "T20" | "ODI" | "Test">(() => {
+    if (typeof window === "undefined") return "";
+    return (sessionStorage.getItem("mobile-archive-format") as "" | "T20" | "ODI" | "Test") || "";
+  });
+  const [date, setDate] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    return sessionStorage.getItem("mobile-archive-date") || "";
+  });
+  const [page, setPage] = useState<number>(() => {
+    if (typeof window === "undefined") return 1;
+    const p = sessionStorage.getItem("mobile-archive-page");
+    return p ? parseInt(p, 10) : 1;
+  });
+  const [isRestored, setIsRestored] = useState(false);
+
+  // Mark as restored on mount
+  useEffect(() => {
+    setIsRestored(true);
+  }, []);
+
+  // Save state to sessionStorage
+  useEffect(() => {
+    if (!isRestored) return;
+    sessionStorage.setItem("mobile-archive-category", category);
+    sessionStorage.setItem("mobile-archive-format", format);
+    sessionStorage.setItem("mobile-archive-date", date);
+    sessionStorage.setItem("mobile-archive-page", String(page));
+  }, [category, format, date, page, isRestored]);
+
+  // Save scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isRestored) {
+        sessionStorage.setItem("mobile-archive-scroll-pos", window.scrollY.toString());
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isRestored]);
 
   // Build filters object
   const filters: ArchiveFilters = useMemo(() => {
@@ -201,20 +238,35 @@ export default function ArchivePage() {
 
   const dataMemo = useMemo(() => data?.data, [data]);
 
+  // Restore scroll position after data is loaded
+  useEffect(() => {
+    if (isRestored && !isLoading && dataMemo && dataMemo.length > 0) {
+      const savedScroll = sessionStorage.getItem("mobile-archive-scroll-pos");
+      if (savedScroll) {
+        setTimeout(() => {
+          window.scrollTo(0, parseInt(savedScroll, 10));
+        }, 100);
+      }
+    }
+  }, [isRestored, isLoading, dataMemo?.length]);
+
   // Handle filter changes (reset to page 1)
   const handleCategoryChange = (value: "" | "International" | "Leagues") => {
     setCategory(value);
     setPage(1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleFormatChange = (value: "" | "T20" | "ODI" | "Test") => {
     setFormat(value);
     setPage(1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDateChange = (value: string) => {
     setDate(value);
     setPage(1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Check if any filters are active

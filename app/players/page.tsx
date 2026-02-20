@@ -84,10 +84,25 @@ export default function PlayersPage() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
-  const [q, setQ] = useState("");
-  const [countryId, setCountryId] = useState<string>(""); // will be set to India after countries load
-  const [role, setRole] = useState<string>("");
-  const [page, setPage] = useState<number>(1);
+  const [q, setQ] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return sessionStorage.getItem("players-query") || "";
+  });
+  const [countryId, setCountryId] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return sessionStorage.getItem("players-country") || "";
+  });
+  const [page, setPage] = useState(() => {
+    if (typeof window === "undefined") return 1;
+    const p = sessionStorage.getItem("players-page");
+    return p ? parseInt(p, 10) : 1;
+  });
+  const [isRestored, setIsRestored] = useState(false);
+
+  // Mark as restored on mount to enable saving
+  useEffect(() => {
+    setIsRestored(true);
+  }, []);
 
   // ✅ ensure we only apply the default once
   const didSetDefaultCountry = useRef(false);
@@ -98,6 +113,9 @@ export default function PlayersPage() {
       setPage(1);
     }, 300)
   ).current;
+
+  // Track the raw search input for the controlled component
+  const [searchValue, setSearchValue] = useState("");
 
   async function loadCatalog(p: number, query: string, cId: string) {
     setLoading(true);
@@ -122,7 +140,10 @@ export default function PlayersPage() {
       setCountries(fetchedCountries);
 
       // ✅ Set default country to India only once (and only if user hasn’t selected anything)
-      if (!didSetDefaultCountry.current && !cId) {
+      // ✅ Set default country to India only once (and only if user hasn’t selected anything AND no session exists)
+      const hasSavedCountry = typeof window !== "undefined" && sessionStorage.getItem("players-country") !== null;
+      
+      if (!didSetDefaultCountry.current && !cId && !hasSavedCountry) {
         const india = fetchedCountries.find(
           (c) => c.name?.toLowerCase() === DEFAULT_COUNTRY_NAME.toLowerCase()
         );
@@ -136,8 +157,8 @@ export default function PlayersPage() {
           setLoading(false);
           return;
         }
-        didSetDefaultCountry.current = true; // prevent endless attempts even if India not found
       }
+      didSetDefaultCountry.current = true; // prevent endless attempts
 
       setPlayers(json.players?.data ?? []);
       setPager(json.players ?? null);
@@ -148,32 +169,41 @@ export default function PlayersPage() {
     }
   }
 
+  // Save state to sessionStorage
+  useEffect(() => {
+    if (!isRestored) return;
+    sessionStorage.setItem("players-query", q);
+    sessionStorage.setItem("players-country", countryId);
+    sessionStorage.setItem("players-page", String(page));
+  }, [q, countryId, page, isRestored]);
+
+  // Save scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isRestored) {
+        sessionStorage.setItem("players-scroll-pos", window.scrollY.toString());
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isRestored]);
+
+  // Restore scroll position after players are loaded
+  useEffect(() => {
+    if (isRestored && !loading && players.length > 0) {
+      const savedScroll = sessionStorage.getItem("players-scroll-pos");
+      if (savedScroll) {
+        setTimeout(() => {
+          window.scrollTo(0, parseInt(savedScroll, 10));
+        }, 100);
+      }
+    }
+  }, [isRestored, loading, players.length]);
+
   useEffect(() => {
     loadCatalog(page, q, countryId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, q, countryId]);
-
-  const roleOptions = useMemo(() => {
-    const set = new Set<string>();
-    players.forEach((p) => {
-      const name = p.position ?? getPositionName(p.position_id);
-      if (name) set.add(name);
-    });
-    return Array.from(set).sort((a, b) => a.localeCompare(b));
-  }, [players]);
-
-  const filteredByRole = useMemo(() => {
-    if (!role) return players;
-    const roleLower = role.toLowerCase();
-    return players.filter((p) => {
-      const name = (
-        p.position ??
-        getPositionName(p.position_id) ??
-        ""
-      ).toLowerCase();
-      return name === roleLower;
-    });
-  }, [players, role]);
 
   const totalPages = pager?.last_page ?? 1;
 
@@ -182,7 +212,7 @@ export default function PlayersPage() {
       <title>Players | 8jjcricket</title>
       <meta
         name="description"
-        content="Browse all cricket players, search by name and filter by country or role."
+        content="Browse all cricket players, search by name and filter by country."
       />
 
       <TopNav />
@@ -206,7 +236,11 @@ export default function PlayersPage() {
                   type="text"
                   placeholder="e.g. Ahmed, Sharma..."
                   className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white placeholder:text-slate-400 outline-none focus:border-india-gold/50 focus:ring-india-gold/30 transition-all"
-                  onChange={(e) => debouncedSetQ(e.target.value)}
+                  value={searchValue}
+                  onChange={(e) => {
+                    setSearchValue(e.target.value);
+                    debouncedSetQ(e.target.value);
+                  }}
                 />
               </div>
 
@@ -218,6 +252,7 @@ export default function PlayersPage() {
                   onChange={(e) => {
                     setCountryId(e.target.value);
                     setPage(1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                 >
                   <option value="">All</option>
@@ -247,7 +282,7 @@ export default function PlayersPage() {
 
             {!loading && !err && (
               <>
-                {filteredByRole.length === 0 ? (
+                {players.length === 0 ? (
                   <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
                     No players match your filters.
                   </div>
@@ -256,7 +291,7 @@ export default function PlayersPage() {
                     <div className="mb-3 text-xs text-sky-100/60">
                       Showing{" "}
                       <span className="font-bold text-india-gold">
-                        {filteredByRole.length}
+                        {players.length}
                       </span>{" "}
                       players on this page.
                       {pager ? (
@@ -271,7 +306,7 @@ export default function PlayersPage() {
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {filteredByRole.map((p) => {
+                      {players.map((p) => {
                         const fullname = getDisplayName(p);
                         const countryName = p.country?.name ?? null;
                         const position =
@@ -294,7 +329,10 @@ export default function PlayersPage() {
                       <div className="mt-6 flex items-center justify-center gap-3 text-sm">
                         <button
                           disabled={page === 1}
-                          onClick={() => setPage((x) => Math.max(1, x - 1))}
+                          onClick={() => {
+                            setPage((x) => Math.max(1, x - 1));
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                          }}
                           className="rounded-full border border-india-gold/30 bg-slate-900/80 px-3 py-1.5 text-india-gold backdrop-blur-sm hover:bg-slate-800/80 hover:border-india-gold/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all font-bold"
                         >
                           Prev
@@ -306,9 +344,10 @@ export default function PlayersPage() {
 
                         <button
                           disabled={page === totalPages}
-                          onClick={() =>
-                            setPage((x) => Math.min(totalPages, x + 1))
-                          }
+                          onClick={() => {
+                            setPage((x) => Math.min(totalPages, x + 1));
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                          }}
                           className="rounded-full border border-india-gold/30 bg-slate-900/80 px-3 py-1.5 text-india-gold backdrop-blur-sm hover:bg-slate-800/80 hover:border-india-gold/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all font-bold"
                         >
                           Next
