@@ -67,6 +67,14 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   // Play history to support Previous while shuffling
   const playHistoryRef = useRef<number[]>([]);
 
+  // 1. Add a ref that mirrors repeatMode
+  const repeatModeRef = useRef<RepeatMode>(repeatMode);
+
+  // 2. Keep it in sync whenever repeatMode changes
+  useEffect(() => {
+    repeatModeRef.current = repeatMode;
+  }, [repeatMode]);
+
   /* ===============================
      1️⃣ Load audio list
   =============================== */
@@ -155,9 +163,15 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       audio.src = trackUrlWithBase;
       audio.load();
 
-      // Only autoplay if user has already interacted
-      if (hasInteractedRef.current && shouldAutoPlayRef.current) {
-        audio.play().catch((err) => console.warn("Play failed:", err));
+      // Decide play behavior safely
+      const shouldResume =
+        shouldAutoPlayRef.current ||
+        (!audio.paused && hasInteractedRef.current);
+
+      if (shouldResume) {
+        audio
+          .play()
+          .catch((err) => console.warn("Play after track change failed:", err));
       }
     }
   }, [currentTrack]);
@@ -227,12 +241,14 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
     const audio = audioRef.current;
     if (!audios.length) return;
 
+    const wasPlaying = !audio?.paused; // check if user was playing
+
     // repeat-one => restart current
-    if (repeatMode === "one" && currentTrack) {
+    // ✅ Read from ref — always fresh, never stale
+    if (repeatModeRef.current === "one" && currentTrack) {
       if (audio) {
         audio.currentTime = 0;
         audio.play().catch(() => {});
-        setIsPlaying(true);
       }
       return;
     }
@@ -246,29 +262,25 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     }
 
+    let nextTrackItem: AudioItem | null = null;
+
     if (shuffle) {
       // pick a random index (try to avoid immediate repeat)
-      if (audios.length === 1) {
-        setCurrentTrack(audios[0]);
-        return;
+      if (audios.length === 1) nextTrackItem = audios[0];
+      else {
+        let nextIdx = Math.floor(Math.random() * audios.length);
+        let attempts = 0;
+        while (audios[nextIdx].id === currentTrack?.id && attempts < 5) {
+          nextIdx = Math.floor(Math.random() * audios.length);
+          attempts++;
+        }
+        nextTrackItem = audios[nextIdx];
       }
-      let nextIdx = Math.floor(Math.random() * audios.length);
-      let attempts = 0;
-      while (audios[nextIdx].id === currentTrack?.id && attempts < 5) {
-        nextIdx = Math.floor(Math.random() * audios.length);
-        attempts++;
-      }
-      setCurrentTrack(audios[nextIdx]);
-      return;
-    }
-
-    const idx = getIndexById(currentTrack?.id);
-    if (idx >= 0 && idx < audios.length - 1) {
-      setCurrentTrack(audios[idx + 1]);
     } else {
-      if (repeatMode === "all") {
-        setCurrentTrack(audios[0]);
-      } else {
+      const idx = getIndexById(currentTrack?.id);
+      if (idx >= 0 && idx < audios.length - 1) nextTrackItem = audios[idx + 1];
+      else if (repeatModeRef.current === "all") nextTrackItem = audios[0];
+      else {
         if (audio) {
           audio.pause();
           audio.currentTime = 0;
@@ -276,10 +288,34 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
         setIsPlaying(false);
       }
     }
-  }, [audios, currentTrack, shuffle, repeatMode, getIndexById]);
+
+    if (nextTrackItem) {
+      setCurrentTrack(nextTrackItem);
+      // explicitly play if it was playing before
+      if (audio && wasPlaying) {
+        setTimeout(() => {
+          audio.play().catch(() => {});
+          setIsPlaying(true);
+        }, 50); // small delay to ensure src update
+      }
+    }
+  }, [audios, currentTrack, shuffle, getIndexById, isPlaying]);
 
   const previousTrack = useCallback(() => {
     if (!audios.length) return;
+
+    const audio = audioRef.current;
+    const wasPlaying = isPlaying;
+
+    const playTrack = (track: AudioItem) => {
+      setCurrentTrack(track);
+      if (audio && wasPlaying) {
+        setTimeout(() => {
+          audio.play().catch(() => {});
+          setIsPlaying(true);
+        }, 50);
+      }
+    };
 
     // Prefer history (works well when shuffled)
     const hist = playHistoryRef.current;
@@ -287,21 +323,20 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       const prevId = hist.pop();
       const prev = audios.find((a) => a.id === prevId);
       if (prev) {
-        setCurrentTrack(prev);
+        playTrack(prev);
         return;
       }
     }
 
     const idx = getIndexById(currentTrack?.id);
     if (idx > 0) {
-      setCurrentTrack(audios[idx - 1]);
+      playTrack(audios[idx - 1]);
     } else if (repeatMode === "all") {
-      setCurrentTrack(audios[audios.length - 1]);
+      playTrack(audios[audios.length - 1]);
     } else {
-      const audio = audioRef.current;
       if (audio) audio.currentTime = 0;
     }
-  }, [audios, currentTrack, repeatMode, getIndexById]);
+  }, [audios, currentTrack, repeatMode, getIndexById, isPlaying]);
 
   const toggleShuffle = useCallback(() => {
     setShuffle((s) => {

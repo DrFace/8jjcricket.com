@@ -72,10 +72,10 @@ function BannerSlideshow({
   if (!len) return null;
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-2xl">
+    <div className="relative h-full w-full overflow-hidden rounded-2xl p-0 m-0">
       {/* SLIDES */}
       <div
-        className="flex h-full w-full transition-transform duration-700 ease-out adsdas"
+        className="flex h-full w-full transition-transform duration-700 ease-out adsdas p-0 m-0"
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
         {items.map((item, i) => (
@@ -84,7 +84,7 @@ function BannerSlideshow({
             href={item.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="relative h-full w-full flex-shrink-0 block"
+            className="relative h-full w-full flex-shrink-0 block p-0 m-0"
             onClick={() => setAutoPlay(false)}
             title={item.title}
           >
@@ -92,7 +92,7 @@ function BannerSlideshow({
             <img
               src={item.src}
               alt={item.title}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover p-0 m-0"
               draggable={false}
             />
           </Link>
@@ -137,22 +137,6 @@ function BannerSlideshow({
           </button>
         </>
       )}
-
-      {/* DOTS (INSIDE SO THEY SHOW) */}
-      {/* {len > 1 && (
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 px-3 py-2 rounded-full bg-black/30 backdrop-blur border border-white/10">
-          {items.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => goTo(i)}
-              aria-label={`go to slide ${i + 1}`}
-              className={`h-2.5 rounded-full transition-all ${
-                i === index ? "w-7 bg-white" : "w-2.5 bg-white/40 hover:bg-white/70"
-              }`}
-            />
-          ))}
-        </div>
-      )} */}
     </div>
   );
 }
@@ -189,10 +173,10 @@ export default function MobilePortraitShowcase({
   return (
     // ✅ IMPORTANT: this section DOES NOT force height.
     // Your "main card" should set the height.
-    <section className="w-full">
-      <div className="mx-auto w-full max-w-lg">
+    <section className="p-0 m-0">
+      <div className="p-0 m-0">
         {/* ✅ THIS DIV MUST BE YOUR MAIN CARD CONTAINER (already has height in your layout) */}
-        <div className="relative w-full h-full">
+        <div className="p-0 m-0">
           {/* ✅ SLIDER FILLS MAIN CARD */}
           <BannerSlideshow items={items} />
         </div>

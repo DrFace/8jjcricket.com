@@ -12,8 +12,8 @@ import {
   Repeat,
 } from "lucide-react";
 import { AudioItem } from "@/types/audio";
-import MusicSelector from "./MusicSelector";
-import "../src/styles/musicPlayer.css";
+import MusicSelector from "../MusicSelector";
+import "../../src/styles/musicPlayer.css";
 
 export default function MobileMusicPopup(props: {
   open: boolean;
@@ -68,7 +68,7 @@ export default function MobileMusicPopup(props: {
 
   return (
     <>
-      <div className="fixed inset-0 z-[200] flex items-start justify-center pt-5 overflow-y-auto">
+      <div className="fixed inset-0 z-[200] flex items-start justify-center pt-20 overflow-y-auto">
         {/* Overlay — fully transparent, just closes on click */}
         <button className="absolute inset-0 bg-transparent" onClick={onClose} />
 
