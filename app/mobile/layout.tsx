@@ -224,8 +224,20 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
                 />
               </div>
 
-              {/* Brand text */}
-              <span className="text-sm font-semibold tracking-tight text-[var(--text-primary)]">
+              <span
+                className=" 
+                          text-sm
+                          font-extrabold 
+                          tracking-wide 
+                          bg-gradient-to-r 
+                          from-blue-700 
+                          via-green-500 
+                          to-orange-400 
+                          bg-clip-text 
+                          text-transparent
+                          drop-shadow-[2px_2px_0px_#1e3a8a]
+                          "
+              >
                 8JJCRICKET
               </span>
             </Link>

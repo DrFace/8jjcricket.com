@@ -1,11 +1,12 @@
 "use client";
 
-import { Headphones, Music2, VolumeOff } from "lucide-react";
+import { Headphones, Music2, TvMinimalPlay, VolumeOff } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCallback, useState } from "react";
 import MusicPopup from "@/components/MusicPopup";
 import { useAudio } from "@/context/AudioContext";
 import MobileMusicPopup from "./MobileMusicPopup";
+import { PlayingAnimation } from "../ui/PlayingAnimation";
 
 export default function MobileFloatingSupport() {
   const {
@@ -72,7 +73,11 @@ export default function MobileFloatingSupport() {
           onClick={openMusicPopup}
           aria-label="Open Music Player"
         >
-          <Headphones size={22} className="text-white" />
+          {isPlaying ? (
+            <PlayingAnimation />
+          ) : (
+            <TvMinimalPlay size={22} className="text-white" />
+          )}
         </button>
 
         {/* 🔇 Mute / Unmute */}

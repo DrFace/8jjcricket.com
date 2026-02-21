@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import HeroVideoModal from "../HeroVideoModal";
+import { useAudio } from "@/context/AudioContext";
 
 interface MobileInteractiveHeroVideoProps {
   videoUrl: string;
@@ -12,6 +13,8 @@ export default function MobileInteractiveHeroVideo({
 }: MobileInteractiveHeroVideoProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const { isPlaying, togglePlay } = useAudio();
+  const prvIsPlaying = useRef(isPlaying);
 
   // React's `muted` JSX prop is sometimes ignored by browsers.
   // Setting it imperatively on the element guarantees silence.
@@ -20,6 +23,30 @@ export default function MobileInteractiveHeroVideo({
       videoRef.current.muted = true;
     }
   }, []);
+
+  useEffect(() => {
+    prvIsPlaying.current = isPlaying;
+  }, [isPlaying]);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsModalOpen(true);
+    videoRef.current?.pause(); // Pause the background video immediately on click
+    if (prvIsPlaying.current) {
+      togglePlay();
+    } else {
+      prvIsPlaying.current = true;
+    }
+  };
+
+  const handleCloseModal = () => {
+    if (!prvIsPlaying.current) {
+      togglePlay();
+    }
+    videoRef.current?.play(); // Resume the background video when modal closes
+    setIsModalOpen(false);
+  };
 
   return (
     <>
@@ -43,9 +70,9 @@ export default function MobileInteractiveHeroVideo({
           <div className="pointer-events-none absolute inset-0 bg-black/10" />
 
           {/* Clickable Play Button Area */}
-          <div 
+          <div
             className="absolute inset-0 flex items-center justify-center cursor-pointer z-10"
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleClick}
           >
             <div className="relative">
               {/* Static Ring - No animation */}
@@ -72,7 +99,7 @@ export default function MobileInteractiveHeroVideo({
       {/* Hero Video Modal */}
       <HeroVideoModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
         videoUrl={videoUrl}
       />
     </>

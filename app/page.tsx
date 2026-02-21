@@ -176,7 +176,7 @@ export default async function HomePage() {
           </h1>
 
           {(() => {
-            const raw = videos?.[1]?.video_path ?? "";
+            const raw = videos?.[0]?.video_path ?? "";
 
             const getSafeVideoUrl = (input: string) => {
               if (!input) return "";
@@ -220,8 +220,11 @@ export default async function HomePage() {
           className="SectionScroll sticky top-0 flex w-full items-center px-6 mt-4 lg:mt-8 xl:mt-0 min-h-[85vh] lg:h-screen perspective-2000 preserve-3d"
         >
           <div className="relative h-full w-full flex items-center">
-            <div className="absolute inset-0" style={{ background: "var(--bg-primary)" }} />
-            
+            <div
+              className="absolute inset-0"
+              style={{ background: "var(--bg-primary)" }}
+            />
+
             <ScaleToFit className="w-full h-full pt-20 pb-4">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
                 <PortraitShowcaseSection />
@@ -229,7 +232,7 @@ export default async function HomePage() {
             </ScaleToFit>
           </div>
         </section>
-        
+
         {/* News */}
         <section
           data-snap
@@ -237,12 +240,15 @@ export default async function HomePage() {
         >
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
-            <div className="absolute inset-0" style={{ background: "var(--bg-primary)" }} />
+            <div
+              className="absolute inset-0"
+              style={{ background: "var(--bg-primary)" }}
+            />
 
             <ScaleToFit className="w-full h-full pt-20 pb-4">
-               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
-                 <HomeNewsShowcase />
-               </div>
+              <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+                <HomeNewsShowcase />
+              </div>
             </ScaleToFit>
           </div>
         </section>
@@ -253,7 +259,10 @@ export default async function HomePage() {
         >
           <div className="relative h-full w-full flex items-center">
             {/* Background removed as per request */}
-            <div className="absolute inset-0" style={{ background: "var(--bg-primary)" }} />
+            <div
+              className="absolute inset-0"
+              style={{ background: "var(--bg-primary)" }}
+            />
 
             <ScaleToFit className="w-full h-full pt-20 pb-4">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
@@ -269,7 +278,10 @@ export default async function HomePage() {
           className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6"
         >
           <div className="relative h-full w-full flex items-center">
-            <div className="absolute inset-0" style={{ background: "var(--bg-primary)" }} />
+            <div
+              className="absolute inset-0"
+              style={{ background: "var(--bg-primary)" }}
+            />
 
             <ScaleToFit className="w-full h-full pt-20 pb-4">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">

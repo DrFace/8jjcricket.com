@@ -427,6 +427,34 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   }, [currentTrack, isMuted, volume]);
 
+  // Add this ref near your other refs
+  const wasPlayingBeforeHideRef = useRef(false);
+
+  /* ===============================
+   🆕 Pause on minimize / background tab
+=============================== */
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      if (document.visibilityState === "hidden") {
+        wasPlayingBeforeHideRef.current = !audio.paused; // ✅ save real state before pause
+        audio.pause();
+      } else if (document.visibilityState === "visible") {
+        if (wasPlayingBeforeHideRef.current) {
+          // ✅ restore from ref, not state
+          audio.play().catch((err) => console.warn("Resume failed:", err));
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []); // ✅ empty deps — reads from ref not state
+
   return (
     <AudioContext.Provider
       value={{
