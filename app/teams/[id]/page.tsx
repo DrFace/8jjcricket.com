@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import useSWR from 'swr'
 import Image from 'next/image'
 import Link from 'next/link'
+import PrimaryButton from '@/components/ui/PrimaryButton'
 
 interface Country {
   id: number
@@ -86,15 +87,9 @@ export default function TeamDetailPage({ params }: { params: { id: string } }) {
   return (
     <>
       {/* Back Button */}
-      <Link 
-        href="/teams" 
-        className="inline-flex items-center gap-2 text-india-gold hover:text-india-saffron text-sm font-bold mb-6 transition-colors"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-        Back to Teams
-      </Link>
+      <PrimaryButton href="/teams" size="sm" className="mb-6">
+        ← Back to Teams
+      </PrimaryButton>
 
       {/* Team Header */}
       <div className="rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 p-8 mb-6 backdrop-blur-xl shadow-2xl">

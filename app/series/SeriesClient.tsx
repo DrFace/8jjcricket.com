@@ -9,6 +9,8 @@ import TopNav from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
 import { PaginationComponet } from "@/components/ui/Pagination";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import SecondaryButton from "@/components/ui/SecondaryButton";
 import ErrorState from "@/components/ui/ErrorState";
 import { ToInt } from "@/lib/series-utils";
 import { PAGE_SIZE, SERIES_TABS } from "@/lib/constant";
@@ -242,20 +244,18 @@ export default function SeriesPage() {
             ) : (
               <>
                 {/* Tabs */}
-                <div className="rounded-2xl india-card-gradient overflow-hidden">
-                  <div className="flex overflow-x-auto">
+                <div className="rounded-2xl india-card-gradient overflow-hidden p-2">
+                  <div className="flex overflow-x-auto gap-2">
                     {SERIES_TABS.map((tab) => (
-                      <button
+                      <SecondaryButton
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`px-6 py-3 text-sm font-bold whitespace-nowrap border-b-2 transition-colors ${
-                          activeTab === tab.id
-                            ? "border-india-saffron text-india-gold bg-india-saffron/10"
-                            : "border-transparent text-slate-300 hover:text-white hover:bg-white/5"
-                        }`}
+                        active={activeTab === tab.id}
+                        size="sm"
+                        className="px-6 whitespace-nowrap"
                       >
                         {tab.label}
-                      </button>
+                      </SecondaryButton>
                     ))}
                   </div>
                 </div>
@@ -333,20 +333,22 @@ export default function SeriesPage() {
                               </p>
 
                               <div className="flex gap-2 mt-auto w-full">
-                                <Link
+                                <SecondaryButton
                                   href={`/series/${league.sportmonks_league_id}`}
-                                  className="flex-1 px-3 py-1.5 text-xs font-bold text-india-gold border border-india-gold/50 rounded-xl hover:bg-india-gold/10 transition-colors backdrop-blur-sm"
-                                  aria-label={`View ${league.name} details at 8jjcricket`}
+                                  size="sm"
+                                  className="flex-1 px-1 h-8 text-[10px]"
+                                  ariaLabel={`View ${league.name} details at 8jjcricket`}
                                 >
                                   Details
-                                </Link>
-                                <Link
+                                </SecondaryButton>
+                                <PrimaryButton
                                   href={`/teams?league=${league.sportmonks_league_id}`}
-                                  className="flex-1 px-3 py-1.5 text-xs font-bold text-black bg-gradient-to-r from-india-saffron via-india-gold to-india-orange rounded-xl hover:brightness-110 transition-all shadow-lg"
-                                  aria-label={`View ${league.name} teams`}
+                                  size="sm"
+                                  className="flex-1 px-1 h-8 text-[10px]"
+                                  ariaLabel={`View ${league.name} teams`}
                                 >
                                   Teams
-                                </Link>
+                                </PrimaryButton>
                               </div>
                             </div>
                           );
@@ -413,12 +415,12 @@ export default function SeriesPage() {
                     <p className="text-slate-300 mb-4">
                       Check the home page for live cricket matches at 8jjcricket
                     </p>
-                    <Link
+                    <PrimaryButton
                       href="/"
-                      className="inline-block px-4 py-2 bg-gradient-to-r from-india-green to-emerald-600 text-white font-bold rounded-lg hover:brightness-110 transition-all shadow-lg"
+                      size="md"
                     >
                       View Live Matches
-                    </Link>
+                    </PrimaryButton>
                   </div>
                 )}
 
@@ -446,18 +448,18 @@ export default function SeriesPage() {
                       pages
                     </p>
                     <div className="flex gap-3 justify-center">
-                      <Link
+                      <SecondaryButton
                         href="/recent"
-                        className="px-4 py-2 bg-slate-700 text-white font-semibold rounded-lg hover:bg-slate-600 transition-colors border border-white/10"
+                        size="md"
                       >
                         Recent Matches
-                      </Link>
-                      <Link
+                      </SecondaryButton>
+                      <PrimaryButton
                         href="/upcoming"
-                        className="px-4 py-2 bg-gradient-to-r from-india-blue to-blue-600 text-white font-semibold rounded-lg hover:brightness-110 transition-colors shadow-lg"
+                        size="md"
                       >
                         Upcoming Matches
-                      </Link>
+                      </PrimaryButton>
                     </div>
                   </div>
                 )}
@@ -484,12 +486,12 @@ export default function SeriesPage() {
                     <p className="text-slate-300 mb-4">
                       Browse all international and domestic cricket teams
                     </p>
-                    <Link
+                    <PrimaryButton
                       href="/teams"
-                      className="inline-block px-4 py-2 bg-gradient-to-r from-india-saffron to-india-gold text-black font-bold rounded-lg hover:brightness-110 transition-colors shadow-lg"
+                      size="md"
                     >
                       View All Teams
-                    </Link>
+                    </PrimaryButton>
                   </div>
                 )}
 
@@ -515,12 +517,12 @@ export default function SeriesPage() {
                     <p className="text-slate-300 mb-4">
                       Browse past cricket series and tournaments
                     </p>
-                    <Link
+                    <SecondaryButton
                       href="/archive"
-                      className="inline-block px-4 py-2 bg-slate-700 text-white font-semibold rounded-lg hover:bg-slate-600 transition-colors border border-white/10"
+                      size="md"
                     >
                       View Archive
-                    </Link>
+                    </SecondaryButton>
                   </div>
                 )}
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import IconButton from "./ui/IconButton";
 
 const sources = [
     { src: "/banner002.png", alt: "banner002" },
@@ -86,40 +87,42 @@ export default function BannerCarousel() {
             </div>
 
             {/* Prev Button */}
-            <button
-                aria-label="previous"
+            <IconButton
+                ariaLabel="previous"
                 onClick={() => setIndex((i) => (i - 1 + len) % len)}
-                className="absolute left-2 top-1/2 -translate-y-1/2 grid place-items-center h-9 w-9 rounded-full bg-black/40 hover:bg-black/55 backdrop-blur active:scale-95"
-            >
-                <svg viewBox="0 0 24 24" className="h-5 w-5 text-white">
-                    <path
-                        d="M15 18l-6-6 6-6"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    />
-                </svg>
-            </button>
+                className="absolute left-2 top-1/2 -translate-y-1/2"
+                icon={
+                    <svg viewBox="0 0 24 24" className="h-5 w-5 text-white">
+                        <path
+                            d="M15 18l-6-6 6-6"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                }
+            />
 
             {/* Next Button */}
-            <button
-                aria-label="next"
+            <IconButton
+                ariaLabel="next"
                 onClick={() => setIndex((i) => (i + 1) % len)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 grid place-items-center h-9 w-9 rounded-full bg-black/40 hover:bg-black/55 backdrop-blur active:scale-95"
-            >
-                <svg viewBox="0 0 24 24" className="h-5 w-5 text-white">
-                    <path
-                        d="M9 6l6 6-6 6"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    />
-                </svg>
-            </button>
+                className="absolute right-2 top-1/2 -translate-y-1/2"
+                icon={
+                    <svg viewBox="0 0 24 24" className="h-5 w-5 text-white">
+                        <path
+                            d="M9 6l6 6-6 6"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                }
+            />
 
             {/* Dots */}
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">

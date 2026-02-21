@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { SOCIALS_LINKS } from "@/lib/constant";
+import IconButton from "./ui/IconButton";
 
 export default function Footer() {
   return (
@@ -52,26 +53,24 @@ export default function Footer() {
         <div>
           <div className="flex">
             {SOCIALS_LINKS.slice(0, 2).map((s) => (
-              <Link
+              <IconButton
                 key={s.url}
                 href={s.url}
-                target="_blank"
-                className="flex h-12 w-12 items-center justify-center rounded-2xl"
-              >
-                <Image src={s.icon} alt={s.label} width={32} height={32} />
-              </Link>
+                ariaLabel={s.label}
+                className="h-12 w-12 rounded-2xl"
+                icon={<Image src={s.icon} alt={s.label} width={32} height={32} />}
+              />
             ))}
           </div>
           <div className="flex">
             {SOCIALS_LINKS.slice(2, 4).map((s) => (
-              <Link
+              <IconButton
                 key={s.url}
                 href={s.url}
-                target="_blank"
-                className="flex h-12 w-12 items-center justify-center rounded-2xl"
-              >
-                <Image src={s.icon} alt={s.label} width={32} height={32} />
-              </Link>
+                ariaLabel={s.label}
+                className="h-12 w-12 rounded-2xl"
+                icon={<Image src={s.icon} alt={s.label} width={32} height={32} />}
+              />
             ))}
           </div>
         </div>

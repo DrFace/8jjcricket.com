@@ -4,11 +4,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import NewsTicker from "@/components/NewsTicker";
-import { Megaphone, VolumeOff, Music2 } from "lucide-react";
+import { Megaphone } from "lucide-react";
 import { useState } from "react";
+import PrimaryButton from "./ui/PrimaryButton";
 import { usePathname } from "next/navigation";
 import { useAudio } from "@/context/AudioContext";
-import { GetGlobalAudio } from "@/lib/audio";
 
 function NavItem({
   href,
@@ -221,7 +221,7 @@ export default function TopNav() {
         <div className="flex w-full items-center justify-between px-2 lg:px-4 py-2">
           <Link
             href="/"
-            className="flex items-center gap-2 text-lg lg:text-xl font-bold text-[var(--text-primary)] shrink-0"
+            className="flex justify-center gap-2 text-lg lg:text-xl font-bold shrink-0"
           >
             <Image
               src="/8jjlogo.png"
@@ -229,8 +229,25 @@ export default function TopNav() {
               width={44}
               height={44}
               priority
+              className="block"
             />
-            <span>8jjcricket</span>
+
+            <span
+              className=" pt-1
+                          text-xl
+                          font-extrabold 
+                          tracking-wide 
+                          bg-gradient-to-r 
+                          from-blue-700 
+                          via-green-500 
+                          to-orange-400 
+                          bg-clip-text 
+                          text-transparent
+                          drop-shadow-[2px_2px_0px_#1e3a8a]
+                          "
+            >
+              8JJCRICKET
+            </span>
           </Link>
 
           <nav className="hidden gap-3 lg:gap-5 xl:gap-8 text-[13px] lg:text-[14px] xl:text-[15px] font-semibold md:flex whitespace-nowrap">
@@ -295,12 +312,9 @@ export default function TopNav() {
               </select>
             </div>
 
-            <Link
-              href="/minigames"
-              className="rounded-full bg-gradient-to-r from-[#FACC15] via-[#F97316] to-[#EA580C] px-4 py-2 text-sm font-semibold text-black shadow-lg shadow-amber-500/40 ring-1 ring-white/20 hover:brightness-110 active:scale-95"
-            >
+            <PrimaryButton href="/minigames" size="sm" className="px-4 py-2">
               Play Now
-            </Link>
+            </PrimaryButton>
           </div>
         </div>
       </header>
