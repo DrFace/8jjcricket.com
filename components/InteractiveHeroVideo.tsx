@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import HeroVideoModal from "./HeroVideoModal";
-
+import { useAudio } from "@/context/AudioContext";
 interface InteractiveHeroVideoProps {
   videoUrl: string;
 }
@@ -12,6 +12,8 @@ export default function InteractiveHeroVideo({
 }: InteractiveHeroVideoProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const { isPlaying, togglePlay } = useAudio();
+  const prvIsPlaying = useRef(isPlaying);
 
   // React's `muted` JSX prop is sometimes ignored by browsers.
   // Setting it imperatively on the element guarantees silence.
@@ -21,11 +23,28 @@ export default function InteractiveHeroVideo({
     }
   }, []);
 
+  useEffect(() => {
+    prvIsPlaying.current = isPlaying;
+  }, [isPlaying]);
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsModalOpen(true);
+    videoRef.current?.pause(); // Pause the background video immediately on click
+    if (prvIsPlaying.current) {
+      togglePlay();
+    } else {
+      prvIsPlaying.current = true;
+    }
+  };
+
+  const handleCloseModal = () => {
+    if (!prvIsPlaying.current) {
+      togglePlay();
+    }
+    videoRef.current?.play(); // Resume the background video when modal closes
+    setIsModalOpen(false);
   };
 
   return (
@@ -47,7 +66,7 @@ export default function InteractiveHeroVideo({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none" />
 
         {/* Play Button Overlay - CLICKABLE */}
-        <div 
+        <div
           className="absolute inset-0 flex items-center justify-center cursor-pointer group z-10"
           onClick={handleClick}
         >
@@ -56,7 +75,10 @@ export default function InteractiveHeroVideo({
             <div className="absolute inset-0 -m-4 animate-ping pointer-events-none">
               <div className="h-40 w-40 rounded-full border-4 border-orange-400/60" />
             </div>
-            <div className="absolute inset-0 -m-4 animate-pulse pointer-events-none" style={{ animationDelay: '0.5s' }}>
+            <div
+              className="absolute inset-0 -m-4 animate-pulse pointer-events-none"
+              style={{ animationDelay: "0.5s" }}
+            >
               <div className="h-40 w-40 rounded-full border-4 border-orange-300/40" />
             </div>
 
@@ -78,7 +100,7 @@ export default function InteractiveHeroVideo({
       {/* Hero Video Modal */}
       <HeroVideoModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
         videoUrl={videoUrl}
       />
     </>

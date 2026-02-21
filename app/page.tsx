@@ -176,7 +176,7 @@ export default async function HomePage() {
           </h1>
 
           {(() => {
-            const raw = videos?.[0]?.video_path ?? "";
+            const raw = videos?.[1]?.video_path ?? "";
 
             const getSafeVideoUrl = (input: string) => {
               if (!input) return "";

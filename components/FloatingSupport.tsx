@@ -1,14 +1,14 @@
 "use client";
 
 // components/FloatingSupport.tsx
-import { Radio, Share2, Music2, VolumeOff } from "lucide-react";
+import { Radio, Share2, Music2, VolumeOff, TvMinimalPlay } from "lucide-react";
 import MusicPopup from "@/components/MusicPopup";
 import { useState } from "react";
 import { useAudio } from "@/context/AudioContext";
 import LivePopup from "./LivePopup";
 import SocialMediaPopup from "./SocialMediaPopup";
 import Link from "next/link";
-import "../src/styles/musicPlayer.css";
+import { PlayingAnimation } from "./ui/PlayingAnimation";
 
 export default function FloatingSupport() {
   const {
@@ -92,24 +92,11 @@ export default function FloatingSupport() {
             aria-label="Mute/Unmute"
             aria-pressed={!isMuted}
           >
-            <div className="flex items-end gap-[3px] h-5">
-              <span
-                className="bar1 w-[3px] rounded-full bg-white"
-                style={{ height: "6px" }}
-              />
-              <span
-                className="bar2 w-[3px] rounded-full bg-white"
-                style={{ height: "14px" }}
-              />
-              <span
-                className="bar3 w-[3px] rounded-full bg-white"
-                style={{ height: "10px" }}
-              />
-              <span
-                className="bar4 w-[3px] rounded-full bg-white"
-                style={{ height: "4px" }}
-              />
-            </div>
+            {isPlaying ? (
+              <PlayingAnimation />
+            ) : (
+              <TvMinimalPlay size={20} className="text-white" />
+            )}
           </button>
           {/* Mute / Unmute (restored) */}
           <button
