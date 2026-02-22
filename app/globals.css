@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+
+
+
 /* ============================================================
    8JJCRICKET — GLOBAL STYLES
    Theme: Night Stadium · Saffron × Gold × Electric Blue
@@ -83,7 +88,7 @@
    * meeting in a warm amber center. No purple anywhere.
    */
 
---bg-primary:
+  --bg-primary:
     /* Gold — bottom-left, reaches center */
     radial-gradient(ellipse 130% 120% at 0% 100%,
       rgba(255, 200, 80, 0.55) 0%,
@@ -103,7 +108,7 @@
     /* Dark base */
     linear-gradient(180deg, #05070A 0%, #0B141C 100%);
 
-      
+
 
 
   /* Secondary & tertiary surfaces */
@@ -180,7 +185,7 @@ body {
   top: 0 !important;
   position: static !important;
   isolation: isolate;
-  
+
 }
 
 /* ── ANIMATED AMBIENT OVERLAY ───────────────────────────────── */
@@ -528,4 +533,225 @@ a {
 .translated-ltr,
 .translated-rtl {
   margin-top: 0 !important;
+}
+
+@keyframes logoFloat {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes shineSweep {
+  0% {
+    transform: translateX(-140%) skewX(-18deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+
+  100% {
+    transform: translateX(220%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+@keyframes logoFloat {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes shineSweep {
+  0% {
+    transform: translateX(-160%) skewX(-18deg);
+    opacity: 0;
+  }
+
+  12% {
+    opacity: 0.55;
+  }
+
+  45% {
+    opacity: 0.25;
+  }
+
+  100% {
+    transform: translateX(240%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+/* Wrapper holds the SINGLE gradient (prevents per-letter "boxes") */
+/* ============================================================
+   8JJCRICKET — PROFESSIONAL 3D LOGO
+   - No square artifacts
+   - Shine clipped to text only
+   - Matches gold/saffron theme
+   ============================================================ */
+
+@keyframes logoFloat {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes textShineSweep {
+  0% {
+    background-position: -220% 0;
+    opacity: 0;
+  }
+
+  12% {
+    opacity: 0.55;
+  }
+
+  40% {
+    opacity: 0.25;
+  }
+
+  100% {
+    background-position: 220% 0;
+    opacity: 0;
+  }
+}
+
+/* Wrapper holds the SINGLE gradient (prevents per-letter "boxes") */
+/* ============================================================
+   8JJCRICKET — PROFESSIONAL 3D LOGO
+   - No square artifacts
+   - Shine clipped to text only
+   - Matches gold/saffron theme
+   ============================================================ */
+
+/* Wrapper - Removed background rectangle and padding */
+.logo3d-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  transform-style: preserve-3d;
+  perspective: 1200px;
+  animation: logoFloat 4.2s ease-in-out infinite;
+}
+
+/* Soft stadium glow behind - subtler */
+.logo3d-glow {
+  position: absolute;
+  inset: -10px -20px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 50% 55%,
+      rgba(255, 184, 0, 0.12) 0%,
+      rgba(255, 140, 0, 0.08) 40%,
+      transparent 80%);
+  filter: blur(15px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Letters - Improved 3D extrusion and coloring */
+.logo3d-letter {
+  position: relative;
+  display: inline-block;
+  font-family: "Luckiest Guy", cursive;
+  font-size: clamp(16px, 1.8vw, 24px);
+  line-height: 1;
+  text-transform: uppercase;
+  z-index: 2;
+
+  /* Premium gold/saffron gradient moved here */
+  background: linear-gradient(to bottom,
+      #ffffff 0%,
+      #ffd700 30%,
+      var(--gold) 50%,
+      var(--saffron) 75%,
+      var(--saffron-hot) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  /* Sharper professional stroke */
+  -webkit-text-stroke: 0.8px rgba(0, 0, 0, 0.85);
+
+  /* Clean deep extrusion - scaled down slightly */
+  text-shadow:
+    0 0.5px 0 #b37700,
+    0 1px 0 #996600,
+    0 1.5px 0 #805500,
+    0 2px 0 #664400,
+    0 3px 5px rgba(0, 0, 0, 0.4);
+
+  /* Refined professional glow */
+  filter: drop-shadow(0 0 6px rgba(255, 184, 0, 0.22));
+}
+
+/* Inner highlight stroke */
+.logo3d-letter::before {
+  content: attr(data-char);
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  -webkit-text-stroke: 0.75px rgba(255, 255, 255, 0.38);
+  z-index: -1;
+}
+
+/* Shine clipped strictly to text (NO rectangle) */
+.logo3d-letter::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background: linear-gradient(110deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.75) 45%,
+      transparent 70%);
+  background-size: 220% 100%;
+  background-position: -220% 0;
+
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: textShineSweep 3.4s ease-in-out infinite;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .logo3d-wrap {
+    animation: none;
+  }
+
+  .logo3d-letter::after {
+    animation: none;
+  }
 }

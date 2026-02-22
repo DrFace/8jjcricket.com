@@ -427,13 +427,6 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
               filter: "drop-shadow(0 4px 18px rgba(0,0,0,0.18))",
             }}
           />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(to right, transparent 0%, transparent 94%, rgba(0,0,0,0.06) 100%)",
-            }}
-          />
         </div>
 
         <div className="relative ml-[46%] flex h-full flex-col gap-7 p-8 pt-16">
