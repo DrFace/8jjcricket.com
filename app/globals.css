@@ -658,21 +658,12 @@ a {
   animation: logoFloat 4.2s ease-in-out infinite;
 }
 
-/* Soft stadium glow behind - subtler */
+/* Soft stadium glow behind - REMOVED for absolute sharpness */
 .logo3d-glow {
-  position: absolute;
-  inset: -10px -20px;
-  border-radius: 999px;
-  background: radial-gradient(circle at 50% 55%,
-      rgba(255, 184, 0, 0.12) 0%,
-      rgba(255, 140, 0, 0.08) 40%,
-      transparent 80%);
-  filter: blur(15px);
-  pointer-events: none;
-  z-index: 0;
+  display: none;
 }
 
-/* Letters - Improved 3D extrusion and coloring */
+/* Letters - Absolute Sharpness Implementation */
 .logo3d-letter {
   position: relative;
   display: inline-block;
@@ -682,7 +673,13 @@ a {
   text-transform: uppercase;
   z-index: 2;
 
-  /* Premium gold/saffron gradient moved here */
+  /* Hardware hints for sharpness */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+
+  /* Premium gold/saffron gradient */
   background: linear-gradient(to bottom,
       #ffffff 0%,
       #ffd700 30%,
@@ -694,22 +691,31 @@ a {
   color: transparent;
   -webkit-text-fill-color: transparent;
 
-  /* Sharper professional stroke */
-  -webkit-text-stroke: 0.8px rgba(0, 0, 0, 0.85);
+  /* Sharper black stroke */
+  -webkit-text-stroke: 1px #000;
 
-  /* Clean deep extrusion - scaled down slightly */
+  /* Clean deep extrusion - ZERO BLUR RADIUS */
   text-shadow:
     0 0.5px 0 #b37700,
     0 1px 0 #996600,
     0 1.5px 0 #805500,
     0 2px 0 #664400,
-    0 3px 5px rgba(0, 0, 0, 0.4);
+    0 3px 0 rgba(0, 0, 0, 0.9);
 
-  /* Refined professional glow */
-  filter: drop-shadow(0 0 6px rgba(255, 184, 0, 0.22));
+  /* NO FILTERS / DROP SHADOWS */
+  filter: none !important;
+
+  /* Optimize for hover scaling */
+  will-change: transform;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Inner highlight stroke */
+/* Ensure sharpness on hover - NO FILTERS */
+.logo3d-letter:hover {
+  filter: none !important;
+}
+
+/* Inner highlight stroke - Sharpened */
 .logo3d-letter::before {
   content: attr(data-char);
   position: absolute;
@@ -720,7 +726,7 @@ a {
   color: transparent;
   -webkit-text-fill-color: transparent;
 
-  -webkit-text-stroke: 0.75px rgba(255, 255, 255, 0.38);
+  -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.5);
   z-index: -1;
 }
 
