@@ -27,11 +27,19 @@ export default function NewsListCards({ items }: { items: NewsItem[] }) {
           {/* ✅ SAFARI FIX: Added explicit w-[96px] — Safari does not infer flex-shrink-0
               element width from the child <img> like Chrome does, so without a width the
               thumbnail expands to fill all available space, hiding the text column. */}
-          <div className="relative h-[64px] w-[96px] flex-shrink-0 overflow-hidden rounded-2xl bg-black/40 ring-1 ring-white/10">
+          <div className="relative aspect-[21/9] w-48 flex-shrink-0 overflow-hidden rounded-2xl ring-1 ring-white/10">
+            {/* Blurred background to fill empty space */}
+            <img
+              src={n.imgSrc}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover blur-sm opacity-30 scale-110"
+              aria-hidden="true"
+            />
+            {/* Full image */}
             <img
               src={n.imgSrc}
               alt={n.title}
-              className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+              className="relative h-full w-full object-contain object-center transition-transform duration-500 ease-out group-hover:scale-[1.03]"
               loading="lazy"
             />
           </div>
