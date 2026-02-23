@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import {
   X,
-  Music2,
+  Volume2,
   VolumeOff,
   Play,
   Shuffle,
@@ -181,7 +181,7 @@ export default function MobileMusicPopup(props: {
                   title={isMuted ? "Unmute" : "Mute"}
                   className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#FF9F43] to-[#FFD000] text-black shadow-lg hover:scale-110 transition"
                 >
-                  {isMuted ? <VolumeOff size={22} /> : <Music2 size={22} />}
+                  {isMuted ? <VolumeOff size={22} /> : <Volume2 size={22} />}
                 </button>
 
                 {/* Repeat */}

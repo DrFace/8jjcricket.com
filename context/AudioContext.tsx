@@ -243,16 +243,6 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const wasPlaying = !audio?.paused; // check if user was playing
 
-    // repeat-one => restart current
-    // ✅ Read from ref — always fresh, never stale
-    if (repeatModeRef.current === "one" && currentTrack) {
-      if (audio) {
-        audio.currentTime = 0;
-        audio.play().catch(() => {});
-      }
-      return;
-    }
-
     // add to history for previous
     if (currentTrack) {
       const last = playHistoryRef.current[playHistoryRef.current.length - 1];
@@ -368,6 +358,15 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
     const handleEnded = () => {
+      // repeat-one => restart current
+      // ✅ Read from ref — always fresh, never stale
+      if (repeatModeRef.current === "one" && currentTrack) {
+        if (audio) {
+          audio.currentTime = 0;
+          audio.play().catch(() => {});
+        }
+        return;
+      }
       // delegate to nextTrack (handles repeat/shuffle)
       nextTrack();
     };
@@ -396,7 +395,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
 
   /* ===============================
    Persist Audio State
-=============================== */
+  =============================== */
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !currentTrack) return;
@@ -432,7 +431,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
 
   /* ===============================
    🆕 Pause on minimize / background tab
-=============================== */
+  =============================== */
   useEffect(() => {
     const handleVisibilityChange = () => {
       const audio = audioRef.current;
