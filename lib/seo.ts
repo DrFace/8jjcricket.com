@@ -1,5 +1,5 @@
 export const SITE = {
-  name: "8JJ Cricket",
+  name: "8JJCRICKET",
   url: "https://8jjcricket.com",
   description:
     "Live cricket scores, news, fixtures, and updates from around the world.",

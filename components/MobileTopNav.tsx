@@ -2,6 +2,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import MobileSidebar from "@/components/MobileSidebar";
+import { motion } from "framer-motion";
+import PrimaryButton from "@/components/ui/PrimaryButton";
 
 export default function MobileTopNav() {
   return (
@@ -19,6 +21,7 @@ export default function MobileTopNav() {
             absolute left-1/2 top-1/2
             -translate-x-1/2 -translate-y-1/2
             flex items-center justify-center
+            gap-2
           "
           aria-label="Go to mobile home"
         >
@@ -30,22 +33,55 @@ export default function MobileTopNav() {
             priority
             className="drop-shadow-[0_0_6px_rgba(250,204,21,0.35)]"
           />
+          <motion.div
+            className="logo3d-wrap"
+            initial="initial"
+            animate="animate"
+            whileHover="hover"
+          >
+            {/* Soft stadium glow behind */}
+            <span className="logo3d-glow" aria-hidden="true" />
+
+            {"8JJCRICKET".split("").map((letter, index) => (
+              <motion.span
+                key={index}
+                data-char={letter}
+                variants={{
+                  initial: { opacity: 0, y: 10, rotateX: -90 },
+                  animate: {
+                    opacity: 1,
+                    y: 0,
+                    rotateX: 0,
+                    transition: {
+                      delay: index * 0.05,
+                      type: "spring",
+                      stiffness: 220,
+                      damping: 14,
+                    },
+                  },
+                  hover: {
+                    y: -5,
+                    scale: 1.05,
+                    transition: { type: "spring", stiffness: 300, damping: 16 },
+                  },
+                }}
+                className="logo3d-letter"
+                style={{ fontSize: "14px" }}
+              >
+                {letter}
+              </motion.span>
+            ))}
+          </motion.div>
         </Link>
 
         {/* RIGHT — Play Now */}
-        <Link
+        <PrimaryButton
           href="/minigames"
-          className="
-            rounded-full
-            bg-gradient-to-r from-[#FACC15] via-[#F97316] to-[#EA580C]
-            px-4 py-2 text-sm font-semibold text-black
-            shadow-lg shadow-amber-500/40
-            ring-1 ring-white/20
-            hover:brightness-110 active:scale-95
-          "
+          size="sm"
+          className="px-4 py-2"
         >
           Play Now
-        </Link>
+        </PrimaryButton>
       </div>
     </header>
   );
