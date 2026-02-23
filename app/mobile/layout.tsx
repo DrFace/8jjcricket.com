@@ -8,6 +8,13 @@ import MobileSidebar from "@/components/MobileSidebar";
 import BottomNav from "@/components/BottomNav";
 import Script from "next/script";
 import MobileFloatingSupport from "@/components/mobile/MobileFloatingSupport";
+import { motion } from "framer-motion";
+
+type AudioItem = {
+  id: number;
+  title: string;
+  file_path: string;
+};
 
 // ✅ Keep dropdown options constant (never in state, never mutated)
 const LANGUAGE_OPTIONS = [
@@ -224,22 +231,50 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
                 />
               </div>
 
-              <span
-                className=" 
-                          text-sm
-                          font-extrabold 
-                          tracking-wide 
-                          bg-gradient-to-r 
-                          from-blue-700 
-                          via-green-500 
-                          to-orange-400 
-                          bg-clip-text 
-                          text-transparent
-                          drop-shadow-[2px_2px_0px_#1e3a8a]
-                          "
+              {/* Brand text */}
+              <motion.div
+                className="logo3d-wrap"
+                initial="initial"
+                animate="animate"
+                whileHover="hover"
               >
-                8JJCRICKET
-              </span>
+                {/* Soft stadium glow behind */}
+                <span className="logo3d-glow" aria-hidden="true" />
+
+                {"8JJCRICKET".split("").map((letter, index) => (
+                  <motion.span
+                    key={index}
+                    data-char={letter}
+                    variants={{
+                      initial: { opacity: 0, y: 10, rotateX: -90 },
+                      animate: {
+                        opacity: 1,
+                        y: 0,
+                        rotateX: 0,
+                        transition: {
+                          delay: index * 0.05,
+                          type: "spring",
+                          stiffness: 220,
+                          damping: 14,
+                        },
+                      },
+                      hover: {
+                        y: -5,
+                        scale: 1.05,
+                        transition: {
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 16,
+                        },
+                      },
+                    }}
+                    className="logo3d-letter"
+                    style={{ fontSize: "16px" }}
+                  >
+                    {letter}
+                  </motion.span>
+                ))}
+              </motion.div>
             </Link>
           </div>
 

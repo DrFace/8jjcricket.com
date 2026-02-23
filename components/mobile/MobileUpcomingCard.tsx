@@ -11,9 +11,11 @@ export default function MobileUpcomingCard({ f }: { f: Fixture }) {
 
   const homeLabel = home?.short_name || home?.name || "Home";
   const awayLabel = away?.short_name || away?.name || "Away";
+  const leagueName = f.league?.name;
+  const venueCity = (f as any).venue?.city || (f as any).venue?.name;
 
   return (
-    <div className="block active:scale-[0.98] transition-transform">
+    <div className="block">
       {/* Gradient border */}
       <div
         className={cn(
@@ -46,8 +48,13 @@ export default function MobileUpcomingCard({ f }: { f: Fixture }) {
               </h3>
 
               <p className="mt-0.5 text-[11px] text-sky-100/60">
-                {f.round ?? "Match"} · {formatDate(f.starting_at)}
+                {[f.round, leagueName, formatDate(f.starting_at)].filter(Boolean).join(" · ")}
               </p>
+              {venueCity && (
+                <p className="mt-0.5 text-[10px] text-sky-100/40 uppercase tracking-wider">
+                  📍 {venueCity}
+                </p>
+              )}
             </div>
 
           </div>

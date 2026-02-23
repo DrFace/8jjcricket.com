@@ -12,7 +12,14 @@ export default function LiveScoreCard({ f }: { f: Fixture }) {
   const homeLabel = (home as any)?.short_name || home?.name || "Team 1";
   const awayLabel = (away as any)?.short_name || away?.name || "Team 2";
 
-  const metaLine = `${f.round ?? "Match"} · ${formatDate(f.starting_at)}`;
+  const leagueName = f.league?.name;
+  const venueCity = (f as any).venue?.city || (f as any).venue?.name;
+  
+  const metaLine = [
+    f.round,
+    leagueName,
+    formatDate(f.starting_at)
+  ].filter(Boolean).join(" · ");
 
   const runsArr = Array.isArray((f as any).runs) ? (f as any).runs : [];
 
@@ -60,8 +67,15 @@ export default function LiveScoreCard({ f }: { f: Fixture }) {
                 {homeLabel} vs {awayLabel}
               </h3>
               <p className="text-xs text-india-gold/70 mt-1">{metaLine}</p>
+              {venueCity && (
+                <p className="text-[10px] text-white/40 mt-0.5 uppercase tracking-wider">
+                  📍 {venueCity}
+                </p>
+              )}
               {f.status && (
-                <p className="text-xs text-india-saffron/80 mt-0.5">{f.status}</p>
+                <p className="text-xs text-india-saffron/80 mt-1 font-bold">
+                  {f.status}
+                </p>
               )}
             </div>
 

@@ -545,6 +545,7 @@
 
 
 // components/PartnersCarousel.tsx
+// components/PartnersCarousel.tsx
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -569,13 +570,13 @@ const AUTO_PLAY_INTERVAL = 4000;
 const SLIDE_WIDTH = 320;
 const CARD_SIZE = 300;
 
-// ── Ring geometry — increase RING_GAP & RING_THICKNESS to make it bigger ──
-const RING_GAP       = 28;   // was 18 — more space between logo edge and ring
-const RING_THICKNESS = 38;   // was 22 — much thicker fire stroke
+// ── Ring geometry ──
+const RING_GAP       = 28;
+const RING_THICKNESS = 38;
 
 const LOGO_R   = CARD_SIZE / 2;
 const RING_R   = LOGO_R + RING_GAP + RING_THICKNESS / 2;
-const SVG_PAD  = 100; // more padding for bigger glow/sparks
+const SVG_PAD  = 100;
 const SVG_SIZE = (RING_R + RING_THICKNESS / 2 + SVG_PAD) * 2;
 const SVG_C    = SVG_SIZE / 2;
 
@@ -768,31 +769,34 @@ export default function PartnersCarousel() {
       }}
     >
       <defs>
-        {/* Heavy turbulence for thick flame distortion */}
+        {/* 
+          CHANGE: Slowed turbulence animation durations (2–3× longer).
+          CHANGE: Reduced displacement scale from 22→14 and 18→11 for calmer distortion.
+        */}
         <filter id="fr-turb" x="-40%" y="-40%" width="180%" height="180%">
-          <feTurbulence type="turbulence" baseFrequency="0.018" numOctaves="4" seed="3" result="turb">
-            <animate attributeName="baseFrequency" dur="3s"
-              values="0.018;0.01;0.024;0.014;0.018" repeatCount="indefinite" />
-            <animate attributeName="seed" dur="2.5s"
+          <feTurbulence type="turbulence" baseFrequency="0.016" numOctaves="4" seed="3" result="turb">
+            <animate attributeName="baseFrequency" dur="8s"
+              values="0.016;0.009;0.02;0.012;0.016" repeatCount="indefinite" />
+            <animate attributeName="seed" dur="7s"
               values="3;9;5;13;3" repeatCount="indefinite" />
           </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="turb" scale="22"
+          {/* CHANGE: scale 22 → 14 */}
+          <feDisplacementMap in="SourceGraphic" in2="turb" scale="14"
             xChannelSelector="R" yChannelSelector="G" />
         </filter>
 
-        {/* Softer turbulence for secondary layers */}
         <filter id="fr-turb2" x="-40%" y="-40%" width="180%" height="180%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="3" seed="7" result="turb">
-            <animate attributeName="baseFrequency" dur="5s"
-              values="0.012;0.022;0.008;0.018;0.012" repeatCount="indefinite" />
-            <animate attributeName="seed" dur="4s"
+          <feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="3" seed="7" result="turb">
+            <animate attributeName="baseFrequency" dur="10s"
+              values="0.010;0.018;0.007;0.015;0.010" repeatCount="indefinite" />
+            <animate attributeName="seed" dur="9s"
               values="7;2;11;4;7" repeatCount="indefinite" />
           </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="turb" scale="18"
+          {/* CHANGE: scale 18 → 11 */}
+          <feDisplacementMap in="SourceGraphic" in2="turb" scale="11"
             xChannelSelector="G" yChannelSelector="R" />
         </filter>
 
-        {/* Tight glow bloom */}
         <filter id="fr-glow" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="7" result="blur" />
           <feMerge>
@@ -802,17 +806,14 @@ export default function PartnersCarousel() {
           </feMerge>
         </filter>
 
-        {/* Wide outer glow */}
         <filter id="fr-glow-wide" x="-80%" y="-80%" width="260%" height="260%">
           <feGaussianBlur stdDeviation="20" />
         </filter>
 
-        {/* Super-wide ambient haze */}
         <filter id="fr-glow-haze" x="-100%" y="-100%" width="300%" height="300%">
           <feGaussianBlur stdDeviation="35" />
         </filter>
 
-        {/* Bright dot glow */}
         <filter id="fr-dot-glow" x="-100%" y="-100%" width="300%" height="300%">
           <feGaussianBlur stdDeviation="5" result="blur" />
           <feMerge>
@@ -822,33 +823,35 @@ export default function PartnersCarousel() {
           </feMerge>
         </filter>
 
-        {/* Gradients */}
+        {/* 
+          CHANGE: Gradients shifted from harsh red (#ff1100) toward amber/gold tones.
+          Deep reds replaced with warm orange-ambers. Opacity pulled back on outer layers.
+        */}
         <linearGradient id="fr-grad-hot" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stopColor="#ff1100" />
-          <stop offset="20%"  stopColor="#ff5500" />
-          <stop offset="40%"  stopColor="#ff9900" />
-          <stop offset="50%"  stopColor="#ffee00" />
-          <stop offset="60%"  stopColor="#ff9900" />
-          <stop offset="80%"  stopColor="#ff5500" />
-          <stop offset="100%" stopColor="#ff1100" />
+          <stop offset="0%"   stopColor="#cc5500" />   {/* was #ff1100 */}
+          <stop offset="20%"  stopColor="#e87020" />   {/* was #ff5500 */}
+          <stop offset="40%"  stopColor="#f5a030" />   {/* was #ff9900 */}
+          <stop offset="50%"  stopColor="#ffd060" />   {/* was #ffee00 */}
+          <stop offset="60%"  stopColor="#f5a030" />
+          <stop offset="80%"  stopColor="#e87020" />
+          <stop offset="100%" stopColor="#cc5500" />
         </linearGradient>
 
         <linearGradient id="fr-grad-white" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stopColor="#ffcc00" />
-          <stop offset="25%"  stopColor="#ffffff" />
-          <stop offset="50%"  stopColor="#ffff88" />
-          <stop offset="75%"  stopColor="#ffffff" />
-          <stop offset="100%" stopColor="#ffcc00" />
+          <stop offset="0%"   stopColor="#f5c060" />   {/* was #ffcc00 */}
+          <stop offset="25%"  stopColor="#fff8e0" />   {/* was #ffffff — softer white */}
+          <stop offset="50%"  stopColor="#ffeeaa" />   {/* was #ffff88 */}
+          <stop offset="75%"  stopColor="#fff8e0" />
+          <stop offset="100%" stopColor="#f5c060" />
         </linearGradient>
 
         <linearGradient id="fr-grad-deep" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stopColor="#cc0000" />
-          <stop offset="30%"  stopColor="#ff3300" />
-          <stop offset="60%"  stopColor="#ff7700" />
-          <stop offset="100%" stopColor="#cc0000" />
+          <stop offset="0%"   stopColor="#8b3a00" />   {/* was #cc0000 */}
+          <stop offset="30%"  stopColor="#c05010" />   {/* was #ff3300 */}
+          <stop offset="60%"  stopColor="#d97828" />   {/* was #ff7700 */}
+          <stop offset="100%" stopColor="#8b3a00" />
         </linearGradient>
 
-        {/* Clip: only draw outside the logo circle */}
         <clipPath id="fr-clip">
           <path
             d={`M 0 0 H ${SVG_SIZE} V ${SVG_SIZE} H 0 Z
@@ -860,132 +863,132 @@ export default function PartnersCarousel() {
         </clipPath>
       </defs>
 
-      {/* ── Layer 0: Huge ambient heat haze ── */}
+      {/* ── Layer 0: Ambient heat haze — CHANGE: opacity 0.18 → 0.10, stroke darkened ── */}
       <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
-        stroke="#ff4400" strokeWidth={RING_THICKNESS * 5}
-        opacity={0.18} filter="url(#fr-glow-haze)"
+        stroke="#c04000" strokeWidth={RING_THICKNESS * 5}
+        opacity={0.10} filter="url(#fr-glow-haze)"
         clipPath="url(#fr-clip)" />
 
-      {/* ── Layer 1: Wide deep-red glow bloom ── */}
+      {/* ── Layer 1: Wide deep glow — CHANGE: opacity 0.4 → 0.22, color darkened ── */}
       <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
-        stroke="#ff3300" strokeWidth={RING_THICKNESS * 3.5}
-        opacity={0.4} filter="url(#fr-glow-wide)"
+        stroke="#b84a10" strokeWidth={RING_THICKNESS * 3.5}
+        opacity={0.22} filter="url(#fr-glow-wide)"
         clipPath="url(#fr-clip)" />
 
-      {/* ── Layer 2: Slow rotating base ring ── */}
+      {/* ── Layer 2: Slow rotating base ring — CHANGE: dur 8s → 18s ── */}
       <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
         stroke="url(#fr-grad-deep)" strokeWidth={RING_THICKNESS * 1.6}
-        opacity={0.9} filter="url(#fr-glow)"
+        opacity={0.75} filter="url(#fr-glow)"
         clipPath="url(#fr-clip)">
         <animateTransform attributeName="transform" type="rotate"
           from={`0 ${SVG_C} ${SVG_C}`} to={`360 ${SVG_C} ${SVG_C}`}
-          dur="8s" repeatCount="indefinite" />
+          dur="18s" repeatCount="indefinite" />
       </circle>
 
-      {/* ── Layer 3: Medium turbulent ring — main fire body ── */}
+      {/* ── Layer 3: Main fire body — CHANGE: dur 3.5s → 9s ── */}
       <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
         stroke="url(#fr-grad-hot)" strokeWidth={RING_THICKNESS * 1.3}
-        opacity={1} filter="url(#fr-turb)"
+        opacity={0.85} filter="url(#fr-turb)"
         clipPath="url(#fr-clip)">
         <animateTransform attributeName="transform" type="rotate"
           from={`0 ${SVG_C} ${SVG_C}`} to={`-360 ${SVG_C} ${SVG_C}`}
-          dur="3.5s" repeatCount="indefinite" />
+          dur="9s" repeatCount="indefinite" />
       </circle>
 
-      {/* ── Layer 4: Second turbulent ring — counter spin, fractal noise ── */}
+      {/* ── Layer 4: Counter-spin fractal — CHANGE: dur 5s → 13s ── */}
       <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
         stroke="url(#fr-grad-hot)" strokeWidth={RING_THICKNESS}
-        opacity={0.85} filter="url(#fr-turb2)"
+        opacity={0.70} filter="url(#fr-turb2)"
         clipPath="url(#fr-clip)">
         <animateTransform attributeName="transform" type="rotate"
           from={`90 ${SVG_C} ${SVG_C}`} to={`450 ${SVG_C} ${SVG_C}`}
-          dur="5s" repeatCount="indefinite" />
+          dur="13s" repeatCount="indefinite" />
       </circle>
 
-      {/* ── Layer 5: Fast-spinning mid ring ── */}
+      {/* ── Layer 5: Fast mid ring — CHANGE: dur 2s → 7s ── */}
       <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
         stroke="url(#fr-grad-hot)" strokeWidth={RING_THICKNESS * 0.7}
-        opacity={0.8} filter="url(#fr-turb)"
+        opacity={0.65} filter="url(#fr-turb)"
         clipPath="url(#fr-clip)">
         <animateTransform attributeName="transform" type="rotate"
           from={`180 ${SVG_C} ${SVG_C}`} to={`-180 ${SVG_C} ${SVG_C}`}
-          dur="2s" repeatCount="indefinite" />
+          dur="7s" repeatCount="indefinite" />
       </circle>
 
-      {/* ── Layer 6: White-hot core streak ring ── */}
+      {/* ── Layer 6: White-hot core streak — CHANGE: dur 1.8s → 6s ── */}
       <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
         stroke="url(#fr-grad-white)" strokeWidth={RING_THICKNESS * 0.35}
-        opacity={0.9} filter="url(#fr-turb)"
+        opacity={0.75} filter="url(#fr-turb)"
         clipPath="url(#fr-clip)">
         <animateTransform attributeName="transform" type="rotate"
           from={`270 ${SVG_C} ${SVG_C}`} to={`-90 ${SVG_C} ${SVG_C}`}
-          dur="1.8s" repeatCount="indefinite" />
+          dur="6s" repeatCount="indefinite" />
       </circle>
 
-      {/* ── Layer 7: Pulsing brightness surge ── */}
+      {/* ── Layer 7: Pulsing brightness — CHANGE: dur 1.2s → 3.5s ── */}
       <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
-        stroke="#ffaa00" strokeWidth={RING_THICKNESS * 0.8}
+        stroke="#e8900a" strokeWidth={RING_THICKNESS * 0.8}
         filter="url(#fr-glow)" clipPath="url(#fr-clip)">
         <animate attributeName="opacity"
-          dur="1.2s" values="0.2;0.8;0.4;1;0.6;0.2" repeatCount="indefinite" />
-        <animate attributeName="stroke-width" dur="1.2s"
-          values={`${RING_THICKNESS*0.4};${RING_THICKNESS*1.1};${RING_THICKNESS*0.5};${RING_THICKNESS*0.9};${RING_THICKNESS*0.4}`}
+          dur="3.5s" values="0.15;0.55;0.28;0.70;0.40;0.15" repeatCount="indefinite" />
+        <animate attributeName="stroke-width" dur="3.5s"
+          values={`${RING_THICKNESS*0.4};${RING_THICKNESS*0.9};${RING_THICKNESS*0.5};${RING_THICKNESS*0.8};${RING_THICKNESS*0.4}`}
           repeatCount="indefinite" />
       </circle>
 
-      {/* ── Layer 8: Scale-pulsing ring for breathe effect ── */}
+      {/* ── Layer 8: Breathe ring — CHANGE: dur 2.4s → 6s ── */}
       <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
-        stroke="#ff6600" strokeWidth={RING_THICKNESS * 0.5}
-        opacity={0.6} filter="url(#fr-glow)" clipPath="url(#fr-clip)">
+        stroke="#d07020" strokeWidth={RING_THICKNESS * 0.5}
+        opacity={0.45} filter="url(#fr-glow)" clipPath="url(#fr-clip)">
         <animateTransform attributeName="transform" type="scale"
           values={`1 1;1.04 1.04;0.97 0.97;1.02 1.02;1 1`}
-          dur="2.4s" repeatCount="indefinite"
+          dur="6s" repeatCount="indefinite"
           additive="sum" />
         <animate attributeName="opacity"
-          values="0.4;0.8;0.5;0.9;0.4" dur="2.4s" repeatCount="indefinite" />
+          values="0.3;0.6;0.35;0.65;0.3" dur="6s" repeatCount="indefinite" />
       </circle>
 
-      {/* ── Orbiting glowing ember dots × 3 ── */}
-      <circle r={6} fill="#ffee44" filter="url(#fr-dot-glow)">
-        <animateMotion dur="2.8s" repeatCount="indefinite"
+      {/* ── Orbiting ember dots × 3 — CHANGE: all durations doubled ── */}
+      <circle r={6} fill="#f5c040" filter="url(#fr-dot-glow)">
+        <animateMotion dur="6s" repeatCount="indefinite"
           path={`M ${SVG_C} ${SVG_C - RING_R} a ${RING_R} ${RING_R} 0 1 1 0.001 0`} />
-        <animate attributeName="r" dur="2.8s" values="5;9;6;10;5" repeatCount="indefinite" />
-        <animate attributeName="opacity" dur="2.8s" values="0.7;1;0.8;1;0.7" repeatCount="indefinite" />
+        <animate attributeName="r" dur="6s" values="5;9;6;10;5" repeatCount="indefinite" />
+        <animate attributeName="opacity" dur="6s" values="0.6;0.9;0.7;1;0.6" repeatCount="indefinite" />
       </circle>
 
-      <circle r={5} fill="#ff9900" filter="url(#fr-dot-glow)">
-        <animateMotion dur="4s" repeatCount="indefinite"
+      <circle r={5} fill="#e08820" filter="url(#fr-dot-glow)">
+        <animateMotion dur="8s" repeatCount="indefinite"
           path={`M ${SVG_C} ${SVG_C + RING_R} a ${RING_R} ${RING_R} 0 1 0 0.001 0`} />
-        <animate attributeName="r" dur="4s" values="4;8;5;9;4" repeatCount="indefinite" />
-        <animate attributeName="opacity" dur="4s" values="0.6;1;0.7;1;0.6" repeatCount="indefinite" />
+        <animate attributeName="r" dur="8s" values="4;8;5;9;4" repeatCount="indefinite" />
+        <animate attributeName="opacity" dur="8s" values="0.5;0.9;0.6;0.9;0.5" repeatCount="indefinite" />
       </circle>
 
-      <circle r={4} fill="#ffffff" filter="url(#fr-dot-glow)">
-        <animateMotion dur="3.4s" repeatCount="indefinite" begin="1.2s"
+      <circle r={4} fill="#fff0c0" filter="url(#fr-dot-glow)">
+        <animateMotion dur="7s" repeatCount="indefinite" begin="1.2s"
           path={`M ${SVG_C} ${SVG_C - RING_R} a ${RING_R} ${RING_R} 0 1 0 0.001 0`} />
-        <animate attributeName="r" dur="3.4s" values="3;7;4;8;3" repeatCount="indefinite" />
-        <animate attributeName="opacity" dur="3.4s" values="0.5;1;0.6;0.9;0.5" repeatCount="indefinite" />
+        <animate attributeName="r" dur="7s" values="3;7;4;8;3" repeatCount="indefinite" />
+        <animate attributeName="opacity" dur="7s" values="0.4;0.85;0.5;0.8;0.4" repeatCount="indefinite" />
       </circle>
 
-      {/* ── Static hot dots at top & bottom ── */}
+      {/* ── Static hot dots at top & bottom — CHANGE: dur doubled, colors softened ── */}
       {/* Top */}
-      <circle cx={SVG_C} cy={SVG_C - RING_R} r={10} fill="#ffffff" filter="url(#fr-dot-glow)">
-        <animate attributeName="r"       dur="1s" values="8;13;9;14;8"       repeatCount="indefinite" />
-        <animate attributeName="opacity" dur="1s" values="0.7;1;0.8;1;0.7"   repeatCount="indefinite" />
+      <circle cx={SVG_C} cy={SVG_C - RING_R} r={10} fill="#fff4d0" filter="url(#fr-dot-glow)">
+        <animate attributeName="r"       dur="2.5s" values="8;13;9;14;8"       repeatCount="indefinite" />
+        <animate attributeName="opacity" dur="2.5s" values="0.6;0.9;0.7;1;0.6"   repeatCount="indefinite" />
       </circle>
-      <circle cx={SVG_C} cy={SVG_C - RING_R} r={18} fill="#ff6600" opacity={0.5} filter="url(#fr-glow-wide)">
-        <animate attributeName="r" dur="1s" values="15;24;17;26;15" repeatCount="indefinite" />
+      <circle cx={SVG_C} cy={SVG_C - RING_R} r={18} fill="#d06010" opacity={0.35} filter="url(#fr-glow-wide)">
+        <animate attributeName="r" dur="2.5s" values="15;24;17;26;15" repeatCount="indefinite" />
       </circle>
       {/* Bottom */}
-      <circle cx={SVG_C} cy={SVG_C + RING_R} r={10} fill="#ffffff" filter="url(#fr-dot-glow)">
-        <animate attributeName="r"       dur="1.3s" values="8;14;10;13;8"      repeatCount="indefinite" />
-        <animate attributeName="opacity" dur="1.3s" values="0.7;1;0.8;1;0.7"  repeatCount="indefinite" />
+      <circle cx={SVG_C} cy={SVG_C + RING_R} r={10} fill="#fff4d0" filter="url(#fr-dot-glow)">
+        <animate attributeName="r"       dur="3s" values="8;14;10;13;8"      repeatCount="indefinite" />
+        <animate attributeName="opacity" dur="3s" values="0.6;0.9;0.7;1;0.6"  repeatCount="indefinite" />
       </circle>
-      <circle cx={SVG_C} cy={SVG_C + RING_R} r={18} fill="#ff6600" opacity={0.5} filter="url(#fr-glow-wide)">
-        <animate attributeName="r" dur="1.3s" values="15;26;18;24;15" repeatCount="indefinite" />
+      <circle cx={SVG_C} cy={SVG_C + RING_R} r={18} fill="#d06010" opacity={0.35} filter="url(#fr-glow-wide)">
+        <animate attributeName="r" dur="3s" values="15;26;18;24;15" repeatCount="indefinite" />
       </circle>
 
-      {/* ── 12 Spark streaks shooting outward ── */}
+      {/* ── 12 Spark streaks — CHANGE: dur multiplied ~2×, colors warmer ── */}
       {SPARK_ANGLES.map((angle, i) => {
         const rad  = (angle * Math.PI) / 180;
         const x1   = SVG_C + Math.cos(rad) * (RING_R - 6);
@@ -994,19 +997,19 @@ export default function PartnersCarousel() {
         const y2far = SVG_C + Math.sin(rad) * (RING_R + 50);
         const x2end = SVG_C + Math.cos(rad) * (RING_R + 70);
         const y2end = SVG_C + Math.sin(rad) * (RING_R + 70);
-        const delay = (i * 0.22).toFixed(2);
-        const dur   = (1.6 + (i % 3) * 0.4).toFixed(1);
+        const delay = (i * 0.45).toFixed(2);             // was 0.22
+        const dur   = (3.5 + (i % 3) * 0.8).toFixed(1); // was 1.6 + 0.4
         return (
           <line key={angle} x1={x1} y1={y1} x2={x1} y2={y1}
-            stroke={i % 3 === 0 ? "#ffffff" : i % 3 === 1 ? "#ffee00" : "#ff9900"}
+            stroke={i % 3 === 0 ? "#fff8e0" : i % 3 === 1 ? "#f5d060" : "#e89030"}
             strokeWidth={3} strokeLinecap="round"
             filter="url(#fr-dot-glow)">
             <animate attributeName="opacity"
               dur={`${dur}s`} begin={`${delay}s`}
-              values="0;1;0.9;0.5;0" repeatCount="indefinite" />
+              values="0;0.8;0.7;0.4;0" repeatCount="indefinite" />
             <animate attributeName="stroke-width"
               dur={`${dur}s`} begin={`${delay}s`}
-              values="1;4;2.5;1;0" repeatCount="indefinite" />
+              values="1;3.5;2;1;0" repeatCount="indefinite" />
             <animate attributeName="x2"
               dur={`${dur}s`} begin={`${delay}s`}
               values={`${x1};${x2far};${x2end}`} repeatCount="indefinite" />
@@ -1017,25 +1020,25 @@ export default function PartnersCarousel() {
         );
       })}
 
-      {/* ── 8 Rising ember particles ── */}
+      {/* ── 8 Rising ember particles — CHANGE: dur multiplied ~2× ── */}
       {EMBER_ANGLES.map((angle, i) => {
         const rad = (angle * Math.PI) / 180;
         const cx  = SVG_C + Math.cos(rad) * RING_R;
         const cy  = SVG_C + Math.sin(rad) * RING_R;
-        const dur = (1.4 + i * 0.25).toFixed(2);
+        const dur = (3.0 + i * 0.5).toFixed(2);          // was 1.4 + 0.25
         const rise = 30 + (i % 3) * 14;
         return (
           <circle key={angle} cx={cx} cy={cy} r={4}
-            fill={i % 2 === 0 ? "#ffdd00" : "#ff8800"}
+            fill={i % 2 === 0 ? "#f5cc50" : "#e08830"}
             filter="url(#fr-dot-glow)">
             <animate attributeName="opacity"
-              dur={`${dur}s`} begin={`${(i * 0.3).toFixed(2)}s`}
-              values="0;1;0.8;0" repeatCount="indefinite" />
+              dur={`${dur}s`} begin={`${(i * 0.55).toFixed(2)}s`}
+              values="0;0.85;0.65;0" repeatCount="indefinite" />
             <animate attributeName="cy"
-              dur={`${dur}s`} begin={`${(i * 0.3).toFixed(2)}s`}
+              dur={`${dur}s`} begin={`${(i * 0.55).toFixed(2)}s`}
               values={`${cy};${cy - rise / 2};${cy - rise}`} repeatCount="indefinite" />
             <animate attributeName="r"
-              dur={`${dur}s`} begin={`${(i * 0.3).toFixed(2)}s`}
+              dur={`${dur}s`} begin={`${(i * 0.55).toFixed(2)}s`}
               values="4;6;1" repeatCount="indefinite" />
           </circle>
         );
@@ -1067,7 +1070,6 @@ export default function PartnersCarousel() {
           mask-image:linear-gradient(to right,transparent 0%,black 14%,black 86%,transparent 100%);
         }
         
-        /* Navigation Arrows */
         .nav-arrow {
           position: absolute;
           top: 50%;
@@ -1078,7 +1080,7 @@ export default function PartnersCarousel() {
           border-radius: 50%;
           background: rgba(20, 25, 35, 0.95);
           backdrop-filter: blur(15px);
-          border: 3px solid #ff9900;
+          border: 3px solid #ff990079;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1104,23 +1106,15 @@ export default function PartnersCarousel() {
           box-shadow: 0 0 35px rgba(255, 153, 0, 0.8), 0 2px 15px rgba(0, 0, 0, 0.5);
         }
         
-        .nav-arrow-left {
-          left: 40px;
-        }
-        
-        .nav-arrow-right {
-          right: 40px;
-        }
+        .nav-arrow-left  { left: 40px; }
+        .nav-arrow-right { right: 40px; }
         
         @media (max-width: 768px) {
-          .nav-arrow {
-            width: 50px;
-            height: 50px;
-            font-size: 28px;
-          }
-          .nav-arrow-left { left: 15px; }
+          .nav-arrow { width: 50px; height: 50px; font-size: 28px; }
+          .nav-arrow-left  { left: 15px; }
           .nav-arrow-right { right: 15px; }
         }
+
         .stage {
           position:relative; width:100%; height:100%;
           display:flex; align-items:center; justify-content:center; cursor:grab;
@@ -1154,7 +1148,6 @@ export default function PartnersCarousel() {
           background: transparent !important;
         }
 
-        /* Side card subtle glow ring */
         .side-ring-glow {
           position:absolute; top:50%; left:50%;
           width:${CARD_SIZE + RING_GAP * 2 + RING_THICKNESS * 2}px;
@@ -1206,7 +1199,6 @@ export default function PartnersCarousel() {
         </div>
 
         <div className="stage-wrap">
-          {/* Left Arrow */}
           <div 
             className="nav-arrow nav-arrow-left"
             onClick={() => {
@@ -1218,7 +1210,6 @@ export default function PartnersCarousel() {
             ‹
           </div>
           
-          {/* Right Arrow */}
           <div 
             className="nav-arrow nav-arrow-right"
             onClick={() => {

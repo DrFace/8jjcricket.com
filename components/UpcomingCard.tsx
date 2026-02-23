@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { formatDate, cn } from "@/lib/utils";
 import { Match } from "@/lib/cricket-types";
+import { CalcRuns, ScoreLine } from "@/lib/match";
 
 export default function UpcomingCard({ f }: { f: Match }) {
   const home = f.localteam;
@@ -12,7 +13,18 @@ export default function UpcomingCard({ f }: { f: Match }) {
   const awayLabel =
     away?.short_name || away?.name || `Team ${f.visitorteam_id}`;
 
-  const metaLine = `${f.round ?? "Match"} · ${formatDate(f.starting_at)}`;
+  const leagueName = f.league?.name;
+  const venueCity = f.venue?.city || f.venue?.name;
+
+  const metaLine = [
+    f.round,
+    leagueName,
+    formatDate(f.starting_at)
+  ].filter(Boolean).join(" · ");
+
+  const runsArr = Array.isArray(f.runs) ? f.runs : [];
+  const homeRuns = CalcRuns(runsArr, f.localteam_id);
+  const awayRuns = CalcRuns(runsArr, f.visitorteam_id);
 
   const matchId =
     (f as any)?.sportmonks_id ??
@@ -26,18 +38,15 @@ export default function UpcomingCard({ f }: { f: Match }) {
     if (!matchId) e.preventDefault();
   };
 
+  const hasRuns = runsArr.length > 0;
+
   return (
-    <Link
-      href={href}
-      onClick={handleClick}
-      aria-disabled={!matchId}
+    <div
       className={cn(
         "group block rounded-2xl transition-all duration-300",
         "india-card-gold-glow",
-        "hover:scale-[1.02]",
-        !matchId && "opacity-70 cursor-not-allowed hover:scale-100",
+        "cursor-default",
       )}
-      title={!matchId ? "Match id unavailable" : undefined}
     >
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-india-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -50,8 +59,13 @@ export default function UpcomingCard({ f }: { f: Match }) {
                 {homeLabel} vs {awayLabel}
               </h3>
               <p className="text-xs text-india-gold/70 mt-1">{metaLine}</p>
+              {venueCity && (
+                <p className="text-[10px] text-white/40 mt-0.5 uppercase tracking-wider">
+                  📍 {venueCity}
+                </p>
+              )}
               {f.status && (
-                <p className="text-xs text-india-saffron/80 mt-0.5">
+                <p className="text-xs text-india-saffron/80 mt-1 font-bold">
                   {f.status}
                 </p>
               )}
@@ -64,7 +78,7 @@ export default function UpcomingCard({ f }: { f: Match }) {
           <div className="grid grid-cols-[1fr_auto_1fr] gap-3 items-center">
             {/* Home Team */}
             <div className="text-left">
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-2">
                 <div className="w-8 h-8 flex items-center justify-center rounded-full flex-shrink-0 bg-white/5 ring-1 ring-white/10">
                   <img
                     src={home?.image_path || home?.logo || "/images/cricket-team-placeholder.png"}
@@ -79,6 +93,11 @@ export default function UpcomingCard({ f }: { f: Match }) {
                   {homeLabel}
                 </span>
               </div>
+              {hasRuns && (
+                <p className="text-xl font-bold text-india-gold">
+                  {ScoreLine(homeRuns)}
+                </p>
+              )}
             </div>
 
             {/* Center VS */}
@@ -91,7 +110,7 @@ export default function UpcomingCard({ f }: { f: Match }) {
 
             {/* Away Team */}
             <div className="text-right">
-              <div className="flex items-center justify-end gap-2 mb-1">
+              <div className="flex items-center justify-end gap-2 mb-2">
                 <span className="font-semibold text-white text-sm truncate max-w-[100px] sm:max-w-none">
                   {awayLabel}
                 </span>
@@ -106,6 +125,11 @@ export default function UpcomingCard({ f }: { f: Match }) {
                   />
                 </div>
               </div>
+              {hasRuns && (
+                <p className="text-xl font-bold text-india-gold">
+                  {ScoreLine(awayRuns)}
+                </p>
+              )}
             </div>
           </div>
 
@@ -116,6 +140,6 @@ export default function UpcomingCard({ f }: { f: Match }) {
           )}
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

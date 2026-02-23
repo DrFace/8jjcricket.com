@@ -18,6 +18,9 @@ export default function MobileLiveCard({ f }: { f: Fixture }) {
   const homeRuns = CalcRuns(runsArr, f.localteam_id);
   const awayRuns = CalcRuns(runsArr, f.visitorteam_id);
 
+  const leagueName = f.league?.name;
+  const venueCity = (f as any).venue?.city || (f as any).venue?.name;
+
   return (
     <Link
       href={`/mobile/match/${f.fixture_id}`}
@@ -55,8 +58,13 @@ export default function MobileLiveCard({ f }: { f: Fixture }) {
               </h3>
 
               <p className="mt-0.5 text-[11px] text-sky-100/60">
-                {f.round ?? "Match"} · {formatDate(f.starting_at)}
+                {[f.round, leagueName, formatDate(f.starting_at)].filter(Boolean).join(" · ")}
               </p>
+              {venueCity && (
+                <p className="mt-0.5 text-[10px] text-sky-100/40 uppercase tracking-wider">
+                  📍 {venueCity}
+                </p>
+              )}
             </div>
 
           </div>
