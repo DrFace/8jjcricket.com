@@ -645,3 +645,8 @@ a {
 .translated-rtl {
   margin-top: 0 !important;
 }
+
+
+.HeaderTopWideBanner{
+  overflow: hidden;
+}
