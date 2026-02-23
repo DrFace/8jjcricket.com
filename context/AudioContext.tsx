@@ -1,5 +1,6 @@
 "use client";
 
+import { AudioItem } from "@/types/audio";
 import {
   createContext,
   useContext,
@@ -8,7 +9,6 @@ import {
   useState,
   useCallback,
 } from "react";
-import { type AudioItem } from "@/components/MusicPopup";
 
 type RepeatMode = "off" | "all" | "one";
 interface AudioContextProps {
@@ -33,10 +33,13 @@ interface AudioContextProps {
 
 const AudioContext = createContext<AudioContextProps | undefined>(undefined);
 
+const AUDIO_PERSIST_KEY = "globalAudioState";
+
 export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const shouldAutoPlayRef = useRef(false);
 
   const [audios, setAudios] = useState<AudioItem[]>([]);
   const [currentTrack, setCurrentTrack] = useState<AudioItem | null>(null);
@@ -64,6 +67,14 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   // Play history to support Previous while shuffling
   const playHistoryRef = useRef<number[]>([]);
 
+  // 1. Add a ref that mirrors repeatMode
+  const repeatModeRef = useRef<RepeatMode>(repeatMode);
+
+  // 2. Keep it in sync whenever repeatMode changes
+  useEffect(() => {
+    repeatModeRef.current = repeatMode;
+  }, [repeatMode]);
+
   /* ===============================
      1️⃣ Load audio list
   =============================== */
@@ -75,8 +86,48 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
 
         setAudios(data);
 
-        if (data.length) {
+        if (!data.length) return;
+
+        try {
+          const saved = localStorage.getItem(AUDIO_PERSIST_KEY);
+
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            const foundTrack = data.find((a) => a.id === parsed.trackId);
+
+            if (foundTrack) {
+              setCurrentTrack(foundTrack);
+
+              shouldAutoPlayRef.current = parsed.isPlaying ?? false;
+
+              setTimeout(() => {
+                const audio = audioRef.current;
+                if (!audio) return;
+
+                audio.currentTime = parsed.currentTime || 0;
+                audio.muted = parsed.isMuted ?? false;
+                audio.volume = parsed.volume ?? 0.7;
+                setIsMuted(parsed.isMuted ?? false);
+                setVolume(parsed.volume ?? 0.7);
+              }, 300);
+
+              return;
+            }
+            localStorage.removeItem(AUDIO_PERSIST_KEY);
+            // ✅ No valid saved state → first visit
+            setCurrentTrack(data[0]);
+            shouldAutoPlayRef.current = true;
+            // setIsMuted(false);
+            setVolume(0.7);
+          }
+
+          // ✅ No saved state → first visit
           setCurrentTrack(data[0]);
+          shouldAutoPlayRef.current = true;
+        } catch {
+          // If JSON fails, fallback safely
+          setCurrentTrack(data[0]);
+          shouldAutoPlayRef.current = true;
         }
       } catch (err) {
         console.error("Audio load failed:", err);
@@ -112,9 +163,15 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       audio.src = trackUrlWithBase;
       audio.load();
 
-      // Only autoplay if user has already interacted
-      if (hasInteractedRef.current) {
-        audio.play().catch((err) => console.warn("Play failed:", err));
+      // Decide play behavior safely
+      const shouldResume =
+        shouldAutoPlayRef.current ||
+        (!audio.paused && hasInteractedRef.current);
+
+      if (shouldResume) {
+        audio
+          .play()
+          .catch((err) => console.warn("Play after track change failed:", err));
       }
     }
   }, [currentTrack]);
@@ -128,7 +185,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       hasInteractedRef.current = true;
 
       const audio = audioRef.current;
-      if (audio && audio.paused && currentTrack) {
+
+      if (audio && audio.paused && currentTrack && shouldAutoPlayRef.current) {
         audio
           .play()
           .catch((err) => console.warn("Play after interaction failed:", err));
@@ -183,12 +241,14 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
     const audio = audioRef.current;
     if (!audios.length) return;
 
+    const wasPlaying = !audio?.paused; // check if user was playing
+
     // repeat-one => restart current
-    if (repeatMode === "one" && currentTrack) {
+    // ✅ Read from ref — always fresh, never stale
+    if (repeatModeRef.current === "one" && currentTrack) {
       if (audio) {
         audio.currentTime = 0;
         audio.play().catch(() => {});
-        setIsPlaying(true);
       }
       return;
     }
@@ -202,29 +262,25 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     }
 
+    let nextTrackItem: AudioItem | null = null;
+
     if (shuffle) {
       // pick a random index (try to avoid immediate repeat)
-      if (audios.length === 1) {
-        setCurrentTrack(audios[0]);
-        return;
+      if (audios.length === 1) nextTrackItem = audios[0];
+      else {
+        let nextIdx = Math.floor(Math.random() * audios.length);
+        let attempts = 0;
+        while (audios[nextIdx].id === currentTrack?.id && attempts < 5) {
+          nextIdx = Math.floor(Math.random() * audios.length);
+          attempts++;
+        }
+        nextTrackItem = audios[nextIdx];
       }
-      let nextIdx = Math.floor(Math.random() * audios.length);
-      let attempts = 0;
-      while (audios[nextIdx].id === currentTrack?.id && attempts < 5) {
-        nextIdx = Math.floor(Math.random() * audios.length);
-        attempts++;
-      }
-      setCurrentTrack(audios[nextIdx]);
-      return;
-    }
-
-    const idx = getIndexById(currentTrack?.id);
-    if (idx >= 0 && idx < audios.length - 1) {
-      setCurrentTrack(audios[idx + 1]);
     } else {
-      if (repeatMode === "all") {
-        setCurrentTrack(audios[0]);
-      } else {
+      const idx = getIndexById(currentTrack?.id);
+      if (idx >= 0 && idx < audios.length - 1) nextTrackItem = audios[idx + 1];
+      else if (repeatModeRef.current === "all") nextTrackItem = audios[0];
+      else {
         if (audio) {
           audio.pause();
           audio.currentTime = 0;
@@ -232,10 +288,34 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
         setIsPlaying(false);
       }
     }
-  }, [audios, currentTrack, shuffle, repeatMode, getIndexById]);
+
+    if (nextTrackItem) {
+      setCurrentTrack(nextTrackItem);
+      // explicitly play if it was playing before
+      if (audio && wasPlaying) {
+        setTimeout(() => {
+          audio.play().catch(() => {});
+          setIsPlaying(true);
+        }, 50); // small delay to ensure src update
+      }
+    }
+  }, [audios, currentTrack, shuffle, getIndexById, isPlaying]);
 
   const previousTrack = useCallback(() => {
     if (!audios.length) return;
+
+    const audio = audioRef.current;
+    const wasPlaying = isPlaying;
+
+    const playTrack = (track: AudioItem) => {
+      setCurrentTrack(track);
+      if (audio && wasPlaying) {
+        setTimeout(() => {
+          audio.play().catch(() => {});
+          setIsPlaying(true);
+        }, 50);
+      }
+    };
 
     // Prefer history (works well when shuffled)
     const hist = playHistoryRef.current;
@@ -243,21 +323,20 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       const prevId = hist.pop();
       const prev = audios.find((a) => a.id === prevId);
       if (prev) {
-        setCurrentTrack(prev);
+        playTrack(prev);
         return;
       }
     }
 
     const idx = getIndexById(currentTrack?.id);
     if (idx > 0) {
-      setCurrentTrack(audios[idx - 1]);
+      playTrack(audios[idx - 1]);
     } else if (repeatMode === "all") {
-      setCurrentTrack(audios[audios.length - 1]);
+      playTrack(audios[audios.length - 1]);
     } else {
-      const audio = audioRef.current;
       if (audio) audio.currentTime = 0;
     }
-  }, [audios, currentTrack, repeatMode, getIndexById]);
+  }, [audios, currentTrack, repeatMode, getIndexById, isPlaying]);
 
   const toggleShuffle = useCallback(() => {
     setShuffle((s) => {
@@ -314,6 +393,67 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
     audio.muted = isMuted;
     audio.volume = Math.max(0, Math.min(1, volume));
   }, [isMuted, volume]);
+
+  /* ===============================
+   Persist Audio State
+=============================== */
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !currentTrack) return;
+
+    const saveState = () => {
+      const state = {
+        trackId: currentTrack.id,
+        currentTime: audio.currentTime,
+        isPlaying: !audio.paused,
+        isMuted,
+        volume,
+      };
+
+      try {
+        localStorage.setItem(AUDIO_PERSIST_KEY, JSON.stringify(state));
+      } catch {}
+    };
+
+    // Save every 1 second
+    const interval = setInterval(saveState, 1000);
+
+    // Also save when page is about to unload
+    window.addEventListener("beforeunload", saveState);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("beforeunload", saveState);
+    };
+  }, [currentTrack, isMuted, volume]);
+
+  // Add this ref near your other refs
+  const wasPlayingBeforeHideRef = useRef(false);
+
+  /* ===============================
+   🆕 Pause on minimize / background tab
+=============================== */
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      if (document.visibilityState === "hidden") {
+        wasPlayingBeforeHideRef.current = !audio.paused; // ✅ save real state before pause
+        audio.pause();
+      } else if (document.visibilityState === "visible") {
+        if (wasPlayingBeforeHideRef.current) {
+          // ✅ restore from ref, not state
+          audio.play().catch((err) => console.warn("Resume failed:", err));
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []); // ✅ empty deps — reads from ref not state
 
   return (
     <AudioContext.Provider

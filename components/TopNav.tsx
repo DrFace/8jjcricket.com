@@ -4,15 +4,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import NewsTicker from "@/components/NewsTicker";
-import { Megaphone, VolumeOff, Music2 } from "lucide-react";
+import { Megaphone } from "lucide-react";
 import { useState } from "react";
-import IconButton from "./ui/IconButton";
 import PrimaryButton from "./ui/PrimaryButton";
 import { usePathname } from "next/navigation";
 import { useAudio } from "@/context/AudioContext";
 import { GetGlobalAudio } from "@/lib/audio";
 import { motion } from "framer-motion";
-
 
 function NavItem({
   href,
@@ -225,7 +223,7 @@ export default function TopNav() {
         <div className="flex w-full items-center justify-between px-2 lg:px-4 py-2">
           <Link
             href="/"
-            className="flex items-center gap-2 text-lg lg:text-xl font-bold text-[var(--text-primary)] shrink-0"
+            className="flex justify-center gap-2 text-lg lg:text-xl font-bold shrink-0"
           >
             <Image
               src="/8jjlogo.png"
@@ -233,46 +231,50 @@ export default function TopNav() {
               width={44}
               height={44}
               priority
+              className="block"
             />
-<motion.div
-  className="logo3d-wrap"
-  initial="initial"
-  animate="animate"
-  whileHover="hover"
->
-  {/* Soft stadium glow behind */}
-  <span className="logo3d-glow" aria-hidden="true" />
+            <motion.div
+              className="logo3d-wrap"
+              initial="initial"
+              animate="animate"
+              whileHover="hover"
+            >
+              {/* Soft stadium glow behind */}
+              <span className="logo3d-glow" aria-hidden="true" />
 
-  {"8JJCRICKET".split("").map((letter, index) => (
-    <motion.span
-      key={index}
-      data-char={letter}
-      variants={{
-        initial: { opacity: 0, y: 10, rotateX: -90 },
-        animate: {
-          opacity: 1,
-          y: 0,
-          rotateX: 0,
-          transition: {
-            delay: index * 0.05,
-            type: "spring",
-            stiffness: 220,
-            damping: 14,
-          },
-        },
-        hover: {
-          y: -5,
-          scale: 1.05,
-          transition: { type: "spring", stiffness: 300, damping: 16 },
-        },
-      }}
-      className="logo3d-letter"
-    >
-      {letter}
-    </motion.span>
-  ))}
-</motion.div>
-
+              {"8JJCRICKET".split("").map((letter, index) => (
+                <motion.span
+                  key={index}
+                  data-char={letter}
+                  variants={{
+                    initial: { opacity: 0, y: 10, rotateX: -90 },
+                    animate: {
+                      opacity: 1,
+                      y: 0,
+                      rotateX: 0,
+                      transition: {
+                        delay: index * 0.05,
+                        type: "spring",
+                        stiffness: 220,
+                        damping: 14,
+                      },
+                    },
+                    hover: {
+                      y: -5,
+                      scale: 1.05,
+                      transition: {
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 16,
+                      },
+                    },
+                  }}
+                  className="logo3d-letter"
+                >
+                  {letter}
+                </motion.span>
+              ))}
+            </motion.div>
           </Link>
 
           <nav className="hidden gap-3 lg:gap-5 xl:gap-8 text-[13px] lg:text-[14px] xl:text-[15px] font-semibold md:flex whitespace-nowrap">
@@ -336,20 +338,8 @@ export default function TopNav() {
                 ))}
               </select>
             </div>
-            {currentTrack && (
-              <IconButton
-                onClick={toggleMute}
-                ariaLabel="Toggle music"
-                className="bg-white/5 border-white/15"
-                size="sm"
-                icon={!isMuted ? <Music2 size={18} /> : <VolumeOff size={18} />}
-              />
-            )}
-            <PrimaryButton
-              href="/minigames"
-              size="sm"
-              className="px-4 py-2"
-            >
+
+            <PrimaryButton href="/minigames" size="sm" className="px-4 py-2">
               Play Now
             </PrimaryButton>
           </div>
