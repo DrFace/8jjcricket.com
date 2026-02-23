@@ -225,7 +225,7 @@ export default async function HomePage() {
               style={{ background: "var(--bg-primary)" }}
             />
 
-            <ScaleToFit className="w-full h-full pt-20 pb-4">
+            <ScaleToFit className="w-full h-full pt-12 pb-4">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
                 <PortraitShowcaseSection />
               </div>
@@ -245,7 +245,7 @@ export default async function HomePage() {
               style={{ background: "var(--bg-primary)" }}
             />
 
-            <ScaleToFit className="w-full h-full pt-20 pb-4">
+            <ScaleToFit className="w-full h-full pt-12 pb-4">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
                 <HomeNewsShowcase />
               </div>
@@ -264,7 +264,7 @@ export default async function HomePage() {
               style={{ background: "var(--bg-primary)" }}
             />
 
-            <ScaleToFit className="w-full h-full pt-20 pb-4">
+            <ScaleToFit className="w-full h-full pt-12 pb-4">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
                 <HomeFeedbackSection />
               </div>
@@ -283,7 +283,7 @@ export default async function HomePage() {
               style={{ background: "var(--bg-primary)" }}
             />
 
-            <ScaleToFit className="w-full h-full pt-20 pb-4">
+            <ScaleToFit className="w-full h-full pt-12 pb-4">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
                 <PartnersCarousel />
               </div>

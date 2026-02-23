@@ -75,13 +75,22 @@ export default async function HomeNewsShowcase() {
         >
           {/* Image */}
           <div
-            className="relative w-full h-[350px] min-h-[260px]
+            className="relative w-full aspect-[21/9] min-h-[200px]
                        overflow-hidden rounded-t-2xl"
           >
-            <div
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out
+            {/* Blurred background */}
+            <img
+              src={featured.image_url!}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover blur-md opacity-40 scale-110"
+              aria-hidden="true"
+            />
+            {/* Full banner */}
+            <img
+              src={featured.image_url!}
+              alt={featured.title}
+              className="relative h-full w-full object-contain object-center transition-transform duration-700 ease-out
                          group-hover:scale-[1.03]"
-              style={{ backgroundImage: `url(${featured.image_url})` }}
             />
             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-india-charcoal via-india-charcoal/50 to-transparent" />
 
