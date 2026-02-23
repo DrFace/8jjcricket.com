@@ -208,7 +208,7 @@ export default function TopNav() {
 
   return (
     <>
-      <div className="w-full border-b border-[var(--border-primary)] bg-[var(--bg-secondary)]">
+      <div className="HeaderTopWideBanner w-full border-b border-[var(--border-primary)] bg-[var(--bg-secondary)]">
         <div className="flex w-full items-center gap-4 px-4 py-2 text-sm text-[var(--text-secondary)]">
           <div className="flex items-center gap-2">
             <Megaphone className="h-5 w-5 text-india-saffron" />

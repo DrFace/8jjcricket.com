@@ -30,8 +30,7 @@ export default function TestRankingsPage() {
   if (error) {
     return (
       <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+
         <div className="min-h-screen flex flex-col">
           <TopNav />
           <main className="flex-1">
@@ -49,8 +48,7 @@ export default function TestRankingsPage() {
   if (isLoading) {
     return (
       <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+
         <div className="min-h-screen flex flex-col">
           <TopNav />
           <main className="flex-1">
@@ -67,8 +65,7 @@ export default function TestRankingsPage() {
 
   return (
     <>
-      <title>{title}</title>
-      <meta name="description" content={description} />
+
       <div className="min-h-screen flex flex-col">
         <TopNav />
         <main className="flex-1">

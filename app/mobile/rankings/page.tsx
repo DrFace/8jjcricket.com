@@ -34,18 +34,14 @@ export default function RankingsPage() {
   const description = 'Check ICC team rankings across Test, ODI and T20 formats for men and women.'
   if (error) {
     return (
-      <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+         <>
         <div className="card">Failed to load team rankings.{' '}{typeof error === 'string' ? error : ''}</div>
       </>
     )
   }
   if (isLoading) {
     return (
-      <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+         <>
         <div className="card animate-pulse">Loading rankings…</div>
       </>
     )
@@ -68,9 +64,7 @@ export default function RankingsPage() {
     return ia - ib
   })
   return (
-    <>
-      <title>{title}</title>
-      <meta name="description" content={description} />
+     <>
       <div className="space-y-8">
         <h1 className="text-2xl font-bold text-white india-header-text mb-4">ICC Team Rankings</h1>
         {sortedTypes.map((type) => {

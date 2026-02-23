@@ -81,8 +81,7 @@ export default function RecentPage() {
   if (error)
     return (
       <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+
         <div className="card">Failed to load recent matches.</div>
       </>
     );
@@ -90,8 +89,7 @@ export default function RecentPage() {
   if (isLoading)
     return (
       <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+
         <div className="card space-y-4 animate-pulse">
           <div className="h-5 w-40 rounded bg-gray-200" />
           <div className="h-4 w-64 rounded bg-gray-200" />
@@ -103,16 +101,14 @@ export default function RecentPage() {
   if (!fixtures.length)
     return (
       <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+
         <div className="card">No recent matches found.</div>
       </>
     );
 
   return (
     <>
-      <title>{title}</title>
-      <meta name="description" content={description} />
+
 
       <div className="flex flex-col gap-6 lg:flex-row">
         {/* LEFT: heading + fixtures grid */}

@@ -546,6 +546,8 @@
 
 // components/PartnersCarousel.tsx
 // components/PartnersCarousel.tsx
+// components/PartnersCarousel.tsx
+// components/PartnersCarousel.tsx
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -569,22 +571,22 @@ type PartnersApiResponse = Array<{
 const AUTO_PLAY_INTERVAL = 4000;
 const SLIDE_WIDTH = 320;
 const CARD_SIZE = 300;
+const RING_GAP = 22;
+const RING_THICKNESS = 10;
+const LOGO_R = CARD_SIZE / 2;
+const RING_R = LOGO_R + RING_GAP + RING_THICKNESS / 2;
 
-// ── Ring geometry ──
-const RING_GAP       = 28;
-const RING_THICKNESS = 38;
-
-const LOGO_R   = CARD_SIZE / 2;
-const RING_R   = LOGO_R + RING_GAP + RING_THICKNESS / 2;
-const SVG_PAD  = 100;
-const SVG_SIZE = (RING_R + RING_THICKNESS / 2 + SVG_PAD) * 2;
-const SVG_C    = SVG_SIZE / 2;
+const CANVAS_SIZE = 680;
+const CANVAS_C    = CANVAS_SIZE / 2;
+const GRID_W = 180;
+const GRID_H = 180;
+const RING_SAMPLES = 240;
 
 export default function PartnersCarousel() {
-  const [partners, setPartners]     = useState<Partner[]>([]);
-  const [loading, setLoading]       = useState(true);
-  const [error, setError]           = useState<string | null>(null);
-  const [centerIndex, setCenterIndex] = useState(0);
+  const [partners, setPartners]         = useState<Partner[]>([]);
+  const [loading, setLoading]           = useState(true);
+  const [error, setError]               = useState<string | null>(null);
+  const [centerIndex, setCenterIndex]   = useState(0);
   const [displayIndex, setDisplayIndex] = useState(0);
   const [isAnimating, setIsAnimating]   = useState(false);
 
@@ -605,15 +607,12 @@ export default function PartnersCarousel() {
         if (!res.ok) throw new Error(`Failed to load partners: ${res.status}`);
         const json: PartnersApiResponse = await res.json();
         const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://8jjcricket.com";
-        const partnersData = json
-          .sort((a, b) => a.sort_order - b.sort_order)
-          .map((item) => ({
-            id: item.id,
-            name: item.title,
-            logo: `${backendUrl}/storage/${item.image}`,
-            bg: "transparent",
-          }));
-        setPartners(partnersData);
+        setPartners(
+          json.sort((a, b) => a.sort_order - b.sort_order).map((item) => ({
+            id: item.id, name: item.title,
+            logo: `${backendUrl}/storage/${item.image}`, bg: "transparent",
+          }))
+        );
         setLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load partners");
@@ -623,44 +622,35 @@ export default function PartnersCarousel() {
     fetchPartners();
   }, []);
 
-  const animateTo = useCallback(
-    (target: number) => {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-      setIsAnimating(true);
-      const start = displayIndex;
-      const distance = target - start;
-      const duration = 500;
-      const startTime = performance.now();
-      const ease = (t: number) =>
-        t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-      const step = (now: number) => {
-        const p = Math.min((now - startTime) / duration, 1);
-        setDisplayIndex(start + distance * ease(p));
-        if (p < 1) animFrameRef.current = requestAnimationFrame(step);
-        else { setDisplayIndex(target); setIsAnimating(false); }
-      };
-      animFrameRef.current = requestAnimationFrame(step);
-    },
-    [displayIndex]
-  );
+  const animateTo = useCallback((target: number) => {
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    setIsAnimating(true);
+    const start = displayIndex, distance = target - start, duration = 500;
+    const startTime = performance.now();
+    const ease = (t: number) => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+    const step = (now: number) => {
+      const p = Math.min((now - startTime) / duration, 1);
+      setDisplayIndex(start + distance * ease(p));
+      if (p < 1) animFrameRef.current = requestAnimationFrame(step);
+      else { setDisplayIndex(target); setIsAnimating(false); }
+    };
+    animFrameRef.current = requestAnimationFrame(step);
+  }, [displayIndex]);
 
-  const goTo = useCallback(
-    (nextIndex: number) => {
-      if (isAnimating || partners.length === 0) return;
-      const n = partners.length;
-      const normalized = ((nextIndex % n) + n) % n;
-      let delta = normalized - centerIndex;
-      if (delta > n / 2) delta -= n;
-      if (delta < -n / 2) delta += n;
-      setCenterIndex(normalized);
-      animateTo(displayIndex + delta);
-      if (timerRef.current) clearInterval(timerRef.current);
-      timerRef.current = setInterval(() => {
-        setCenterIndex((prev) => { const next = (prev + 1) % n; goTo(next); return next; });
-      }, AUTO_PLAY_INTERVAL);
-    },
-    [isAnimating, partners.length, centerIndex, displayIndex, animateTo]
-  );
+  const goTo = useCallback((nextIndex: number) => {
+    if (isAnimating || partners.length === 0) return;
+    const n = partners.length;
+    const normalized = ((nextIndex % n) + n) % n;
+    let delta = normalized - centerIndex;
+    if (delta > n / 2) delta -= n;
+    if (delta < -n / 2) delta += n;
+    setCenterIndex(normalized);
+    animateTo(displayIndex + delta);
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setCenterIndex((prev) => { const next = (prev + 1) % n; goTo(next); return next; });
+    }, AUTO_PLAY_INTERVAL);
+  }, [isAnimating, partners.length, centerIndex, displayIndex, animateTo]);
 
   const goNext = useCallback(() => goTo(centerIndex + 1), [goTo, centerIndex]);
   const goPrev = useCallback(() => goTo(centerIndex - 1), [goTo, centerIndex]);
@@ -749,302 +739,261 @@ export default function PartnersCarousel() {
     </div>
   );
 
-  // ── Spark positions: 12 sparks evenly around ring ──
-  const SPARK_ANGLES  = Array.from({ length: 12 }, (_, i) => i * 30);
-  // ── Ember positions: 8 embers ──
-  const EMBER_ANGLES  = Array.from({ length: 8  }, (_, i) => i * 45);
+  // ── Fire Ring Canvas ──────────────────────────────────────────────────────
+  // Ring is drawn via canvas arc. Fire seeds ONLY on TOP HALF of the ring.
+  const FireRingCanvas = () => {
+    const canvasRef    = useRef<HTMLCanvasElement>(null);
+    const offscreenRef = useRef<CanvasRenderingContext2D | null>(null);
+    const rafRef       = useRef<number>(0);
 
-  const FireRingSVG = () => (
-    <svg
-      width={SVG_SIZE}
-      height={SVG_SIZE}
-      viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`}
-      style={{
-        position: "absolute",
-        top: "50%", left: "50%",
-        transform: "translate(-50%, -50%)",
-        pointerEvents: "none",
-        zIndex: 5,
-        overflow: "visible",
-      }}
-    >
-      <defs>
-        {/* 
-          CHANGE: Slowed turbulence animation durations (2–3× longer).
-          CHANGE: Reduced displacement scale from 22→14 and 18→11 for calmer distortion.
-        */}
-        <filter id="fr-turb" x="-40%" y="-40%" width="180%" height="180%">
-          <feTurbulence type="turbulence" baseFrequency="0.016" numOctaves="4" seed="3" result="turb">
-            <animate attributeName="baseFrequency" dur="8s"
-              values="0.016;0.009;0.02;0.012;0.016" repeatCount="indefinite" />
-            <animate attributeName="seed" dur="7s"
-              values="3;9;5;13;3" repeatCount="indefinite" />
-          </feTurbulence>
-          {/* CHANGE: scale 22 → 14 */}
-          <feDisplacementMap in="SourceGraphic" in2="turb" scale="14"
-            xChannelSelector="R" yChannelSelector="G" />
-        </filter>
+    useEffect(() => {
+      const off = document.createElement("canvas");
+      off.width = GRID_W; off.height = GRID_H;
+      offscreenRef.current = off.getContext("2d");
+    }, []);
 
-        <filter id="fr-turb2" x="-40%" y="-40%" width="180%" height="180%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="3" seed="7" result="turb">
-            <animate attributeName="baseFrequency" dur="10s"
-              values="0.010;0.018;0.007;0.015;0.010" repeatCount="indefinite" />
-            <animate attributeName="seed" dur="9s"
-              values="7;2;11;4;7" repeatCount="indefinite" />
-          </feTurbulence>
-          {/* CHANGE: scale 18 → 11 */}
-          <feDisplacementMap in="SourceGraphic" in2="turb" scale="11"
-            xChannelSelector="G" yChannelSelector="R" />
-        </filter>
+    useEffect(() => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-        <filter id="fr-glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="7" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
+      const fire    = new Float32Array(GRID_W * GRID_H);
+      const fireTmp = new Float32Array(GRID_W * GRID_H);
 
-        <filter id="fr-glow-wide" x="-80%" y="-80%" width="260%" height="260%">
-          <feGaussianBlur stdDeviation="20" />
-        </filter>
+      const scaleX  = GRID_W / CANVAS_SIZE;
+      const scaleY  = GRID_H / CANVAS_SIZE;
+      const gcx     = CANVAS_C * scaleX;
+      const gcy     = CANVAS_C * scaleY;
+      const ringRgx = RING_R * scaleX;
+      const ringRgy = RING_R * scaleY;
 
-        <filter id="fr-glow-haze" x="-100%" y="-100%" width="300%" height="300%">
-          <feGaussianBlur stdDeviation="35" />
-        </filter>
+      // Pre-compute masks
+      const innerR2 = ((LOGO_R - 6) * scaleX) ** 2;
+      const outerR2 = ((RING_R + 120) * scaleX) ** 2;
+      const innerMask = new Uint8Array(GRID_W * GRID_H);
+      const outerMask = new Uint8Array(GRID_W * GRID_H);
+      for (let y = 0; y < GRID_H; y++) {
+        for (let x = 0; x < GRID_W; x++) {
+          const dx = x - gcx, dy = y - gcy, d2 = dx*dx + dy*dy;
+          const i = y * GRID_W + x;
+          innerMask[i] = d2 < innerR2 ? 1 : 0;
+          outerMask[i] = d2 > outerR2 ? 1 : 0;
+        }
+      }
 
-        <filter id="fr-dot-glow" x="-100%" y="-100%" width="300%" height="300%">
-          <feGaussianBlur stdDeviation="5" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
+      // ── Seed points: TOP HALF ONLY ──────────────────────────────────────
+      // In canvas coords: y increases downward, so sin(angle) < 0 = top half
+      // Threshold 0.05 gives a clean cut right at the horizontal centre line
+      type RingSeed = { gx: number; gy: number; strength: number };
+      const ringSeeds: RingSeed[] = [];
+      for (let s = 0; s < RING_SAMPLES; s++) {
+        const angle = (s / RING_SAMPLES) * Math.PI * 2;
+        // ── KEY GATE: bottom half gets no seeds ──
+        if (Math.sin(angle) > 0.05) continue;
 
-        {/* 
-          CHANGE: Gradients shifted from harsh red (#ff1100) toward amber/gold tones.
-          Deep reds replaced with warm orange-ambers. Opacity pulled back on outer layers.
-        */}
-        <linearGradient id="fr-grad-hot" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stopColor="#cc5500" />   {/* was #ff1100 */}
-          <stop offset="20%"  stopColor="#e87020" />   {/* was #ff5500 */}
-          <stop offset="40%"  stopColor="#f5a030" />   {/* was #ff9900 */}
-          <stop offset="50%"  stopColor="#ffd060" />   {/* was #ffee00 */}
-          <stop offset="60%"  stopColor="#f5a030" />
-          <stop offset="80%"  stopColor="#e87020" />
-          <stop offset="100%" stopColor="#cc5500" />
-        </linearGradient>
+        const gx = Math.round(gcx + Math.cos(angle) * ringRgx);
+        const gy = Math.round(gcy + Math.sin(angle) * ringRgy);
+        if (gx < 1 || gx >= GRID_W - 1 || gy < 1 || gy >= GRID_H - 1) continue;
 
-        <linearGradient id="fr-grad-white" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stopColor="#f5c060" />   {/* was #ffcc00 */}
-          <stop offset="25%"  stopColor="#fff8e0" />   {/* was #ffffff — softer white */}
-          <stop offset="50%"  stopColor="#ffeeaa" />   {/* was #ffff88 */}
-          <stop offset="75%"  stopColor="#fff8e0" />
-          <stop offset="100%" stopColor="#f5c060" />
-        </linearGradient>
+        // Hottest at the very top (-π/2), tapering to sides (0 / π)
+        const normUp   = Math.max(0, -Math.sin(angle)); // 0..1
+        // Min strength 0.70 so sides still burn well; top hits 1.0
+        const strength = 0.70 + normUp * 0.30;
+        ringSeeds.push({ gx, gy, strength });
+      }
 
-        <linearGradient id="fr-grad-deep" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stopColor="#8b3a00" />   {/* was #cc0000 */}
-          <stop offset="30%"  stopColor="#c05010" />   {/* was #ff3300 */}
-          <stop offset="60%"  stopColor="#d97828" />   {/* was #ff7700 */}
-          <stop offset="100%" stopColor="#8b3a00" />
-        </linearGradient>
+      // Fire colour palette: transparent → dark red → orange → yellow → white
+      const palette = new Uint32Array(256);
+      for (let i = 0; i < 256; i++) {
+        let r = 0, g = 0, b = 0, a = 0;
+        if (i < 20) {
+          a = 0;
+        } else if (i < 70) {
+          const t = (i - 20) / 50;
+          r = Math.round(130 + t * 90); g = 0; b = 0; a = Math.round(t * 220);
+        } else if (i < 130) {
+          const t = (i - 70) / 60;
+          r = 220 + Math.round(t * 35); g = Math.round(t * 120); b = 0; a = 220 + Math.round(t * 30);
+        } else if (i < 195) {
+          const t = (i - 130) / 65;
+          r = 255; g = 120 + Math.round(t * 120); b = Math.round(t * 20); a = 250;
+        } else {
+          const t = (i - 195) / 60;
+          r = 255; g = 240 + Math.round(t * 15); b = Math.round(t * 255); a = 255;
+        }
+        palette[i] = ((a & 0xff) << 24) | ((b & 0xff) << 16) | ((g & 0xff) << 8) | (r & 0xff);
+      }
 
-        <clipPath id="fr-clip">
-          <path
-            d={`M 0 0 H ${SVG_SIZE} V ${SVG_SIZE} H 0 Z
-                M ${SVG_C} ${SVG_C} m -${LOGO_R} 0
-                a ${LOGO_R},${LOGO_R} 0 1,0 ${LOGO_R * 2},0
-                a ${LOGO_R},${LOGO_R} 0 1,0 -${LOGO_R * 2},0`}
-            fillRule="evenodd"
-          />
-        </clipPath>
-      </defs>
+      const imgData = ctx.createImageData(GRID_W, GRID_H);
+      const buf32   = new Uint32Array(imgData.data.buffer);
+      let noiseT = 0;
 
-      {/* ── Layer 0: Ambient heat haze — CHANGE: opacity 0.18 → 0.10, stroke darkened ── */}
-      <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
-        stroke="#c04000" strokeWidth={RING_THICKNESS * 5}
-        opacity={0.10} filter="url(#fr-glow-haze)"
-        clipPath="url(#fr-clip)" />
+      const noise = (x: number, y: number, t: number) =>
+        Math.sin(x * 3.3 + t * 2.0) *
+        Math.cos(y * 2.8 - t * 1.7) *
+        Math.sin((x + y) * 1.9 + t * 1.4);
 
-      {/* ── Layer 1: Wide deep glow — CHANGE: opacity 0.4 → 0.22, color darkened ── */}
-      <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
-        stroke="#b84a10" strokeWidth={RING_THICKNESS * 3.5}
-        opacity={0.22} filter="url(#fr-glow-wide)"
-        clipPath="url(#fr-clip)" />
+      const tick = () => {
+        noiseT += 0.058;
 
-      {/* ── Layer 2: Slow rotating base ring — CHANGE: dur 8s → 18s ── */}
-      <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
-        stroke="url(#fr-grad-deep)" strokeWidth={RING_THICKNESS * 1.6}
-        opacity={0.75} filter="url(#fr-glow)"
-        clipPath="url(#fr-clip)">
-        <animateTransform attributeName="transform" type="rotate"
-          from={`0 ${SVG_C} ${SVG_C}`} to={`360 ${SVG_C} ${SVG_C}`}
-          dur="18s" repeatCount="indefinite" />
-      </circle>
+        // STEP 1 — inject heat (top half ring only)
+        for (const { gx, gy, strength } of ringSeeds) {
+          const flicker = 0.35 + 0.65 * Math.random();
+          const n       = noise(gx * 0.3, gy * 0.3, noiseT) * 0.22 + 0.78;
+          // High base heat for tall flames
+          const heat    = 255 * strength * flicker * n;
+          const idx     = gy * GRID_W + gx;
+          fire[idx]                          = Math.min(255, fire[idx]                          + heat);
+          if (gx > 0)          fire[idx - 1]           = Math.min(255, fire[idx - 1]           + heat * 0.55);
+          if (gx < GRID_W - 1) fire[idx + 1]           = Math.min(255, fire[idx + 1]           + heat * 0.55);
+          if (gy > 0)          fire[idx - GRID_W]      = Math.min(255, fire[idx - GRID_W]      + heat * 0.42);
+          if (gx > 1)          fire[idx - 2]           = Math.min(255, fire[idx - 2]           + heat * 0.22);
+          if (gx < GRID_W - 2) fire[idx + 2]           = Math.min(255, fire[idx + 2]           + heat * 0.22);
+          // Extra upward pre-seeding → taller flames
+          if (gy > 1)          fire[idx - GRID_W * 2]  = Math.min(255, fire[idx - GRID_W * 2]  + heat * 0.20);
+          if (gy > 2)          fire[idx - GRID_W * 3]  = Math.min(255, fire[idx - GRID_W * 3]  + heat * 0.12);
+          if (gy > 3)          fire[idx - GRID_W * 4]  = Math.min(255, fire[idx - GRID_W * 4]  + heat * 0.06);
+        }
 
-      {/* ── Layer 3: Main fire body — CHANGE: dur 3.5s → 9s ── */}
-      <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
-        stroke="url(#fr-grad-hot)" strokeWidth={RING_THICKNESS * 1.3}
-        opacity={0.85} filter="url(#fr-turb)"
-        clipPath="url(#fr-clip)">
-        <animateTransform attributeName="transform" type="rotate"
-          from={`0 ${SVG_C} ${SVG_C}`} to={`-360 ${SVG_C} ${SVG_C}`}
-          dur="9s" repeatCount="indefinite" />
-      </circle>
+        // STEP 2 — advect upward + cool
+        for (let y = 1; y < GRID_H - 1; y++) {
+          for (let x = 1; x < GRID_W - 1; x++) {
+            const i = y * GRID_W + x;
+            if (outerMask[i]) { fireTmp[i] = 0; continue; }
 
-      {/* ── Layer 4: Counter-spin fractal — CHANGE: dur 5s → 13s ── */}
-      <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
-        stroke="url(#fr-grad-hot)" strokeWidth={RING_THICKNESS}
-        opacity={0.70} filter="url(#fr-turb2)"
-        clipPath="url(#fr-clip)">
-        <animateTransform attributeName="transform" type="rotate"
-          from={`90 ${SVG_C} ${SVG_C}`} to={`450 ${SVG_C} ${SVG_C}`}
-          dur="13s" repeatCount="indefinite" />
-      </circle>
+            const wobble = noise(x * 0.22, y * 0.22, noiseT) * 1.6;
+            const srcX   = Math.max(0, Math.min(GRID_W - 1.001, x + wobble));
+            const srcY   = y + 1.05;
 
-      {/* ── Layer 5: Fast mid ring — CHANGE: dur 2s → 7s ── */}
-      <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
-        stroke="url(#fr-grad-hot)" strokeWidth={RING_THICKNESS * 0.7}
-        opacity={0.65} filter="url(#fr-turb)"
-        clipPath="url(#fr-clip)">
-        <animateTransform attributeName="transform" type="rotate"
-          from={`180 ${SVG_C} ${SVG_C}`} to={`-180 ${SVG_C} ${SVG_C}`}
-          dur="7s" repeatCount="indefinite" />
-      </circle>
+            const sx0 = Math.floor(srcX), sy0 = Math.min(Math.floor(srcY), GRID_H - 1);
+            const fx = srcX - sx0, fy = srcY - sy0;
+            const sx1 = Math.min(sx0 + 1, GRID_W - 1), sy1 = Math.min(sy0 + 1, GRID_H - 1);
+            const cx0 = Math.max(0, Math.min(GRID_W - 1, sx0));
+            const cy0 = Math.max(0, Math.min(GRID_H - 1, sy0));
 
-      {/* ── Layer 6: White-hot core streak — CHANGE: dur 1.8s → 6s ── */}
-      <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
-        stroke="url(#fr-grad-white)" strokeWidth={RING_THICKNESS * 0.35}
-        opacity={0.75} filter="url(#fr-turb)"
-        clipPath="url(#fr-clip)">
-        <animateTransform attributeName="transform" type="rotate"
-          from={`270 ${SVG_C} ${SVG_C}`} to={`-90 ${SVG_C} ${SVG_C}`}
-          dur="6s" repeatCount="indefinite" />
-      </circle>
+            const v00 = fire[cy0 * GRID_W + cx0], v10 = fire[cy0 * GRID_W + sx1];
+            const v01 = fire[sy1 * GRID_W + cx0], v11 = fire[sy1 * GRID_W + sx1];
+            const sampled =
+              v00 * (1-fx)*(1-fy) + v10 * fx*(1-fy) +
+              v01 * (1-fx)*fy     + v11 * fx*fy;
 
-      {/* ── Layer 7: Pulsing brightness — CHANGE: dur 1.2s → 3.5s ── */}
-      <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
-        stroke="#e8900a" strokeWidth={RING_THICKNESS * 0.8}
-        filter="url(#fr-glow)" clipPath="url(#fr-clip)">
-        <animate attributeName="opacity"
-          dur="3.5s" values="0.15;0.55;0.28;0.70;0.40;0.15" repeatCount="indefinite" />
-        <animate attributeName="stroke-width" dur="3.5s"
-          values={`${RING_THICKNESS*0.4};${RING_THICKNESS*0.9};${RING_THICKNESS*0.5};${RING_THICKNESS*0.8};${RING_THICKNESS*0.4}`}
-          repeatCount="indefinite" />
-      </circle>
+            // Lower cooling = taller flames
+            const yFrac   = y / GRID_H;
+            const cooling = 4.0 + (1 - yFrac) * 7.5;
+            fireTmp[i] = Math.max(0, sampled - cooling);
+          }
+        }
 
-      {/* ── Layer 8: Breathe ring — CHANGE: dur 2.4s → 6s ── */}
-      <circle cx={SVG_C} cy={SVG_C} r={RING_R} fill="none"
-        stroke="#d07020" strokeWidth={RING_THICKNESS * 0.5}
-        opacity={0.45} filter="url(#fr-glow)" clipPath="url(#fr-clip)">
-        <animateTransform attributeName="transform" type="scale"
-          values={`1 1;1.04 1.04;0.97 0.97;1.02 1.02;1 1`}
-          dur="6s" repeatCount="indefinite"
-          additive="sum" />
-        <animate attributeName="opacity"
-          values="0.3;0.6;0.35;0.65;0.3" dur="6s" repeatCount="indefinite" />
-      </circle>
+        for (let x = 0; x < GRID_W; x++) {
+          fireTmp[x] = 0;
+          fireTmp[(GRID_H - 1) * GRID_W + x] = 0;
+        }
+        for (let y = 0; y < GRID_H; y++) {
+          fireTmp[y * GRID_W] = 0;
+          fireTmp[y * GRID_W + GRID_W - 1] = 0;
+        }
+        fire.set(fireTmp);
 
-      {/* ── Orbiting ember dots × 3 — CHANGE: all durations doubled ── */}
-      <circle r={6} fill="#f5c040" filter="url(#fr-dot-glow)">
-        <animateMotion dur="6s" repeatCount="indefinite"
-          path={`M ${SVG_C} ${SVG_C - RING_R} a ${RING_R} ${RING_R} 0 1 1 0.001 0`} />
-        <animate attributeName="r" dur="6s" values="5;9;6;10;5" repeatCount="indefinite" />
-        <animate attributeName="opacity" dur="6s" values="0.6;0.9;0.7;1;0.6" repeatCount="indefinite" />
-      </circle>
+        // STEP 3 — heat → palette
+        for (let i = 0; i < GRID_W * GRID_H; i++) {
+          if (innerMask[i] || outerMask[i]) { buf32[i] = 0; continue; }
+          const heat = Math.min(255, fire[i] | 0);
+          buf32[i] = heat > 12 ? palette[heat] : 0;
+        }
 
-      <circle r={5} fill="#e08820" filter="url(#fr-dot-glow)">
-        <animateMotion dur="8s" repeatCount="indefinite"
-          path={`M ${SVG_C} ${SVG_C + RING_R} a ${RING_R} ${RING_R} 0 1 0 0.001 0`} />
-        <animate attributeName="r" dur="8s" values="4;8;5;9;4" repeatCount="indefinite" />
-        <animate attributeName="opacity" dur="8s" values="0.5;0.9;0.6;0.9;0.5" repeatCount="indefinite" />
-      </circle>
+        // STEP 4 — blit fire pixels
+        ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        const offCtx = offscreenRef.current;
+        if (offCtx) {
+          offCtx.putImageData(imgData, 0, 0);
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = "high";
+          ctx.drawImage(offCtx.canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        }
 
-      <circle r={4} fill="#fff0c0" filter="url(#fr-dot-glow)">
-        <animateMotion dur="7s" repeatCount="indefinite" begin="1.2s"
-          path={`M ${SVG_C} ${SVG_C - RING_R} a ${RING_R} ${RING_R} 0 1 0 0.001 0`} />
-        <animate attributeName="r" dur="7s" values="3;7;4;8;3" repeatCount="indefinite" />
-        <animate attributeName="opacity" dur="7s" values="0.4;0.85;0.5;0.8;0.4" repeatCount="indefinite" />
-      </circle>
+        // STEP 5 — draw decorative ring ON TOP of fire (full 360°)
+        ctx.save();
 
-      {/* ── Static hot dots at top & bottom — CHANGE: dur doubled, colors softened ── */}
-      {/* Top */}
-      <circle cx={SVG_C} cy={SVG_C - RING_R} r={10} fill="#fff4d0" filter="url(#fr-dot-glow)">
-        <animate attributeName="r"       dur="2.5s" values="8;13;9;14;8"       repeatCount="indefinite" />
-        <animate attributeName="opacity" dur="2.5s" values="0.6;0.9;0.7;1;0.6"   repeatCount="indefinite" />
-      </circle>
-      <circle cx={SVG_C} cy={SVG_C - RING_R} r={18} fill="#d06010" opacity={0.35} filter="url(#fr-glow-wide)">
-        <animate attributeName="r" dur="2.5s" values="15;24;17;26;15" repeatCount="indefinite" />
-      </circle>
-      {/* Bottom */}
-      <circle cx={SVG_C} cy={SVG_C + RING_R} r={10} fill="#fff4d0" filter="url(#fr-dot-glow)">
-        <animate attributeName="r"       dur="3s" values="8;14;10;13;8"      repeatCount="indefinite" />
-        <animate attributeName="opacity" dur="3s" values="0.6;0.9;0.7;1;0.6"  repeatCount="indefinite" />
-      </circle>
-      <circle cx={SVG_C} cy={SVG_C + RING_R} r={18} fill="#d06010" opacity={0.35} filter="url(#fr-glow-wide)">
-        <animate attributeName="r" dur="3s" values="15;26;18;24;15" repeatCount="indefinite" />
-      </circle>
+        // Outer dark shadow
+        ctx.beginPath();
+        ctx.arc(CANVAS_C, CANVAS_C, RING_R + RING_THICKNESS * 0.3, 0, Math.PI * 2);
+        ctx.lineWidth = RING_THICKNESS * 0.5;
+        ctx.strokeStyle = "rgba(0,0,0,0.5)";
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+        ctx.stroke();
 
-      {/* ── 12 Spark streaks — CHANGE: dur multiplied ~2×, colors warmer ── */}
-      {SPARK_ANGLES.map((angle, i) => {
-        const rad  = (angle * Math.PI) / 180;
-        const x1   = SVG_C + Math.cos(rad) * (RING_R - 6);
-        const y1   = SVG_C + Math.sin(rad) * (RING_R - 6);
-        const x2far = SVG_C + Math.cos(rad) * (RING_R + 50);
-        const y2far = SVG_C + Math.sin(rad) * (RING_R + 50);
-        const x2end = SVG_C + Math.cos(rad) * (RING_R + 70);
-        const y2end = SVG_C + Math.sin(rad) * (RING_R + 70);
-        const delay = (i * 0.45).toFixed(2);             // was 0.22
-        const dur   = (3.5 + (i % 3) * 0.8).toFixed(1); // was 1.6 + 0.4
-        return (
-          <line key={angle} x1={x1} y1={y1} x2={x1} y2={y1}
-            stroke={i % 3 === 0 ? "#fff8e0" : i % 3 === 1 ? "#f5d060" : "#e89030"}
-            strokeWidth={3} strokeLinecap="round"
-            filter="url(#fr-dot-glow)">
-            <animate attributeName="opacity"
-              dur={`${dur}s`} begin={`${delay}s`}
-              values="0;0.8;0.7;0.4;0" repeatCount="indefinite" />
-            <animate attributeName="stroke-width"
-              dur={`${dur}s`} begin={`${delay}s`}
-              values="1;3.5;2;1;0" repeatCount="indefinite" />
-            <animate attributeName="x2"
-              dur={`${dur}s`} begin={`${delay}s`}
-              values={`${x1};${x2far};${x2end}`} repeatCount="indefinite" />
-            <animate attributeName="y2"
-              dur={`${dur}s`} begin={`${delay}s`}
-              values={`${y1};${y2far};${y2end}`} repeatCount="indefinite" />
-          </line>
-        );
-      })}
+        // Main ring body — dark copper
+        ctx.beginPath();
+        ctx.arc(CANVAS_C, CANVAS_C, RING_R, 0, Math.PI * 2);
+        ctx.lineWidth = RING_THICKNESS;
+        ctx.strokeStyle = "#3a1500";
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+        ctx.stroke();
 
-      {/* ── 8 Rising ember particles — CHANGE: dur multiplied ~2× ── */}
-      {EMBER_ANGLES.map((angle, i) => {
-        const rad = (angle * Math.PI) / 180;
-        const cx  = SVG_C + Math.cos(rad) * RING_R;
-        const cy  = SVG_C + Math.sin(rad) * RING_R;
-        const dur = (3.0 + i * 0.5).toFixed(2);          // was 1.4 + 0.25
-        const rise = 30 + (i % 3) * 14;
-        return (
-          <circle key={angle} cx={cx} cy={cy} r={4}
-            fill={i % 2 === 0 ? "#f5cc50" : "#e08830"}
-            filter="url(#fr-dot-glow)">
-            <animate attributeName="opacity"
-              dur={`${dur}s`} begin={`${(i * 0.55).toFixed(2)}s`}
-              values="0;0.85;0.65;0" repeatCount="indefinite" />
-            <animate attributeName="cy"
-              dur={`${dur}s`} begin={`${(i * 0.55).toFixed(2)}s`}
-              values={`${cy};${cy - rise / 2};${cy - rise}`} repeatCount="indefinite" />
-            <animate attributeName="r"
-              dur={`${dur}s`} begin={`${(i * 0.55).toFixed(2)}s`}
-              values="4;6;1" repeatCount="indefinite" />
-          </circle>
-        );
-      })}
-    </svg>
-  );
+        // Glowing orange highlight
+        ctx.beginPath();
+        ctx.arc(CANVAS_C, CANVAS_C, RING_R, 0, Math.PI * 2);
+        ctx.lineWidth = RING_THICKNESS * 0.55;
+        ctx.strokeStyle = "#e05000";
+        ctx.shadowColor = "#ff4400";
+        ctx.shadowBlur = 18;
+        ctx.globalAlpha = 0.88 + 0.08 * Math.sin(noiseT * 2.2);
+        ctx.stroke();
+
+        // Inner gold bevel
+        ctx.beginPath();
+        ctx.arc(CANVAS_C, CANVAS_C, RING_R - RING_THICKNESS * 0.3, 0, Math.PI * 2);
+        ctx.lineWidth = RING_THICKNESS * 0.15;
+        ctx.strokeStyle = "rgba(255,190,60,0.5)";
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+        ctx.stroke();
+
+        // Outer gold bevel
+        ctx.beginPath();
+        ctx.arc(CANVAS_C, CANVAS_C, RING_R + RING_THICKNESS * 0.3, 0, Math.PI * 2);
+        ctx.lineWidth = RING_THICKNESS * 0.12;
+        ctx.strokeStyle = "rgba(255,150,30,0.3)";
+        ctx.globalAlpha = 1;
+        ctx.stroke();
+
+        // Hot centre line
+        ctx.beginPath();
+        ctx.arc(CANVAS_C, CANVAS_C, RING_R, 0, Math.PI * 2);
+        ctx.lineWidth = RING_THICKNESS * 0.12;
+        ctx.strokeStyle = "#ffaa44";
+        ctx.shadowColor = "#ffaa44";
+        ctx.shadowBlur = 6;
+        ctx.globalAlpha = 0.65 + 0.20 * Math.sin(noiseT * 3.1);
+        ctx.stroke();
+
+        ctx.restore();
+
+        rafRef.current = requestAnimationFrame(tick);
+      };
+
+      rafRef.current = requestAnimationFrame(tick);
+      return () => cancelAnimationFrame(rafRef.current);
+    }, []);
+
+    return (
+      <canvas
+        ref={canvasRef}
+        width={CANVAS_SIZE}
+        height={CANVAS_SIZE}
+        style={{
+          position: "absolute",
+          top: "50%", left: "50%",
+          transform: "translate(-50%, -50%)",
+          pointerEvents: "none",
+          zIndex: 5,
+          imageRendering: "auto",
+          width: CANVAS_SIZE,
+          height: CANVAS_SIZE,
+        }}
+      />
+    );
+  };
 
   return (
     <>
@@ -1065,54 +1014,33 @@ export default function PartnersCarousel() {
         .title-text { font-family:'Bebas Neue',sans-serif; font-size:clamp(34px,4.5vw,56px); color:#fff; letter-spacing:0.18em; }
 
         .stage-wrap {
-          position:relative; z-index:10; width:100%; height:680px;
+          position:relative; z-index:10; width:100%; height:720px;
           -webkit-mask-image:linear-gradient(to right,transparent 0%,black 14%,black 86%,transparent 100%);
           mask-image:linear-gradient(to right,transparent 0%,black 14%,black 86%,transparent 100%);
         }
-        
+
         .nav-arrow {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          z-index: 30;
-          width: 60px;
-          height: 60px;
-          border-radius: 50%;
-          background: rgba(20, 25, 35, 0.95);
-          backdrop-filter: blur(15px);
-          border: 3px solid #ff990079;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          color: #fff;
-          font-size: 32px;
-          font-weight: bold;
-          user-select: none;
-          box-shadow: 0 0 30px rgba(255, 153, 0, 0.6), 0 4px 20px rgba(0, 0, 0, 0.5);
+          position: absolute; top: 50%; transform: translateY(-50%);
+          z-index: 30; width: 60px; height: 60px; border-radius: 50%;
+          background: rgba(20,25,35,0.95); backdrop-filter: blur(15px);
+          border: 3px solid rgba(255,153,0,0.45);
+          display: flex; align-items: center; justify-content: center;
+          cursor: pointer; transition: all 0.3s ease;
+          color: #fff; font-size: 32px; font-weight: bold; user-select: none;
+          box-shadow: 0 0 28px rgba(255,153,0,0.35), 0 4px 20px rgba(0,0,0,0.5);
         }
-        
         .nav-arrow:hover {
-          background: rgba(255, 153, 0, 0.95);
-          border-color: #ffcc00;
-          box-shadow: 0 0 40px rgba(255, 153, 0, 0.9), 0 4px 25px rgba(0, 0, 0, 0.6);
-          transform: translateY(-50%) scale(1.15);
-          color: #000;
+          background: rgba(255,153,0,0.95); border-color: #ffcc00;
+          box-shadow: 0 0 40px rgba(255,153,0,0.9), 0 4px 25px rgba(0,0,0,0.6);
+          transform: translateY(-50%) scale(1.15); color: #000;
         }
-        
-        .nav-arrow:active {
-          transform: translateY(-50%) scale(0.98);
-          box-shadow: 0 0 35px rgba(255, 153, 0, 0.8), 0 2px 15px rgba(0, 0, 0, 0.5);
-        }
-        
+        .nav-arrow:active { transform: translateY(-50%) scale(0.98); }
         .nav-arrow-left  { left: 40px; }
         .nav-arrow-right { right: 40px; }
-        
         @media (max-width: 768px) {
-          .nav-arrow { width: 50px; height: 50px; font-size: 28px; }
-          .nav-arrow-left  { left: 15px; }
-          .nav-arrow-right { right: 15px; }
+          .nav-arrow { width:50px; height:50px; font-size:28px; }
+          .nav-arrow-left  { left:15px; }
+          .nav-arrow-right { right:15px; }
         }
 
         .stage {
@@ -1127,25 +1055,14 @@ export default function PartnersCarousel() {
         }
 
         .card-wrap {
-          position:relative;
-          width:${CARD_SIZE}px; height:${CARD_SIZE}px;
+          position:relative; width:${CARD_SIZE}px; height:${CARD_SIZE}px;
           display:flex; align-items:center; justify-content:center;
         }
 
         .logo-circle {
           width:${CARD_SIZE}px; height:${CARD_SIZE}px;
-          border-radius:50%; overflow:hidden;
-          position:relative; z-index:2;
-        }
-
-        .logo-circle-center {
-          background: rgba(8, 12, 22, 0) !important;
-          backdrop-filter: blur(2px);
-          -webkit-backdrop-filter: blur(2px);
-        }
-
-        .logo-circle-side {
-          background: transparent !important;
+          border-radius:50%; overflow:hidden; position:relative; z-index:6;
+          background: transparent; border:none; outline:none; box-shadow:none;
         }
 
         .side-ring-glow {
@@ -1153,8 +1070,8 @@ export default function PartnersCarousel() {
           width:${CARD_SIZE + RING_GAP * 2 + RING_THICKNESS * 2}px;
           height:${CARD_SIZE + RING_GAP * 2 + RING_THICKNESS * 2}px;
           border-radius:50%;
-          border:2px solid rgba(255,120,0,0.3);
-          box-shadow:0 0 18px 6px rgba(255,80,0,0.2), inset 0 0 10px 3px rgba(255,100,0,0.08);
+          border:2px solid rgba(255,120,0,0.22);
+          box-shadow:0 0 16px 5px rgba(255,80,0,0.14);
           transform:translate(-50%,-50%);
           pointer-events:none; z-index:1;
         }
@@ -1173,19 +1090,18 @@ export default function PartnersCarousel() {
         .progress-fill { height:100%; background:linear-gradient(90deg,#fb923c,#f97316); border-radius:99px; animation:progressAnim 4000ms linear infinite; }
 
         .geo { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
-
         @keyframes progressAnim { from{width:0%} to{width:100%} }
       `}</style>
 
       <div className="root" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-
         <div className="geo">
-          <svg style={{ position:"absolute",inset:0,width:"100%",height:"100%",opacity:0.1 }} viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
-            <polygon points="0,0 380,0 0,290"        fill="rgba(255,255,255,0.07)" />
-            <polygon points="1440,0 1060,0 1440,290"  fill="rgba(255,255,255,0.07)" />
-            <polygon points="0,900 280,900 0,640"     fill="rgba(255,255,255,0.05)" />
+          <svg style={{ position:"absolute",inset:0,width:"100%",height:"100%",opacity:0.1 }}
+            viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+            <polygon points="0,0 380,0 0,290"           fill="rgba(255,255,255,0.07)" />
+            <polygon points="1440,0 1060,0 1440,290"     fill="rgba(255,255,255,0.07)" />
+            <polygon points="0,900 280,900 0,640"        fill="rgba(255,255,255,0.05)" />
             <polygon points="1440,900 1160,900 1440,640" fill="rgba(255,255,255,0.05)" />
-            <line x1="0" y1="0" x2="380" y2="290"   stroke="rgba(255,255,255,0.06)" strokeWidth="1"/>
+            <line x1="0"    y1="0" x2="380"  y2="290" stroke="rgba(255,255,255,0.06)" strokeWidth="1"/>
             <line x1="1440" y1="0" x2="1060" y2="290" stroke="rgba(255,255,255,0.06)" strokeWidth="1"/>
           </svg>
         </div>
@@ -1199,28 +1115,15 @@ export default function PartnersCarousel() {
         </div>
 
         <div className="stage-wrap">
-          <div 
-            className="nav-arrow nav-arrow-left"
-            onClick={() => {
-              const newIndex = (centerIndex - 1 + partners.length) % partners.length;
-              goTo(newIndex);
-              startAutoPlay();
-            }}
-          >
+          <div className="nav-arrow nav-arrow-left"
+            onClick={() => { goTo((centerIndex - 1 + partners.length) % partners.length); startAutoPlay(); }}>
             ‹
           </div>
-          
-          <div 
-            className="nav-arrow nav-arrow-right"
-            onClick={() => {
-              const newIndex = (centerIndex + 1) % partners.length;
-              goTo(newIndex);
-              startAutoPlay();
-            }}
-          >
+          <div className="nav-arrow nav-arrow-right"
+            onClick={() => { goTo((centerIndex + 1) % partners.length); startAutoPlay(); }}>
             ›
           </div>
-          
+
           <div className="stage" ref={stageRef}>
             {cards.map(({ partner, offset, rawIdx }) => {
               const { scale, opacity, blur, zIndex } = getVisualProps(offset);
@@ -1247,21 +1150,11 @@ export default function PartnersCarousel() {
                   }}
                 >
                   <div className="card-wrap">
-
-                    {isCenter && <FireRingSVG />}
-
+                    {isCenter && <FireRingCanvas />}
                     {isSide && (
                       <div className="side-ring-glow" style={{ opacity: sideGlowOpacity }} />
                     )}
-
-                    <div
-                      className={`logo-circle ${isCenter ? "logo-circle-center" : "logo-circle-side"}`}
-                      style={{
-                        boxShadow: isCenter
-                          ? "0 0 50px 10px rgba(255,100,0,0.2), 0 12px 60px rgba(0,0,0,0.5)"
-                          : "none",
-                      }}
-                    >
+                    <div className="logo-circle">
                       <Image
                         src={partner.logo}
                         alt={partner.name}
@@ -1270,7 +1163,6 @@ export default function PartnersCarousel() {
                         sizes={`${CARD_SIZE}px`}
                       />
                     </div>
-
                   </div>
                 </div>
               );

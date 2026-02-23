@@ -25,9 +25,7 @@ export default function TestRankingsPage() {
 
   if (error) {
     return (
-      <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+         <>
         <div className="card">
           Failed to load team rankings.
           {typeof error === "string" ? ` ${error}` : ""}
@@ -37,9 +35,7 @@ export default function TestRankingsPage() {
   }
   if (isLoading) {
     return (
-      <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+         <>
         <div className="card animate-pulse">Loading rankings…</div>
       </>
     );
@@ -47,9 +43,7 @@ export default function TestRankingsPage() {
   const rankings: RankingEntry[] = data?.data ?? [];
   const { men, women } = groupByGender(rankings, ["TEST"]);
   return (
-    <>
-      <title>{title}</title>
-      <meta name="description" content={description} />
+     <>
       <div className="space-y-8">
         <h1 className="text-lg font-extrabold mb-4">ICC Test Team Rankings</h1>
         <MobileTabBar tabs={rankingTabs} />

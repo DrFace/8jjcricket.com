@@ -31,8 +31,7 @@ export default function T20IRankingsPage() {
   if (error) {
     return (
       <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+
         <div className="min-h-screen flex flex-col">
           <TopNav />
           <main className="flex-1">
@@ -50,8 +49,7 @@ export default function T20IRankingsPage() {
   if (isLoading) {
     return (
       <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+
         <div className="min-h-screen flex flex-col">
           <TopNav />
           <main className="flex-1">
@@ -68,8 +66,7 @@ export default function T20IRankingsPage() {
 
   return (
     <>
-      <title>{title}</title>
-      <meta name="description" content={description} />
+
       <div className="min-h-screen flex flex-col">
         <TopNav />
         <main className="flex-1">

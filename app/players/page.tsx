@@ -139,8 +139,8 @@ export default function PlayersPage() {
       const fetchedCountries: Country[] = json.countries ?? [];
       setCountries(fetchedCountries);
 
-      // ✅ Set default country to India only once (and only if user hasn’t selected anything)
-      // ✅ Set default country to India only once (and only if user hasn’t selected anything AND no session exists)
+      // ✅ Set default country to India only once (and only if user hasn't selected anything)
+      // ✅ Set default country to India only once (and only if user hasn't selected anything AND no session exists)
       const hasSavedCountry = typeof window !== "undefined" && sessionStorage.getItem("players-country") !== null;
       
       if (!didSetDefaultCountry.current && !cId && !hasSavedCountry) {
@@ -209,12 +209,6 @@ export default function PlayersPage() {
 
   return (
     <>
-      <title>Players | 8jjcricket</title>
-      <meta
-        name="description"
-        content="Browse all cricket players, search by name and filter by country."
-      />
-
       <TopNav />
 
       <div className="mx-auto px-4 py-8 md:py-10">

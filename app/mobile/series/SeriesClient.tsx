@@ -36,9 +36,7 @@ export default function SeriesClient() {
 
   if (error) {
     return (
-      <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+         <>
         <div className="card">Failed to load series.</div>
       </>
     );
@@ -46,9 +44,7 @@ export default function SeriesClient() {
 
   if (isLoading) {
     return (
-      <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+         <>
         <div className="space-y-6">
           <div className="h-24 bg-slate-900/80 border border-white/20 rounded-3xl animate-pulse backdrop-blur-xl"></div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -202,9 +198,7 @@ export default function SeriesClient() {
   }
 
   return (
-    <>
-      <title>{title}</title>
-      <meta name="description" content={description} />
+     <>
 
       <BottomNav />
 
