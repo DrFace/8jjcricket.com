@@ -23,6 +23,122 @@
   }
 }
 
+/* ── GLIGHTBOX VIDEO PLAY BUTTON ─────────────────────────────── */
+
+.glightbox_video .outer_circle {
+  stroke-width: 3;
+  stroke-dasharray: 410;
+  stroke-dashoffset: 0;
+  stroke-linecap: square;
+  transition: all .4s ease-out;
+}
+
+.glightbox_video:hover .outer_circle {
+  stroke-dashoffset: 410;
+  transition: stroke .7s .4s ease-out, stroke-dashoffset .4s ease-out;
+}
+
+.glightbox_video:hover .inner-circle {
+  fill: #BF2428;
+  transition: fill .4s .3s ease-out;
+}
+
+.glightbox_video:hover .play {
+  fill: white;
+  transition: fill .4s .3s ease-out;
+}
+
+/* ── PULSATING PLAY BUTTON (Mobile) ─────────────────────────── */
+
+@keyframes pulse-outer {
+  0% {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0);
+  }
+  40% {
+    box-shadow: 0 0 0 12px rgba(255, 255, 255, 0.2);
+  }
+  70% {
+    box-shadow: 0 0 0 18px rgba(255, 255, 255, 0.12);
+  }
+  100% {
+    box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
+  }
+}
+
+.button-pulsate__wrapper {
+  width: 70px;
+  height: 70px;
+}
+
+.button-pulsate {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.button-pulsate:hover .button-pulsate__svg-wrapper polygon {
+  fill: #2a2829;
+  transition-delay: 0s;
+}
+
+.button-pulsate:hover .button-pulsate__ring {
+  transform: scale(0.5);
+}
+
+.button-pulsate__expanding-circle {
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+}
+
+.button-pulsate__ring-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.button-pulsate__ring {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: absolute;
+  transition: transform 0.2s ease;
+  animation: pulse-outer 2s linear infinite;
+  will-change: box-shadow;
+}
+
+.button-pulsate__ring--second {
+  animation-delay: 0.9s;
+  border: solid 2px #ffffff;
+}
+
+.button-pulsate__svg-wrapper {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  fill: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+}
+
+.button-pulsate__svg-wrapper svg {
+  width: 100%;
+  height: 100%;
+}
+
+.button-pulsate__svg-wrapper polygon {
+  transition: 0.25s fill ease;
+  transition-delay: 0.2s;
+  fill: #ffffff;
+}
+
 @keyframes pulse-ring {
   0% {
     transform: scale(0.8);

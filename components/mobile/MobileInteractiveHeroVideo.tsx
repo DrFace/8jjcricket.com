@@ -47,22 +47,18 @@ export default function MobileInteractiveHeroVideo({
             className="absolute inset-0 flex items-center justify-center cursor-pointer z-10"
             onClick={() => setIsModalOpen(true)}
           >
-            <div className="relative">
-              {/* Static Ring - No animation */}
-              <div className="absolute inset-0 pointer-events-none">
-                <div className="h-16 w-16 rounded-full border-2 border-orange-400/60" />
-              </div>
-
-              {/* Play Button - TRANSPARENT BACKGROUND */}
-              <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-transparent pointer-events-none">
-                {/* Orange Play Triangle Icon */}
-                <svg
-                  className="h-8 w-8 text-orange-500 drop-shadow-2xl ml-0.5"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M8 5v14l11-7z" />
-                </svg>
+            <div className="button-pulsate__wrapper">
+              <div className="button-pulsate">
+                <div className="button-pulsate__ring-container">
+                  <div className="button-pulsate__ring"></div>
+                  <div className="button-pulsate__ring button-pulsate__ring--second"></div>
+                </div>
+                <div className="button-pulsate__svg-wrapper">
+                  <svg viewBox="0 0 70 70">
+                    <polygon points="25,20 50,35 25,50"></polygon>
+                  </svg>
+                </div>
+                <div className="button-pulsate__expanding-circle"></div>
               </div>
             </div>
           </div>
