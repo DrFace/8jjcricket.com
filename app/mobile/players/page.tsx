@@ -168,11 +168,6 @@ export default function PlayersPage() {
 
   return (
     <>
-      <title>Players | 8jjcricket</title>
-      <meta
-        name="description"
-        content="Browse all cricket players, search by name and filter by country."
-      />
 
       <BottomNav />
 

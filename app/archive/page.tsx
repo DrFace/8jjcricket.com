@@ -278,8 +278,7 @@ export default function ArchivePage() {
   if (error) {
     return (
       <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+
         <TopNav />
         <BottomNav />
         <div className="min-h-[60vh] flex items-center justify-center">
@@ -310,8 +309,7 @@ export default function ArchivePage() {
   if (isLoading) {
     return (
       <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+
         <TopNav />
         <BottomNav />
 
@@ -366,8 +364,7 @@ export default function ArchivePage() {
   if (!dataMemo || dataMemo.length === 0) {
     return (
       <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+
         <TopNav />
         <BottomNav />
 
@@ -506,8 +503,7 @@ export default function ArchivePage() {
   // Main content
   return (
     <>
-      <title>{title}</title>
-      <meta name="description" content={description} />
+
       <TopNav />
       <BottomNav />
 

@@ -276,8 +276,7 @@ export default function ArchivePage() {
   if (error) {
     return (
       <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+
 
         <div className="min-h-[60vh] flex items-center justify-center">
           <div className="max-w-md w-full rounded-2xl border border-red-500/30 bg-black/70 backdrop-blur-xl px-6 py-8 shadow-2xl">
@@ -306,8 +305,7 @@ export default function ArchivePage() {
   if (isLoading) {
     return (
       <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+
 
         <BottomNav />
 
@@ -361,8 +359,7 @@ export default function ArchivePage() {
   if (!dataMemo || dataMemo.length === 0) {
     return (
       <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+
 
         <BottomNav />
 
@@ -500,8 +497,7 @@ export default function ArchivePage() {
   // Main content
   return (
     <>
-      <title>{title}</title>
-      <meta name="description" content={description} />
+
 
       <BottomNav />
 

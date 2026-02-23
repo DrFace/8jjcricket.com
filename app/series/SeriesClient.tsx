@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import Link from "next/link";
-import Head from "next/head"; // ✅ ADD THIS IMPORT
+
 import TopNav from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
@@ -177,55 +177,7 @@ export default function SeriesPage() {
 
   return (
     <>
-      {/* ✅ USE HEAD COMPONENT FOR CLIENT COMPONENTS */}
-      <Head>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <meta
-          name="keywords"
-          content={(seriesMetadata.keywords as string[])?.join(", ") || ""}
-        />
 
-        {/* Open Graph */}
-        <meta
-          property="og:title"
-          content={(seriesMetadata.openGraph?.title as string) || title}
-        />
-        <meta
-          property="og:description"
-          content={
-            (seriesMetadata.openGraph?.description as string) || description
-          }
-        />
-        <meta property="og:url" content="https://8jjcricket.com/series" />
-        <meta property="og:site_name" content="8jjcricket" />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content={ogImage} />
-
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:title"
-          content={(seriesMetadata.twitter?.title as string) || title}
-        />
-        <meta
-          name="twitter:description"
-          content={
-            (seriesMetadata.twitter?.description as string) || description
-          }
-        />
-        <meta name="twitter:image" content={twitterImage} />
-        <meta name="twitter:site" content="@8jjcricket" />
-
-        {/* Canonical */}
-        <link rel="canonical" href="https://8jjcricket.com/series" />
-
-        {/* JSON-LD Schema */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(seriesJsonLd) }}
-        />
-      </Head>
 
       <div className="min-h-screen flex flex-col">
         <TopNav />

@@ -27,9 +27,7 @@ export default function T20IRankingsPage() {
 
   if (error) {
     return (
-      <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+         <>
         <div className="card">
           Failed to load team rankings.
           {typeof error === "string" ? ` ${error}` : ""}
@@ -39,9 +37,7 @@ export default function T20IRankingsPage() {
   }
   if (isLoading) {
     return (
-      <>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+         <>
         <div className="card animate-pulse">Loading rankings…</div>
       </>
     );
@@ -49,9 +45,7 @@ export default function T20IRankingsPage() {
   const rankings: RankingEntry[] = data?.data ?? [];
   const { men, women } = groupByGender(rankings, ["T20I", "T20"]);
   return (
-    <>
-      <title>{title}</title>
-      <meta name="description" content={description} />
+     <>
       <div className="space-y-8">
         <h1 className="text-lg font-extrabold mb-4">ICC T20I Team Rankings</h1>
         <MobileTabBar tabs={rankingTabs} />

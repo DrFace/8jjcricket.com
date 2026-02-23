@@ -190,14 +190,6 @@ export default function TeamsClient() {
 
   return (
     <>
-      {/* Prefer Next.js metadata in app router; kept here to match your current approach */}
-      <title>
-        Cricket Teams - All International & Domestic Teams | 8jjcricket
-      </title>
-      <meta
-        name="description"
-        content="Explore cricket teams from around the world. Filter by series and leagues including ODI, T20I, Test, IPL, and more. View international and domestic cricket teams."
-      />
 
       <div className="min-h-screen flex flex-col">
         <BottomNav />
