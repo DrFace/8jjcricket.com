@@ -75,7 +75,7 @@ export default function MobileLiveCard({ f }: { f: Fixture }) {
           {/* Teams */}
           <div className="relative z-10 flex items-center justify-between gap-2">
             <div className="flex-1 flex justify-start">
-              <MobileRecentBadge runs={homeRuns} team={home} />
+              <MobileRecentBadge runs={homeRuns} team={home} score={f.localteam_score} />
             </div>
 
             <div className="flex flex-col items-center shrink-0 px-1">
@@ -84,7 +84,7 @@ export default function MobileLiveCard({ f }: { f: Fixture }) {
             </div>
 
             <div className="flex-1 flex justify-end">
-              <MobileRecentBadge runs={awayRuns} team={away} />
+              <MobileRecentBadge runs={awayRuns} team={away} score={f.visitorteam_score} />
             </div>
           </div>
 

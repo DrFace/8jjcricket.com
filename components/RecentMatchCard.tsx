@@ -4,6 +4,7 @@ import Link from "next/link";
 import { formatDate, cn } from "@/lib/utils";
 import TeamBadge from "@/components/TeamBadge";
 import type { Fixture } from "@/types/fixture";
+import { CalcRuns, ScoreLine } from "@/lib/match";
 
 export default function RecentMatchCard({ f }: { f: Fixture }) {
   const home = f.localteam;
@@ -12,6 +13,15 @@ export default function RecentMatchCard({ f }: { f: Fixture }) {
   const homeLabel = home?.short_name || home?.name || `Team ${f.localteam_id}`;
   const awayLabel =
     away?.short_name || away?.name || `Team ${f.visitorteam_id}`;
+
+  // Pre-formatted scores from API
+  const localteamScore = (f as any).localteam_score;
+  const visitorteamScore = (f as any).visitorteam_score;
+
+  // Fallback: calculate from runs array
+  const runsArr = Array.isArray((f as any).runs) ? (f as any).runs : [];
+  const homeRuns = CalcRuns(runsArr, f.localteam_id);
+  const awayRuns = CalcRuns(runsArr, f.visitorteam_id);
 
   const metaLine = `${f.round ?? "Match"} · ${formatDate(f.starting_at)}`;
 
@@ -42,18 +52,24 @@ export default function RecentMatchCard({ f }: { f: Fixture }) {
         <div className="mt-2 h-px w-full bg-white/5 group-hover:bg-india-green/20 transition-colors" />
 
         <div className="mt-3 flex items-center justify-between gap-2">
-          <div className="flex-1 min-w-0 text-gray-200">
-            <TeamBadge team={home} className="justify-start text-gray-200" />
+          <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
+            <TeamBadge team={home} className="justify-start text-gray-200 flex-1 min-w-0" />
+            <span className="text-sm font-bold text-india-gold flex-shrink-0">
+              {localteamScore || ScoreLine(homeRuns) || "-"}
+            </span>
           </div>
 
           <div className="px-2 text-[11px] text-gray-500 uppercase tracking-wide">
             vs
           </div>
 
-          <div className="flex-1 min-w-0 flex justify-end text-gray-200">
+          <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
+            <span className="text-sm font-bold text-india-gold flex-shrink-0">
+              {visitorteamScore || ScoreLine(awayRuns) || "-"}
+            </span>
             <TeamBadge
               team={away}
-              className="justify-end text-right text-gray-200"
+              className="justify-end text-right text-gray-200 flex-1 min-w-0"
             />
           </div>
         </div>

@@ -17,6 +17,9 @@ export type Fixture = {
   localteam?: Team;
   visitorteam?: Team;
   runs?: any[];
+  // Pre-formatted score strings from API (e.g., "147/10", "254/6")
+  localteam_score?: string | null;
+  visitorteam_score?: string | null;
 };
 
 export type FixtureLive = {
@@ -36,6 +39,9 @@ export type FixtureLive = {
   localteam?: Team;
   visitorteam?: Team;
   runs?: any[];
+  // Pre-formatted score strings from API (e.g., "147/10", "254/6")
+  localteam_score?: string | null;
+  visitorteam_score?: string | null;
 };
 
 export type LivePayload = { live: FixtureLive[] };
