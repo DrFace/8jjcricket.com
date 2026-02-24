@@ -246,15 +246,15 @@ export default async function HomePage() {
 
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex w-full items-center px-6 mt-4 lg:mt-8 xl:mt-0 min-h-[85vh] lg:h-screen perspective-2000 preserve-3d"
+          className="SectionScroll sticky top-0 flex w-full items-start px-6 mt-4 lg:mt-0 min-h-[85vh] lg:h-screen perspective-2000 preserve-3d"
         >
-          <div className="relative h-full w-full flex items-center">
+          <div className="relative h-full w-full flex items-start">
             <div
               className="absolute inset-0"
               style={{ background: "var(--bg-primary)" }}
             />
 
-            <ScaleToFit className="w-full h-full pt-12 pb-4">
+            <ScaleToFit className="w-full h-full pt-16 pb-2">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
                 <PortraitShowcaseSection />
               </div>
@@ -265,16 +265,16 @@ export default async function HomePage() {
         {/* News */}
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6"
+          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-start px-6"
         >
-          <div className="relative h-full w-full flex items-center">
+          <div className="relative h-full w-full flex items-start">
             {/* Background removed as per request */}
             <div
               className="absolute inset-0"
               style={{ background: "var(--bg-primary)" }}
             />
 
-            <ScaleToFit className="w-full h-full pt-12 pb-4">
+            <ScaleToFit className="w-full h-full pt-16 pb-2">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
                 <HomeNewsShowcase />
               </div>
@@ -284,16 +284,16 @@ export default async function HomePage() {
 
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6 perspective-2000 preserve-3d"
+          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-start px-6 perspective-2000 preserve-3d"
         >
-          <div className="relative h-full w-full flex items-center">
+          <div className="relative h-full w-full flex items-start">
             {/* Background removed as per request */}
             <div
               className="absolute inset-0"
               style={{ background: "var(--bg-primary)" }}
             />
 
-            <ScaleToFit className="w-full h-full pt-12 pb-4">
+            <ScaleToFit className="w-full h-full pt-16 pb-2">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
                 <HomeFeedbackSection />
               </div>
@@ -304,15 +304,15 @@ export default async function HomePage() {
         {/* Partners Carousel */}
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-center px-6"
+          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-start px-6"
         >
-          <div className="relative h-full w-full flex items-center">
+          <div className="relative h-full w-full flex items-start">
             <div
               className="absolute inset-0"
               style={{ background: "var(--bg-primary)" }}
             />
 
-            <ScaleToFit className="w-full h-full pt-12 pb-4">
+            <ScaleToFit className="w-full h-full pt-16 pb-2">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
                 <PartnersCarousel />
               </div>

@@ -69,11 +69,11 @@ export default function ScaleToFit({ children, className = "", wrapperClassName 
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-full overflow-hidden flex items-center justify-center ${className}`}
+      className={`relative w-full h-full overflow-hidden flex items-start justify-center ${className}`}
     >
       <div
         ref={contentRef}
-        className={`origin-center flex items-center justify-center ${wrapperClassName}`}
+        className={`origin-top flex items-start justify-center ${wrapperClassName}`}
         style={{
           transform: `scale(${scale})`,
           // Ensure the content has a chance to layout at its preferred size
