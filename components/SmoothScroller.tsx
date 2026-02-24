@@ -4,91 +4,95 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 
+
+
 export default function SmoothScroller({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    const pathname = usePathname();
+  const pathname = usePathname();
 
-    useEffect(() => {
-        const reduceMotion = window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
-        ).matches;
+  useEffect(() => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
-        const isTouch =
-            "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    const isTouch =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
-        // Mobile OR reduced motion → no Lenis, no JS snapping
-        if (reduceMotion || isTouch) return;
+    // Mobile OR reduced motion → no Lenis, no JS snapping
+    if (reduceMotion || isTouch) return;
 
-        // ---------- DESKTOP ONLY ----------
-        const lenis = new Lenis({
-            duration: 0.8,
-            lerp: 0.12,
-            smoothWheel: true,
-            wheelMultiplier: 2.5,
-            
-        });
+    // ---------- DESKTOP ONLY ----------
+    const lenis = new Lenis({
+      duration: 0.8,
+      lerp: 0.12,
+      smoothWheel: true,
+      wheelMultiplier: 2.5,
+    });
 
-        let rafId = 0;
-        const raf = (time: number) => {
-            lenis.raf(time);
-            rafId = requestAnimationFrame(raf);
-        };
-        rafId = requestAnimationFrame(raf);
+    let rafId = 0;
+    const raf = (time: number) => {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+    rafId = requestAnimationFrame(raf);
 
-        let locked = false;
+    let locked = false;
 
-        const sections = () =>
-            Array.from(
-                document.querySelectorAll<HTMLElement>("[data-snap]")
-            );
+    const sections = () =>
+      Array.from(
+        document.querySelectorAll<HTMLElement>("[data-snap]")
+      );
 
-        const activeIndex = (els: HTMLElement[]) => {
-            const y = window.scrollY;
-            let best = 0;
-            let dist = Infinity;
+    const activeIndex = (els: HTMLElement[]) => {
+      const y = window.scrollY;
+      let best = 0;
+      let dist = Infinity;
+      els.forEach((el, i) => {
+        const d = Math.abs(el.offsetTop - y);
+        if (d < dist) {
+          dist = d;
+          best = i;
+        }
+      });
+      return best;
+    };
 
-            els.forEach((el, i) => {
-                const d = Math.abs(el.offsetTop - y);
-                if (d < dist) {
-                    dist = d;
-                    best = i;
-                }
-            });
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) < 10) return;
+      if (locked) return;
 
-            return best;
-        };
+      const els = sections();
+      if (!els.length) return;
 
-        const onWheel = (e: WheelEvent) => {
-            if (Math.abs(e.deltaY) < 10) return;
-            if (locked) return;
+      e.preventDefault();
 
-            const els = sections();
-            if (!els.length) return;
+      const current = activeIndex(els);
+      const dir = e.deltaY > 0 ? 1 : -1;
+      const next = Math.max(0, Math.min(els.length - 1, current + dir));
+      if (next === current) return;
 
-            e.preventDefault();
+      locked = true;
+      const targetEl = els[next];
+      const viewportH = window.innerHeight || document.documentElement.clientHeight;
+      const elH = targetEl.offsetHeight;
+      // If the element is shorter than the viewport, centre it by adding
+      // half of the remaining height as an offset.  Otherwise, align to top.
+      const offset = Math.max(0, (viewportH - elH) / 2);
+      lenis.scrollTo(targetEl, { duration: 0.9, offset });
+      setTimeout(() => (locked = false), 900);
+    };
 
-            const current = activeIndex(els);
-            const dir = e.deltaY > 0 ? 1 : -1;
-            const next = Math.max(0, Math.min(els.length - 1, current + dir));
-            if (next === current) return;
+    window.addEventListener("wheel", onWheel, { passive: false });
 
-            locked = true;
-            lenis.scrollTo(els[next], { duration: 0.9 });
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, [pathname]);
 
-            setTimeout(() => (locked = false), 900);
-        };
-
-        window.addEventListener("wheel", onWheel, { passive: false });
-
-        return () => {
-            window.removeEventListener("wheel", onWheel);
-            cancelAnimationFrame(rafId);
-            lenis.destroy();
-        };
-    }, [pathname]);
-
-    return <>{children}</>;
+  return <>{children}</>;
 }
