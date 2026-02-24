@@ -902,3 +902,7 @@ a {
     animation: none;
   }
 }
+[data-snap] {
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
