@@ -8,12 +8,14 @@ interface HeroVideoModalProps {
   isOpen: boolean;
   onClose: () => void;
   videoUrl: string;
+  latestEvent?: any;
 }
 
 export default function HeroVideoModal({
   isOpen,
   onClose,
   videoUrl,
+  latestEvent,
 }: HeroVideoModalProps) {
   useEffect(() => {
     if (isOpen) {
@@ -38,7 +40,7 @@ export default function HeroVideoModal({
       style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
     >
       <div
-        className="relative w-full max-w-5xl mx-4 overflow-hidden"
+        className="relative w-full max-w-4xl mx-4 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -51,22 +53,39 @@ export default function HeroVideoModal({
         />
 
         {/* Main Content */}
-        <div className="relative aspect-video w-full overflow-hidden rounded-2xl border-4 border-india-gold/30 bg-black">
-          {/* Video Player */}
-          <video
-            src={videoUrl}
-            autoPlay
-            loop
-            muted={false}
-            playsInline
-            controls
-            className="absolute inset-0 h-full w-full object-contain sm:object-cover"
-          />
+        <div className={`relative w-full overflow-hidden rounded-2xl border-4 border-india-gold/30 ${!latestEvent ? 'aspect-video bg-black' : ''}`}>
+          {latestEvent ? (
+            <a
+              href={`/news/${latestEvent.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block group/event"
+            >
+              <img
+                src={latestEvent.image_url}
+                alt={latestEvent.title}
+                className="w-full h-auto block transition-transform duration-500 group-hover/event:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/10 group-hover/event:bg-black/0 transition-colors" />
+            </a>
+          ) : (
+            <video
+              src={videoUrl}
+              autoPlay
+              loop
+              muted={false}
+              playsInline
+              controls
+              className="absolute inset-0 h-full w-full object-contain sm:object-cover"
+            />
+          )}
           
-          {/* Animated Background Pattern (behind video) */}
-          <div className="absolute inset-0 opacity-10 pointer-events-none">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(251,191,36,0.1),transparent_50%)]" />
-          </div>
+          {/* Animated Background Pattern (only for video) */}
+          {!latestEvent && (
+            <div className="absolute inset-0 opacity-10 pointer-events-none">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(251,191,36,0.1),transparent_50%)]" />
+            </div>
+          )}
         </div>
       </div>
     </div>

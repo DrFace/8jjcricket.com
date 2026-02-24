@@ -88,8 +88,27 @@ async function getNewsPreview(): Promise<Article[]> {
   }
 }
 
+async function getLatestEvent(): Promise<Article | null> {
+  const base = process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_BASE;
+  const url = `${base.replace(/\/+$/, "")}/news?category=events&per_page=1`;
+
+  try {
+    const res = await fetch(url, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) return null;
+    const json = await res.json();
+    return (json.data?.[0] as Article) || null;
+  } catch (error) {
+    console.error("Fetch latest event failed:", error);
+    return null;
+  }
+}
+
 export default async function HomePage() {
   const news = await getNewsPreview();
+  const latestEvent = await getLatestEvent();
   const [videosRaw] = await Promise.all([fetchVideos()]);
 
   const videos: Video[] = (videosRaw || [])
@@ -207,7 +226,17 @@ export default async function HomePage() {
 
             return (
               <>
-                <InteractiveHeroVideo videoUrl={safeSrc} />
+                <InteractiveHeroVideo
+                  videoUrl={safeSrc}
+                  latestEvent={
+                    latestEvent
+                      ? {
+                          ...latestEvent,
+                          image_url: normalizeImageUrl(latestEvent.image_url),
+                        }
+                      : null
+                  }
+                />
                 <SponsorBar />
               </>
             );

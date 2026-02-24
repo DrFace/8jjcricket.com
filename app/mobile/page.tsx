@@ -108,8 +108,23 @@ async function getNewsPreview(): Promise<Article[]> {
   }
 }
 
+async function getLatestEvent(): Promise<Article | null> {
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE;
+  const url = `${base.replace(/\/+$/, "")}/news?category=events&per_page=1`;
+
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return (json.data?.[0] as Article) || null;
+  } catch {
+    return null;
+  }
+}
+
 export default async function MobileHomePage() {
   const news = await getNewsPreview();
+  const latestEvent = await getLatestEvent();
   const [videosRaw] = await Promise.all([fetchVideos()]);
 
   const videos: Video[] = (videosRaw || [])
@@ -212,7 +227,19 @@ export default async function MobileHomePage() {
 
           const safeSrc = getSafeVideoUrl(raw);
 
-          return <MobileInteractiveHeroVideo videoUrl={safeSrc} />;
+          return (
+            <MobileInteractiveHeroVideo
+              videoUrl={safeSrc}
+              latestEvent={
+                latestEvent
+                  ? {
+                      ...latestEvent,
+                      image_url: normalizeImageUrl(latestEvent.image_url),
+                    }
+                  : null
+              }
+            />
+          );
         })()}
       </section>
       {/* SPONSORS (GRID, no scroll) */}

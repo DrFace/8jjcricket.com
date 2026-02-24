@@ -3,12 +3,15 @@
 import { useState, useRef, useEffect } from "react";
 import HeroVideoModal from "./HeroVideoModal";
 import { useAudio } from "@/context/AudioContext";
+import { Trophy } from "lucide-react";
 interface InteractiveHeroVideoProps {
   videoUrl: string;
+  latestEvent?: any;
 }
 
 export default function InteractiveHeroVideo({
   videoUrl,
+  latestEvent,
 }: InteractiveHeroVideoProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -65,39 +68,22 @@ export default function InteractiveHeroVideo({
         {/* Overlay Gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none" />
 
-        {/* Play Button Overlay - CLICKABLE */}
-        <div
-          className="absolute inset-0 flex items-center justify-center cursor-pointer group z-10"
-          onClick={handleClick}
-        >
-          <div className="glightbox_video">
-            <svg
-              width="131"
-              height="131"
-              viewBox="0 0 131 131"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                className="inner-circle"
-                d="M65 21C40.1488 21 20 41.1488 20 66C20 90.8512 40.1488 111 65 111C89.8512 111 110 90.8512 110 66C110 41.1488 89.8512 21 65 21Z"
-                fill="white"
-              ></path>
-              <circle
-                className="outer_circle"
-                cx="65.5"
-                cy="65.5"
-                r="64"
-                stroke="white"
-              ></circle>
-              <path
-                className="play"
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M60 76V57L77 66.7774L60 76Z"
-                fill="#BF2428"
-              ></path>
-            </svg>
+        {/* Latest Event Badge Overlay */}
+        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+          <div
+            className="relative cursor-pointer group pointer-events-auto"
+            onClick={handleClick}
+          >
+            {/* Pulsating background ring */}
+            <div className="absolute inset-0 animate-ping rounded-full bg-india-gold/20" />
+            
+            {/* Glassmorphic Badge */}
+            <div className="relative flex items-center gap-3 rounded-full border border-white/20 bg-black/40 px-6 py-4 backdrop-blur-md transition-all duration-500 group-hover:scale-110 group-hover:bg-india-gold group-hover:border-india-gold">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-india-gold shadow-lg group-hover:bg-white transition-colors duration-500">
+                <Trophy className="h-6 w-6 text-black" />
+              </div>
+           
+            </div>
           </div>
         </div>
       </div>
@@ -107,6 +93,7 @@ export default function InteractiveHeroVideo({
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         videoUrl={videoUrl}
+        latestEvent={latestEvent}
       />
     </>
   );
