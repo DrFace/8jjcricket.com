@@ -903,6 +903,6 @@ a {
   }
 }
 [data-snap] {
-  scroll-snap-align: center;
+  scroll-snap-align: center !important;
   scroll-snap-stop: always;
 }
