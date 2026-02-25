@@ -217,7 +217,8 @@ export default async function HomePage() {
 
         <section
           data-snap
-          className="SectionScroll w-full h-full flex items-start px-6 perspective-2000 preserve-3d"
+          className="SectionScroll w-full h-full flex items-start px-6"
+          style={{ background: "var(--bg-primary)" }}
         >
           <div className="relative h-full w-full flex items-start">
             <div
@@ -235,6 +236,7 @@ export default async function HomePage() {
         <section
           data-snap
           className="SectionScroll w-full h-full flex items-start px-6"
+          style={{ background: "var(--bg-primary)" }}
         >
           <div className="relative h-full w-full flex items-start">
             <div
@@ -251,7 +253,8 @@ export default async function HomePage() {
 
         <section
           data-snap
-          className="SectionScroll w-full h-full flex items-start px-6 perspective-2000 preserve-3d"
+          className="SectionScroll w-full h-full flex items-start px-6"
+          style={{ background: "var(--bg-primary)" }}
         >
           <div className="relative h-full w-full flex items-start">
             <div
@@ -269,6 +272,7 @@ export default async function HomePage() {
         <section
           data-snap
           className="SectionScroll w-full h-full flex items-start px-6"
+          style={{ background: "var(--bg-primary)" }}
         >
           <div className="relative h-full w-full flex items-start">
             <div
