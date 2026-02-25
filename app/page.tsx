@@ -1,7 +1,5 @@
-// app/page.tsx
 import dynamic from "next/dynamic";
 import TopNav from "@/components/TopNav";
-import SmoothScroller from "@/components/SmoothScroller";
 import DesktopOnly from "@/components/DesktopOnly";
 import BottomNav from "@/components/BottomNav";
 import HomeVerticalSwiper from "@/components/HomeVerticalSwiper";
@@ -11,18 +9,13 @@ import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
 import InteractiveHeroVideo from "@/components/InteractiveHeroVideo";
 import PartnersCarousel from "@/components/PartnersCarousel";
 
-// --- IMPORT SEO DATA ---
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
 import SponsorBar from "@/components/SponsorBar";
 import ScaleToFit from "@/components/ScaleToFit";
 
-// --- EXPORT METADATA (This sets the <head> tags) ---
 export const metadata = homeMetadata;
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
-  ssr: false,
-});
-const AnimatedText = dynamic(() => import("@/components/AnimatedText"), {
   ssr: false,
 });
 
@@ -66,24 +59,30 @@ function normalizeImageUrl(url: string | null): string | null {
   }
 }
 
+function normalizeVideoUrl(url: string | null): string | null {
+  if (!url) return null;
+  const backend_url = apiBase().replace(/\/api$/, "");
+  try {
+    const u = new URL(url, backend_url);
+    let pathname = u.pathname;
+    if (!pathname.startsWith("/storage/"))
+      pathname = `/storage/${pathname.replace(/^\/+/, "")}`;
+    return `${backend_url}${pathname}${u.search}`;
+  } catch {
+    return `${backend_url}/storage/${String(url).replace(/^\/+/, "")}`;
+  }
+}
+
 async function getNewsPreview(): Promise<Article[]> {
   const base = process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_BASE;
   const url = `${base.replace(/\/+$/, "")}/news`;
 
   try {
-    const res = await fetch(url, {
-      cache: "no-store",
-    });
-
-    if (!res.ok) {
-      console.error("API Error:", res.status, res.statusText);
-      return [];
-    }
-
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) return [];
     const json = await res.json();
     return ((json.data || []) as Article[]).slice(0, 5);
-  } catch (error) {
-    console.error("Fetch failed:", error);
+  } catch {
     return [];
   }
 }
@@ -93,23 +92,33 @@ async function getLatestEvent(): Promise<Article | null> {
   const url = `${base.replace(/\/+$/, "")}/news?category=events&per_page=1`;
 
   try {
-    const res = await fetch(url, {
-      cache: "no-store",
-    });
-
+    const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) return null;
     const json = await res.json();
     return (json.data?.[0] as Article) || null;
-  } catch (error) {
-    console.error("Fetch latest event failed:", error);
+  } catch {
     return null;
   }
 }
 
+async function fetchVideos(): Promise<Video[]> {
+  const url = `${apiBase()}/home-videos`;
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return Array.isArray(json) ? json : json.data || [];
+  } catch {
+    return [];
+  }
+}
+
 export default async function HomePage() {
-  const news = await getNewsPreview();
-  const latestEvent = await getLatestEvent();
-  const [videosRaw] = await Promise.all([fetchVideos()]);
+  const [news, latestEvent, videosRaw] = await Promise.all([
+    getNewsPreview(),
+    getLatestEvent(),
+    fetchVideos(),
+  ]);
 
   const videos: Video[] = (videosRaw || [])
     .map((p: any) => {
@@ -127,49 +136,17 @@ export default async function HomePage() {
       title: a.title,
       imgSrc: normalizeImageUrl(a.image_url),
     }))
-    .filter(
-      (a: { id: number; slug: string; title: string; imgSrc: string | null }) =>
-        a.imgSrc,
-    ) as {
+    .filter((a) => a.imgSrc) as {
     id: number;
     slug: string;
     title: string;
     imgSrc: string;
   }[];
 
-  function normalizeVideoUrl(url: string | null): string | null {
-    if (!url) return null;
-    let backend_url = apiBase().replace(/\/api$/, "");
-    try {
-      const u = new URL(url, backend_url);
-      let pathname = u.pathname;
-      if (!pathname.startsWith("/storage/")) {
-        pathname = `/storage/${pathname.replace(/^\/+/, "")}`;
-      }
-
-      return `${backend_url}${pathname}${u.search}`;
-    } catch {
-      return `${backend_url}/storage/${String(url).replace(/^\/+/, "")}`;
-    }
-  }
-
-  async function fetchVideos(): Promise<Video[]> {
-    const url = `${apiBase()}/home-videos`;
-    try {
-      const res = await fetch(url, { cache: "no-store" });
-
-      if (!res.ok) return [];
-      const json = await res.json();
-
-      return Array.isArray(json) ? json : json.data || [];
-    } catch {
-      return [];
-    }
-  }
+  void newsWithImages;
 
   return (
-    <SmoothScroller>
-      {/* --- INJECT SCHEMA JSON-LD --- */}
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
@@ -182,16 +159,11 @@ export default async function HomePage() {
       <BottomNav />
       <TopNav />
 
-      {/* Swiper vertical scroll effect wrapper */}
       <HomeVerticalSwiper>
-        <section
-          data-snap
-          className="SectionScroll sticky top-0 h-[75vh] lg:h-[84vh] xl:h-[90vh] w-full overflow-hidden"
-        >
-          {/* SEO-Optimized H1 for India & South Asia */}
+        <section data-snap className="SectionScroll w-full h-full overflow-hidden">
           <h1 className="sr-only">
-            8JJ Cricket - Live Cricket Scores, IPL Updates & Match News for
-            India & South Asia
+            8JJ Cricket - Live Cricket Scores, IPL Updates & Match News for India
+            & South Asia
           </h1>
 
           {(() => {
@@ -199,9 +171,7 @@ export default async function HomePage() {
 
             const getSafeVideoUrl = (input: string) => {
               if (!input) return "";
-              if (input.startsWith("/")) {
-                return `https://8jjcricket.com${input}`;
-              }
+              if (input.startsWith("/")) return `https://8jjcricket.com${input}`;
               if (input.startsWith("http://72.60.107.98:8001/")) {
                 return input.replace(
                   "http://72.60.107.98:8001",
@@ -241,19 +211,19 @@ export default async function HomePage() {
               </>
             );
           })()}
+
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
         </section>
 
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex w-full items-start px-6 mt-4 lg:mt-0 min-h-[85vh] lg:h-screen perspective-2000 preserve-3d"
+          className="SectionScroll w-full h-full flex items-start px-6 perspective-2000 preserve-3d"
         >
           <div className="relative h-full w-full flex items-start">
             <div
               className="absolute inset-0"
               style={{ background: "var(--bg-primary)" }}
             />
-
             <ScaleToFit className="w-full h-full pt-16 pb-2">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
                 <PortraitShowcaseSection />
@@ -262,18 +232,15 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* News */}
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-start px-6"
+          className="SectionScroll w-full h-full flex items-start px-6"
         >
           <div className="relative h-full w-full flex items-start">
-            {/* Background removed as per request */}
             <div
               className="absolute inset-0"
               style={{ background: "var(--bg-primary)" }}
             />
-
             <ScaleToFit className="w-full h-full pt-16 pb-2">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
                 <HomeNewsShowcase />
@@ -284,15 +251,13 @@ export default async function HomePage() {
 
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-start px-6 perspective-2000 preserve-3d"
+          className="SectionScroll w-full h-full flex items-start px-6 perspective-2000 preserve-3d"
         >
           <div className="relative h-full w-full flex items-start">
-            {/* Background removed as per request */}
             <div
               className="absolute inset-0"
               style={{ background: "var(--bg-primary)" }}
             />
-
             <ScaleToFit className="w-full h-full pt-16 pb-2">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
                 <HomeFeedbackSection />
@@ -301,17 +266,15 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Partners Carousel */}
         <section
           data-snap
-          className="SectionScroll sticky top-0 flex min-h-[85vh] lg:h-screen w-full items-start px-6"
+          className="SectionScroll w-full h-full flex items-start px-6"
         >
           <div className="relative h-full w-full flex items-start">
             <div
               className="absolute inset-0"
               style={{ background: "var(--bg-primary)" }}
             />
-
             <ScaleToFit className="w-full h-full pt-16 pb-2">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
                 <PartnersCarousel />
@@ -320,6 +283,6 @@ export default async function HomePage() {
           </div>
         </section>
       </HomeVerticalSwiper>
-    </SmoothScroller>
+    </>
   );
 }
