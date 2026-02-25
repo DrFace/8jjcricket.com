@@ -1,0 +1,43 @@
+.logoWrap {
+  display: inline-flex;
+  align-items: center; /* ✅ vertical center */
+  justify-content: center;
+  gap: 1px; /* reduce spacing */
+  perspective: 800px;
+  position: relative;
+  line-height: 1; /* prevents extra height */
+}
+
+.logoLetter {
+  position: relative;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  font-size: 16px;
+
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #f8fafc 25%,
+    #fbbf24 65%,
+    #f59e0b 100%
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    0 0 10px rgba(251, 191, 36, 0.35);
+}
+
+.logoGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(228, 189, 16, 0.15),
+    transparent 70%
+  );
+  filter: blur(12px);
+  z-index: -1;
+}
