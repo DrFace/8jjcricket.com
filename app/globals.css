@@ -897,3 +897,175 @@ a {
   scroll-snap-align: center !important;
   scroll-snap-stop: always;
 }
+
+/* Screen Reader Only - Hidden from view but accessible to SEO/Screen Readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* shared base */
+.side-plusgrid {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: clamp(240px, 26vw, 420px);
+  /* fills side space better */
+  pointer-events: none;
+  overflow: hidden;
+
+  /* tune these per side */
+  --p: rgba(0, 170, 255, 0.55);
+  /* primary (blue/gold) */
+  --p2: rgba(0, 170, 255, 0.22);
+  /* secondary faint */
+  --glow1: rgba(0, 170, 255, 0.18);
+  /* glow */
+  --glow2: rgba(255, 184, 0, 0.14);
+  /* warm glow */
+
+  opacity: 0.34;
+  mix-blend-mode: screen;
+
+  /* LAYERS:
+     1) micro plus grid (tight)
+     2) mid plus grid (wider)
+     3) faint diagonal noise-ish stripes (break repetition)
+  */
+  background-image:
+    /* micro plus */
+    linear-gradient(var(--p) 0 0),
+    linear-gradient(var(--p) 0 0),
+
+    /* mid plus */
+    linear-gradient(var(--p2) 0 0),
+    linear-gradient(var(--p2) 0 0),
+
+    /* subtle diagonal breakup */
+    repeating-linear-gradient(135deg,
+      rgba(255, 255, 255, 0.00) 0px,
+      rgba(255, 255, 255, 0.00) 18px,
+      rgba(255, 255, 255, 0.04) 19px,
+      rgba(255, 255, 255, 0.00) 34px);
+
+  background-size:
+    /* micro plus (2 strokes) */
+    2px 12px,
+    12px 2px,
+
+    /* mid plus (2 strokes) */
+    2px 18px,
+    18px 2px,
+
+    /* diagonal breakup */
+    100% 100%;
+
+  background-position:
+    /* micro positions */
+    15px 10px,
+    10px 15px,
+
+    /* mid positions */
+    9px 7px,
+    7px 9px,
+
+    0 0;
+
+  background-repeat: repeat;
+
+  /* soften edges vertically so it doesn’t stop abruptly */
+  mask-image: linear-gradient(to bottom,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%);
+}
+
+/* glow fog (depth) */
+.side-plusgrid::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(circle at 30% 20%, var(--glow1), transparent 55%),
+    radial-gradient(circle at 70% 55%, var(--glow2), transparent 60%),
+    radial-gradient(circle at 50% 85%, rgba(255, 140, 0, 0.10), transparent 70%);
+  filter: blur(42px);
+  opacity: 0.95;
+}
+
+/* macro plus/cross accents to kill tiling fatigue */
+.side-plusgrid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+
+  /* four big crosses */
+  background-image:
+    linear-gradient(var(--p) 0 0),
+    linear-gradient(var(--p) 0 0),
+    linear-gradient(rgba(255, 184, 0, 0.30) 0 0),
+    linear-gradient(rgba(255, 184, 0, 0.30) 0 0);
+
+  background-size:
+    3px 52px,
+    52px 3px,
+    3px 62px,
+    62px 3px;
+
+  background-position:
+    24% 34%,
+    24% 34%,
+    76% 62%,
+    76% 62%;
+
+  opacity: 0.22;
+  filter: blur(1.5px);
+}
+
+/* left + right side placement and horizontal fade */
+.side-plusgrid.left {
+  left: 0;
+
+  /* keep pattern visible across the whole gutter and fade only near content */
+  mask-image:
+    linear-gradient(to right, black 0%, black 70%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-composite: intersect;
+}
+
+.side-plusgrid.right {
+  right: 0;
+
+  mask-image:
+    linear-gradient(to left, black 0%, black 70%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-composite: intersect;
+}
+
+/* gold variant */
+.side-plusgrid.gold {
+  --p: rgba(255, 184, 0, 0.55);
+  --p2: rgba(255, 184, 0, 0.22);
+  --glow1: rgba(255, 184, 0, 0.16);
+  --glow2: rgba(0, 170, 255, 0.10);
+  opacity: 0.30;
+}
