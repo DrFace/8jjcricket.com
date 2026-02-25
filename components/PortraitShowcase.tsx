@@ -89,7 +89,7 @@ function PortraitSlideshow({
   // Progress bar animation
   useEffect(() => {
     if (len <= 1) return;
-    
+
     setProgress(0);
     const startTime = Date.now();
     const duration = 4000;
@@ -138,14 +138,14 @@ function PortraitSlideshow({
     if (!len || isTransitioning) return;
     setIsTransitioning(true);
     setIndex((i) => (i - 1 + len) % len);
-    
+
     if (autoPlayRef.current) {
       clearInterval(autoPlayRef.current);
       autoPlayRef.current = setInterval(() => {
         setIndex((i) => (i + 1) % len);
       }, 4000);
     }
-    
+
     setTimeout(() => setIsTransitioning(false), 700);
   }, [len, isTransitioning]);
 
@@ -153,31 +153,34 @@ function PortraitSlideshow({
     if (!len || isTransitioning) return;
     setIsTransitioning(true);
     setIndex((i) => (i + 1) % len);
-    
+
     if (autoPlayRef.current) {
       clearInterval(autoPlayRef.current);
       autoPlayRef.current = setInterval(() => {
         setIndex((i) => (i + 1) % len);
       }, 4000);
     }
-    
+
     setTimeout(() => setIsTransitioning(false), 700);
   }, [len, isTransitioning]);
 
-  const goToSlide = useCallback((slideIndex: number) => {
-    if (isTransitioning || slideIndex === index) return;
-    setIsTransitioning(true);
-    setIndex(slideIndex);
-    
-    if (autoPlayRef.current) {
-      clearInterval(autoPlayRef.current);
-      autoPlayRef.current = setInterval(() => {
-        setIndex((i) => (i + 1) % len);
-      }, 4000);
-    }
-    
-    setTimeout(() => setIsTransitioning(false), 700);
-  }, [isTransitioning, index, len]);
+  const goToSlide = useCallback(
+    (slideIndex: number) => {
+      if (isTransitioning || slideIndex === index) return;
+      setIsTransitioning(true);
+      setIndex(slideIndex);
+
+      if (autoPlayRef.current) {
+        clearInterval(autoPlayRef.current);
+        autoPlayRef.current = setInterval(() => {
+          setIndex((i) => (i + 1) % len);
+        }, 4000);
+      }
+
+      setTimeout(() => setIsTransitioning(false), 700);
+    },
+    [isTransitioning, index, len],
+  );
 
   if (!len) return null;
 
@@ -194,12 +197,9 @@ function PortraitSlideshow({
           const isActive = idx === index;
           const isPrev = idx === (index - 1 + len) % len;
           const isNext = idx === (index + 1) % len;
-          
+
           return (
-            <div
-              key={idx}
-              className="relative h-full w-full flex-shrink-0"
-            >
+            <div key={idx} className="relative h-full w-full flex-shrink-0">
               <a
                 href={item.href}
                 target="_blank"
@@ -219,15 +219,17 @@ function PortraitSlideshow({
                     draggable={false}
                   />
                 </div>
-                
+
                 {/* Gradient overlays */}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30 opacity-0 transition-opacity duration-500 group-hover/slide:opacity-100" />
-                
+
                 {/* Title overlay with animation - only visible on hover */}
-                <div className={`pointer-events-none absolute bottom-0 left-0 right-0 p-8 text-white transition-all duration-700 ${
-                  isActive ? "translate-y-0" : "translate-y-4"
-                } opacity-0 group-hover/carousel:opacity-100`}>
+                <div
+                  className={`pointer-events-none absolute bottom-0 left-0 right-0 p-8 text-white transition-all duration-700 ${
+                    isActive ? "translate-y-0" : "translate-y-4"
+                  } opacity-0 group-hover/carousel:opacity-100`}
+                >
                   <h3 className="text-3xl font-bold drop-shadow-2xl mb-2 transform transition-transform duration-500 group-hover/slide:translate-x-2 text-transparent bg-clip-text bg-gradient-to-r from-india-gold to-white">
                     {item.title}
                   </h3>
@@ -315,7 +317,7 @@ function PortraitSlideshow({
               aria-label={`Go to slide ${idx + 1}`}
             >
               {idx === index && (
-                <div 
+                <div
                   className="absolute inset-0 rounded-full bg-gradient-to-r from-india-gold to-india-saffron transition-all duration-100"
                   style={{ width: `${progress}%` }}
                 />
@@ -392,14 +394,11 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
     pageIndex * PAGE_SIZE + PAGE_SIZE,
   );
 
-
   if (!cleanPages.length) return null;
 
   return (
     <section className="w-full px-6 py-8">
-      <div
-        className="relative mx-auto h-[85vh] min-h-[700px] w-full max-w-[1600px]"
-      >
+      <div className="relative mx-auto h-[85vh] min-h-[700px] w-full max-w-[1600px]">
         <div className="pointer-events-none absolute inset-0 rounded-[2.5rem]" />
 
         <div className="pointer-events-none absolute inset-y-0 left-0 w-[46%] overflow-hidden rounded-l-[2.5rem]">

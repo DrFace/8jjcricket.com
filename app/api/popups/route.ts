@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const backendUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL || "https://8jjcricket.com"}/api/carousels`;
+const backendUrl = `${process.env.NEXT_PUBLIC_BACKEND_BASE || "https://8jjcricket.com"}/api/home-popups`;
 
 export async function GET() {
   const res = await fetch(backendUrl, {
