@@ -392,29 +392,12 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
     pageIndex * PAGE_SIZE + PAGE_SIZE,
   );
 
-  const lockScrollRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    const el = lockScrollRef.current;
-    if (!el) return;
-
-    const onWheel = (e: WheelEvent) => e.preventDefault();
-    const onTouchMove = (e: TouchEvent) => e.preventDefault();
-
-    el.addEventListener("wheel", onWheel, { passive: false });
-    el.addEventListener("touchmove", onTouchMove, { passive: false });
-
-    return () => {
-      el.removeEventListener("wheel", onWheel as any);
-      el.removeEventListener("touchmove", onTouchMove as any);
-    };
-  }, []);
 
   if (!cleanPages.length) return null;
 
   return (
     <section className="w-full px-6 py-8">
       <div
-        ref={lockScrollRef}
         className="relative mx-auto h-[85vh] min-h-[700px] w-full max-w-[1600px]"
       >
         <div className="pointer-events-none absolute inset-0 rounded-[2.5rem]" />

@@ -57,12 +57,15 @@
   0% {
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0);
   }
+
   40% {
     box-shadow: 0 0 0 12px rgba(255, 255, 255, 0.2);
   }
+
   70% {
     box-shadow: 0 0 0 18px rgba(255, 255, 255, 0.12);
   }
+
   100% {
     box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
   }
@@ -289,10 +292,12 @@ html {
   scroll-behavior: auto;
   /* Lenis controls smoothness */
   top: 0 !important;
+  overflow-x: hidden;
 }
 
 body {
   overflow-y: scroll;
+  overflow-x: hidden;
   scroll-snap-type: none;
   /* IMPORTANT: disable native snap */
   background: var(--bg-primary);
@@ -671,9 +676,11 @@ a {
 .HeaderTopWideBanner {
   overflow: hidden;
 }
+
 .VIpgJd-ZVi9od-aZ2wEe-wOHMyf {
   display: none !important;
 }
+
 @keyframes logoFloat {
   0%,
   100% {
@@ -828,6 +835,7 @@ a {
     animation: none;
   }
 }
+
 [data-snap] {
   scroll-snap-align: center !important;
   scroll-snap-stop: always;
