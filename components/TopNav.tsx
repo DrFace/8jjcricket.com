@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import NewsTicker from "@/components/NewsTicker";
 import { Megaphone } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PrimaryButton from "./ui/PrimaryButton";
 import { usePathname } from "next/navigation";
 import { useAudio } from "@/context/AudioContext";
@@ -92,6 +92,15 @@ export default function TopNav() {
   const pathname = usePathname();
 
   const { isMuted, setIsMuted, currentTrack } = useAudio();
+  const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
+
+  useEffect(() => {
+    const handleSlideChange = (e: any) => {
+      setActiveSlideIndex(e.detail);
+    };
+    window.addEventListener("home-slide-change", handleSlideChange);
+    return () => window.removeEventListener("home-slide-change", handleSlideChange);
+  }, []);
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
@@ -208,7 +217,14 @@ export default function TopNav() {
 
   return (
     <>
-      <div className="HeaderTopWideBanner w-full border-b border-[var(--border-primary)] bg-[var(--bg-secondary)]">
+      <div 
+        className={[
+          "HeaderTopWideBanner w-full border-b border-[var(--border-primary)] bg-[var(--bg-secondary)] transition-all duration-500 ease-in-out overflow-hidden",
+          pathname === "/" && activeSlideIndex !== 0 
+            ? "max-h-0 opacity-0 border-none" 
+            : "max-h-[100px] opacity-100"
+        ].join(" ")}
+      >
         <div className="flex w-full items-center gap-4 px-4 py-2 text-sm text-[var(--text-secondary)]">
           <div className="flex items-center gap-2">
             <Megaphone className="h-5 w-5 text-india-saffron" />
