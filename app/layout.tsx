@@ -1,5 +1,6 @@
 // app/layout.tsx
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import "./globals.css";
 import { SITE } from "@/lib/seo";
 import Script from "next/script";
@@ -18,77 +19,104 @@ const luckiestGuy = Luckiest_Guy({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE.url),
-  title: {
-    default: `${SITE.name} – Live cricket & minigames`,
-    template: `%s · ${SITE.name}`,
-  },
-  description: SITE.description,
+export async function generateMetadata(): Promise<Metadata> {
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") || "/";
+  const origin = headersList.get("x-origin") || SITE.url;
 
-  openGraph: {
-    title: SITE.name,
+  // Normalize path: keep "/" as "/", remove trailing slash for others
+  const normalizedPath = pathname === "/" ? "/" : pathname.replace(/\/+$/, "");
+
+  // Determine if this is a mobile route
+  const isMobile = normalizedPath === "/mobile" || normalizedPath.startsWith("/mobile/");
+
+  // Compute desktop path (strip /mobile prefix if mobile)
+  const desktopPath = isMobile
+    ? normalizedPath === "/mobile"
+      ? "/"
+      : normalizedPath.replace(/^\/mobile/, "")
+    : normalizedPath;
+
+  // Compute URLs
+  const desktopUrl = `${origin}${desktopPath}`;
+  const mobileUrl = desktopPath === "/" ? `${origin}/mobile` : `${origin}/mobile${desktopPath}`;
+
+  // Build alternates
+  const alternates: Metadata["alternates"] = {
+    canonical: desktopUrl,
+  };
+
+  // Only desktop pages get the alternate link to mobile
+  if (!isMobile) {
+    alternates.media = {
+      "only screen and (max-width: 640px)": mobileUrl,
+    };
+  }
+
+  return {
+    metadataBase: new URL(SITE.url),
+    title: {
+      default: `${SITE.name} – Live cricket & minigames`,
+      template: `%s · ${SITE.name}`,
+    },
     description: SITE.description,
-    url: SITE.url,
-    siteName: SITE.name,
-    images: [{ url: "/og.jpg", width: 1200, height: 630 }],
-    type: "website",
-  },
-
-  // ✅ Necessary for link previews on X/Twitter and some crawlers
-  twitter: {
-    card: "summary_large_image",
-    title: SITE.name,
-    description: SITE.description,
-    images: ["/og.jpg"],
-  },
-
-  robots: {
-    index: true,
-    follow: true,
-    // ✅ Optional, but safe and common
-    googleBot: {
+    alternates,
+    openGraph: {
+      title: SITE.name,
+      description: SITE.description,
+      url: SITE.url,
+      siteName: SITE.name,
+      images: [{ url: "/og.jpg", width: 1200, height: 630 }],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: SITE.name,
+      description: SITE.description,
+      images: ["/og.jpg"],
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
     },
-  },
-
-  // ✅ Add manifest (new)
-  manifest: "/site.webmanifest",
-
-  // ✅ Use your new favicon set (replace the old 8jjlogo.png icons)
-  icons: {
-    icon: [
-      { url: "/favicon.ico" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-    ],
-    apple: [
-      {
-        url: "/apple-touch-icon.png",
-        sizes: "180x180",
-        type: "image/png",
-      },
-    ],
-    other: [
-      {
-        rel: "icon",
-        url: "/android-chrome-192x192.png",
-        sizes: "192x192",
-        type: "image/png",
-      },
-      {
-        rel: "icon",
-        url: "/android-chrome-512x512.png",
-        sizes: "512x512",
-        type: "image/png",
-      },
-    ],
-  },
-};
+    manifest: "/site.webmanifest",
+    icons: {
+      icon: [
+        { url: "/favicon.ico" },
+        { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+        { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      ],
+      apple: [
+        {
+          url: "/apple-touch-icon.png",
+          sizes: "180x180",
+          type: "image/png",
+        },
+      ],
+      other: [
+        {
+          rel: "icon",
+          url: "/android-chrome-192x192.png",
+          sizes: "192x192",
+          type: "image/png",
+        },
+        {
+          rel: "icon",
+          url: "/android-chrome-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+        },
+      ],
+    },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#0ea5e9",
