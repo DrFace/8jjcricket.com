@@ -33,6 +33,12 @@ export default function InteractiveHeroVideo({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (latestEvent?.slug) {
+      window.open(`/news/${latestEvent.slug}`, "_blank");
+      return;
+    }
+
     setIsModalOpen(true);
     videoRef.current?.pause(); // Pause the background video immediately on click
     if (prvIsPlaying.current) {
