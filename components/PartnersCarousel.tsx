@@ -499,7 +499,7 @@ export default function PartnersCarousel() {
         .info-name  { font-size:clamp(20px,2.8vw,30px); font-weight:800; color:#fff; letter-spacing:.01em; margin-bottom:12px; }
         .info-desc  { font-size:14px; font-weight:300; color:rgba(255,255,255,.48); line-height:1.85; }
 
-        .dots-row { position:relative; z-index:10; display:flex; gap:8px; margin-top:26px; align-items:center; }
+        .dots-row { position:relative; z-index:10; display:flex; gap:8px; align-items:center; }
         .dot      { height:6px; border-radius:99px; transition:all .42s cubic-bezier(.34,1.56,.64,1); cursor:pointer; }
         .dot.on   { width:28px; background:#fb923c; box-shadow:0 0 10px #fb923c; }
         .dot.off  { width:6px; background:rgba(255,255,255,.2); }
@@ -507,6 +507,42 @@ export default function PartnersCarousel() {
 
         .progress-bar  { position:relative; z-index:10; width:120px; height:2px; background:rgba(255,255,255,.1); border-radius:99px; margin-top:12px; overflow:hidden; }
         .progress-fill { height:100%; background:linear-gradient(90deg,#27B0FF,#FFD166); border-radius:99px; animation:progressAnim ${AUTO_PLAY_INTERVAL}ms linear infinite; }
+
+        .nav-btn {
+          z-index: 50;
+          width: 32px;
+          height: 32px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          backdrop-filter: blur(8px);
+        }
+        .nav-btn:hover {
+          background: rgba(251, 146, 60, 0.1);
+          border-color: #fb923c;
+          color: #fb923c;
+          box-shadow: 0 0 10px rgba(251, 146, 60, 0.2);
+        }
+
+        .controls-row {
+          position: relative;
+          z-index: 10;
+          display: flex;
+          align-items: center;
+          gap: 60px;
+          margin-top: 26px;
+        }
+
+        @media (max-width: 768px) {
+          .nav-btn { display: none; }
+          .controls-row { gap: 20px; }
+        }
 
         .geo { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
 
@@ -604,15 +640,37 @@ export default function PartnersCarousel() {
           </p>
         </div>
 
-        {/* Dots */}
-        <div className="dots-row">
-          {partners.map((_, i) => (
-            <div
-              key={i}
-              className={`dot ${i === centerIndex ? "on" : "off"}`}
-              onClick={() => { stopAutoPlay(); goTo(i); startAutoPlay(); }}
-            />
-          ))}
+        {/* Controls: Arrows + Dots */}
+        <div className="controls-row">
+          <button 
+            className="nav-btn prev" 
+            onClick={() => { stopAutoPlay(); goPrev(); startAutoPlay(); }}
+            aria-label="Previous slide"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+
+          <div className="dots-row">
+            {partners.map((_, i) => (
+              <div
+                key={i}
+                className={`dot ${i === centerIndex ? "on" : "off"}`}
+                onClick={() => { stopAutoPlay(); goTo(i); startAutoPlay(); }}
+              />
+            ))}
+          </div>
+
+          <button 
+            className="nav-btn next" 
+            onClick={() => { stopAutoPlay(); goNext(); startAutoPlay(); }}
+            aria-label="Next slide"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
         </div>
 
         {/* Progress bar */}

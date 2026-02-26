@@ -2,12 +2,18 @@
 
 import useSWR from "swr";
 import Link from "next/link";
+import { Poppins } from "next/font/google";
 
 type NewsArticle = {
   id: number | string;
   title: string;
   slug?: string;
 };
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -18,7 +24,9 @@ export default function NewsTicker() {
 
   if (isLoading || error || !articles.length) {
     return (
-      <div className="flex-1 overflow-hidden text-xs md:text-sm text-white">
+      <div
+        className={`flex-1 overflow-hidden text-xs md:text-sm text-white ${poppins.className}`}
+      >
         Latest news will appear here…
       </div>
     );
@@ -28,7 +36,9 @@ export default function NewsTicker() {
   const items = [...articles, ...articles];
 
   return (
-    <div className="relative flex-1 overflow-hidden">
+    <div
+      className={`relative flex-1 overflow-hidden text-xs md:text-sm ${poppins.className}`}
+    >
       <div className="inline-flex whitespace-nowrap animate-news-ticker">
         {items.map((a, idx) => (
           <Link
@@ -45,7 +55,7 @@ export default function NewsTicker() {
       <style jsx>{`
         .animate-news-ticker {
           animation: news-ticker 250s linear infinite;
-        } 
+        }
 
         /* Pause on hover for readability */
         .animate-news-ticker:hover {

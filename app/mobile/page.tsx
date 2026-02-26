@@ -188,6 +188,10 @@ export default async function MobileHomePage() {
 
   return (
     <>
+      <h1 className="sr-only">
+        8jjcricket - Live Cricket Scores, IPL 2026 Updates & Cricket News for
+        India
+      </h1>
       {/* Welcome Popup (client-only) */}
       <WelcomePopup />
 

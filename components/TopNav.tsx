@@ -9,8 +9,14 @@ import { useState, useEffect } from "react";
 import PrimaryButton from "./ui/PrimaryButton";
 import { usePathname } from "next/navigation";
 import { useAudio } from "@/context/AudioContext";
-import { GetGlobalAudio } from "@/lib/audio";
+import styles from "./TopNav.module.css";
 import { motion } from "framer-motion";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+});
 
 function NavItem({
   href,
@@ -99,18 +105,9 @@ export default function TopNav() {
       setActiveSlideIndex(e.detail);
     };
     window.addEventListener("home-slide-change", handleSlideChange);
-    return () => window.removeEventListener("home-slide-change", handleSlideChange);
+    return () =>
+      window.removeEventListener("home-slide-change", handleSlideChange);
   }, []);
-
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
-
-    // Optional: immediately update audio element (extra safety)
-    // if (currentTrack) {
-    //   const audio = GetGlobalAudio(currentTrack);
-    //   if (audio) audio.muted = !isMuted;
-    // }
-  };
 
   // ✅ Determine initial language:
   // 1) googtrans cookie
@@ -217,12 +214,12 @@ export default function TopNav() {
 
   return (
     <>
-      <div 
+      <div
         className={[
           "HeaderTopWideBanner w-full border-b border-[var(--border-primary)] bg-[var(--bg-secondary)] transition-all duration-500 ease-in-out overflow-hidden",
-          pathname === "/" && activeSlideIndex !== 0 
-            ? "max-h-0 opacity-0 border-none" 
-            : "max-h-[100px] opacity-100"
+          pathname === "/" && activeSlideIndex !== 0
+            ? "max-h-0 opacity-0 border-none"
+            : "max-h-[100px] opacity-100",
         ].join(" ")}
       >
         <div className="flex w-full items-center gap-4 px-4 py-2 text-sm text-[var(--text-secondary)]">
@@ -250,42 +247,40 @@ export default function TopNav() {
               className="block"
             />
             <motion.div
-              className="logo3d-wrap"
+              className={`${styles.logoWrap} ${poppins.className}`}
               initial="initial"
               animate="animate"
               whileHover="hover"
             >
               {/* Soft stadium glow behind */}
-              <span className="logo3d-glow" aria-hidden="true" />
+              <span className={styles.logoGlow} aria-hidden="true" />
 
               {"8JJCRICKET".split("").map((letter, index) => (
                 <motion.span
                   key={index}
-                  data-char={letter}
-                  variants={{
-                    initial: { opacity: 0, y: 10, rotateX: -90 },
-                    animate: {
-                      opacity: 1,
-                      y: 0,
-                      rotateX: 0,
-                      transition: {
-                        delay: index * 0.05,
-                        type: "spring",
-                        stiffness: 220,
-                        damping: 14,
-                      },
-                    },
-                    hover: {
-                      y: -5,
-                      scale: 1.05,
-                      transition: {
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 16,
-                      },
+                  className={styles.logoLetter}
+                  initial={{ opacity: 0, y: 10, rotateX: -90 }}
+                  animate={{
+                    opacity: 1,
+                    y: [0, -4, 0], // floating effect
+                    rotateX: 0,
+                  }}
+                  transition={{
+                    delay: index * 0.05,
+                    opacity: { duration: 0.4 },
+                    rotateX: { duration: 0.6 },
+                    y: {
+                      repeat: Infinity,
+                      repeatType: "loop",
+                      duration: 2,
+                      ease: "easeInOut",
+                      delay: index * 0.15, // wave effect
                     },
                   }}
-                  className="logo3d-letter"
+                  whileHover={{
+                    scale: 1.1,
+                    y: -8,
+                  }}
                 >
                   {letter}
                 </motion.span>
