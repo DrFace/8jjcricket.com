@@ -3,10 +3,8 @@
 import { Volume2, VolumeOff } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCallback, useState } from "react";
-import MusicPopup from "@/components/MusicPopup";
 import { useAudio } from "@/context/AudioContext";
 import MobileMusicPopup from "./MobileMusicPopup";
-import { PlayingAnimation } from "../ui/PlayingAnimation";
 
 export default function MobileFloatingSupport() {
   const {

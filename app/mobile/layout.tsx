@@ -9,6 +9,7 @@ import BottomNav from "@/components/BottomNav";
 import Script from "next/script";
 import MobileFloatingSupport from "@/components/mobile/MobileFloatingSupport";
 import { motion } from "framer-motion";
+import styles from "@/components/TopNav.module.css";
 
 type AudioItem = {
   id: number;
@@ -244,31 +245,29 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
                 {"8JJCRICKET".split("").map((letter, index) => (
                   <motion.span
                     key={index}
-                    data-char={letter}
-                    variants={{
-                      initial: { opacity: 0, y: 10, rotateX: -90 },
-                      animate: {
-                        opacity: 1,
-                        y: 0,
-                        rotateX: 0,
-                        transition: {
-                          delay: index * 0.05,
-                          type: "spring",
-                          stiffness: 220,
-                          damping: 14,
-                        },
-                      },
-                      hover: {
-                        y: -5,
-                        scale: 1.05,
-                        transition: {
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 16,
-                        },
+                    className={styles.logoLetter}
+                    initial={{ opacity: 0, y: 10, rotateX: -90 }}
+                    animate={{
+                      opacity: 1,
+                      y: [0, -4, 0], // floating effect
+                      rotateX: 0,
+                    }}
+                    transition={{
+                      delay: index * 0.05,
+                      opacity: { duration: 0.4 },
+                      rotateX: { duration: 0.6 },
+                      y: {
+                        repeat: Infinity,
+                        repeatType: "loop",
+                        duration: 2,
+                        ease: "easeInOut",
+                        delay: index * 0.15, // wave effect
                       },
                     }}
-                    className="logo3d-letter"
+                    whileHover={{
+                      scale: 1.1,
+                      y: -8,
+                    }}
                   >
                     {letter}
                   </motion.span>

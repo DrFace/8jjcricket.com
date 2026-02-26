@@ -73,7 +73,9 @@ export default function MusicSelector({ audios, selectedId, onSelect }: Props) {
       {/* Dropdown */}
       {open && (
         <div
-          className="absolute z-50 mt-2 w-full rounded-xl shadow-2xl overflow-hidden"
+          className="absolute z-50 mt-2 w-full rounded-xl shadow-2xl overflow-hidden 
+          max-h-[200px]
+          flex flex-col"
           style={{
             background: "rgba(15, 23, 42, 0.75)",
             backdropFilter: "blur(16px)",
@@ -101,7 +103,7 @@ export default function MusicSelector({ audios, selectedId, onSelect }: Props) {
           </div>
 
           {/* List */}
-          <div className="max-h-[40vh] overflow-y-auto">
+          <div className="flex-1 overflow-y-auto">
             {filteredAudios.length === 0 ? (
               <div className="px-4 py-3 text-sm text-white/40">
                 No songs found

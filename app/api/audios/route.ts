@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
+import { BACKEN_URL_API } from "../backendurl";
+
+const backendUrl = `${BACKEN_URL_API}/audios`;
 
 export async function GET() {
-  const upstream = "https://8jjcricket.com/api/audios";
-
-  const res = await fetch(upstream, {
+  const res = await fetch(backendUrl, {
     method: "GET",
     headers: { Accept: "application/json" },
     cache: "no-store",
