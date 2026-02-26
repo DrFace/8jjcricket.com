@@ -8,6 +8,7 @@ import HomeFeedbackSection from "@/components/HomeFeedbackSection";
 import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
 import InteractiveHeroVideo from "@/components/InteractiveHeroVideo";
 import PartnersCarousel from "@/components/PartnersCarousel";
+import HomeVideoGallery from "@/components/HomeVideoGallery";
 
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
 import SponsorBar from "@/components/SponsorBar";
@@ -213,6 +214,49 @@ export default async function HomePage() {
           })()}
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+        </section>
+
+        <section
+          data-snap
+          className="SectionScroll relative w-full h-full flex items-start"
+          style={{ background: "var(--bg-primary)" }}
+        >
+          <div className="relative h-full w-full flex items-start overflow-hidden">
+            <div className="absolute inset-0" style={{ background: "var(--bg-primary)" }} />
+            
+            <div className="pointer-events-none absolute inset-0 hidden lg:block">
+              <div
+                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%2300aaff' stroke-opacity='0.55' stroke-width='1.5'%3E%3Cpath d='M10 10h10M15 5v10'/%3E%3Cpath d='M40 10h10M45 5v10'/%3E%3Cpath d='M10 40h10M15 35v10'/%3E%3Cpath d='M40 40h10M45 35v10'/%3E%3C/g%3E%3C/svg%3E")`,
+                  backgroundRepeat: "repeat",
+                  backgroundSize: "60px 60px",
+                  mixBlendMode: "screen",
+                  opacity: 0.5,
+                  WebkitMaskImage: "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
+                  maskImage: "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
+                }}
+              />
+              <div
+                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23ffb800' stroke-opacity='0.55' stroke-width='1.5'%3E%3Cpath d='M10 10h10M15 5v10'/%3E%3Cpath d='M40 10h10M45 5v10'/%3E%3Cpath d='M10 40h10M15 35v10'/%3E%3Cpath d='M40 40h10M45 35v10'/%3E%3C/g%3E%3C/svg%3E")`,
+                  backgroundRepeat: "repeat",
+                  backgroundSize: "60px 60px",
+                  mixBlendMode: "screen",
+                  opacity: 0.45,
+                  WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
+                  maskImage: "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
+                }}
+              />
+            </div>
+
+            <ScaleToFit className="w-full h-full pt-16 pb-2">
+              <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+                <HomeVideoGallery />
+              </div>
+            </ScaleToFit>
+          </div>
         </section>
 
 <section
