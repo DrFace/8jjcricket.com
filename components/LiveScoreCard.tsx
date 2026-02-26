@@ -26,9 +26,9 @@ export default function LiveScoreCard({ f }: { f: Fixture }) {
   const homeRuns = CalcRuns(runsArr, f.localteam_id);
   const awayRuns = CalcRuns(runsArr, f.visitorteam_id);
 
-  // Pre-formatted scores from API (for recent/finished matches)
-  const localteamScore = (f as any).localteam_score;
-  const visitorteamScore = (f as any).visitorteam_score;
+  // Pre-formatted scores from API (with fallback to calculated runs)
+  const localteamScore = f.localteam_score || ScoreLine(homeRuns) || "-";
+  const visitorteamScore = f.visitorteam_score || ScoreLine(awayRuns) || "-";
 
   const target = ExtractTarget(f.note);
 
@@ -153,7 +153,7 @@ export default function LiveScoreCard({ f }: { f: Fixture }) {
                 </span>
               </div>
               <p className="text-xl font-bold text-india-gold">
-                {localteamScore || ScoreLine(homeRuns)}
+                {localteamScore}
               </p>
             </div>
 
@@ -234,7 +234,7 @@ export default function LiveScoreCard({ f }: { f: Fixture }) {
                 </div>
               </div>
               <p className="text-xl font-bold text-india-gold">
-                {visitorteamScore || ScoreLine(awayRuns)}
+                {visitorteamScore}
               </p>
             </div>
           </div>
