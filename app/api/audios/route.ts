@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { BACKEN_URL_API } from "../backendurl";
+import { BACKEND_URL_API } from "../backendurl";
 
-const backendUrl = `${BACKEN_URL_API}/audios`;
+const backendUrl = `${BACKEND_URL_API}/audios`;
 
 export async function GET() {
   const res = await fetch(backendUrl, {

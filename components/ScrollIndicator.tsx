@@ -7,8 +7,9 @@ const SECTIONS = [
   { label: "Home" },
   { label: "Teams & Players" },
   { label: "Events" },
-  { label: "Community" },
+  { label: "Videos" },
   { label: "Partners" },
+  { label: "Community" },
 ];
 
 interface ScrollIndicatorProps {
@@ -36,12 +37,11 @@ export default function ScrollIndicator({
       initial={{ opacity: 0, x: -50 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed left-0 top-1/2 -translate-y-1/2 z-[100] flex flex-col items-center pointer-events-none select-none hidden lg:flex"
+      className="fixed left-0 top-1/3 -translate-y-1/2 z-[100] flex flex-col items-center pointer-events-none select-none hidden lg:flex"
       aria-hidden="true"
     >
       {/* Glassmorphic Container Tray - Stuck to Left side */}
       <div className="relative w-12 py-10 rounded-r-[2rem] border-y border-r border-white/10 bg-black/20 backdrop-blur-md flex flex-col items-center gap-6 pointer-events-auto shadow-2xl overflow-visible">
-        
         {/* Liquid Progress Track background */}
         <div className="absolute top-10 bottom-10 w-[1px] bg-white/5 left-1/2 -translate-x-1/2" />
 
@@ -56,7 +56,7 @@ export default function ScrollIndicator({
           transition={{
             top: SPRING_CONFIG,
             height: SPRING_CONFIG,
-            opacity: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+            opacity: { duration: 2, repeat: Infinity, ease: "easeInOut" },
           }}
         />
 
@@ -100,9 +100,13 @@ export default function ScrollIndicator({
               <motion.span
                 animate={{
                   scale: isActive ? 1.2 : isHovered ? 1.1 : 1,
-                  backgroundColor: isActive ? "#ffffff" : isHovered ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.25)",
-                  boxShadow: isActive 
-                    ? "0 0 15px 4px rgba(255,255,255,0.5), inset 0 0 5px rgba(0,0,0,0.2)" 
+                  backgroundColor: isActive
+                    ? "#ffffff"
+                    : isHovered
+                      ? "rgba(255,255,255,0.7)"
+                      : "rgba(255,255,255,0.25)",
+                  boxShadow: isActive
+                    ? "0 0 15px 4px rgba(255,255,255,0.5), inset 0 0 5px rgba(0,0,0,0.2)"
                     : "0 0 0px 0px rgba(0,0,0,0)",
                 }}
                 transition={SPRING_CONFIG}
