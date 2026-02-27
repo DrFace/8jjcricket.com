@@ -27,6 +27,9 @@ export default function MobileRecentBadge({
   const label = team?.short_name || team?.name || "Team";
   const logo = team?.logo ?? team?.image_path ?? null;
 
+  // Use pre-formatted score if available, otherwise calculate from runs
+  const displayScore = score || ScoreLine(runs) || "-";
+
   return (
     <div className={cn("flex flex-col items-center gap-1 min-w-0", className)}>
       {/* Logo */}
@@ -62,7 +65,7 @@ export default function MobileRecentBadge({
           {label}
         </div>
       )}
-      <p className="font-bold text-amber-300">{score || ScoreLine(runs)}</p>
+      <p className="font-bold text-amber-300">{displayScore}</p>
     </div>
   );
 }

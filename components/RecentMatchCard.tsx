@@ -14,14 +14,12 @@ export default function RecentMatchCard({ f }: { f: Fixture }) {
   const awayLabel =
     away?.short_name || away?.name || `Team ${f.visitorteam_id}`;
 
-  // Pre-formatted scores from API
-  const localteamScore = (f as any).localteam_score;
-  const visitorteamScore = (f as any).visitorteam_score;
-
-  // Fallback: calculate from runs array
+  // Pre-formatted scores from API with fallback to calculated runs
   const runsArr = Array.isArray((f as any).runs) ? (f as any).runs : [];
   const homeRuns = CalcRuns(runsArr, f.localteam_id);
   const awayRuns = CalcRuns(runsArr, f.visitorteam_id);
+  const localteamScore = f.localteam_score || ScoreLine(homeRuns) || "-";
+  const visitorteamScore = f.visitorteam_score || ScoreLine(awayRuns) || "-";
 
   const metaLine = `${f.round ?? "Match"} · ${formatDate(f.starting_at)}`;
 
@@ -55,7 +53,7 @@ export default function RecentMatchCard({ f }: { f: Fixture }) {
           <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
             <TeamBadge team={home} className="justify-start text-gray-200 flex-1 min-w-0" />
             <span className="text-sm font-bold text-india-gold flex-shrink-0">
-              {localteamScore || ScoreLine(homeRuns) || "-"}
+              {localteamScore}
             </span>
           </div>
 
@@ -65,7 +63,7 @@ export default function RecentMatchCard({ f }: { f: Fixture }) {
 
           <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
             <span className="text-sm font-bold text-india-gold flex-shrink-0">
-              {visitorteamScore || ScoreLine(awayRuns) || "-"}
+              {visitorteamScore}
             </span>
             <TeamBadge
               team={away}
