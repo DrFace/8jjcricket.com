@@ -1,14 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import {
-  Play,
-  PlayCircle,
-  ChevronUp,
-  ChevronDown,
-  Calendar,
-  Clock,
-} from "lucide-react";
+import { Play, PlayCircle, ChevronUp, ChevronDown } from "lucide-react";
 import { VideoSectionItem } from "@/types/video";
 import { useAudio } from "@/context/AudioContext";
 
@@ -87,8 +80,6 @@ export default function HomeVideoGallery() {
         const res = await fetch("/api/video-sections");
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
-        console.log("data", data);
-
         setVideos(data);
         if (data.length > 0) setCurrentVideo(data[0]);
       } catch (err) {
