@@ -253,16 +253,22 @@ export default function TopNav() {
               whileHover="hover"
             >
               {/* Soft stadium glow behind */}
-              <span className={styles.logoGlow} aria-hidden="true" />
-
-              {"8JJCRICKET".split("").map((letter, index) => (
+              {/* <span className={styles.logoGlow} aria-hidden="true" /> */}
+              {"8JJ   CRICKET".split("").map((letter, index) => (
                 <motion.span
                   key={index}
                   className={styles.logoLetter}
+                  style={{
+                    background:
+                      "linear-gradient(180deg, #a8d4ff 0%, #4a90e2 35%, #1a5fd4 55%, #0e32aa 75%, #07197a 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
                   initial={{ opacity: 0, y: 10, rotateX: -90 }}
                   animate={{
                     opacity: 1,
-                    y: [0, -4, 0], // floating effect
+                    y: [0, -4, 0],
                     rotateX: 0,
                   }}
                   transition={{
@@ -274,7 +280,7 @@ export default function TopNav() {
                       repeatType: "loop",
                       duration: 2,
                       ease: "easeInOut",
-                      delay: index * 0.15, // wave effect
+                      delay: index * 0.15,
                     },
                   }}
                   whileHover={{
