@@ -14,6 +14,8 @@ export default function HomeVideoGallery() {
   const [currentVideo, setCurrentVideo] = useState<VideoSectionItem | null>(
     null,
   );
+  // track id of video user explicitly clicked so we can auto‑play only then
+  const [lastRequestedId, setLastRequestedId] = useState<number | null>(null);
   const playlistRef = React.useRef<HTMLDivElement>(null);
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const wasPlayingBefore = React.useRef<boolean>(false);
@@ -51,6 +53,7 @@ export default function HomeVideoGallery() {
 
   const selectVideoHandler = (videoSelected: VideoSectionItem) => {
     setCurrentVideo(videoSelected);
+    setLastRequestedId(videoSelected.id);
     handlePlay();
   };
 
@@ -91,6 +94,7 @@ export default function HomeVideoGallery() {
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         setVideos(data);
+
         if (data.length > 0) setCurrentVideo(data[0]);
       } catch (err) {
         console.error("Error fetching video sections:", err);
@@ -120,14 +124,19 @@ export default function HomeVideoGallery() {
     if (filteredVideos.length > 0) setCurrentVideo(filteredVideos[0]);
   }, [activeMainCat]);
 
-  // when currentVideo changes we attempt to auto-play the element
+  // when currentVideo changes we auto-play only if the user requested it
   useEffect(() => {
     const vid = videoRef.current;
-    if (!vid) return;
-    vid.play().catch(() => {
-      /* user interaction likely required, ignore */
-    });
-  }, [currentVideo]);
+    if (!vid || !currentVideo) return;
+
+    if (currentVideo.id === lastRequestedId) {
+      vid.play().catch(() => {
+        /* browser blocked autoplay */
+      });
+      // reset the flag so future programmatic changes won't play automatically
+      setLastRequestedId(null);
+    }
+  }, [currentVideo, lastRequestedId]);
 
   const normalizeVideoUrl = (path: string) => {
     if (!path) return "";
