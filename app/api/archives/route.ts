@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { BACKEN_URL_API } from "../backendurl";
+import { BACKEND_URL_API } from "../backendurl";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -32,7 +32,7 @@ export async function GET(request: Request) {
     const queryString = params.toString();
 
     // Use production backend
-    const backendUrl = `${BACKEN_URL_API}/archives${queryString ? `?${queryString}` : ""}`;
+    const backendUrl = `${BACKEND_URL_API}/archives${queryString ? `?${queryString}` : ""}`;
 
     console.log("Fetching archives from backend:", backendUrl);
 

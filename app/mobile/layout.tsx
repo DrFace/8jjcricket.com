@@ -10,12 +10,12 @@ import Script from "next/script";
 import MobileFloatingSupport from "@/components/mobile/MobileFloatingSupport";
 import { motion } from "framer-motion";
 import styles from "@/components/TopNav.module.css";
+import { Poppins } from "next/font/google";
 
-type AudioItem = {
-  id: number;
-  title: string;
-  file_path: string;
-};
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+});
 
 // ✅ Keep dropdown options constant (never in state, never mutated)
 const LANGUAGE_OPTIONS = [
@@ -234,13 +234,13 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
 
               {/* Brand text */}
               <motion.div
-                className="logo3d-wrap"
+                className={`${styles.logoWrap} ${poppins.className}`}
                 initial="initial"
                 animate="animate"
                 whileHover="hover"
               >
                 {/* Soft stadium glow behind */}
-                <span className="logo3d-glow" aria-hidden="true" />
+                <span className={styles.logoGlow} aria-hidden="true" />
 
                 {"8JJCRICKET".split("").map((letter, index) => (
                   <motion.span

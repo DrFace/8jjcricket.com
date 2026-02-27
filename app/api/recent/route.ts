@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
-
+ 
 export async function GET() {
   try {
     const res = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/fixtures/recent`, {

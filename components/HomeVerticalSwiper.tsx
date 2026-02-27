@@ -21,10 +21,10 @@ export default function HomeVerticalSwiper({
 }: {
   children: React.ReactNode;
 }) {
-  const wrapperRef = useRef<HTMLDivElement>(null);   // fixed viewport window
-  const sliderRef  = useRef<HTMLDivElement>(null);   // tall strip that moves
+  const wrapperRef = useRef<HTMLDivElement>(null); // fixed viewport window
+  const sliderRef = useRef<HTMLDivElement>(null); // tall strip that moves
 
-  const [activeIndex, setActiveIndex]         = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
   const isAnimatingRef = useRef(false);
 
@@ -41,7 +41,7 @@ export default function HomeVerticalSwiper({
 
     const update = () => {
       const rect = el.getBoundingClientRect();
-      const h    = Math.max(1, Math.floor(window.innerHeight - rect.top));
+      const h = Math.max(1, Math.floor(window.innerHeight - rect.top));
       setContainerHeight(h);
     };
 
@@ -77,7 +77,7 @@ export default function HomeVerticalSwiper({
     const el = wrapperRef.current;
     if (!el) return;
 
-    let acc      = 0;
+    let acc = 0;
     let lastTime = 0;
     let pending: ReturnType<typeof setTimeout> | null = null;
 
@@ -87,7 +87,33 @@ export default function HomeVerticalSwiper({
     };
 
     const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
+      // Check if the event originated inside a scrollable child element
+      const isScrollableChild = (el: Element | null): boolean => {
+        while (el && el !== wrapperRef.current) {
+          const style = window.getComputedStyle(el);
+          const overflowY = style.overflowY;
+          if (
+            (overflowY === "auto" || overflowY === "scroll") &&
+            el.scrollHeight > el.clientHeight
+          ) {
+            // It's scrollable — but only block swiper if it can still scroll in the wheel direction
+            if (
+              e.deltaY > 0 &&
+              el.scrollTop < el.scrollHeight - el.clientHeight
+            )
+              return true;
+            if (e.deltaY < 0 && el.scrollTop > 0) return true;
+          }
+          el = el.parentElement;
+        }
+        return false;
+      };
+
+      if (isScrollableChild(e.target as Element)) {
+        return; // let the inner element scroll — don't snap sections
+      }
+
+      e.preventDefault(); // only prevent default for section snapping
       if (isAnimatingRef.current) return;
 
       const now = Date.now();
@@ -130,8 +156,8 @@ export default function HomeVerticalSwiper({
 
     const onEnd = (e: TouchEvent) => {
       if (isAnimatingRef.current) return;
-      const dy  = startY - e.changedTouches[0].clientY;
-      const dt  = Date.now() - startT;
+      const dy = startY - e.changedTouches[0].clientY;
+      const dt = Date.now() - startT;
       const vel = Math.abs(dy) / dt;
 
       if (Math.abs(dy) > 35 || (vel > 0.25 && Math.abs(dy) > 10)) {
@@ -140,10 +166,10 @@ export default function HomeVerticalSwiper({
     };
 
     el.addEventListener("touchstart", onStart, { passive: true });
-    el.addEventListener("touchend",   onEnd,   { passive: true });
+    el.addEventListener("touchend", onEnd, { passive: true });
     return () => {
       el.removeEventListener("touchstart", onStart);
-      el.removeEventListener("touchend",   onEnd);
+      el.removeEventListener("touchend", onEnd);
     };
   }, [activeIndex, goTo]);
 
@@ -184,7 +210,8 @@ export default function HomeVerticalSwiper({
       <div
         ref={wrapperRef}
         style={{
-          height: containerHeight > 0 ? `${containerHeight}px` : "calc(100vh - 1px)",
+          height:
+            containerHeight > 0 ? `${containerHeight}px` : "calc(100vh - 1px)",
           overflow: "hidden",
           position: "relative",
         }}
@@ -197,7 +224,8 @@ export default function HomeVerticalSwiper({
             transform: `translateY(${translateY}px)`,
             transition: `transform ${TRANSITION_DURATION}ms ${EASE}`,
             willChange: "transform",
-            height: containerHeight > 0 ? `${total * containerHeight}px` : "auto",
+            height:
+              containerHeight > 0 ? `${total * containerHeight}px` : "auto",
           }}
         >
           {childrenArray.map((child, idx) => (
