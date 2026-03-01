@@ -5,6 +5,7 @@ import IconButton from "./ui/IconButton";
 import PrimaryButton from "./ui/PrimaryButton";
 import { X } from "lucide-react";
 import { popupRespond } from "@/types/popup";
+import Image from "next/image";
 
 const backendUrlStorage = `${process.env.NEXT_PUBLIC_BACKEND_BASE || "https://8jjcricket.com"}/storage/`;
 
@@ -47,7 +48,7 @@ export default function WelcomePopup() {
   useEffect(() => {
     if (!data?.image_path) return;
 
-    const img = new Image();
+    const img = new window.Image();
     img.src = `${backendUrlStorage}${data.image_path}`;
     img.onload = () => setImageLoaded(true);
   }, [data]);
@@ -65,11 +66,13 @@ export default function WelcomePopup() {
           icon={<X size={16} />}
         />
 
-        <a href={data.link} className="relative w-full h-[280px]">
-          <img
+        <a href={data.link} className="relative w-full h-[280px] block">
+          <Image
             src={`${backendUrlStorage}${data.image_path}`}
             alt="Welcome banner"
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 448px"
+            className="object-cover"
           />
         </a>
 

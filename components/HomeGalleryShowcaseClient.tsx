@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
 import PortraitPager from "./PortraitPager";
+import Image from "next/image";
 
 type PortraitItem = { id: number; slug: string; image_url: string };
 
@@ -55,7 +56,7 @@ function Slideshow({ items }: { items: { src: string }[] }) {
             >
                 {items.map((it, idx) => (
                     <div key={idx} className="relative h-full" style={{ width: `${100 / len}%` }}>
-                        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${it.src})` }} />
+                        <Image src={it.src} alt="Gallery exhibit" fill sizes="(max-width: 1024px) 100vw, 800px" className="object-cover object-center" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
                     </div>
                 ))}
@@ -115,10 +116,16 @@ export default function HomeGalleryShowcaseClient({
 
             {/* LEFT image (still changes on hover, if you want) */}
             <div className="pointer-events-none absolute inset-y-0 left-0 w-[46%]">
-                <div
-                    className="absolute inset-0 bg-contain bg-left-bottom bg-no-repeat opacity-95 transition-[background-image] duration-200"
-                    style={{ backgroundImage: `url(${leftImage})` }}
-                />
+                <div className="absolute inset-0 opacity-95 transition-opacity duration-200">
+                    <Image 
+                        src={leftImage} 
+                        alt="Featured Portrait" 
+                        fill 
+                        sizes="(max-width: 1024px) 50vw, 600px" 
+                        className="object-contain object-left-bottom" 
+                        priority
+                    />
+                </div>
                 <div
                     className="absolute inset-0"
                     style={{

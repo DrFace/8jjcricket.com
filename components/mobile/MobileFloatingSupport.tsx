@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useCallback, useState } from "react";
 import { useAudio } from "@/context/AudioContext";
 import MobileMusicPopup from "./MobileMusicPopup";
+import Image from "next/image";
 
 export default function MobileFloatingSupport() {
   const {
@@ -71,10 +72,12 @@ export default function MobileFloatingSupport() {
           onClick={openMusicPopup}
           aria-label="Open Music Player"
         >
-          <img
+          <Image
             src="/icons/music-player.png"
             alt="Music Player"
-            className="w-7 h-7 object-contain"
+            width={28}
+            height={28}
+            className="object-contain"
           />
         </button>
 
