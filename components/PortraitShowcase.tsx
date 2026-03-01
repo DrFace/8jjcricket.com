@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import IconButton from "./ui/IconButton";
-import Image from "next/image";
 
 type PortraitPage = {
   id: number;
@@ -210,12 +209,11 @@ function PortraitSlideshow({
               >
                 {/* Image with parallax effect */}
                 <div className="absolute inset-0 overflow-hidden">
-                  <Image
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={item.src}
                     alt={item.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 800px"
-                    className={`object-cover object-center transition-all duration-700 ${
+                    className={`h-full w-full object-cover object-center transition-all duration-700 ${
                       isActive ? "scale-100" : "scale-105"
                     } group-hover/slide:scale-105`}
                     draggable={false}
@@ -447,12 +445,12 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                       }`}
                     />
                     {thumb ? (
-                      <Image
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
                         src={thumb}
                         alt={p.title}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 460px"
-                        className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                        className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                        loading="lazy"
                       />
                     ) : (
                       <div className="absolute inset-0 bg-gradient-to-br from-india-saffron/20 via-white/10 to-india-green/20" />

@@ -5,7 +5,6 @@ import useSWR from "swr";
 import Link from "next/link";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import SecondaryButton from "@/components/ui/SecondaryButton";
-import Image from "next/image";
 
 // --- TYPES ---
 type Category = {
@@ -373,12 +372,10 @@ export default function NewsClient() {
                 >
                   {imgSrc && (
                     <div className="mb-3 overflow-hidden rounded-xl border border-white/10 relative">
-                      <Image
+                      <img
                         src={imgSrc}
                         alt={item.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
-                        className="object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
+                        className="w-full h-40 object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>

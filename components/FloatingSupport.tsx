@@ -8,7 +8,6 @@ import { useAudio } from "@/context/AudioContext";
 import LivePopup from "./LivePopup";
 import SocialMediaPopup from "./SocialMediaPopup";
 import Link from "next/link";
-import Image from "next/image";
 
 export default function FloatingSupport() {
   const {
@@ -63,12 +62,10 @@ export default function FloatingSupport() {
             target="blank"
             href="/app-showcase"
           >
-            <Image
+            <img
               src="/icons/install_rm_bg.png"
               alt="Install"
-              width={28}
-              height={28}
-              className="object-contain"
+              className="w-7 h-7 object-contain"
             />
           </Link>
 
@@ -94,12 +91,10 @@ export default function FloatingSupport() {
             aria-label="Mute/Unmute"
             aria-pressed={!isMuted}
           >
-            <Image
+            <img
               src="/icons/music-player.png"
               alt="Music Player"
-              width={28}
-              height={28}
-              className="object-contain"
+              className="w-7 h-7 object-contain"
             />
           </button>
           {/* Mute / Unmute (restored) */}

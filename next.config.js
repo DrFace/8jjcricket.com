@@ -15,11 +15,6 @@ const nextConfig = {
         pathname: "/storage/**",
       },
       {
-        protocol: "http",
-        hostname: "8jjcricket.com",
-        pathname: "/storage/**",
-      },
-      {
         protocol: "https",
         hostname: "www.8jjcricket.com",
         pathname: "/storage/**",

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 
 type NewsItem = {
   id: number;
@@ -26,12 +25,11 @@ export default function MobileNewsListCards({ items }: { items: NewsItem[] }) {
         >
           {/* Thumbnail */}
           <div className="relative w-full flex-shrink-0 overflow-hidden rounded-lg bg-black/40 rounded-2xl">
-            <Image
+            <img
               src={n.imgSrc}
               alt={n.title}
-              fill
-              sizes="(max-width: 640px) 100vw, 400px"
-              className="object-cover"
+              className="h-full w-full object-cover"
+              loading="lazy"
             />
           </div>
 

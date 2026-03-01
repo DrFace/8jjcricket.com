@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 
 type NewsItem = {
   id: number;
@@ -30,21 +29,18 @@ export default function NewsListCards({ items }: { items: NewsItem[] }) {
               thumbnail expands to fill all available space, hiding the text column. */}
           <div className="relative aspect-[21/9] w-48 flex-shrink-0 overflow-hidden rounded-2xl ring-1 ring-white/10">
             {/* Blurred background to fill empty space */}
-            <Image
+            <img
               src={n.imgSrc}
               alt=""
-              className="object-cover blur-sm opacity-30 scale-110"
-              fill
-              sizes="200px"
+              className="absolute inset-0 h-full w-full object-cover blur-sm opacity-30 scale-110"
               aria-hidden="true"
             />
             {/* Full image */}
-            <Image
+            <img
               src={n.imgSrc}
               alt={n.title}
-              className="object-contain object-center transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-              fill
-              sizes="200px"
+              className="relative h-full w-full object-contain object-center transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+              loading="lazy"
             />
           </div>
 
