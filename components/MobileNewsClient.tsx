@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import MobileShareButton from "@/components/mobile/MobileShareButton";
+import Image from "next/image";
 
 type Category = {
   id: number;
@@ -307,11 +308,12 @@ export default function MobileNewsClient() {
                 >
                   {imgSrc && (
                     <div className="relative">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      <Image
                         src={imgSrc}
                         alt={item.title}
-                        className="w-full h-full object-contain"
+                        fill
+                        sizes="100vw"
+                        className="object-contain"
                         loading="lazy"
                       />
                     </div>

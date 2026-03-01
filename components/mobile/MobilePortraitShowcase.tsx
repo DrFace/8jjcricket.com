@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 type PortraitPage = {
   id: number;
@@ -88,11 +89,12 @@ function BannerSlideshow({
             onClick={() => setAutoPlay(false)}
             title={item.title}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={item.src}
               alt={item.title}
-              className="h-full w-full object-cover p-0 m-0"
+              fill
+              sizes="100vw"
+              className="object-cover p-0 m-0"
               draggable={false}
             />
           </Link>
