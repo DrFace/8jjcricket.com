@@ -10,6 +10,7 @@ import { FetchJson } from "@/lib/fetcher";
 import { BuildQueryString } from "@/lib/api/archives";
 import { NativeArchiveCard } from "@/components/NativeArchiveCard";
 import { PAGE_SIZE } from "@/lib/constant";
+import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
 
 /**
  * Pagination Component
@@ -82,8 +83,8 @@ function Pagination({
       {/* Info text */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-sky-100/70">
-          Showing <span className="font-bold text-india-gold">{from}</span>{" "}
-          to <span className="font-bold text-india-gold">{to}</span> of{" "}
+          Showing <span className="font-bold text-india-gold">{from}</span> to{" "}
+          <span className="font-bold text-india-gold">{to}</span> of{" "}
           <span className="font-bold text-india-gold">{totalMatches}</span>{" "}
           matches
         </p>
@@ -167,13 +168,26 @@ export default function ArchivePage() {
     "Browse archived cricket matches with results and details.";
 
   // Filter states
-  const [category, setCategory] = useState<"" | "International" | "Leagues">(() => {
-    if (typeof window === "undefined") return "";
-    return (sessionStorage.getItem("archive-category") as "" | "International" | "Leagues") || "";
-  });
+  const [category, setCategory] = useState<"" | "International" | "Leagues">(
+    () => {
+      if (typeof window === "undefined") return "";
+      return (
+        (sessionStorage.getItem("archive-category") as
+          | ""
+          | "International"
+          | "Leagues") || ""
+      );
+    },
+  );
   const [format, setFormat] = useState<"" | "T20" | "ODI" | "Test">(() => {
     if (typeof window === "undefined") return "";
-    return (sessionStorage.getItem("archive-format") as "" | "T20" | "ODI" | "Test") || "";
+    return (
+      (sessionStorage.getItem("archive-format") as
+        | ""
+        | "T20"
+        | "ODI"
+        | "Test") || ""
+    );
   });
   const [date, setDate] = useState<string>(() => {
     if (typeof window === "undefined") return "";
@@ -210,7 +224,6 @@ export default function ArchivePage() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isRestored]);
-
 
   // Build filters object
   const filters: ArchiveFilters = useMemo(() => {
@@ -278,10 +291,9 @@ export default function ArchivePage() {
   if (error) {
     return (
       <>
-
         <TopNav />
         <BottomNav />
-        <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="min-h-[60vh] flex items-center justify-center overflow-visible">
           <div className="max-w-md w-full rounded-2xl border border-red-500/30 bg-black/70 backdrop-blur-xl px-6 py-8 shadow-2xl">
             <div className="flex items-start gap-4">
               <div className="text-3xl">⚠️</div>
@@ -309,11 +321,10 @@ export default function ArchivePage() {
   if (isLoading) {
     return (
       <>
-
         <TopNav />
         <BottomNav />
 
-        <div className="min-h-[60vh] space-y-6">
+        <div className="min-h-[60vh] space-y-6 m-2">
           {/* Hero */}
           <div className="rounded-3xl border border-white/80 bg-slate-900/80 px-6 py-5 shadow-2xl backdrop-blur-xl">
             <div className="flex items-center justify-between gap-4">
@@ -338,22 +349,7 @@ export default function ArchivePage() {
           </div>
 
           {/* Skeleton grid */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="rounded-2xl border border-white/15 bg-black/50 backdrop-blur-xl p-5 shadow-2xl animate-pulse"
-              >
-                <div className="h-3 w-20 rounded-full bg-amber-900/40 mb-3" />
-                <div className="h-4 w-32 rounded-full bg-amber-900/40 mb-4" />
-                <div className="space-y-2">
-                  <div className="h-3 w-full rounded-full bg-slate-800/50" />
-                  <div className="h-3 w-5/6 rounded-full bg-slate-800/50" />
-                  <div className="h-3 w-2/3 rounded-full bg-slate-800/50" />
-                </div>
-              </div>
-            ))}
-          </div>
+          <LoadingSkeleton num={6} col={3} />
         </div>
         <Footer />
       </>
@@ -364,7 +360,6 @@ export default function ArchivePage() {
   if (!dataMemo || dataMemo.length === 0) {
     return (
       <>
-
         <TopNav />
         <BottomNav />
 
@@ -503,11 +498,10 @@ export default function ArchivePage() {
   // Main content
   return (
     <>
-
       <TopNav />
       <BottomNav />
 
-      <div className="flex flex-col-reverse gap-6 lg:flex-row mt-2">
+      <div className="flex flex-col-reverse gap-6 lg:flex-row my-2">
         {/* Main content */}
         <main className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[82%] 2xl:ml-[9%] xl:ml-[4%] lg:ml-[1%]">
           {/* Hero */}
@@ -650,19 +644,23 @@ export default function ArchivePage() {
                 </h2>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-sky-100/70 font-medium">Total Matches</span>
-                    <span className="font-bold text-white">
-                      {data.total}
+                    <span className="text-sky-100/70 font-medium">
+                      Total Matches
                     </span>
+                    <span className="font-bold text-white">{data.total}</span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-sky-100/70 font-medium">Current Page</span>
+                    <span className="text-sky-100/70 font-medium">
+                      Current Page
+                    </span>
                     <span className="font-bold text-white">
                       {data.current_page} / {data.last_page}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-sky-100/70 font-medium">Per Page</span>
+                    <span className="text-sky-100/70 font-medium">
+                      Per Page
+                    </span>
                     <span className="font-bold text-white">
                       {data.per_page}
                     </span>
@@ -677,7 +675,9 @@ export default function ArchivePage() {
                 <div className="space-y-2">
                   {category && (
                     <div className="flex items-center justify-between bg-india-gold/10 rounded-lg px-3 py-2 border border-india-gold/20">
-                      <span className="text-xs text-india-gold font-medium">Category</span>
+                      <span className="text-xs text-india-gold font-medium">
+                        Category
+                      </span>
                       <span className="text-xs font-bold text-white">
                         {category}
                       </span>
@@ -685,7 +685,9 @@ export default function ArchivePage() {
                   )}
                   {format && (
                     <div className="flex items-center justify-between bg-purple-500/10 rounded-lg px-3 py-2 border border-purple-500/20">
-                      <span className="text-xs text-purple-300 font-medium">Format</span>
+                      <span className="text-xs text-purple-300 font-medium">
+                        Format
+                      </span>
                       <span className="text-xs font-bold text-white">
                         {format}
                       </span>
@@ -693,7 +695,9 @@ export default function ArchivePage() {
                   )}
                   {date && (
                     <div className="flex items-center justify-between bg-blue-500/10 rounded-lg px-3 py-2 border border-blue-500/20">
-                      <span className="text-xs text-blue-300 font-medium">Date</span>
+                      <span className="text-xs text-blue-300 font-medium">
+                        Date
+                      </span>
                       <span className="text-xs font-bold text-white">
                         {date}
                       </span>

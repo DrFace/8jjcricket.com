@@ -7,6 +7,7 @@ import { MatchCategory } from "@/lib/match-category";
 import UpcomingCard from "@/components/UpcomingCard";
 import { CRICKET_CATEGORIES } from "@/lib/constant";
 import LiveScoreCard from "@/components/LiveScoreCard";
+import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -340,11 +341,7 @@ export default function LiveScoreHome() {
         </div>
 
         {error && <div className="text-india-red">Failed to load data.</div>}
-        {!error && loading && (
-          <div className="text-india-gold animate-pulse">
-            Loading matches...
-          </div>
-        )}
+        {!error && loading && <LoadingSkeleton num={4} col={2} />}
 
         {!error && !loading && (
           <>

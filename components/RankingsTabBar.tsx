@@ -8,7 +8,7 @@ export default function RankingsTabBar({ tabs }: TabBarProps) {
   return (
     <div className="w-full">
       <div className="relative w-full">
-        <div className="flex gap-2 relative z-10 lg:justify-start justify-start overflow-x-auto pb-2 scrollbar-hide">
+        <div className="flex gap-2 relative z-10 lg:justify-start justify-start overflow-x-auto scrollbar-hide">
           {tabs.map((tab) => (
             <SecondaryButton
               key={tab.href}

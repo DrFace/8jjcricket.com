@@ -4,13 +4,12 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Play, PlayCircle, ChevronUp, ChevronDown } from "lucide-react";
 import { VideoSectionItem } from "@/types/video";
 import { useAudio } from "@/context/AudioContext";
+import ThumbnailImg from "../public/images/thumbnail.webp";
 
 export default function HomeVideoGallery() {
   const { isPlaying, togglePlay } = useAudio();
-
   const [activeMainCat, setActiveMainCat] = useState("All");
   const [videos, setVideos] = useState<VideoSectionItem[]>([]);
-  const [loading, setLoading] = useState(true);
   const [currentVideo, setCurrentVideo] = useState<VideoSectionItem | null>(
     null,
   );
@@ -18,6 +17,19 @@ export default function HomeVideoGallery() {
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const wasPlayingBefore = React.useRef<boolean>(false);
   const isPlayingRef = React.useRef<boolean>(isPlaying);
+  const userHasInteracted = React.useRef(false);
+  const galleryRef = React.useRef(null);
+
+  // Listen for global stop event to pause video before reload/language change
+  useEffect(() => {
+    const stopHandler = () => {
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
+    };
+    window.addEventListener("stop-all-videos", stopHandler);
+    return () => window.removeEventListener("stop-all-videos", stopHandler);
+  }, []);
 
   // keep ref up to date with context state, avoids stale closure in handlers
   useEffect(() => {
@@ -50,6 +62,7 @@ export default function HomeVideoGallery() {
   };
 
   const selectVideoHandler = (videoSelected: VideoSectionItem) => {
+    userHasInteracted.current = true;
     setCurrentVideo(videoSelected);
     handlePlay();
   };
@@ -66,7 +79,9 @@ export default function HomeVideoGallery() {
 
     updateCount();
     window.addEventListener("resize", updateCount);
-    return () => window.removeEventListener("resize", updateCount);
+    return () => {
+      window.removeEventListener("resize", updateCount);
+    };
   }, []);
 
   // when the currentVideo element plays/pauses we need to sync audio
@@ -84,21 +99,32 @@ export default function HomeVideoGallery() {
   }, [isPlaying, togglePlay, currentVideo]);
 
   // Load video sections from backend API
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await fetch("/api/video-sections");
-        if (!res.ok) throw new Error("Failed to fetch");
-        const data = await res.json();
-        setVideos(data);
-        if (data.length > 0) setCurrentVideo(data[0]);
-      } catch (err) {
-        console.error("Error fetching video sections:", err);
-      } finally {
-        setLoading(false);
-      }
+  async function fetchData() {
+    try {
+      const res = await fetch("/api/video-sections");
+      if (!res.ok) throw new Error("Failed to fetch");
+      const data = await res.json();
+      setVideos(data);
+      if (data.length > 0) setCurrentVideo(data[0]);
+    } catch (err) {
+      console.error("Error fetching video sections:", err);
     }
-    fetchData();
+  }
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchData();
+          observer.disconnect(); // fetch only once
+        }
+      },
+      { threshold: 0.1 }, // trigger when 10% visible
+    );
+
+    if (galleryRef.current) observer.observe(galleryRef.current);
+
+    return () => observer.disconnect();
   }, []);
 
   const categories = useMemo(() => {
@@ -115,6 +141,8 @@ export default function HomeVideoGallery() {
     return videos.filter((v) => String(v.category) === activeMainCat);
   }, [videos, activeMainCat]);
 
+  console.log("FILTER VIDEOS", filteredVideos);
+
   // Auto-select first video when filtered list changes
   useEffect(() => {
     if (filteredVideos.length > 0) setCurrentVideo(filteredVideos[0]);
@@ -124,9 +152,8 @@ export default function HomeVideoGallery() {
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
-    vid.play().catch(() => {
-      /* user interaction likely required, ignore */
-    });
+    if (!userHasInteracted.current) return; // ✅ block autoplay on mount/language reload
+    vid.play().catch(() => {});
   }, [currentVideo]);
 
   const normalizeVideoUrl = (path: string) => {
@@ -135,21 +162,11 @@ export default function HomeVideoGallery() {
     return `https://8jjcricket.com/storage/${path.replace(/\\/g, "/")}`;
   };
 
-  if (loading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-india-gold" />
-          <span className="text-india-gold/60 font-medium animate-pulse">
-            Loading Gallery...
-          </span>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="w-full h-full text-white overflow-hidden p-6 lg:p-10">
+    <div
+      ref={galleryRef}
+      className="w-full h-full text-white overflow-hidden p-6 lg:p-10"
+    >
       <div
         className="max-w-[1650px] mx-auto h-full grid grid-cols-[minmax(0,2fr),minmax(0,8fr),minmax(0,2fr)]
         lg:grid-cols-[2fr,8fr,2fr]      /* optional breakpoints */
@@ -203,14 +220,23 @@ export default function HomeVideoGallery() {
                 ref={videoRef}
                 key={currentVideo.id}
                 src={normalizeVideoUrl(currentVideo.video_path)}
+                preload="none"
+                poster={currentVideo.thumbnail_url || ThumbnailImg.src}
                 controls
                 className="w-full h-full object-cover"
-                poster={currentVideo.thumbnail_url}
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-white/20">
-                <Play size={100} strokeWidth={1} />
-              </div>
+              <>
+                <img
+                  src={ThumbnailImg.src}
+                  alt=""
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                  <Play size={25} className="text-white" />
+                </div>
+              </>
             )}
 
             {currentVideo && (
@@ -227,10 +253,6 @@ export default function HomeVideoGallery() {
                 {currentVideo.title}
               </h2>
               <div className="flex items-center gap-6 text-white/50 text-xs font-bold uppercase tracking-widest">
-                {/* <span className="flex items-center gap-2">
-                  <Calendar size={14} className="text-india-gold" />
-                  {currentVideo.published_at || "January 18, 2026"}
-                </span> */}
                 <span className="flex items-center gap-2">
                   {currentVideo.category}
                 </span>
@@ -292,24 +314,29 @@ export default function HomeVideoGallery() {
                   {/* Thumbnail — compact fixed size */}
                   <div className="relative w-24 h-16 rounded-lg overflow-hidden bg-black/60 border border-white/10 shrink-0">
                     {video.thumbnail_url ? (
-                      <img
-                        src={normalizeVideoUrl(video.thumbnail_url)}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
-                    ) : video.video_path ? (
-                      // fallback: render a muted tiny video to give preview
-                      <video
-                        src={normalizeVideoUrl(video.video_path)}
-                        muted
-                        playsInline
-                        loop
-                        className="w-full h-full object-cover"
-                      />
+                      <>
+                        <img
+                          src={normalizeVideoUrl(video.thumbnail_url)}
+                          alt=""
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                          <Play size={16} className="text-white" />
+                        </div>
+                      </>
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Play size={16} className="text-white/20" />
-                      </div>
+                      <>
+                        <img
+                          src={ThumbnailImg.src}
+                          alt=""
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                          <Play size={25} className="text-white" />
+                        </div>
+                      </>
                     )}
                   </div>
 

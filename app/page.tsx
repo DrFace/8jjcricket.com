@@ -352,7 +352,7 @@ export default async function HomePage() {
         {/* News Section */}
         <section
           data-snap
-          className="SectionScroll w-full h-full flex items-start px-6"
+          className="SectionScroll w-full h-full flex items-start"
           style={{ background: "var(--bg-primary)" }}
         >
           <div className="relative h-full w-full flex items-start">
@@ -460,7 +460,7 @@ export default async function HomePage() {
           </div>
         </section>
         {/* Video Gallery Section */}
-        {/* <section
+        <section
           data-snap
           className="SectionScroll relative w-full h-full flex items-start"
           style={{ background: "var(--bg-primary)" }}
@@ -508,7 +508,7 @@ export default async function HomePage() {
               </div>
             </ScaleToFit>
           </div>
-        </section> */}
+        </section>
         {/* Associate Section */}
         <section
           data-snap

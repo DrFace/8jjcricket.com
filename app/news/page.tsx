@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
+import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
 
 type Category = {
   id: number;
@@ -501,7 +502,7 @@ export default function NewsPage() {
   useEffect(() => {
     const savedCategory = sessionStorage.getItem("news-active-category");
     const savedPage = sessionStorage.getItem("news-page");
-    
+
     if (savedCategory !== null) {
       setActiveCategory(savedCategory === "null" ? null : savedCategory);
     }
@@ -620,7 +621,11 @@ export default function NewsPage() {
               </h1>
 
               <div className="text-sm text-slate-300">
-                Page <span className="text-india-gold font-semibold">{currentPage}</span> of {lastPage}
+                Page{" "}
+                <span className="text-india-gold font-semibold">
+                  {currentPage}
+                </span>{" "}
+                of {lastPage}
               </div>
             </div>
 
@@ -629,9 +634,7 @@ export default function NewsPage() {
                 Failed to load news articles.
               </div>
             ) : isLoading ? (
-              <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 text-india-gold animate-pulse">
-                Loading news…
-              </div>
+              <LoadingSkeleton num={4} col={2} />
             ) : articles.length === 0 ? (
               <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 text-slate-300">
                 No news found.
