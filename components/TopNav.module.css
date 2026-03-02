@@ -1,43 +1,76 @@
 .logoWrap {
-  display: inline-flex;
-  align-items: center; /* ✅ vertical center */
-  justify-content: center;
-  gap: 1px; /* reduce spacing */
-  perspective: 800px;
-  position: relative;
-  line-height: 1; /* prevents extra height */
+  display: flex;
+  align-items: center;
 }
 
+.gradientText {
+  background: linear-gradient(
+    90deg,
+    #ffd700 0%,
+    #f7ed6d 25%,
+    #ffffff 50%,
+    #99d0f7 75%,
+    #0594fa 90%,
+    #0266fd 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  letter-spacing: 0;
+  font-size: 25px;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.1);
+  }
+}
+
+.gradientText:hover {
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ======================== */
 .logoLetter {
   position: relative;
   font-weight: 800;
   letter-spacing: 0.4px;
-  font-size: 18px;
+  font-size: 22px;
 
   background: linear-gradient(
-    135deg,
-    #ffffff 0%,
-    #f8fafc 25%,
-    #fbbf24 65%,
-    #f59e0b 100%
+    180deg,
+    #60fab5 15%,
+    #3be6f6 25%,
+    #2563eb 70%,
+    #1e40af 100%
   );
 
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
   text-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.35),
-    0 0 10px rgba(251, 191, 36, 0.35);
+    0 0 20px rgba(56, 191, 248, 0.507),
+    0 0 40px rgba(14, 164, 233, 0.301),
+    0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .logoGlow {
   position: absolute;
-  inset: 0;
+  inset: -15px;
   background: radial-gradient(
-    circle at center,
-    rgba(228, 189, 16, 0.15),
+    ellipse at center,
+    rgba(56, 189, 248, 0.4) 0%,
+    rgba(14, 165, 233, 0.3) 30%,
+    rgba(2, 132, 199, 0.15) 50%,
     transparent 70%
   );
-  filter: blur(12px);
+  filter: blur(25px);
   z-index: -1;
 }

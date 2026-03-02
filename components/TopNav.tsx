@@ -180,6 +180,9 @@ export default function TopNav() {
     // ✅ Save selection (helps in production if cookie is blocked/misread)
     window.localStorage.setItem(LANG_STORAGE_KEY, next);
 
+    // 🔴 Dispatch a custom event to stop all video playback before reload/language change
+    window.dispatchEvent(new Event("stop-all-videos"));
+
     // ✅ English: force reset to /en/en
     if (next === "en") {
       clearAllGoogTransCookies();
@@ -236,7 +239,7 @@ export default function TopNav() {
         <div className="flex w-full items-center justify-between px-2 lg:px-4 py-2">
           <Link
             href="/"
-            className="flex justify-center gap-2 text-lg lg:text-xl font-bold shrink-0"
+            className="flex justify-center gap-2 text-2xl lg:text-4xl font-bold shrink-0"
           >
             <Image
               src="/8jjlogo.png"
@@ -244,7 +247,7 @@ export default function TopNav() {
               width={44}
               height={44}
               priority
-              className="block"
+              className="block brightness-[1.3] contrast-125 saturate-150 drop-shadow-[0_0_20px_rgba(56,189,248,1)] drop-shadow-[0_0_35px_rgba(14,165,233,0.9)] drop-shadow-[0_0_50px_rgba(6,182,212,0.7)] hover:scale-110 transition-transform duration-300"
             />
             <motion.div
               className={`${styles.logoWrap} ${poppins.className}`}
@@ -252,45 +255,7 @@ export default function TopNav() {
               animate="animate"
               whileHover="hover"
             >
-              {/* Soft stadium glow behind */}
-              {/* <span className={styles.logoGlow} aria-hidden="true" /> */}
-              {"8JJ   CRICKET".split("").map((letter, index) => (
-                <motion.span
-                  key={index}
-                  className={styles.logoLetter}
-                  style={{
-                    background:
-                      "linear-gradient(180deg, #a8d4ff 0%, #4a90e2 35%, #1a5fd4 55%, #0e32aa 75%, #07197a 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                  }}
-                  initial={{ opacity: 0, y: 10, rotateX: -90 }}
-                  animate={{
-                    opacity: 1,
-                    y: [0, -4, 0],
-                    rotateX: 0,
-                  }}
-                  transition={{
-                    delay: index * 0.05,
-                    opacity: { duration: 0.4 },
-                    rotateX: { duration: 0.6 },
-                    y: {
-                      repeat: Infinity,
-                      repeatType: "loop",
-                      duration: 2,
-                      ease: "easeInOut",
-                      delay: index * 0.15,
-                    },
-                  }}
-                  whileHover={{
-                    scale: 1.1,
-                    y: -8,
-                  }}
-                >
-                  {letter}
-                </motion.span>
-              ))}
+              <span className={styles.gradientText}>8JJCRICKET</span>
             </motion.div>
           </Link>
 
