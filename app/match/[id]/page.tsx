@@ -1,23 +1,23 @@
-import type { Metadata } from "next"
-import Link from "next/link";
-import Scoreboard from "@/components/Scoreboard"
-import TopNav from "@/components/TopNav"
-import Footer from "@/components/Footer"
+import type { Metadata } from "next";
+import Scoreboard from "@/components/Scoreboard";
+import TopNav from "@/components/TopNav";
+import Footer from "@/components/Footer";
+import BackButton from "@/components/BackButton";
 
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string }
+  params: { id: string };
 }): Promise<Metadata> {
-  const id = params.id
+  const id = params.id;
   return {
     title: `Scoreboard #${id}`,
     description: `Full scoreboard and ball-by-ball for fixture ${id}.`,
-  }
+  };
 }
 
 export default function MatchPage({ params }: { params: { id: string } }) {
-  const id = params.id
+  const id = params.id;
 
   return (
     <div className="min-h-screen bg-[#060A12] text-white">
@@ -25,24 +25,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
 
       <main className="mx-auto w-full max-w-7xl px-4 pb-16 pt-8">
         <div className="mb-6">
-          <Link
-            href="/archive"
-            className="inline-flex items-center gap-2 rounded-xl border border-india-gold/30 bg-white/5 px-4 py-2 text-sm font-bold text-india-gold transition-all hover:bg-white/10 hover:border-india-gold/50"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            Back to Archive
-          </Link>
+          <BackButton />
         </div>
 
         {/* Hero / Header band (matches 8jjcricket page feel) */}
@@ -53,7 +36,9 @@ export default function MatchPage({ params }: { params: { id: string } }) {
 
           <div className="mt-3 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <h1 className="text-3xl font-extrabold leading-tight">Scoreboard</h1>
+              <h1 className="text-3xl font-extrabold leading-tight">
+                Scoreboard
+              </h1>
               <p className="mt-1 text-sm text-white/70">
                 Full scorecard and ball-by-ball details.
               </p>
@@ -81,5 +66,5 @@ export default function MatchPage({ params }: { params: { id: string } }) {
 
       <Footer />
     </div>
-  )
+  );
 }

@@ -18,6 +18,7 @@ import { LeagueRespond, SeriesByMonth } from "@/types/series";
 
 // ✅ IMPORT SEO DATA
 import { seriesMetadata, seriesJsonLd } from "@/components/seo/SeriesSeo";
+import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -177,26 +178,20 @@ export default function SeriesPage() {
 
   return (
     <>
-
-
       <div className="min-h-screen flex flex-col">
         <TopNav />
         <BottomNav />
 
         <main className="flex-1">
-          <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
+          <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80 my-2">
             {isLoading ? (
-              <div className="animate-pulse space-y-4 mt-5">
-                <div className="h-10 bg-gray-200 rounded w-full" />
-                <div className="h-32 bg-gray-200 rounded" />
-                <div className="h-32 bg-gray-200 rounded" />
-              </div>
+              <LoadingSkeleton num={10} col={5} />
             ) : error ? (
               <ErrorState message="Failed to load series." />
             ) : (
               <>
                 {/* Tabs */}
-                <div className="rounded-2xl india-card-gradient overflow-hidden p-2">
+                <div className="mt-2">
                   <div className="flex overflow-x-auto gap-2">
                     {SERIES_TABS.map((tab) => (
                       <SecondaryButton
@@ -367,10 +362,7 @@ export default function SeriesPage() {
                     <p className="text-slate-300 mb-4">
                       Check the home page for live cricket matches at 8jjcricket
                     </p>
-                    <PrimaryButton
-                      href="/"
-                      size="md"
-                    >
+                    <PrimaryButton href="/" size="md">
                       View Live Matches
                     </PrimaryButton>
                   </div>
@@ -400,16 +392,10 @@ export default function SeriesPage() {
                       pages
                     </p>
                     <div className="flex gap-3 justify-center">
-                      <SecondaryButton
-                        href="/recent"
-                        size="md"
-                      >
+                      <SecondaryButton href="/recent" size="md">
                         Recent Matches
                       </SecondaryButton>
-                      <PrimaryButton
-                        href="/upcoming"
-                        size="md"
-                      >
+                      <PrimaryButton href="/upcoming" size="md">
                         Upcoming Matches
                       </PrimaryButton>
                     </div>
@@ -438,10 +424,7 @@ export default function SeriesPage() {
                     <p className="text-slate-300 mb-4">
                       Browse all international and domestic cricket teams
                     </p>
-                    <PrimaryButton
-                      href="/teams"
-                      size="md"
-                    >
+                    <PrimaryButton href="/teams" size="md">
                       View All Teams
                     </PrimaryButton>
                   </div>
@@ -469,10 +452,7 @@ export default function SeriesPage() {
                     <p className="text-slate-300 mb-4">
                       Browse past cricket series and tournaments
                     </p>
-                    <SecondaryButton
-                      href="/archive"
-                      size="md"
-                    >
+                    <SecondaryButton href="/archive" size="md">
                       View Archive
                     </SecondaryButton>
                   </div>

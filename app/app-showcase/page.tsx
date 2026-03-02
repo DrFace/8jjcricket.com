@@ -3,8 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { APP_SOWCASE, MOBILE_APP } from "@/lib/constant";
-import TopNav from "@/components/TopNav";
-import BottomNav from "@/components/BottomNav";
 
 export default function AppShowcasePage() {
   const [currentSlide, setCurrentSlide] = useState(0);

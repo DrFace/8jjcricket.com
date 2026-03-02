@@ -232,46 +232,13 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
                 />
               </div>
 
-              {/* Brand text */}
               <motion.div
                 className={`${styles.logoWrap} ${poppins.className}`}
                 initial="initial"
                 animate="animate"
                 whileHover="hover"
               >
-                {/* Soft stadium glow behind */}
-                <span className={styles.logoGlow} aria-hidden="true" />
-
-                {"8JJCRICKET".split("").map((letter, index) => (
-                  <motion.span
-                    key={index}
-                    className={styles.logoLetter}
-                    initial={{ opacity: 0, y: 10, rotateX: -90 }}
-                    animate={{
-                      opacity: 1,
-                      y: [0, -4, 0], // floating effect
-                      rotateX: 0,
-                    }}
-                    transition={{
-                      delay: index * 0.05,
-                      opacity: { duration: 0.4 },
-                      rotateX: { duration: 0.6 },
-                      y: {
-                        repeat: Infinity,
-                        repeatType: "loop",
-                        duration: 2,
-                        ease: "easeInOut",
-                        delay: index * 0.15, // wave effect
-                      },
-                    }}
-                    whileHover={{
-                      scale: 1.1,
-                      y: -8,
-                    }}
-                  >
-                    {letter}
-                  </motion.span>
-                ))}
+                <span className={styles.gradientTextMobile}>8JJCRICKET</span>
               </motion.div>
             </Link>
           </div>

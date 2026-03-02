@@ -22,6 +22,25 @@
   animation: shimmer 3s ease-in-out infinite;
 }
 
+.gradientTextMobile {
+  background: linear-gradient(
+    90deg,
+    #ffd700 0%,
+    #f7ed6d 25%,
+    #ffffff 50%,
+    #99d0f7 75%,
+    #0594fa 90%,
+    #0266fd 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  letter-spacing: 0;
+  font-size: 20px;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
 @keyframes shimmer {
   0%,
   100% {
