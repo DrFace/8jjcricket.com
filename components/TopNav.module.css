@@ -28,12 +28,12 @@
 .gradientTextMobile {
   background: linear-gradient(
     90deg,
-    #ffd700 0%,
-    #f7ed6d 25%,
-    #ffffff 50%,
-    #99d0f7 75%,
-    #0594fa 90%,
-    #0266fd 100%
+    #bb9f03 0%,
+    #c0b40b 40%,
+    #c5c20f 50%,
+    #57aeec 60%,
+    #034d81 90%,
+    #012e72 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -41,7 +41,7 @@
   font-weight: 700;
   letter-spacing: 0;
   font-size: 20px;
-  -webkit-text-stroke: 0.8px white;
+  -webkit-text-stroke: 0.8px rgb(228, 228, 228);
   paint-order: stroke fill;
   animation: shimmer 3s ease-in-out infinite;
 }
