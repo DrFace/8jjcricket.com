@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import MobileShareButton from "@/components/mobile/MobileShareButton";
+import LoadingSkeleton from "./ui/LoadingSkeleton";
 
 type Category = {
   id: number;
@@ -197,13 +198,15 @@ export default function MobileNewsClient() {
   useEffect(() => {
     const handleScroll = () => {
       if (isRestored) {
-        sessionStorage.setItem("mobile-news-scroll-pos", window.scrollY.toString());
+        sessionStorage.setItem(
+          "mobile-news-scroll-pos",
+          window.scrollY.toString(),
+        );
       }
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isRestored]);
-
 
   const newsUrl = useMemo(() => {
     const params = new URLSearchParams();
@@ -245,7 +248,7 @@ export default function MobileNewsClient() {
   }, [activeCategory, isRestored]);
 
   return (
-    <main className="min-h-screen bg-black text-white px-4 pt-6 pb-24">
+    <main className="min-h-screen text-white pt-2 pb-3">
       <h1 className="text-2xl font-bold mb-3">
         {activeCategory ? `Latest News: ${activeCategory}` : "Latest News"}
       </h1>
@@ -259,7 +262,7 @@ export default function MobileNewsClient() {
               "px-4 py-2 rounded-full text-sm border transition",
               activeCategory === null
                 ? "bg-amber-300/20 text-amber-300 border-amber-300/40"
-                : "bg-white/5 text-white/70 border-white/10 hover:bg-white/10",
+                : "bg-white/5 text-white/70 border-white/20 hover:bg-white/10",
             ].join(" ")}
           >
             All
@@ -290,7 +293,7 @@ export default function MobileNewsClient() {
       {error ? (
         <p className="text-white/60">Failed to load news articles.</p>
       ) : isLoading ? (
-        <p className="text-white/60">Loading news…</p>
+        <LoadingSkeleton num={3} col={1} />
       ) : articles.length === 0 ? (
         <p className="text-white/60">No news found.</p>
       ) : (

@@ -34,8 +34,6 @@ export async function GET(request: Request) {
     // Use production backend
     const backendUrl = `${BACKEND_URL_API}/archives${queryString ? `?${queryString}` : ""}`;
 
-    console.log("Fetching archives from backend:", backendUrl);
-
     const response = await fetch(backendUrl, {
       method: "GET",
       headers: {

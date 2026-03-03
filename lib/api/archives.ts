@@ -56,7 +56,6 @@ export async function getArchives(
     }
 
     const data: ArchivesResponse = await response.json();
-    console.log("Fetched Archives Data:", data);
     return data;
   } catch (error) {
     console.error("Error fetching archives:", error);

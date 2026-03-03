@@ -34,7 +34,6 @@ export default function HomeVideoShowcase({ videos }: Props) {
 
   const featured = filteredVideos[0];
   const sidebar = filteredVideos.slice(1, 6);
-  console.log("featured", featured);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row gap-6">

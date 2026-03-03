@@ -12,14 +12,11 @@ export default function MobileRecentCard({ f }: { f: Fixture }) {
 
   const homeLabel = home?.short_name || home?.name || "Home";
   const awayLabel = away?.short_name || away?.name || "Away";
-  console.log("fix card", f);
 
   const runsArr = Array.isArray((f as any).runs) ? (f as any).runs : [];
-  console.log("runsArr", runsArr, f.localteam_id, f.visitorteam_id);
 
   const homeRuns = CalcRuns(runsArr, f.localteam_id);
   const awayRuns = CalcRuns(runsArr, f.visitorteam_id);
-  console.log("homeRuns", homeRuns, "awayRuns", awayRuns);
 
   const target = ExtractTarget(f.note);
 

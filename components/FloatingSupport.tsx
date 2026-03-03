@@ -63,9 +63,9 @@ export default function FloatingSupport() {
             href="/app-showcase"
           >
             <img
-              src="/icons/install_rm_bg.png"
+              src="/icons/install_rm_bg.svg"
               alt="Install"
-              className="w-7 h-7 object-contain"
+              className="w-6 h-6 object-contain"
             />
           </Link>
 
@@ -91,11 +91,34 @@ export default function FloatingSupport() {
             aria-label="Mute/Unmute"
             aria-pressed={!isMuted}
           >
-            <img
-              src="/icons/music-player.png"
-              alt="Music Player"
-              className="w-7 h-7 object-contain"
+            <div
+              className="w-6 h-6"
+              style={{
+                background: isPlaying
+                  ? "linear-gradient(135deg, #fb923c 0%, #facc15 50%,  #4ade80 100%)"
+                  : "white",
+                WebkitMaskImage: "url('/icons/music-player.svg')",
+                maskImage: "url('/icons/music-player.svg')",
+                WebkitMaskSize: "contain",
+                maskSize: "contain",
+                WebkitMaskRepeat: "no-repeat",
+                maskRepeat: "no-repeat",
+                WebkitMaskPosition: "center",
+                maskPosition: "center",
+                animation: isPlaying
+                  ? "musicColorCycle 2s linear infinite"
+                  : "none",
+              }}
             />
+            <style>{`
+              @keyframes musicColorCycle {
+                0%   { filter: hue-rotate(0deg) brightness(1.1); }
+                25%  { filter: hue-rotate(90deg) brightness(1.2); }
+                50%  { filter: hue-rotate(180deg) brightness(1.3); }
+                75%  { filter: hue-rotate(270deg) brightness(1.2); }
+                100% { filter: hue-rotate(360deg) brightness(1.1); }
+              }
+            `}</style>
           </button>
           {/* Mute / Unmute (restored) */}
           <button

@@ -19,7 +19,7 @@
   font-weight: 700;
   font-style: italic;
   letter-spacing: 0;
-  font-size: 25px;
+  font-size: 22px;
   -webkit-text-stroke: 1px rgb(228, 228, 228);
   paint-order: stroke fill;
   animation: shimmer 3s ease-in-out infinite;
@@ -40,6 +40,7 @@
   background-clip: text;
   font-weight: 700;
   letter-spacing: 0;
+  font-style: italic;
   font-size: 20px;
   -webkit-text-stroke: 0.8px rgb(228, 228, 228);
   paint-order: stroke fill;
