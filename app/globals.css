@@ -171,6 +171,7 @@
 
 /* Ambient floodlight breathing — body::before */
 @keyframes floodlight-breathe {
+
   0%,
   100% {
     opacity: 0.5;
@@ -205,24 +206,21 @@
 
   --bg-primary:
     /* Gold — bottom-left, reaches center */
-    radial-gradient(
-      ellipse 130% 120% at 0% 100%,
+    radial-gradient(ellipse 130% 120% at 0% 100%,
       rgba(255, 200, 80, 0.55) 0%,
       rgba(255, 170, 40, 0.38) 35%,
       rgba(255, 150, 20, 0.2) 60%,
       rgba(255, 150, 20, 0.1) 75%,
-      transparent 92%
-    ),
+      transparent 92%),
     /* Sky blue — top-right, reaches center */
-    radial-gradient(
-        ellipse 130% 120% at 100% 0%,
-        rgba(135, 206, 250, 0.55) 0%,
-        rgba(70, 170, 255, 0.38) 35%,
-        rgba(0, 140, 255, 0.2) 60%,
-        rgba(0, 140, 255, 0.1) 75%,
-        transparent 92%
-      ),
-    /* Dark base */ linear-gradient(180deg, #05070a 0%, #0b141c 100%);
+    radial-gradient(ellipse 130% 120% at 100% 0%,
+      rgba(135, 206, 250, 0.55) 0%,
+      rgba(70, 170, 255, 0.38) 35%,
+      rgba(0, 140, 255, 0.2) 60%,
+      rgba(0, 140, 255, 0.1) 75%,
+      transparent 92%),
+    /* Dark base */
+    linear-gradient(180deg, #05070a 0%, #0b141c 100%);
 
   /* Secondary & tertiary surfaces */
   --bg-secondary: #0d0a04;
@@ -317,21 +315,15 @@ body::before {
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(
-      ellipse 50% 28% at 10% 4%,
+    radial-gradient(ellipse 50% 28% at 10% 4%,
       rgba(255, 140, 0, 0.16) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 50% 28% at 90% 4%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 28% at 90% 4%,
       rgba(0, 170, 255, 0.14) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 35% 25% at 50% 50%,
+      transparent 70%),
+    radial-gradient(ellipse 35% 25% at 50% 50%,
       rgba(255, 184, 0, 0.05) 0%,
-      transparent 70%
-    );
+      transparent 70%);
   animation: floodlight-breathe 7s ease-in-out infinite;
 }
 
@@ -430,12 +422,10 @@ a {
 
 .india-card-gradient {
   @apply relative rounded-3xl border backdrop-blur-xl shadow-lg transition-all duration-500;
-  background: linear-gradient(
-    140deg,
-    rgba(20, 14, 4, 0.96) 0%,
-    rgba(28, 18, 5, 0.92) 50%,
-    rgba(20, 14, 4, 0.96) 100%
-  );
+  background: linear-gradient(140deg,
+      rgba(20, 14, 4, 0.96) 0%,
+      rgba(28, 18, 5, 0.92) 50%,
+      rgba(20, 14, 4, 0.96) 100%);
   border-color: var(--border-primary);
   transform-style: preserve-3d;
 }
@@ -500,40 +490,34 @@ a {
 /* India flag tricolor gradient text */
 .india-gradient-text {
   @apply bg-clip-text text-transparent;
-  background-image: linear-gradient(
-    90deg,
-    #ff8c00 0%,
-    #ffb800 30%,
-    #ffffff 55%,
-    #138808 100%
-  );
+  background-image: linear-gradient(90deg,
+      #ff8c00 0%,
+      #ffb800 30%,
+      #ffffff 55%,
+      #138808 100%);
 }
 
 /* Hero header text — saffron → gold → white → green */
 .india-header-text {
   @apply bg-clip-text text-transparent font-bold;
-  background-image: linear-gradient(
-    90deg,
-    #ff6600 0%,
-    #ffb800 38%,
-    #ffffff 58%,
-    #138808 100%
-  );
+  background-image: linear-gradient(90deg,
+      #ff6600 0%,
+      #ffb800 38%,
+      #ffffff 58%,
+      #138808 100%);
 }
 
 /* Animated shimmer — use on hero headlines */
 .text-shimmer {
   @apply bg-clip-text text-transparent;
-  background-image: linear-gradient(
-    90deg,
-    #ff8c00 0%,
-    #ffb800 20%,
-    #ffe066 40%,
-    #ffffff 50%,
-    #ffb800 65%,
-    #ff8c00 80%,
-    #ff6600 100%
-  );
+  background-image: linear-gradient(90deg,
+      #ff8c00 0%,
+      #ffb800 20%,
+      #ffe066 40%,
+      #ffffff 50%,
+      #ffb800 65%,
+      #ff8c00 80%,
+      #ff6600 100%);
   background-size: 200% auto;
   animation: shimmer 4s linear infinite;
 }
@@ -681,7 +665,22 @@ a {
   display: none !important;
 }
 
+/* Disable Google Translate highlight on hover */
+.goog-text-highlight {
+  background-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Disable background color on font tags injected by Google Translate */
+font {
+  background-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 @keyframes logoFloat {
+
   0%,
   100% {
     transform: translateY(0);
@@ -713,6 +712,7 @@ a {
 }
 
 @keyframes logoFloat {
+
   0%,
   100% {
     transform: translateY(0);
@@ -752,6 +752,7 @@ a {
    ============================================================ */
 
 @keyframes logoFloat {
+
   0%,
   100% {
     transform: translateY(0);
@@ -809,12 +810,10 @@ a {
   inset: 0;
   pointer-events: none;
 
-  background: linear-gradient(
-    110deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.75) 45%,
-    transparent 70%
-  );
+  background: linear-gradient(110deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.75) 45%,
+      transparent 70%);
   background-size: 220% 100%;
   background-position: -220% 0;
 
