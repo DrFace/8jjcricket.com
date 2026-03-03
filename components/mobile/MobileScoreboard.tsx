@@ -3,12 +3,14 @@
 
 import useSWR from "swr";
 import { useMemo } from "react";
-import Link from "next/link";
 import { formatDate } from "@/lib/utils";
 import TeamBadge from "@/components/TeamBadge";
 import { useTeams } from "@/hooks/useTeams";
 import { usePlayers } from "@/hooks/usePlayers";
 import MobileScoreBadge from "./MobileScoreBadge";
+import BattingTable from "./BattingTable";
+import BowlingTable from "./BowlingTable";
+import LoadingSkeleton from "../ui/LoadingSkeleton";
 
 const fetcher = async (u: string) => {
   const res = await fetch(u, { headers: { Accept: "application/json" } });
@@ -71,8 +73,8 @@ export default function MobileScoreboard({ id }: { id: string }) {
       </div>
     );
   }
-  if (isLoading)
-    return <div className="card animate-pulse">Loading scoreboard…</div>;
+
+  if (isLoading) return <LoadingSkeleton num={3} col={1} />;
   if (!fx) return <div className="card">No data.</div>;
 
   // ✅ Merge: keep fixture images (`image_path`) even if hook objects are lean
@@ -150,22 +152,23 @@ export default function MobileScoreboard({ id }: { id: string }) {
           {fx.league?.name || "Twenty20 International" /* fallback */}
         </h2>
 
-        <div className="flex items-center justify-between gap-4 mb-2">
+        <div className="flex items-center justify-between gap-4 my-2">
           <div className="">
             <MobileScoreBadge team={homeBadge} />
           </div>
-          <div className="text-amber-300 font-semibold">VS</div>
+          <div className="text-amber-300 font-semibold">
+            <p className="text-sm text-center mb-3"> VS</p>
+            <p className="text-sm text-center">
+              <strong>{fx.status || "—"}</strong>
+            </p>
+          </div>
           <div className="">
             <MobileScoreBadge team={awayBadge} />
           </div>
         </div>
-        <p className="text-sm">
-          <strong>{fx.status || "—"}</strong>
-        </p>
-        <p className="text-sm">
-          {fx.note ? (
-            <span className="text-gray-700"> {fx.note}</span>
-          ) : null}{" "}
+
+        <p className="text-sm text-center">
+          {fx.note ? <span className="text-gray-300 "> {fx.note}</span> : null}
         </p>
         <div className="">
           {(fx.toss_won_team_id || fx.elected) && (
@@ -186,7 +189,7 @@ export default function MobileScoreboard({ id }: { id: string }) {
             </div>
           )}
 
-          <p className="text-xs text-gray-600 mt-2 text-right">
+          <p className="text-xs text-gray-300 mt-2 text-center">
             {fx.round || "—"} · {formatDate(fx.starting_at)}
           </p>
         </div>
@@ -215,19 +218,21 @@ export default function MobileScoreboard({ id }: { id: string }) {
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
-                      <TeamBadge team={toBadgeTeam(t)} hideName />
+                      <TeamBadge size={50} team={toBadgeTeam(t)} hideName />
                       <div className="font-medium">{label}</div>
                     </div>
-                    <div className="text-xs text-gray-600">
+                    <div className="text-xs text-gray-300">
                       Inn {inn.inning ?? "—"}
                     </div>
                   </div>
-                  <div className="mt-1 text-lg font-semibold">
-                    {inn.score ?? "–"}/{inn.wickets ?? "–"} ({inn.overs ?? "–"}{" "}
-                    ov)
-                  </div>
-                  <div className="text-xs text-gray-500 mt-0.5">
-                    PP1 {inn.pp1 ?? "—"} · PP2 {inn.pp2 ?? "—"}
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-xs text-gray-300 mt-0.5">
+                      PP1 {inn.pp1 ?? "—"} · PP2 {inn.pp2 ?? "—"}
+                    </div>
+                    <div className="mt-1 text-lg font-semibold">
+                      {inn.score ?? "–"}/{inn.wickets ?? "–"} (
+                      {inn.overs ?? "–"} ov)
+                    </div>
                   </div>
                 </div>
               );
@@ -251,7 +256,7 @@ export default function MobileScoreboard({ id }: { id: string }) {
           const bowls = bowlByTeam[tid] ?? [];
 
           return (
-            <div key={tid} className="card space-y-4">
+            <div key={tid} className="space-y-4">
               {/* Batting */}
               <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 p-6 shadow-2xl backdrop-blur-xl">
                 <h3 className="font-semibold mb-2">
@@ -261,77 +266,7 @@ export default function MobileScoreboard({ id }: { id: string }) {
                     `Team ${tid}`}{" "}
                   Batting
                 </h3>
-                <div className="overflow-x-auto">
-                  <table className="min-w-[640px] w-full text-sm">
-                    <thead className="text-left text-white bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30">
-                      <tr>
-                        <th className="py-1 px-2">Batter</th>
-                        <th className="py-1 px-2 text-center">R</th>
-                        <th className="py-1 px-2 text-center">B</th>
-                        <th className="py-1 px-2 text-center">4s</th>
-                        <th className="py-1 px-2 text-center">6s</th>
-                        <th className="py-1 px-2 text-center">SR</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {bats.length
-                        ? bats.map((b: AnyRow) => {
-                            const label = nameFor(b);
-                            const pid = b.player_id
-                              ? Number(b.player_id)
-                              : undefined;
-
-                            return (
-                              <tr
-                                key={
-                                  b.id ??
-                                  `${tid}-bat-${pid}-${b.score}-${b.ball}`
-                                }
-                                className="border-t"
-                              >
-                                <td className="py-1 px-2">
-                                  {pid ? (
-                                    <Link
-                                      href={`/mobile/players/${pid}`}
-                                      className="text-white  hover:underline"
-                                    >
-                                      {label}
-                                    </Link>
-                                  ) : (
-                                    label
-                                  )}
-                                </td>
-                                <td className="py-1 px-2 text-center">
-                                  {b.score ?? "–"}
-                                </td>
-                                <td className="py-1 px-2 text-center">
-                                  {b.ball ?? "–"}
-                                </td>
-                                <td className="py-1 px-2 text-center">
-                                  {b.four_x ?? "–"}
-                                </td>
-                                <td className="py-1 px-2 text-center">
-                                  {b.six_x ?? "–"}
-                                </td>
-                                <td className="py-1 px-2 text-center">
-                                  {b.rate ?? "–"}
-                                </td>
-                              </tr>
-                            );
-                          })
-                        : Array.from({ length: 5 }).map((_, i) => (
-                            <tr key={i} className="border-t">
-                              <td className="py-1 px-2">–</td>
-                              <td className="py-1 px-2 text-center">–</td>
-                              <td className="py-1 px-2 text-center">–</td>
-                              <td className="py-1 px-2 text-center">–</td>
-                              <td className="py-1 px-2 text-center">–</td>
-                              <td className="py-1 px-2 text-center">–</td>
-                            </tr>
-                          ))}
-                    </tbody>
-                  </table>
-                </div>
+                <BattingTable data={bats} players={players} teamId={tid} />
               </div>
 
               {/* Bowling */}
@@ -343,77 +278,7 @@ export default function MobileScoreboard({ id }: { id: string }) {
                     `Team ${tid}`}{" "}
                   Bowling
                 </h3>
-                <div className="overflow-x-auto">
-                  <table className="min-w-[640px] w-full text-sm">
-                    <thead className="text-left text-white bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30">
-                      <tr>
-                        <th className="py-1 px-2">Bowler</th>
-                        <th className="py-1 px-2 text-center">O</th>
-                        <th className="py-1 px-2 text-center">M</th>
-                        <th className="py-1 px-2 text-center">R</th>
-                        <th className="py-1 px-2 text-center">W</th>
-                        <th className="py-1 px-2 text-center">ECO</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {bowls.length
-                        ? bowls.map((b: AnyRow) => {
-                            const label = nameFor(b);
-                            const pid = b.player_id
-                              ? Number(b.player_id)
-                              : undefined;
-
-                            return (
-                              <tr
-                                key={
-                                  b.id ??
-                                  `${tid}-bowl-${pid}-${b.overs}-${b.runs}`
-                                }
-                                className="border-t"
-                              >
-                                <td className="py-1 px-2">
-                                  {pid ? (
-                                    <Link
-                                      href={`/mobile/players/${pid}`}
-                                      className="text-white hover:underline"
-                                    >
-                                      {label}
-                                    </Link>
-                                  ) : (
-                                    label
-                                  )}
-                                </td>
-                                <td className="py-1 px-2 text-center">
-                                  {b.overs ?? "–"}
-                                </td>
-                                <td className="py-1 px-2 text-center">
-                                  {b.medians ?? "–"}
-                                </td>
-                                <td className="py-1 px-2 text-center">
-                                  {b.runs ?? "–"}
-                                </td>
-                                <td className="py-1 px-2 text-center">
-                                  {b.wickets ?? "–"}
-                                </td>
-                                <td className="py-1 px-2 text-center">
-                                  {b.rate ?? "–"}
-                                </td>
-                              </tr>
-                            );
-                          })
-                        : Array.from({ length: 5 }).map((_, i) => (
-                            <tr key={i} className="border-t">
-                              <td className="py-1 px-2">–</td>
-                              <td className="py-1 px-2 text-center">–</td>
-                              <td className="py-1 px-2 text-center">–</td>
-                              <td className="py-1 px-2 text-center">–</td>
-                              <td className="py-1 px-2 text-center">–</td>
-                              <td className="py-1 px-2 text-center">–</td>
-                            </tr>
-                          ))}
-                    </tbody>
-                  </table>
-                </div>
+                <BowlingTable data={bowls} players={players} teamId={tid} />
               </div>
             </div>
           );

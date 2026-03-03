@@ -11,9 +11,9 @@ import { usePathname } from "next/navigation";
 import { useAudio } from "@/context/AudioContext";
 import styles from "./TopNav.module.css";
 import { motion } from "framer-motion";
-import { Poppins } from "next/font/google";
+import { Montserrat } from "next/font/google";
 
-const poppins = Poppins({
+const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["600", "700", "800"],
 });
@@ -250,7 +250,7 @@ export default function TopNav() {
               className="block brightness-[1.3] contrast-125 saturate-150 drop-shadow-[0_0_20px_rgba(56,189,248,1)] drop-shadow-[0_0_35px_rgba(14,165,233,0.9)] drop-shadow-[0_0_50px_rgba(6,182,212,0.7)] hover:scale-110 transition-transform duration-300"
             />
             <motion.div
-              className={`${styles.logoWrap} ${poppins.className}`}
+              className={`${styles.logoWrap} ${montserrat.className}`}
               initial="initial"
               animate="animate"
               whileHover="hover"

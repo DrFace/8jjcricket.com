@@ -357,6 +357,26 @@ body::after {
   display: none;
 }
 
+.table-scroll-x {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(251, 191, 36, 0.7) rgba(15, 23, 42, 0.5);
+}
+
+.table-scroll-x::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-scroll-x::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 9999px;
+}
+
+.table-scroll-x::-webkit-scrollbar-thumb {
+  background: rgba(251, 191, 36, 0.7);
+  border-radius: 9999px;
+}
+
 /* ── SNAP ───────────────────────────────────────────────────── */
 
 [data-snap] {
@@ -853,16 +873,6 @@ font {
   border-width: 0;
 }
 
-
-
-
-
-
-
-
-
-
-
 /* shared base */
 .side-plusgrid {
   position: absolute;
@@ -895,49 +905,43 @@ font {
     /* micro plus */
     linear-gradient(var(--p) 0 0),
     linear-gradient(var(--p) 0 0),
-
-    /* mid plus */
+    /* mid plus */ linear-gradient(var(--p2) 0 0),
     linear-gradient(var(--p2) 0 0),
-    linear-gradient(var(--p2) 0 0),
-
     /* subtle diagonal breakup */
-    repeating-linear-gradient(135deg,
-      rgba(255, 255, 255, 0.00) 0px,
-      rgba(255, 255, 255, 0.00) 18px,
-      rgba(255, 255, 255, 0.04) 19px,
-      rgba(255, 255, 255, 0.00) 34px);
+    repeating-linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0) 0px,
+        rgba(255, 255, 255, 0) 18px,
+        rgba(255, 255, 255, 0.04) 19px,
+        rgba(255, 255, 255, 0) 34px
+      );
 
   background-size:
     /* micro plus (2 strokes) */
     2px 12px,
     12px 2px,
-
-    /* mid plus (2 strokes) */
-    2px 18px,
+    /* mid plus (2 strokes) */ 2px 18px,
     18px 2px,
-
-    /* diagonal breakup */
-    100% 100%;
+    /* diagonal breakup */ 100% 100%;
 
   background-position:
     /* micro positions */
     15px 10px,
     10px 15px,
-
-    /* mid positions */
-    9px 7px,
+    /* mid positions */ 9px 7px,
     7px 9px,
-
     0 0;
 
   background-repeat: repeat;
 
   /* soften edges vertically so it doesn’t stop abruptly */
-  mask-image: linear-gradient(to bottom,
-      transparent 0%,
-      black 10%,
-      black 90%,
-      transparent 100%);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
 }
 
 /* glow fog (depth) */
@@ -948,7 +952,7 @@ font {
   background:
     radial-gradient(circle at 30% 20%, var(--glow1), transparent 55%),
     radial-gradient(circle at 70% 55%, var(--glow2), transparent 60%),
-    radial-gradient(circle at 50% 85%, rgba(255, 140, 0, 0.10), transparent 70%);
+    radial-gradient(circle at 50% 85%, rgba(255, 140, 0, 0.1), transparent 70%);
   filter: blur(42px);
   opacity: 0.95;
 }
@@ -962,10 +966,9 @@ font {
 
   /* four big crosses */
   background-image:
-    linear-gradient(var(--p) 0 0),
-    linear-gradient(var(--p) 0 0),
-    linear-gradient(rgba(255, 184, 0, 0.30) 0 0),
-    linear-gradient(rgba(255, 184, 0, 0.30) 0 0);
+    linear-gradient(var(--p) 0 0), linear-gradient(var(--p) 0 0),
+    linear-gradient(rgba(255, 184, 0, 0.3) 0 0),
+    linear-gradient(rgba(255, 184, 0, 0.3) 0 0);
 
   background-size:
     3px 52px,
@@ -990,7 +993,13 @@ font {
   /* keep pattern visible across the whole gutter and fade only near content */
   mask-image:
     linear-gradient(to right, black 0%, black 70%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
   mask-composite: intersect;
 }
 
@@ -999,7 +1008,13 @@ font {
 
   mask-image:
     linear-gradient(to left, black 0%, black 70%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
   mask-composite: intersect;
 }
 
@@ -1008,6 +1023,6 @@ font {
   --p: rgba(255, 184, 0, 0.55);
   --p2: rgba(255, 184, 0, 0.22);
   --glow1: rgba(255, 184, 0, 0.16);
-  --glow2: rgba(0, 170, 255, 0.10);
-  opacity: 0.30;
+  --glow2: rgba(0, 170, 255, 0.1);
+  opacity: 0.3;
 }

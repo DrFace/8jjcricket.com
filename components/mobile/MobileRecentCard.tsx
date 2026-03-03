@@ -12,11 +12,14 @@ export default function MobileRecentCard({ f }: { f: Fixture }) {
 
   const homeLabel = home?.short_name || home?.name || "Home";
   const awayLabel = away?.short_name || away?.name || "Away";
+  console.log("fix card", f);
 
   const runsArr = Array.isArray((f as any).runs) ? (f as any).runs : [];
+  console.log("runsArr", runsArr, f.localteam_id, f.visitorteam_id);
 
   const homeRuns = CalcRuns(runsArr, f.localteam_id);
   const awayRuns = CalcRuns(runsArr, f.visitorteam_id);
+  console.log("homeRuns", homeRuns, "awayRuns", awayRuns);
 
   const target = ExtractTarget(f.note);
 
@@ -30,50 +33,27 @@ export default function MobileRecentCard({ f }: { f: Fixture }) {
         className={cn(
           "relative rounded-2xl p-[0.2px]",
           "bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-500",
-          "shadow-lg shadow-amber-500/25"
+          "shadow-lg shadow-amber-500/25",
         )}
       >
         {/* Card body */}
         <div
           className={cn(
             "relative rounded-2xl p-4",
-            "bg-gradient-to-br from-[#0E1118] via-[#0B0E14] to-black"
+            "bg-gradient-to-br from-[#0E1118] via-[#0B0E14] to-black",
           )}
         >
-
-          {/* Header */}
-          <div className="relative z-10 flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <h3
-                className="
-              text-sm sm:text-base
-              font-extrabold
-              text-transparent bg-clip-text
-              bg-gradient-to-r from-white to-sky-200
-              truncate
-            "
-              >
-                {homeLabel} vs {awayLabel}
-              </h3>
-
-              <p className="mt-0.5 text-[11px] text-sky-100/60">
-                {f.round ?? "Match"} · {formatDate(f.starting_at)}
-              </p>
-            </div>
-
-          </div>
-
-          {/* Divider */}
-          <div className="my-3 h-px bg-white/10" />
-
+          <p className="mt-0.5 text-[11px] text-sky-100/60 text-center">
+            {f.round ?? "Match"} · {formatDate(f.starting_at)}
+          </p>
           {/* Teams */}
-          <div className="relative z-10 flex items-center justify-between gap-2">
+          <div className="relative z-10 flex items-center justify-between gap-2 my-3">
             <div className="flex-1 flex justify-start">
               <MobileRecentBadge runs={homeRuns} team={home} />
             </div>
 
             <div className="flex flex-col items-center shrink-0 px-1">
-              <span className="text-[10px] tracking-widest text-sky-100/40">
+              <span className="text-[18px] tracking-widest text-amber-300 font-bold">
                 VS
               </span>
               <span className="h-1 w-1 rounded-full bg-white/20" />
@@ -84,7 +64,6 @@ export default function MobileRecentCard({ f }: { f: Fixture }) {
             </div>
           </div>
 
-          {/* Result */}
           {f.note && f.note != "No result" ? (
             <div
               className="
@@ -96,7 +75,7 @@ export default function MobileRecentCard({ f }: { f: Fixture }) {
             font-semibold
             text-emerald-200
             break-words
-            text-left sm:text-center
+            text-center sm:text-center
           "
             >
               {target ? target : f.note == "No result" ? "-" : f.note}
