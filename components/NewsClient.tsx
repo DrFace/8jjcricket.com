@@ -318,7 +318,7 @@ export default function NewsClient() {
     <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
       {/* LEFT SIDEBAR */}
       <aside className="md:col-span-1 h-fit sticky top-28">
-        <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
+        <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] max-h-[70vh] overflow-y-auto">
           <h2 className="text-lg font-semibold mb-3 text-slate-100">
             Categories
           </h2>
