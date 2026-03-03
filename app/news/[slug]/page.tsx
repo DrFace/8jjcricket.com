@@ -49,8 +49,6 @@ async function getArticle(slug: string): Promise<Article | null> {
   const base = API_BASE.replace(/\/+$/, "");
   const url = `${base}/news/${encodeURIComponent(slug)}`;
 
-  console.log("Fetching article from:", url);
-
   const res = await fetch(url, { cache: "no-store" });
 
   if (!res.ok) {
@@ -117,11 +115,7 @@ export default async function ArticlePage({ params }: Props) {
 
           <main className="flex-1 px-4 py-10">
             <div className="max-w-3xl mx-auto">
-              <PrimaryButton
-                href="/news"
-                size="md"
-                className="mb-4"
-              >
+              <PrimaryButton href="/news" size="md" className="mb-4">
                 ← Back to News
               </PrimaryButton>
 
@@ -148,20 +142,15 @@ export default async function ArticlePage({ params }: Props) {
         <main className="flex-1 px-4 py-10">
           <div className="max-w-3xl mx-auto">
             <div className="flex items-center justify-between gap-3">
-              <PrimaryButton
-                href="/news"
-                size="sm"
-              >
+              <PrimaryButton href="/news" size="sm">
                 ← Back to news
               </PrimaryButton>
 
-            {/* Share button + popup */}
+              {/* Share button + popup */}
               <ShareButton slug={article.slug} title={article.title} />
             </div>
 
-            <h1
-              className="text-3xl md:text-4xl font-bold mt-4 mb-3 india-header-text leading-tight"
-            >
+            <h1 className="text-3xl md:text-4xl font-bold mt-4 mb-3 india-header-text leading-tight">
               {article.title}
             </h1>
 
@@ -176,9 +165,7 @@ export default async function ArticlePage({ params }: Props) {
             )}
 
             {imgSrc && (
-              <div
-                className="group mb-6 overflow-hidden rounded-2xl india-card-blue-glow transition-all duration-300 hover:shadow-lg hover:shadow-india-blue/20"
-              >
+              <div className="group mb-6 overflow-hidden rounded-2xl india-card-blue-glow transition-all duration-300 hover:shadow-lg hover:shadow-india-blue/20">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={imgSrc}
@@ -189,9 +176,7 @@ export default async function ArticlePage({ params }: Props) {
               </div>
             )}
 
-            <div
-              className="rounded-2xl india-card-gradient p-6"
-            >
+            <div className="rounded-2xl india-card-gradient p-6">
               {/* FIX: render HTML body */}
               <div
                 className="prose prose-invert max-w-none 
@@ -207,10 +192,7 @@ export default async function ArticlePage({ params }: Props) {
 
             {/* Back to news footer button */}
             <div className="mt-8 flex justify-center">
-              <PrimaryButton
-                href="/news"
-                size="lg"
-              >
+              <PrimaryButton href="/news" size="lg">
                 ← Back to All News
               </PrimaryButton>
             </div>
@@ -222,4 +204,3 @@ export default async function ArticlePage({ params }: Props) {
     </DesktopOnly>
   );
 }
-

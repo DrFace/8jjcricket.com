@@ -6,8 +6,8 @@ import MobileTabBar from "@/components/mobile/MobileTabBar";
 import CalenderModal from "@/components/mobile/CalenderModal";
 import { CRICKET_CATEGORIES, MOBILE_PAGE_SIZE } from "@/lib/constant";
 import { MatchCategory } from "@/lib/match-category";
-import MobileLiveCard from "@/components/mobile/MobileLiveCard";
 import MobileUpcomingCard from "@/components/mobile/MobileUpcomingCard";
+import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -32,9 +32,9 @@ export default function UpcomingPage() {
     () =>
       [...fixtures].sort(
         (a, b) =>
-          new Date(a.starting_at).getTime() - new Date(b.starting_at).getTime()
+          new Date(a.starting_at).getTime() - new Date(b.starting_at).getTime(),
       ),
-    [fixtures]
+    [fixtures],
   );
 
   const navTabs = [
@@ -61,7 +61,7 @@ export default function UpcomingPage() {
 
   const totalPages = Math.max(
     1,
-    Math.ceil(filteredFixtures.length / MOBILE_PAGE_SIZE)
+    Math.ceil(filteredFixtures.length / MOBILE_PAGE_SIZE),
   );
 
   const pagedFixtures = useMemo(() => {
@@ -76,35 +76,21 @@ export default function UpcomingPage() {
   if (error)
     return (
       <>
-
         <div className="card">Failed to load upcoming fixtures.</div>
       </>
     );
 
-  if (isLoading)
-    return (
-      <>
-
-        <div className="card space-y-4 animate-pulse">
-          <div className="h-5 w-40 rounded bg-gray-200" />
-          <div className="h-4 w-64 rounded bg-gray-200" />
-          <div className="mt-4 h-20 rounded bg-gray-200" />
-        </div>
-      </>
-    );
+  if (isLoading) return <LoadingSkeleton num={3} col={1} />;
 
   if (!fixtures.length)
     return (
       <>
-
         <div className="card">No upcoming matches right now.</div>
       </>
     );
 
   return (
     <>
-
-
       <div className="flex flex-col-reverse gap-6 lg:flex-row">
         {/* LEFT: heading + fixtures grid */}
         <main className="flex-1 space-y-5">
