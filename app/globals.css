@@ -1031,8 +1031,8 @@ font {
 .india-card-gold-glow, .india-card-gradient{
       overflow: hidden;
 }
-
+/* 
 
 .MainLogoHead{
-  filter: brightness(2) contrast(1.2) drop-shadow(0 0 10px rgba(255, 215, 100, .6));
-}
+  filter: brightness(2) contrast(1.2) drop-shadow(0 0 10px rgba(255, 216, 100, 0.727));
+} */
