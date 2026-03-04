@@ -19,7 +19,6 @@ export default function HomeVideoGallery() {
   const isPlayingRef = React.useRef<boolean>(isPlaying);
   const userHasInteracted = React.useRef(false);
   const [isPaused, setIsPaused] = React.useState(true);
-  const galleryRef = React.useRef(null);
 
   // Listen for global stop event to pause video before reload/language change
   useEffect(() => {
@@ -113,22 +112,6 @@ export default function HomeVideoGallery() {
     }
   }
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          fetchData();
-          observer.disconnect(); // fetch only once
-        }
-      },
-      { threshold: 0.1 }, // trigger when 10% visible
-    );
-
-    if (galleryRef.current) observer.observe(galleryRef.current);
-
-    return () => observer.disconnect();
-  }, []);
-
   const categories = useMemo(() => {
     const cats = new Set<string>();
     videos.forEach((v) => {
@@ -142,7 +125,6 @@ export default function HomeVideoGallery() {
     if (activeMainCat === "All") return videos;
     return videos.filter((v) => String(v.category) === activeMainCat);
   }, [videos, activeMainCat]);
-
 
   // Auto-select first video when filtered list changes
   useEffect(() => {
@@ -163,11 +145,13 @@ export default function HomeVideoGallery() {
     return `https://8jjcricket.com/storage/${path.replace(/\\/g, "/")}`;
   };
 
+  // Load data
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
-    <div
-      ref={galleryRef}
-      className="w-full h-full text-white overflow-hidden p-6 lg:p-10"
-    >
+    <div className="w-full h-full text-white overflow-hidden p-6 lg:p-10">
       <div
         className="max-w-[1650px] mx-auto h-full grid grid-cols-[minmax(0,2fr),minmax(0,8fr),minmax(0,2fr)]
         lg:grid-cols-[2fr,8fr,2fr]      /* optional breakpoints */
@@ -175,17 +159,17 @@ export default function HomeVideoGallery() {
         gap-8"
       >
         {/* ── LEFT SIDEBAR: Categories ── */}
-        <div className="space-y-3 pt-4 overflow-y-auto scrollbar-hide min-w-0">
+        <div className="space-y-3 p-2 overflow-y-auto scrollbar-hide min-w-0">
           {/* ALL button */}
           <button
             onClick={() => setActiveMainCat("All")}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 border ${
+            className={`group w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 relative overflow-hidden ${
               activeMainCat === "All"
-                ? "bg-india-gold border-india-gold text-black shadow-[0_4px_15px_rgba(255,184,0,0.2)]"
-                : "bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:border-white/20"
+                ? "bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black scale-105 hover:shadow-[0_8px_20px_rgba(255,255,255,0.1)]"
+                : "bg-white/5 border-white/10 text-white/60 hover:bg-white/15 hover:border-white/30 hover:scale-102 hover:shadow-[0_8px_20px_rgba(255,255,255,0.1)] backdrop-blur-sm"
             }`}
           >
-            <PlayCircle size={18} />
+            <PlayCircle size={20} />
             <span className="font-black text-base tracking-tight uppercase">
               All
             </span>
@@ -195,16 +179,33 @@ export default function HomeVideoGallery() {
             <button
               key={cat}
               onClick={() => setActiveMainCat(cat)}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 border relative overflow-hidden ${
+              className={`group w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 border relative overflow-hidden ${
                 activeMainCat === cat
-                  ? "bg-india-gold border-india-gold text-black shadow-[0_4px_15px_rgba(255,184,0,0.2)]"
-                  : "bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:border-white/20"
+                  ? "bg-gradient-to-r from-yellow-400 to-transparent border-yellow-200 text-black shadow-[0_8px_24px_rgba(250,204,21,0.35)] scale-105"
+                  : "bg-white/5 border-white/10 text-white/60 hover:bg-white/15 hover:border-white/30 hover:scale-102 hover:shadow-[0_8px_20px_rgba(255,255,255,0.1)] backdrop-blur-sm"
               }`}
             >
-              {activeMainCat === cat && (
-                <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent pointer-events-none" />
+              {/* Animated background glow on hover */}
+              {activeMainCat !== cat && (
+                <div className="absolute inset-0 bg-gradient-to-r from-white/5 via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               )}
-              <PlayCircle size={18} className="shrink-0" />
+
+              {/* Active state shine effect */}
+              {activeMainCat === cat && (
+                <div className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent pointer-events-none" />
+              )}
+
+              {/* Icon with animation */}
+              <PlayCircle
+                size={20}
+                className={`shrink-0 transition-all duration-300 ${
+                  activeMainCat === cat
+                    ? "rotate-0"
+                    : "group-hover:scale-110 group-hover:rotate-12"
+                }`}
+              />
+
+              {/* Text */}
               <span className="font-black text-base tracking-tight uppercase truncate">
                 {cat}
               </span>
@@ -213,7 +214,7 @@ export default function HomeVideoGallery() {
         </div>
 
         {/* ── CENTER: Video Player ── */}
-        <div className="flex flex-col gap-4 pt-4 min-h-0 min-w-0 overflow-hidden">
+        <div className="flex flex-col gap-4 min-h-0 min-w-0 overflow-hidden">
           {/* Player card */}
           <div className="relative rounded-3xl overflow-hidden aspect-video w-full bg-black">
             {currentVideo ? (
@@ -244,10 +245,10 @@ export default function HomeVideoGallery() {
                     }}
                   >
                     <div className="relative flex items-center justify-center">
-                      <span className="absolute w-16 h-16 rounded-full border border-white/40 animate-[ping_1.8s_ease-out_infinite]" />
-                      <span className="absolute w-16 h-16 rounded-full border border-white/25 animate-[ping_1.8s_ease-out_0.5s_infinite]" />
-                      <span className="absolute w-16 h-16 rounded-full border border-white/15 animate-[ping_1.8s_ease-out_1s_infinite]" />
-                      <div className="relative w-16 h-16 rounded-full border-2 border-white/70 bg-black/40 backdrop-blur-sm flex items-center justify-center z-10">
+                      <span className="absolute w-16 h-16 rounded-full border border-amber/40 animate-[ping_1.8s_ease-out_infinite]" />
+                      <span className="absolute w-16 h-16 rounded-full border border-amber/25 animate-[ping_1.8s_ease-out_0.5s_infinite]" />
+                      <span className="absolute w-16 h-16 rounded-full border border-amber/15 animate-[ping_1.8s_ease-out_1s_infinite]" />
+                      <div className="relative w-16 h-16 rounded-full border-2 border-amber/70 bg-black/40 backdrop-blur-sm flex items-center justify-center z-10">
                         <Play
                           size={28}
                           className="text-white ml-1"
@@ -270,16 +271,15 @@ export default function HomeVideoGallery() {
                 {/* Centered play button with wave animation */}
                 <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                   <div className="relative flex items-center justify-center">
-                    {/* Wave rings */}
-                    <span className="absolute w-16 h-16 rounded-full border border-white/40 animate-[ping_1.8s_ease-out_infinite]" />
-                    <span className="absolute w-16 h-16 rounded-full border border-white/25 animate-[ping_1.8s_ease-out_0.5s_infinite]" />
-                    <span className="absolute w-16 h-16 rounded-full border border-white/15 animate-[ping_1.8s_ease-out_1s_infinite]" />
+                    <span className="absolute w-16 h-16 rounded-full border border-amber-300/40 animate-[ping_1.8s_ease-out_infinite]" />
+                    <span className="absolute w-16 h-16 rounded-full border border-amber-300/25 animate-[ping_1.8s_ease-out_0.5s_infinite]" />
+                    <span className="absolute w-16 h-16 rounded-full border border-amber-300/15 animate-[ping_1.8s_ease-out_1s_infinite]" />
                     {/* Play button */}
-                    <div className="relative w-16 h-16 rounded-full border-2 border-white/70 bg-black/40 backdrop-blur-sm flex items-center justify-center z-10">
+                    <div className="relative w-16 h-16 rounded-full border-2 border-yellow-300/70 bg-black/40 backdrop-blur-sm flex items-center justify-center z-10">
                       <Play
                         size={28}
                         className="text-white ml-1"
-                        fill="white"
+                        fill="amber"
                       />
                     </div>
                   </div>
@@ -290,61 +290,57 @@ export default function HomeVideoGallery() {
             {/* Category badge */}
             {currentVideo && (
               <div className="absolute top-3 left-3 z-20">
-                <span className="px-3 py-1 bg-india-gold text-black text-[9px] font-black uppercase tracking-[0.2em] rounded-full">
+                <span className="px-3 py-1 bg-amber-300 text-black text-[9px] font-black uppercase tracking-[0.2em] rounded-full">
                   {String(currentVideo.category) || "Official Video"}
                 </span>
               </div>
             )}
-
-            {/* Live dot */}
-            <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-white/60 text-[9px] font-bold uppercase tracking-widest">
-                Live
-              </span>
-            </div>
           </div>
 
           {/* Video meta */}
           {currentVideo && (
             <div className="relative px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.07] backdrop-blur-sm overflow-hidden">
-              <div className="absolute top-0 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-india-gold/60 to-transparent" />
-              <div className="absolute bottom-0 right-0 w-32 h-full bg-gradient-to-l from-india-gold/5 to-transparent pointer-events-none rounded-2xl" />
+              <div className="absolute top-0 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-yellow-300/60 to-transparent" />
+              <div className="absolute bottom-0 right-0 w-32 h-full bg-gradient-to-l from-yellow-300/5 to-transparent pointer-events-none rounded-2xl" />
 
-              <h2 className="text-lg font-black text-india-gold uppercase tracking-tight leading-snug line-clamp-1">
+              <h2 className="text-xl font-black text-yellow-300 tracking-tight leading-snug line-clamp-1">
                 {currentVideo.title}
               </h2>
               <div className="flex items-center gap-2 mt-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-india-gold/70" />
+                <span className="w-1.5 h-1.5 rounded-full bg-yellow-300/70" />
                 <span className="text-white/40 text-[10px] font-bold uppercase tracking-widest">
                   {currentVideo.category}
                 </span>
               </div>
-              {currentVideo.description && (
-                <p className="text-white/45 text-xs leading-relaxed line-clamp-2 mt-1.5">
-                  {currentVideo.description}
-                </p>
-              )}
             </div>
           )}
         </div>
 
         {/* ── RIGHT: Playlist ── */}
-        <div className="flex flex-col pt-4 min-h-0 min-w-0 gap-3">
+        <div className="flex flex-col py-4 min-h-0 min-w-0 gap-3 bg-white/5 rounded-3xl border border-white/10 w-full">
           {/* Scroll Up */}
           <button
             onClick={() => scrollPlaylist("up")}
-            className="w-full flex items-center justify-center py-1 text-white/30 hover:text-india-gold transition-colors "
+            className="w-full flex items-center justify-center py-1 text-white/30 hover:text-yellow-300 transition-all duration-300 group"
           >
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-              <ChevronUp size={25} className="text-india-gold" />
+            <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center transform-gpu hover:-translate-y-1 hover:scale-105 transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.45),0_6px_12px_rgba(250,204,21,0.08)] border border-yellow-300/20 relative overflow-hidden">
+              {/* subtle top highlight */}
+              <span className="absolute top-1 left-2 w-6 h-1 rounded-full bg-white/40 opacity-30 blur-sm rotate-12" />
+              {/* soft inner vignette */}
+              <span className="absolute inset-0 rounded-full bg-gradient-to-t from-black/12 to-transparent opacity-10 pointer-events-none" />
+              {/* small rim shine (bottom-right) */}
+              <span className="absolute bottom-1 right-1 w-2 h-2 rounded-full bg-white/20 opacity-40 blur-sm" />
+              <ChevronUp
+                size={25}
+                className="text-yellow-300 group-hover:scale-125 transition-transform duration-300"
+              />
             </div>
           </button>
 
-          {/* Scrollable list — KEY FIX: fixed height + overflow-y-auto */}
+          {/* Scrollable list */}
           <div
             ref={playlistRef}
-            className="flex-1 overflow-y-auto space-y-3 pr-1 min-h-0 scrollbar-thin scrollbar-thumb-white/20 hover:scrollbar-thumb-white/50"
+            className="flex-1 overflow-y-auto overflow-x-visible space-y-3 px-2 pt-2 min-h-0 scrollbar-thin scrollbar-thumb-white/20 hover:scrollbar-thumb-white/50"
             style={{
               maxHeight: `${visibleCount * 82}px`,
             }}
@@ -363,29 +359,32 @@ export default function HomeVideoGallery() {
                 <button
                   key={video.id}
                   onClick={() => selectVideoHandler(video)}
-                  className={`w-full flex items-stretch gap-3 p-3 rounded-2xl transition-all duration-300 border relative overflow-hidden text-left ${
+                  className={`group w-full flex items-stretch gap-3 p-3 rounded-2xl transition-all duration-300 border relative overflow-hidden text-left ${
                     currentVideo?.id === video.id
-                      ? "bg-white/10 border-india-gold/40 shadow-lg"
-                      : "bg-white/5 border-white/5 hover:bg-white/8 hover:border-white/15"
+                      ? "bg-gradient-to-r from-white/40 to-white/10 border-yellow-300/60 shadow-[0_8px_24px_rgba(250,204,21,0.25)]"
+                      : "bg-white/20 border-white/5 hover:bg-gradient-to-r hover:from-white/12 hover:to-white/5 hover:border-white/25 hover:scale-102 hover:shadow-[0_6px_20px_rgba(255,255,255,0.1)]"
                   }`}
                 >
-                  {/* Active left bar */}
+                  {/* Active left bar with glow */}
                   {currentVideo?.id === video.id && (
-                    <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-india-gold shadow-[0_0_10px_rgba(255,184,0,0.8)]" />
+                    <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-gradient-to-b from-yellow-300 to-yellow-400 shadow-[0_0_15px_rgba(255,184,0,0.9)]" />
                   )}
 
-                  {/* Thumbnail — compact fixed size */}
-                  <div className="relative w-24 h-16 rounded-lg overflow-hidden bg-black/60 border border-white/10 shrink-0">
+                  {/* Thumbnail — enhanced with animations */}
+                  <div className="relative w-24 h-16 rounded-lg overflow-hidden bg-black/60 border border-white/10 shrink-0 group-hover:border-yellow-300/40 transition-all duration-300">
                     {video.thumbnail_url ? (
                       <>
                         <img
                           src={normalizeVideoUrl(video.thumbnail_url)}
                           alt=""
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                           loading="lazy"
                         />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                          <Play size={16} className="text-white" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/20 transition-colors duration-300">
+                          <Play
+                            size={16}
+                            className="text-white group-hover:scale-125 group-hover:text-yellow-300 transition-all duration-300"
+                          />
                         </div>
                       </>
                     ) : (
@@ -393,11 +392,14 @@ export default function HomeVideoGallery() {
                         <img
                           src={ThumbnailImg.src}
                           alt=""
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                           loading="lazy"
                         />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                          <Play size={25} className="text-white" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/20 transition-colors duration-300">
+                          <Play
+                            size={25}
+                            className="text-white group-hover:scale-125 group-hover:text-yellow-300 transition-all duration-300"
+                          />
                         </div>
                       </>
                     )}
@@ -405,14 +407,14 @@ export default function HomeVideoGallery() {
 
                   {/* Info */}
                   <div className="flex flex-col justify-center min-w-0 flex-1">
-                    <div className="text-amber-400 text-[9px] font-black uppercase tracking-[0.15em] mb-1">
+                    <div className="text-amber-400 text-[9px] font-black uppercase tracking-[0.15em] mb-1 group-hover:text-yellow-300 transition-colors duration-300">
                       {String(video.category) || "Cricket"}
                     </div>
                     <h4
-                      className={`font-black text-sm leading-snug line-clamp-2 transition-colors ${
+                      className={`font-black text-sm leading-snug line-clamp-2 transition-all duration-300 ${
                         currentVideo?.id === video.id
-                          ? "text-india-gold"
-                          : "text-white"
+                          ? "text-yellow-300"
+                          : "text-white group-hover:text-yellow-200"
                       }`}
                     >
                       {video.title}
@@ -426,10 +428,19 @@ export default function HomeVideoGallery() {
           {/* Scroll Down */}
           <button
             onClick={() => scrollPlaylist("down")}
-            className="w-full flex items-center justify-center py-1 text-white/30 hover:text-india-gold transition-colors"
+            className="w-full flex items-center justify-center py-1 text-white/30 hover:text-yellow-300 transition-all duration-300 group"
           >
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-              <ChevronDown size={25} className="text-india-gold" />
+            <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center transform-gpu hover:-translate-y-1 hover:scale-105 transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.45),0_6px_12px_rgba(250,204,21,0.08)] border border-yellow-300/20 relative overflow-hidden">
+              {/* subtle top highlight */}
+              <span className="absolute top-1 left-2 w-6 h-1 rounded-full bg-white/40 opacity-30 blur-sm rotate-12" />
+              {/* soft inner vignette */}
+              <span className="absolute inset-0 rounded-full bg-gradient-to-t from-black/12 to-transparent opacity-10 pointer-events-none" />
+              {/* small rim shine (bottom-right) */}
+              <span className="absolute bottom-1 right-1 w-2 h-2 rounded-full bg-white/20 opacity-40 blur-sm" />
+              <ChevronDown
+                size={25}
+                className="text-yellow-300 group-hover:scale-125 transition-transform duration-300"
+              />
             </div>
           </button>
         </div>
