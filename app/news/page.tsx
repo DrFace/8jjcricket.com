@@ -494,7 +494,7 @@ function Pagination({
 
 /* ------------------ MAIN PAGE ------------------ */
 export default function NewsPage() {
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string | null>("events");
   const [page, setPage] = useState<number>(1);
   const [isRestored, setIsRestored] = useState(false);
 
@@ -581,6 +581,62 @@ export default function NewsPage() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* LEFT SIDEBAR */}
           <aside className="md:col-span-1 h-fit sticky top-28">
+            {/* HIGHLIGHTED EVENTS CATEGORY */}
+            {categories?.data
+              ?.filter((cat: Category) => cat.slug === "events")
+              .map((cat: Category) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveCategory(cat.slug)}
+                  className={`block w-full text-left px-5 py-4 rounded-2xl mb-4 transition-all duration-500 group relative overflow-hidden border ${
+                    activeCategory === cat.slug
+                      ? "bg-gradient-to-br from-india-saffron via-india-gold to-india-orange border-white/20 text-black font-bold shadow-2xl shadow-india-saffron/40 scale-[1.02]"
+                      : "bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-india-gold/50 hover:-translate-y-1"
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`flex h-12 w-12 items-center justify-center rounded-xl transition-colors duration-300 ${
+                        activeCategory === cat.slug
+                          ? "bg-white/20 text-black"
+                          : "bg-india-gold/10 text-india-gold"
+                      }`}
+                    >
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M8 2v4" />
+                        <path d="M16 2v4" />
+                        <rect width="18" height="18" x="3" y="4" rx="2" />
+                        <path d="M3 10h18" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div
+                        className={`text-[10px] uppercase tracking-[0.2em] font-black mb-0.5 ${
+                          activeCategory === cat.slug
+                            ? "text-black/60"
+                            : "text-india-gold"
+                        }`}
+                      >
+                        Featured
+                      </div>
+                      <div className="text-xl font-black">{cat.name}</div>
+                    </div>
+                  </div>
+                  {activeCategory === cat.slug && (
+                    <div className="absolute inset-0 bg-white/10 animate-pulse pointer-events-none" />
+                  )}
+                </button>
+              ))}
+
             <div className="rounded-2xl india-card-gradient p-4">
               <h2 className="text-lg font-bold mb-3 india-header-text">
                 Categories
@@ -597,19 +653,21 @@ export default function NewsPage() {
                 All News
               </button>
 
-              {categories?.data?.map((cat: Category) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.slug)}
-                  className={`block w-full text-left px-3 py-2 rounded-xl mb-1 transition-all duration-300 ${
-                    activeCategory === cat.slug
-                      ? "bg-gradient-to-r from-india-saffron to-india-gold text-black font-bold shadow-lg shadow-india-saffron/30"
-                      : "text-slate-200 hover:bg-white/5 hover:translate-x-1"
-                  }`}
-                >
-                  {cat.name}
-                </button>
-              ))}
+              {categories?.data
+                ?.filter((cat: Category) => cat.slug !== "events")
+                .map((cat: Category) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setActiveCategory(cat.slug)}
+                    className={`block w-full text-left px-3 py-2 rounded-xl mb-1 transition-all duration-300 ${
+                      activeCategory === cat.slug
+                        ? "bg-gradient-to-r from-india-saffron to-india-gold text-black font-bold shadow-lg shadow-india-saffron/30"
+                        : "text-slate-200 hover:bg-white/5 hover:translate-x-1"
+                    }`}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
             </div>
           </aside>
 
@@ -617,7 +675,9 @@ export default function NewsPage() {
           <section className="md:col-span-3">
             <div className="flex items-end justify-between gap-4 mb-6">
               <h1 className="text-3xl md:text-4xl font-bold india-header-text">
-                {activeCategory ? `News in "${activeCategory}"` : "Latest News"}
+                {activeCategory === null
+                  ? "Latest News"
+                  : `News in "${activeCategory}"`}
               </h1>
 
               <div className="text-sm text-slate-300">
