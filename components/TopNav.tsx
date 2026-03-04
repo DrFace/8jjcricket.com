@@ -247,7 +247,7 @@ export default function TopNav() {
               width={44}
               height={44}
               priority
-              className="block brightness-[1.3] contrast-125 saturate-150 drop-shadow-[0_0_20px_rgba(56,189,248,1)] drop-shadow-[0_0_35px_rgba(14,165,233,0.9)] drop-shadow-[0_0_50px_rgba(6,182,212,0.7)] hover:scale-110 transition-transform duration-300"
+              className="MainLogoHead block brightness-[1.3] contrast-125 saturate-150 drop-shadow-[0_0_20px_rgba(56,189,248,1)] drop-shadow-[0_0_35px_rgba(14,165,233,0.9)] drop-shadow-[0_0_50px_rgba(6,182,212,0.7)] hover:scale-110 transition-transform duration-300"
             />
             <motion.div
               className={`${styles.logoWrap} ${montserrat.className}`}

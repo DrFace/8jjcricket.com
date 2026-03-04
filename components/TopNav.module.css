@@ -6,9 +6,9 @@
 .gradientText {
   background: linear-gradient(
     90deg,
-    #bb9f03 0%,
-    #c0b40b 40%,
-    #c5c20f 50%,
+    #cbb329 0%,
+    #aca109 15%,
+    #2fcf5c 30%,
     #57aeec 60%,
     #034d81 90%,
     #012e72 100%
@@ -20,7 +20,7 @@
   font-style: italic;
   letter-spacing: 0;
   font-size: 22px;
-  -webkit-text-stroke: 1px rgb(228, 228, 228);
+  -webkit-text-stroke: 1px rgb(219, 219, 219);
   paint-order: stroke fill;
   animation: shimmer 3s ease-in-out infinite;
 }
@@ -30,7 +30,7 @@
     90deg,
     #bb9f03 0%,
     #c0b40b 40%,
-    #c5c20f 50%,
+    #270fc5 50%,
     #57aeec 60%,
     #034d81 90%,
     #012e72 100%

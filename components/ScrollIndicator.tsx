@@ -7,7 +7,6 @@ const SECTIONS = [
   { label: "Home" },
   { label: "Teams & Players" },
   { label: "Events" },
-  { label: "Videos" },
   { label: "Partners" },
   { label: "Community" },
 ];
