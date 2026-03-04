@@ -18,6 +18,7 @@ export default function HomeVideoGallery() {
   const wasPlayingBefore = React.useRef<boolean>(false);
   const isPlayingRef = React.useRef<boolean>(isPlaying);
   const userHasInteracted = React.useRef(false);
+  const [isPaused, setIsPaused] = React.useState(true);
   const galleryRef = React.useRef(null);
 
   // Listen for global stop event to pause video before reload/language change
@@ -64,6 +65,7 @@ export default function HomeVideoGallery() {
   const selectVideoHandler = (videoSelected: VideoSectionItem) => {
     userHasInteracted.current = true;
     setCurrentVideo(videoSelected);
+    setIsPaused(true);
     handlePlay();
   };
 
@@ -141,7 +143,6 @@ export default function HomeVideoGallery() {
     return videos.filter((v) => String(v.category) === activeMainCat);
   }, [videos, activeMainCat]);
 
-  console.log("FILTER VIDEOS", filteredVideos);
 
   // Auto-select first video when filtered list changes
   useEffect(() => {
@@ -213,52 +214,114 @@ export default function HomeVideoGallery() {
 
         {/* ── CENTER: Video Player ── */}
         <div className="flex flex-col gap-4 pt-4 min-h-0 min-w-0 overflow-hidden">
-          {/* Player */}
-          <div className="relative rounded-2xl overflow-hidden bg-black/40 border border-white/10 shadow-2xl aspect-video w-full">
+          {/* Player card */}
+          <div className="relative rounded-3xl overflow-hidden aspect-video w-full bg-black">
             {currentVideo ? (
-              <video
-                ref={videoRef}
-                key={currentVideo.id}
-                src={normalizeVideoUrl(currentVideo.video_path)}
-                preload="none"
-                poster={currentVideo.thumbnail_url || ThumbnailImg.src}
-                controls
-                className="w-full h-full object-cover"
-              />
+              <div className="relative w-full h-full">
+                <video
+                  ref={videoRef}
+                  key={currentVideo.id}
+                  src={normalizeVideoUrl(currentVideo.video_path)}
+                  preload="none"
+                  poster={
+                    normalizeVideoUrl(currentVideo.thumbnail_url || "") ||
+                    ThumbnailImg.src
+                  }
+                  controls
+                  className="w-full h-full object-cover"
+                  onPlay={() => setIsPaused(false)}
+                  onPause={() => setIsPaused(true)}
+                />
+                {/* Animated play button overlay — visible only when paused */}
+                {isPaused && (
+                  <div
+                    className="absolute inset-0 flex items-center justify-center bg-black/25 cursor-pointer"
+                    onClick={() => {
+                      if (videoRef.current) {
+                        videoRef.current.play();
+                        userHasInteracted.current = true;
+                      }
+                    }}
+                  >
+                    <div className="relative flex items-center justify-center">
+                      <span className="absolute w-16 h-16 rounded-full border border-white/40 animate-[ping_1.8s_ease-out_infinite]" />
+                      <span className="absolute w-16 h-16 rounded-full border border-white/25 animate-[ping_1.8s_ease-out_0.5s_infinite]" />
+                      <span className="absolute w-16 h-16 rounded-full border border-white/15 animate-[ping_1.8s_ease-out_1s_infinite]" />
+                      <div className="relative w-16 h-16 rounded-full border-2 border-white/70 bg-black/40 backdrop-blur-sm flex items-center justify-center z-10">
+                        <Play
+                          size={28}
+                          className="text-white ml-1"
+                          fill="white"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             ) : (
-              <>
+              <div className="relative w-full h-full">
+                {/* Thumbnail */}
                 <img
                   src={ThumbnailImg.src}
                   alt=""
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />
+                {/* Centered play button with wave animation */}
                 <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                  <Play size={25} className="text-white" />
+                  <div className="relative flex items-center justify-center">
+                    {/* Wave rings */}
+                    <span className="absolute w-16 h-16 rounded-full border border-white/40 animate-[ping_1.8s_ease-out_infinite]" />
+                    <span className="absolute w-16 h-16 rounded-full border border-white/25 animate-[ping_1.8s_ease-out_0.5s_infinite]" />
+                    <span className="absolute w-16 h-16 rounded-full border border-white/15 animate-[ping_1.8s_ease-out_1s_infinite]" />
+                    {/* Play button */}
+                    <div className="relative w-16 h-16 rounded-full border-2 border-white/70 bg-black/40 backdrop-blur-sm flex items-center justify-center z-10">
+                      <Play
+                        size={28}
+                        className="text-white ml-1"
+                        fill="white"
+                      />
+                    </div>
+                  </div>
                 </div>
-              </>
-            )}
-
-            {currentVideo && (
-              <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full border border-india-gold/30 text-india-gold text-[10px] font-black uppercase tracking-[0.2em]">
-                {String(currentVideo.category) || "Official Video"}
               </div>
             )}
+
+            {/* Category badge */}
+            {currentVideo && (
+              <div className="absolute top-3 left-3 z-20">
+                <span className="px-3 py-1 bg-india-gold text-black text-[9px] font-black uppercase tracking-[0.2em] rounded-full">
+                  {String(currentVideo.category) || "Official Video"}
+                </span>
+              </div>
+            )}
+
+            {/* Live dot */}
+            <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span className="text-white/60 text-[9px] font-bold uppercase tracking-widest">
+                Live
+              </span>
+            </div>
           </div>
 
           {/* Video meta */}
           {currentVideo && (
-            <div className="space-y-1 px-1">
-              <h2 className="text-2xl font-black text-india-gold uppercase tracking-tight">
+            <div className="relative px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.07] backdrop-blur-sm overflow-hidden">
+              <div className="absolute top-0 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-india-gold/60 to-transparent" />
+              <div className="absolute bottom-0 right-0 w-32 h-full bg-gradient-to-l from-india-gold/5 to-transparent pointer-events-none rounded-2xl" />
+
+              <h2 className="text-lg font-black text-india-gold uppercase tracking-tight leading-snug line-clamp-1">
                 {currentVideo.title}
               </h2>
-              <div className="flex items-center gap-6 text-white/50 text-xs font-bold uppercase tracking-widest">
-                <span className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mt-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-india-gold/70" />
+                <span className="text-white/40 text-[10px] font-bold uppercase tracking-widest">
                   {currentVideo.category}
                 </span>
               </div>
               {currentVideo.description && (
-                <p className="text-white/60 text-sm leading-relaxed line-clamp-2">
+                <p className="text-white/45 text-xs leading-relaxed line-clamp-2 mt-1.5">
                   {currentVideo.description}
                 </p>
               )}

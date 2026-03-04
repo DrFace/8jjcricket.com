@@ -67,15 +67,39 @@ export default function MobileFloatingSupport() {
       >
         {/* 🎧 Open Music Popup */}
         <button
-          className="p-1 rounded-full hover:scale-125 transition-all duration-200 hover:bg-orange-400/20"
+          className="p-1 rounded-full hover:scale-125 hover:bg-orange-400/20"
           onClick={openMusicPopup}
-          aria-label="Open Music Player"
+          aria-label="Mute/Unmute"
+          aria-pressed={!isMuted}
         >
-          <img
-            src="/icons/music-player.png"
-            alt="Music Player"
-            className="w-7 h-7 object-contain"
+          <div
+            className="w-6 h-6"
+            style={{
+              background: isPlaying
+                ? "linear-gradient(135deg, #fb923c 0%, #facc15 50%,  #4ade80 100%)"
+                : "white",
+              WebkitMaskImage: "url('/icons/music-player.svg')",
+              maskImage: "url('/icons/music-player.svg')",
+              WebkitMaskSize: "contain",
+              maskSize: "contain",
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+              WebkitMaskPosition: "center",
+              maskPosition: "center",
+              animation: isPlaying
+                ? "musicColorCycle 2s linear infinite"
+                : "none",
+            }}
           />
+          <style>{`
+              @keyframes musicColorCycle {
+                0%   { filter: hue-rotate(0deg) brightness(1.1); }
+                25%  { filter: hue-rotate(90deg) brightness(1.2); }
+                50%  { filter: hue-rotate(180deg) brightness(1.3); }
+                75%  { filter: hue-rotate(270deg) brightness(1.2); }
+                100% { filter: hue-rotate(360deg) brightness(1.1); }
+              }
+            `}</style>
         </button>
 
         {/* 🔇 Mute / Unmute */}

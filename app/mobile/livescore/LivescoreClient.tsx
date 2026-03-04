@@ -8,6 +8,8 @@ import MobileTabBar from "@/components/mobile/MobileTabBar";
 import MobileLiveGrid from "@/components/mobile/MobileLiveGrid";
 import MobileLiveCard from "@/components/mobile/MobileLiveCard";
 import { CRICKET_CATEGORIES } from "@/lib/constant";
+import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
+import MobileRecentCard from "@/components/mobile/MobileRecentCard";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -21,6 +23,7 @@ export default function LivescoreClient() {
   } = useSWR("/api/recent", fetcher);
 
   const recentFixtures: Fixture[] = recentData?.data ?? [];
+  console.log("recentFixtures", recentFixtures[0]);
 
   const navTabs = [
     { label: "Live", href: "livescore", active: true },
@@ -31,7 +34,7 @@ export default function LivescoreClient() {
   return (
     <div className="flex w-full flex-col gap-3">
       <div className="flex flex-col gap-2">
-        <div>
+        <div className="flex justify-between items-center mb-2">
           <h1 className="text-lg font-extrabold text-white">Live Score</h1>
           <p className="mt-1 text-xs text-sky-100/70">
             Live matches and recent results.
@@ -39,8 +42,8 @@ export default function LivescoreClient() {
         </div>
 
         <MobileTabBar tabs={navTabs} />
-        <div className="w-full flex justify-center">
-          <div className="flex flex-wrap gap-1">
+        <div className="w-full flex justify-center mt-2">
+          <div className="flex flex-wrap gap-4">
             {CRICKET_CATEGORIES.map((cat) => {
               const active = selected === cat;
               return (
@@ -64,42 +67,33 @@ export default function LivescoreClient() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-white/15 bg-black/40 shadow-2xl backdrop-blur-2xl">
-        <div className="flex items-center justify-between px-4 py-3">
+      <div className="">
+        <div className="flex items-center justify-between py-3">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-amber-300 ">
             Live Now
           </h2>
         </div>
 
-        <div className="px-4 py-4">
+        <div className="py-4">
           <MobileLiveGrid filter={selected} />
         </div>
       </div>
 
-      <div className="rounded-2xl border border-white/15 bg-black/40 shadow-2xl backdrop-blur-2xl">
-        <div className="border-b border-white/10 bg-black/30 px-4 py-3">
+      <div className="">
+        <div className="pb-3">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-amber-300">
             Recent Results
           </h2>
         </div>
 
-        <div className="px-4 py-4 space-y-3">
+        <div className="space-y-3">
           {recentError && (
             <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-200">
               Failed to load recent matches.
             </div>
           )}
 
-          {recentLoading && !recentError && (
-            <div className="animate-pulse space-y-2">
-              <div className="h-4 w-40 rounded bg-white/10" />
-              <div className="space-y-2">
-                <div className="h-20 rounded bg-white/10" />
-                <div className="h-20 rounded bg-white/10" />
-                <div className="h-20 rounded bg-white/10" />
-              </div>
-            </div>
-          )}
+          {recentLoading && !recentError && <LoadingSkeleton num={3} col={1} />}
 
           {!recentLoading && !recentError && recentFixtures.length === 0 && (
             <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-sky-100/60">
@@ -110,7 +104,7 @@ export default function LivescoreClient() {
           {!recentLoading && !recentError && recentFixtures.length > 0 && (
             <div className="space-y-2">
               {recentFixtures.slice(0, 5).map((f) => (
-                <MobileLiveCard key={f.id} f={f} />
+                <MobileRecentCard key={f.id} f={f} />
               ))}
             </div>
           )}

@@ -8,7 +8,7 @@ import HomeFeedbackSection from "@/components/HomeFeedbackSection";
 import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
 import InteractiveHeroVideo from "@/components/InteractiveHeroVideo";
 import PartnersCarousel from "@/components/PartnersCarousel";
-import HomeVideoGallery from "@/components/HomeVideoGallery";
+// import HomeVideoGallery from "@/components/HomeVideoGallery";
 
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
 import SponsorBar from "@/components/SponsorBar";
@@ -460,7 +460,7 @@ export default async function HomePage() {
           </div>
         </section>
         {/* Video Gallery Section */}
-        <section
+        {/* <section
           data-snap
           className="SectionScroll relative w-full h-full flex items-start"
           style={{ background: "var(--bg-primary)" }}
@@ -508,7 +508,7 @@ export default async function HomePage() {
               </div>
             </ScaleToFit>
           </div>
-        </section>
+        </section> */}
         {/* Associate Section */}
         <section
           data-snap

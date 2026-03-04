@@ -171,6 +171,7 @@
 
 /* Ambient floodlight breathing — body::before */
 @keyframes floodlight-breathe {
+
   0%,
   100% {
     opacity: 0.5;
@@ -205,24 +206,21 @@
 
   --bg-primary:
     /* Gold — bottom-left, reaches center */
-    radial-gradient(
-      ellipse 130% 120% at 0% 100%,
+    radial-gradient(ellipse 130% 120% at 0% 100%,
       rgba(255, 200, 80, 0.55) 0%,
       rgba(255, 170, 40, 0.38) 35%,
       rgba(255, 150, 20, 0.2) 60%,
       rgba(255, 150, 20, 0.1) 75%,
-      transparent 92%
-    ),
+      transparent 92%),
     /* Sky blue — top-right, reaches center */
-    radial-gradient(
-        ellipse 130% 120% at 100% 0%,
-        rgba(135, 206, 250, 0.55) 0%,
-        rgba(70, 170, 255, 0.38) 35%,
-        rgba(0, 140, 255, 0.2) 60%,
-        rgba(0, 140, 255, 0.1) 75%,
-        transparent 92%
-      ),
-    /* Dark base */ linear-gradient(180deg, #05070a 0%, #0b141c 100%);
+    radial-gradient(ellipse 130% 120% at 100% 0%,
+      rgba(135, 206, 250, 0.55) 0%,
+      rgba(70, 170, 255, 0.38) 35%,
+      rgba(0, 140, 255, 0.2) 60%,
+      rgba(0, 140, 255, 0.1) 75%,
+      transparent 92%),
+    /* Dark base */
+    linear-gradient(180deg, #05070a 0%, #0b141c 100%);
 
   /* Secondary & tertiary surfaces */
   --bg-secondary: #0d0a04;
@@ -317,21 +315,15 @@ body::before {
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(
-      ellipse 50% 28% at 10% 4%,
+    radial-gradient(ellipse 50% 28% at 10% 4%,
       rgba(255, 140, 0, 0.16) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 50% 28% at 90% 4%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 28% at 90% 4%,
       rgba(0, 170, 255, 0.14) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 35% 25% at 50% 50%,
+      transparent 70%),
+    radial-gradient(ellipse 35% 25% at 50% 50%,
       rgba(255, 184, 0, 0.05) 0%,
-      transparent 70%
-    );
+      transparent 70%);
   animation: floodlight-breathe 7s ease-in-out infinite;
 }
 
@@ -363,6 +355,26 @@ body::after {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+.table-scroll-x {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(251, 191, 36, 0.7) rgba(15, 23, 42, 0.5);
+}
+
+.table-scroll-x::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-scroll-x::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 9999px;
+}
+
+.table-scroll-x::-webkit-scrollbar-thumb {
+  background: rgba(251, 191, 36, 0.7);
+  border-radius: 9999px;
 }
 
 /* ── SNAP ───────────────────────────────────────────────────── */
@@ -430,12 +442,10 @@ a {
 
 .india-card-gradient {
   @apply relative rounded-3xl border backdrop-blur-xl shadow-lg transition-all duration-500;
-  background: linear-gradient(
-    140deg,
-    rgba(20, 14, 4, 0.96) 0%,
-    rgba(28, 18, 5, 0.92) 50%,
-    rgba(20, 14, 4, 0.96) 100%
-  );
+  background: linear-gradient(140deg,
+      rgba(20, 14, 4, 0.96) 0%,
+      rgba(28, 18, 5, 0.92) 50%,
+      rgba(20, 14, 4, 0.96) 100%);
   border-color: var(--border-primary);
   transform-style: preserve-3d;
 }
@@ -500,40 +510,34 @@ a {
 /* India flag tricolor gradient text */
 .india-gradient-text {
   @apply bg-clip-text text-transparent;
-  background-image: linear-gradient(
-    90deg,
-    #ff8c00 0%,
-    #ffb800 30%,
-    #ffffff 55%,
-    #138808 100%
-  );
+  background-image: linear-gradient(90deg,
+      #ff8c00 0%,
+      #ffb800 30%,
+      #ffffff 55%,
+      #138808 100%);
 }
 
 /* Hero header text — saffron → gold → white → green */
 .india-header-text {
   @apply bg-clip-text text-transparent font-bold;
-  background-image: linear-gradient(
-    90deg,
-    #ff6600 0%,
-    #ffb800 38%,
-    #ffffff 58%,
-    #138808 100%
-  );
+  background-image: linear-gradient(90deg,
+      #ff6600 0%,
+      #ffb800 38%,
+      #ffffff 58%,
+      #138808 100%);
 }
 
 /* Animated shimmer — use on hero headlines */
 .text-shimmer {
   @apply bg-clip-text text-transparent;
-  background-image: linear-gradient(
-    90deg,
-    #ff8c00 0%,
-    #ffb800 20%,
-    #ffe066 40%,
-    #ffffff 50%,
-    #ffb800 65%,
-    #ff8c00 80%,
-    #ff6600 100%
-  );
+  background-image: linear-gradient(90deg,
+      #ff8c00 0%,
+      #ffb800 20%,
+      #ffe066 40%,
+      #ffffff 50%,
+      #ffb800 65%,
+      #ff8c00 80%,
+      #ff6600 100%);
   background-size: 200% auto;
   animation: shimmer 4s linear infinite;
 }
@@ -681,7 +685,22 @@ a {
   display: none !important;
 }
 
+/* Disable Google Translate highlight on hover */
+.goog-text-highlight {
+  background-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Disable background color on font tags injected by Google Translate */
+font {
+  background-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 @keyframes logoFloat {
+
   0%,
   100% {
     transform: translateY(0);
@@ -713,6 +732,7 @@ a {
 }
 
 @keyframes logoFloat {
+
   0%,
   100% {
     transform: translateY(0);
@@ -752,6 +772,7 @@ a {
    ============================================================ */
 
 @keyframes logoFloat {
+
   0%,
   100% {
     transform: translateY(0);
@@ -809,12 +830,10 @@ a {
   inset: 0;
   pointer-events: none;
 
-  background: linear-gradient(
-    110deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.75) 45%,
-    transparent 70%
-  );
+  background: linear-gradient(110deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.75) 45%,
+      transparent 70%);
   background-size: 220% 100%;
   background-position: -220% 0;
 
@@ -854,16 +873,6 @@ a {
   border-width: 0;
 }
 
-
-
-
-
-
-
-
-
-
-
 /* shared base */
 .side-plusgrid {
   position: absolute;
@@ -896,49 +905,43 @@ a {
     /* micro plus */
     linear-gradient(var(--p) 0 0),
     linear-gradient(var(--p) 0 0),
-
-    /* mid plus */
+    /* mid plus */ linear-gradient(var(--p2) 0 0),
     linear-gradient(var(--p2) 0 0),
-    linear-gradient(var(--p2) 0 0),
-
     /* subtle diagonal breakup */
-    repeating-linear-gradient(135deg,
-      rgba(255, 255, 255, 0.00) 0px,
-      rgba(255, 255, 255, 0.00) 18px,
-      rgba(255, 255, 255, 0.04) 19px,
-      rgba(255, 255, 255, 0.00) 34px);
+    repeating-linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0) 0px,
+        rgba(255, 255, 255, 0) 18px,
+        rgba(255, 255, 255, 0.04) 19px,
+        rgba(255, 255, 255, 0) 34px
+      );
 
   background-size:
     /* micro plus (2 strokes) */
     2px 12px,
     12px 2px,
-
-    /* mid plus (2 strokes) */
-    2px 18px,
+    /* mid plus (2 strokes) */ 2px 18px,
     18px 2px,
-
-    /* diagonal breakup */
-    100% 100%;
+    /* diagonal breakup */ 100% 100%;
 
   background-position:
     /* micro positions */
     15px 10px,
     10px 15px,
-
-    /* mid positions */
-    9px 7px,
+    /* mid positions */ 9px 7px,
     7px 9px,
-
     0 0;
 
   background-repeat: repeat;
 
   /* soften edges vertically so it doesn’t stop abruptly */
-  mask-image: linear-gradient(to bottom,
-      transparent 0%,
-      black 10%,
-      black 90%,
-      transparent 100%);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
 }
 
 /* glow fog (depth) */
@@ -949,7 +952,7 @@ a {
   background:
     radial-gradient(circle at 30% 20%, var(--glow1), transparent 55%),
     radial-gradient(circle at 70% 55%, var(--glow2), transparent 60%),
-    radial-gradient(circle at 50% 85%, rgba(255, 140, 0, 0.10), transparent 70%);
+    radial-gradient(circle at 50% 85%, rgba(255, 140, 0, 0.1), transparent 70%);
   filter: blur(42px);
   opacity: 0.95;
 }
@@ -963,10 +966,9 @@ a {
 
   /* four big crosses */
   background-image:
-    linear-gradient(var(--p) 0 0),
-    linear-gradient(var(--p) 0 0),
-    linear-gradient(rgba(255, 184, 0, 0.30) 0 0),
-    linear-gradient(rgba(255, 184, 0, 0.30) 0 0);
+    linear-gradient(var(--p) 0 0), linear-gradient(var(--p) 0 0),
+    linear-gradient(rgba(255, 184, 0, 0.3) 0 0),
+    linear-gradient(rgba(255, 184, 0, 0.3) 0 0);
 
   background-size:
     3px 52px,
@@ -991,7 +993,13 @@ a {
   /* keep pattern visible across the whole gutter and fade only near content */
   mask-image:
     linear-gradient(to right, black 0%, black 70%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
   mask-composite: intersect;
 }
 
@@ -1000,7 +1008,13 @@ a {
 
   mask-image:
     linear-gradient(to left, black 0%, black 70%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
   mask-composite: intersect;
 }
 
@@ -1009,6 +1023,6 @@ a {
   --p: rgba(255, 184, 0, 0.55);
   --p2: rgba(255, 184, 0, 0.22);
   --glow1: rgba(255, 184, 0, 0.16);
-  --glow2: rgba(0, 170, 255, 0.10);
-  opacity: 0.30;
+  --glow2: rgba(0, 170, 255, 0.1);
+  opacity: 0.3;
 }

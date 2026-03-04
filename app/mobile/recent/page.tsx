@@ -10,6 +10,7 @@ import MobileRecentCard from "@/components/mobile/MobileRecentCard";
 import { Fetcher } from "@/lib/fetcher";
 import type { ApiEnvelope } from "@/lib/cricket-types";
 import { Fixture } from "@/types/fixture";
+import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
 
 /**
  * RecentPage lists recently completed matches. It adds page-specific
@@ -18,7 +19,7 @@ import { Fixture } from "@/types/fixture";
 export default function RecentPage() {
   const { data, error, isLoading } = useSWR<ApiEnvelope<Fixture[]>>(
     "/api/recent",
-    Fetcher
+    Fetcher,
   );
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [page, setPage] = useState<number>(1);
@@ -42,9 +43,9 @@ export default function RecentPage() {
     () =>
       [...fixtures].sort(
         (a, b) =>
-          new Date(a.starting_at).getTime() - new Date(b.starting_at).getTime()
+          new Date(a.starting_at).getTime() - new Date(b.starting_at).getTime(),
       ),
-    [fixtures]
+    [fixtures],
   );
 
   // fixtures filtered by selected date and category
@@ -65,7 +66,7 @@ export default function RecentPage() {
 
   const totalPages = Math.max(
     1,
-    Math.ceil(filteredFixtures.length / MOBILE_PAGE_SIZE)
+    Math.ceil(filteredFixtures.length / MOBILE_PAGE_SIZE),
   );
 
   const pagedFixtures = useMemo(() => {
@@ -81,35 +82,21 @@ export default function RecentPage() {
   if (error)
     return (
       <>
-
         <div className="card">Failed to load recent matches.</div>
       </>
     );
 
-  if (isLoading)
-    return (
-      <>
-
-        <div className="card space-y-4 animate-pulse">
-          <div className="h-5 w-40 rounded bg-gray-200" />
-          <div className="h-4 w-64 rounded bg-gray-200" />
-          <div className="mt-4 h-20 rounded bg-gray-200" />
-        </div>
-      </>
-    );
+  if (isLoading) return <LoadingSkeleton num={3} col={1} />;
 
   if (!fixtures.length)
     return (
       <>
-
         <div className="card">No recent matches found.</div>
       </>
     );
 
   return (
     <>
-
-
       <div className="flex flex-col gap-6 lg:flex-row">
         {/* LEFT: heading + fixtures grid */}
         <main className="flex-1 space-y-5">
