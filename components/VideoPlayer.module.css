@@ -1,0 +1,354 @@
+/* Import Google font - Poppins */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+
+/* Player Wrapper - contains blur video and main container */
+.playerWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100%;
+  position: relative;
+  background: #000;
+}
+
+/* Shared flex styles */
+.container,
+.videoControls,
+.videoTimer,
+.options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Blurred background video for ambient effect */
+.blurred {
+  position: absolute;
+  align-self: center;
+  filter: blur(100px);
+  width: 130%;
+  max-width: 1200px;
+  aspect-ratio: 16 / 9;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Main video container */
+.container {
+  width: 98%;
+  user-select: none;
+  overflow: hidden;
+  max-width: 900px;
+  border-radius: 5px;
+  background: #000;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  box-shadow:
+    0 0 30px 8px rgba(250, 204, 21, 0.5),
+    0 0 60px 15px rgba(250, 204, 21, 0.3),
+    0 8px 40px rgba(250, 204, 21, 0.4);
+  z-index: 1;
+}
+
+.container.fullscreen {
+  max-width: 100%;
+  width: 100%;
+  height: 100vh;
+  border-radius: 0px;
+}
+
+/* Controls wrapper */
+.wrapper {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  opacity: 0;
+  bottom: -15px;
+  transition: all 0.08s ease;
+}
+
+.container.showControls .wrapper {
+  opacity: 1;
+  bottom: 0;
+  transition: all 0.13s ease;
+}
+
+.wrapper::before {
+  content: "";
+  bottom: 0;
+  width: 100%;
+  z-index: -1;
+  position: absolute;
+  height: calc(100% + 35px);
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+}
+
+/* Video Timeline */
+.videoTimeline {
+  height: 7px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.videoTimeline .progressArea {
+  height: 3px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.progressArea span {
+  position: absolute;
+  left: 50%;
+  top: -25px;
+  font-size: 13px;
+  color: #fff;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.progressArea .progressBar {
+  width: 0%;
+  height: 100%;
+  position: relative;
+  background: #2289ff;
+}
+.progressBar::before {
+  content: "";
+  right: 0;
+  top: 50%;
+  height: 13px;
+  width: 13px;
+  position: absolute;
+  border-radius: 50%;
+  background: #2289ff;
+  transform: translateY(-50%);
+}
+
+.progressBar::before,
+.progressArea span {
+  display: none;
+}
+
+.videoTimeline:hover .progressBar::before,
+.videoTimeline:hover .progressArea span {
+  display: block;
+}
+
+/* Video Controls */
+.wrapper .videoControls {
+  padding: 5px 20px 10px;
+}
+
+.videoControls .options {
+  width: 100%;
+}
+
+.videoControls .options:first-child {
+  justify-content: flex-start;
+}
+
+.videoControls .options:last-child {
+  justify-content: flex-end;
+}
+
+.options.left {
+  justify-content: flex-start;
+}
+
+.options.center {
+  justify-content: center;
+}
+
+.options.right {
+  justify-content: flex-end;
+}
+
+.options button {
+  height: 40px;
+  width: 40px;
+  font-size: 19px;
+  border: none;
+  cursor: pointer;
+  background: none;
+  color: #efefef;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.options button:hover {
+  color: #fff;
+}
+
+.options button:active {
+  transform: scale(0.9);
+}
+
+.options button span {
+  font-size: 23px;
+}
+
+.speedIcon {
+  font-size: 18px;
+}
+
+.options input {
+  height: 4px;
+  margin-left: 3px;
+  max-width: 75px;
+  accent-color: #0078ff;
+}
+
+.options .videoTimer {
+  color: #efefef;
+  margin-left: 15px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.videoTimer .separator {
+  margin: 0 5px;
+  font-size: 16px;
+  font-family: "Open sans";
+}
+
+.videoTimer .currentTime,
+.videoTimer .videoDuration {
+  margin: 0;
+}
+
+/* Playback Speed */
+.playbackContent {
+  display: flex;
+  position: relative;
+}
+
+.playbackContent .speedOptions {
+  position: absolute;
+  list-style: none;
+  left: -40px;
+  bottom: 40px;
+  width: 95px;
+  overflow: hidden;
+  opacity: 0;
+  border-radius: 4px;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.13s ease;
+}
+
+.playbackContent .speedOptions.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.speedOptions li {
+  cursor: pointer;
+  color: #000;
+  font-size: 14px;
+  margin: 2px 0;
+  padding: 5px 0 5px 15px;
+  transition: all 0.1s ease;
+}
+
+.speedOptions li:where(:first-child, :last-child) {
+  margin: 0px;
+}
+
+.speedOptions li:hover {
+  background: #dfdfdf;
+}
+
+.speedOptions li.active {
+  color: #fff;
+  background: #3e97fd;
+}
+
+/* Main video */
+.container video {
+  width: 100%;
+}
+
+@media screen and (max-width: 540px) {
+  .wrapper .video-controls {
+    padding: 3px 10px 7px;
+  }
+  .options input,
+  .progress-area span {
+    display: none !important;
+  }
+  .options button {
+    height: 30px;
+    width: 30px;
+    font-size: 17px;
+  }
+  .options .video-timer {
+    margin-left: 5px;
+  }
+  .video-timer .separator {
+    font-size: 14px;
+    margin: 0 2px;
+  }
+  .options button :where(i, span) {
+    line-height: 30px;
+  }
+  .options button span {
+    font-size: 21px;
+  }
+  .options .video-timer,
+  .progress-area span,
+  .speed-options li {
+    font-size: 12px;
+  }
+  .playback-content .speed-options {
+    width: 75px;
+    left: -30px;
+    bottom: 30px;
+  }
+  .speed-options li {
+    margin: 1px 0;
+    padding: 3px 0 3px 10px;
+  }
+  .right .pic-in-pic {
+    display: none;
+  }
+}
+.blur {
+  width: 150%;
+  height: 150%;
+  background-color: rgba(0, 0, 0, 0.5);
+  filter: blur(25px);
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.git-icon {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: #fff;
+  right: 20px;
+  top: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: #eee 2px 3px 10px;
+  z-index: 2;
+}
+.git-icon img {
+  height: 30px;
+  width: 30px;
+  border-radius: 15px;
+}
+.git-icon:hover {
+  background-color: #ddd;
+  box-shadow: #eee 3px 5px 10px;
+}
