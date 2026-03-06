@@ -363,7 +363,7 @@ export default function ArchivePage() {
         <TopNav />
         <BottomNav />
 
-        <div className="space-y-6">
+        <div className="space-y-6 ">
           {/* Hero */}
           <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -501,7 +501,7 @@ export default function ArchivePage() {
       <TopNav />
       <BottomNav />
 
-      <div className="flex flex-col-reverse gap-6 lg:flex-row my-2">
+      <div className="flex flex-col-reverse gap-6 lg:flex-row my-4">
         {/* Main content */}
         <main className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[82%] 2xl:ml-[9%] xl:ml-[4%] lg:ml-[1%]">
           {/* Hero */}

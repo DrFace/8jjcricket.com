@@ -1,8 +1,8 @@
 // components/PWAExtras.tsx
 "use client";
 
-import { useEffect, useState } from 'react';
-import { X, Download } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { X, Download } from "lucide-react";
 
 export default function PWAExtras() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -10,16 +10,21 @@ export default function PWAExtras() {
 
   useEffect(() => {
     // 1. Register Service Worker (Only in production to avoid dev issues)
-    if (typeof window !== 'undefined' && 'serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
-      navigator.serviceWorker.register('/sw.js')
-        .then((reg) => console.log('PWA: Service Worker registered', reg.scope))
-        .catch((err) => console.error('PWA: Service Worker failed', err));
+    if (
+      typeof window !== "undefined" &&
+      "serviceWorker" in navigator &&
+      process.env.NODE_ENV === "production"
+    ) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then((reg) => console.log("PWA: Service Worker registered", reg.scope))
+        .catch((err) => console.error("PWA: Service Worker failed", err));
     }
 
     // 2. Listen for Install Prompt
     const handleBeforeInstallPrompt = (e: Event) => {
-      console.log('PWA: beforeinstallprompt event fired');
-      
+      console.log("PWA: beforeinstallprompt event fired");
+
       // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
 
@@ -29,23 +34,26 @@ export default function PWAExtras() {
       setShowInstallPrompt(true);
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt,
+      );
     };
   }, []);
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
-    
+
     // Show the install prompt
     deferredPrompt.prompt();
-    
+
     // Wait for the user to respond to the prompt
     const { outcome } = await deferredPrompt.userChoice;
     console.log(`User response to the install prompt: ${outcome}`);
-    
+
     // We've used the prompt, and can't use it again, throw it away
     setDeferredPrompt(null);
     setShowInstallPrompt(false);
@@ -66,22 +74,29 @@ export default function PWAExtras() {
       <div className="rounded-2xl border border-india-gold/40 bg-india-charcoal/95 p-4 shadow-2xl backdrop-blur-xl animate-slide-up">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-india-saffron to-india-gold">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-r from-india-gold to-india-saffron">
               <Download className="h-6 w-6 text-black" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white">Install 8JJCricket</h3>
-              <p className="text-xs text-white/60">Get live scores and games on your home screen</p>
+              <h3 className="text-sm font-bold text-white">
+                Install 8JJCricket
+              </h3>
+              <p className="text-xs text-white/60">
+                Get live scores and games on your home screen
+              </p>
             </div>
           </div>
-          <button onClick={handleDismiss} className="text-white/40 hover:text-white">
+          <button
+            onClick={handleDismiss}
+            className="text-white/40 hover:text-white"
+          >
             <X size={18} />
           </button>
         </div>
         <div className="mt-4 flex gap-2">
           <button
             onClick={handleInstallClick}
-            className="flex-1 rounded-full bg-gradient-to-r from-india-saffron to-india-gold py-2 text-xs font-bold text-black"
+            className="flex-1 rounded-full bg-gradient-to-r from-india-gold to-india-saffron  py-2 text-xs font-bold text-black"
           >
             Install Now
           </button>

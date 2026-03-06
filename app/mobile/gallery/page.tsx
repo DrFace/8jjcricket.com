@@ -27,7 +27,7 @@ const SITE_ORIGIN =
 function apiBase() {
   return (process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE).replace(
     /\/+$/,
-    ""
+    "",
   );
 }
 
@@ -128,10 +128,10 @@ export default async function GalleryMobilePage() {
   const totalPhotos = photos.length;
 
   return (
-    <main className="min-h-screen bg-black text-white">
-      <div className="mx-auto w-full max-w-2xl px-0 py-5">
+    <main className="min-h-screen  text-white">
+      <div className="mx-auto w-full max-w-2xl px-0 ">
         {/* Mobile hero */}
-        <div className="px-4">
+        <div className="">
           <div className="rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
             <div className="space-y-3">
               <p className="text-xs font-bold tracking-[0.18em] text-india-gold">
@@ -161,7 +161,7 @@ export default async function GalleryMobilePage() {
               <div className="pt-1">
                 <Link
                   href="/"
-                  className="inline-flex rounded-full bg-gradient-to-r from-india-saffron to-india-gold px-4 py-2 text-[11px] font-bold text-black hover:shadow-lg transition-all"
+                  className="inline-flex rounded-full bg-gradient-to-r from-india-gold to-india-saffron  px-4 py-2 text-[11px] font-bold text-black hover:shadow-lg transition-all"
                 >
                   Back Home
                 </Link>
@@ -185,10 +185,10 @@ export default async function GalleryMobilePage() {
                 Array.from(albumsByCategoryId.entries()).map(([k, v]) => [
                   String(k),
                   v,
-                ])
+                ]),
               )}
               photosByAlbumSlug={Object.fromEntries(
-                photosByAlbumSlug.entries()
+                photosByAlbumSlug.entries(),
               )}
             />
           )}

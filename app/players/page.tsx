@@ -5,6 +5,7 @@ import PlayerCard from "@/components/PlayerCard";
 import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
 import { debounce } from "@/lib/debounce";
+import styles from "./page.module.css";
 
 type Country = { id: number; name: string };
 
@@ -111,7 +112,7 @@ export default function PlayersPage() {
     debounce((val: string) => {
       setQ(val);
       setPage(1);
-    }, 300)
+    }, 300),
   ).current;
 
   // Track the raw search input for the controlled component
@@ -141,11 +142,13 @@ export default function PlayersPage() {
 
       // ✅ Set default country to India only once (and only if user hasn't selected anything)
       // ✅ Set default country to India only once (and only if user hasn't selected anything AND no session exists)
-      const hasSavedCountry = typeof window !== "undefined" && sessionStorage.getItem("players-country") !== null;
-      
+      const hasSavedCountry =
+        typeof window !== "undefined" &&
+        sessionStorage.getItem("players-country") !== null;
+
       if (!didSetDefaultCountry.current && !cId && !hasSavedCountry) {
         const india = fetchedCountries.find(
-          (c) => c.name?.toLowerCase() === DEFAULT_COUNTRY_NAME.toLowerCase()
+          (c) => c.name?.toLowerCase() === DEFAULT_COUNTRY_NAME.toLowerCase(),
         );
         if (india) {
           didSetDefaultCountry.current = true;
@@ -176,6 +179,45 @@ export default function PlayersPage() {
     sessionStorage.setItem("players-country", countryId);
     sessionStorage.setItem("players-page", String(page));
   }, [q, countryId, page, isRestored]);
+
+  // Clear storage when navigating away from players section
+  useEffect(() => {
+    const clearPlayersStorage = () => {
+      sessionStorage.removeItem("players-query");
+      sessionStorage.removeItem("players-country");
+      sessionStorage.removeItem("players-page");
+      sessionStorage.removeItem("players-scroll-pos");
+    };
+
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest("a");
+      if (link) {
+        const href = link.getAttribute("href");
+        // Keep storage if navigating to player detail pages (/players/*)
+        // Clear if navigating anywhere else
+        if (href && !href.startsWith("/players")) {
+          clearPlayersStorage();
+        }
+      }
+    };
+
+    // Handle browser back/forward navigation
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      if (!path.startsWith("/players")) {
+        clearPlayersStorage();
+      }
+    };
+
+    document.addEventListener("click", handleClick);
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      document.removeEventListener("click", handleClick);
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
 
   // Save scroll position
   useEffect(() => {
@@ -211,9 +253,11 @@ export default function PlayersPage() {
     <>
       <TopNav />
 
-      <div className="mx-auto px-4 py-8 md:py-10">
+      <div className="mx-auto px-4 py-4">
         <header className="mb-6 rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
-          <h1 className="text-2xl font-bold text-white india-header-text">Players</h1>
+          <h1 className="text-2xl font-bold text-white india-header-text">
+            Players
+          </h1>
           <p className="mt-1 text-xs font-bold tracking-[0.18em] text-india-gold">
             Browse players. Use search and filters to find them faster.
           </p>
@@ -221,15 +265,15 @@ export default function PlayersPage() {
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
           <aside className="md:col-span-1">
-            <div className="sticky top-4 space-y-4 rounded-2xl border border-india-gold/20 bg-black/50 p-4 text-sm shadow-2xl backdrop-blur-xl">
-              <div className="space-y-1">
+            <div className="sticky top-20 space-y-4 rounded-2xl border border-india-gold/20 bg-black/50 p-4 text-sm shadow-2xl backdrop-blur-xl">
+              <div className="space-y-2">
                 <label className="font-bold text-india-gold">
                   Search by name
                 </label>
                 <input
                   type="text"
                   placeholder="e.g. Ahmed, Sharma..."
-                  className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white placeholder:text-slate-400 outline-none focus:border-india-gold/50 focus:ring-india-gold/30 transition-all"
+                  className="w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white placeholder:text-slate-400 outline-none focus:border-india-gold/50 focus:ring-india-gold/30 transition-all"
                   value={searchValue}
                   onChange={(e) => {
                     setSearchValue(e.target.value);
@@ -238,10 +282,10 @@ export default function PlayersPage() {
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <label className="font-bold text-india-gold">Country</label>
                 <select
-                  className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none focus:border-india-gold/50 focus:ring-india-gold/30 transition-all"
+                  className="w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none focus:border-india-gold/50 focus:ring-india-gold/30 transition-all"
                   value={countryId}
                   onChange={(e) => {
                     setCountryId(e.target.value);

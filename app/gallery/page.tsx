@@ -33,7 +33,7 @@ const SITE_ORIGIN =
 function apiBase() {
   return (process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE).replace(
     /\/+$/,
-    ""
+    "",
   );
 }
 
@@ -156,7 +156,7 @@ export default async function GalleryPage() {
 
               <Link
                 href="/"
-                className="shrink-0 rounded-full bg-gradient-to-r from-india-saffron to-india-gold px-4 py-2 text-[11px] font-bold text-black hover:shadow-lg transition-all"
+                className="shrink-0 rounded-full bg-gradient-to-r from-india-gold to-india-saffron  px-4 py-2 text-[11px] font-bold text-black hover:shadow-lg transition-all"
               >
                 Back Home
               </Link>
@@ -176,10 +176,10 @@ export default async function GalleryPage() {
                   Array.from(albumsByCategoryId.entries()).map(([k, v]) => [
                     String(k),
                     v,
-                  ])
+                  ]),
                 )}
                 photosByAlbumSlug={Object.fromEntries(
-                  photosByAlbumSlug.entries()
+                  photosByAlbumSlug.entries(),
                 )}
               />
             )}

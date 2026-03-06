@@ -300,7 +300,7 @@ export default function LiveScoreHome() {
 
   return (
     <div>
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto p-4">
         {/* Tabs */}
         <div className="flex justify-center gap-4 mb-8">
           {(["Live", "Upcoming", "Recent"] as const).map((tab) => (
@@ -309,7 +309,7 @@ export default function LiveScoreHome() {
               onClick={() => setActiveTab(tab)}
               className={`px-6 py-2 rounded-full text-sm font-bold transition shadow-md ${
                 activeTab === tab
-                  ? "bg-gradient-to-r from-india-saffron to-india-gold text-black border border-india-gold"
+                  ? "bg-gradient-to-r from-india-gold to-india-saffron  text-black border border-india-gold"
                   : "bg-black/40 text-white hover:bg-white/10 border border-white/10"
               }`}
             >

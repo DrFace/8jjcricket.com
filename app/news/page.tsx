@@ -756,7 +756,7 @@ export default function NewsPage() {
                           <Link
                             href={`/news/${item.slug}`}
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg
-                                       bg-gradient-to-r from-india-saffron to-india-gold
+                                       bg-gradient-to-r from-india-gold to-india-saffron 
                                        text-black text-sm font-bold shadow-lg shadow-india-saffron/30
                                        transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-india-saffron/40"
                           >

@@ -61,9 +61,15 @@ function sanitizeHtml(input: string): string {
 
   let html = String(input);
 
-  html = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
+  html = html.replace(
+    /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+    "",
+  );
   html = html.replace(/\son\w+\s*=\s*(".*?"|'.*?'|[^\s>]+)/gi, "");
-  html = html.replace(/\s(href|src)\s*=\s*(['"])\s*javascript:[^'"]*\2/gi, " $1=$2#$2");
+  html = html.replace(
+    /\s(href|src)\s*=\s*(['"])\s*javascript:[^'"]*\2/gi,
+    " $1=$2#$2",
+  );
 
   return html;
 }
@@ -86,7 +92,7 @@ export default async function MobileArticlePage({ params }: Props) {
 
   if (!article) {
     return (
-      <main className="min-h-screen bg-black text-white px-4 pt-6 pb-24">
+      <main className="min-h-screen text-white px-4">
         <Link href="/mobile/news" className="text-amber-300 hover:underline">
           ← Back to news
         </Link>
@@ -100,12 +106,15 @@ export default async function MobileArticlePage({ params }: Props) {
   const safeBodyHtml = sanitizeHtml(article.body);
 
   return (
-    <main className="min-h-screen bg-black text-white px-4 pt-6 pb-24">
+    <main className="min-h-screen text-white px-4 py-3">
       <div className="mx-auto max-w-md">
         {/* Top row: Back + Share */}
         <div className="flex items-center justify-between gap-3">
-          <Link href="/mobile/news" className="text-amber-300 hover:underline">
-            ← Back to news
+          <Link
+            href="/mobile/news"
+            className="inline-flex rounded-full bg-gradient-to-r from-india-gold to-india-saffron  px-4 py-2 text-[11px] font-bold text-black hover:shadow-lg transition-all"
+          >
+            Back to News
           </Link>
 
           {/* Share button (same style as your list page) */}
@@ -135,7 +144,7 @@ export default async function MobileArticlePage({ params }: Props) {
 
         {/* FIX: render HTML body */}
         <div
-          className="prose prose-invert max-w-none text-white/80"
+          className="prose prose-invert max-w-none text-white/90 bg-black/20 p-4 rounded-2xl "
           dangerouslySetInnerHTML={{ __html: safeBodyHtml }}
         />
       </div>
