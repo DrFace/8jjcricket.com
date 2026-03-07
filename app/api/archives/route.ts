@@ -58,11 +58,6 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
-    console.log(
-      "✅ Successfully fetched archives:",
-      data.data?.length || 0,
-      "matches",
-    );
 
     return NextResponse.json(data);
   } catch (error) {

@@ -12,16 +12,10 @@ export default function MobileMatchesByDate({
     <div className="space-y-4">
       {Object.entries(grouped).map(([date, matches]) => (
         <div key={date}>
-          <div className="px-4 py-3 mb-3 rounded-xl flex items-center justify-between backdrop-blur-sm">
-            <p className="text-sm font-bold text-amber-300 uppercase tracking-wide">
+          <div className="px-4 py-3 mb-3 rounded-xl flex items-center justify-center backdrop-blur-sm">
+            <p className="text-sm font-bold text-amber-300 uppercase tracking-wide ">
               {date}
             </p>
-
-            {liveMatches.some((m) => matches.includes(m)) && (
-              <span className="px-3 py-1 bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-bold rounded-full animate-pulse shadow-lg">
-                ● LIVE
-              </span>
-            )}
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

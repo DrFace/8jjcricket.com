@@ -30,6 +30,7 @@ import {
 } from "@/lib/series-utils";
 import type { SeriesTabId } from "@/components/series/SeriesTabs";
 import PointsTable from "@/components/series/PointsTable";
+import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
 
 export default function SeriesDetailPage({
   params,
@@ -39,22 +40,21 @@ export default function SeriesDetailPage({
   const [activeTab, setActiveTab] = useState<SeriesTabId>("matches");
   const [selectedSeasonId, setSelectedSeasonId] = useState<number | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(() =>
-    getTodayDateString()
+    getTodayDateString(),
   );
 
   const leagueSwr = useSWR<{ data: League }>(
     `/api/leagues/${params.id}`,
-    Fetcher
+    Fetcher,
   );
   const league = leagueSwr.data?.data;
-
   // ✅ IMPORTANT: derive seasons + sortedSeasons BEFORE any early returns
   const seasonsRaw: any = league?.seasons;
   const seasons = Array.isArray(seasonsRaw)
     ? seasonsRaw
     : Array.isArray(seasonsRaw?.data)
-    ? seasonsRaw.data
-    : [];
+      ? seasonsRaw.data
+      : [];
 
   const sortedSeasons = useMemo(() => {
     const getLatestYear = (name: string) => {
@@ -63,13 +63,13 @@ export default function SeriesDetailPage({
     };
 
     return [...seasons].sort(
-      (a, b) => getLatestYear(b.name) - getLatestYear(a.name)
+      (a, b) => getLatestYear(b.name) - getLatestYear(a.name),
     );
   }, [seasons]);
 
   const currentSeason = useMemo(
     () => (league ? pickCurrentSeason(league) : undefined),
-    [league]
+    [league],
   );
 
   const seasonId = useMemo(() => {
@@ -82,7 +82,7 @@ export default function SeriesDetailPage({
   const fixturesSwr = useSWR<{ data: Match[] }>(
     activeTab === "matches" ? `/api/leagues/${params.id}/fixtures` : null,
     Fetcher,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
 
   const fixtures = useMemo(() => {
@@ -92,7 +92,7 @@ export default function SeriesDetailPage({
 
   const { minDate, maxDate } = useMemo(
     () => deriveMinMaxDate(fixtures),
-    [fixtures]
+    [fixtures],
   );
 
   // Reset today filter behavior
@@ -100,24 +100,24 @@ export default function SeriesDetailPage({
     if (activeTab !== "matches" || fixtures.length === 0) return;
     const today = getTodayDateString();
     const todayHasMatches = fixtures.some(
-      (m) => m.starting_at?.slice(0, 10) === today
+      (m) => m.starting_at?.slice(0, 10) === today,
     );
     if (!todayHasMatches && selectedDate === today) setSelectedDate(null);
   }, [activeTab, fixtures, selectedDate]);
 
   const filteredFixtures = useMemo(
     () => filterFixturesBySelectedDate(fixtures, selectedDate),
-    [fixtures, selectedDate]
+    [fixtures, selectedDate],
   );
 
   const classifiedFixtures = useMemo(
     () => classifyFixtures(filteredFixtures),
-    [filteredFixtures]
+    [filteredFixtures],
   );
 
   const grouped = useMemo(
     () => groupFixturesByDisplayDate(classifiedFixtures),
-    [classifiedFixtures]
+    [classifiedFixtures],
   );
 
   // For LIVE badge per date group
@@ -138,23 +138,9 @@ export default function SeriesDetailPage({
       ? `/api/seasons/${seasonId}/standings`
       : null,
     Fetcher,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
   const standingsData = standingsSwr.data;
-  // ✅ Early returns AFTER all hooks are called
-  if (leagueSwr.error) {
-    return (
-      <ErrorState message="Failed to load series details. Please try again later." />
-    );
-  }
-
-  if (leagueSwr.isLoading) {
-    return <LoadingState label="Loading series..." />;
-  }
-
-  if (!league) {
-    return <ErrorState message="Series not found." />;
-  }
 
   const dateRange =
     currentSeason?.starting_at && currentSeason?.ending_at
@@ -171,80 +157,89 @@ export default function SeriesDetailPage({
     <>
       <TopNav />
       <BottomNav />
+      <div className="min-h-screen">
+        <main className="w-full md:w-[99%] lg:w-[95%] xl:w-[85%] mx-auto py-4">
+          {leagueSwr.isLoading ? (
+            <LoadingSkeleton num={4} col={2} />
+          ) : leagueSwr.error ? (
+            <ErrorState message="Failed to load series details. Please try again later." />
+          ) : !league ? (
+            <ErrorState message="Series not found." />
+          ) : (
+            <div className="space-y-4">
+              <SeriesHeader
+                league={league}
+                currentSeason={currentSeason}
+                dateRange={dateRange}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+              />
 
-      <div className="space-y-6">
-        <SeriesHeader
-          league={league}
-          currentSeason={currentSeason}
-          dateRange={dateRange}
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-        />
-
-        <SectionShell>
-          {/* Matches */}
-          {activeTab === "matches" && (
-            <div className="p-6">
-              {fixturesSwr.isLoading ? (
-                <LoadingState label="Loading matches..." />
-              ) : fixtures.length === 0 ? (
-                <EmptyState
-                  title="No matches available for this series"
-                  subtitle="Matches will appear here once the schedule is announced"
-                />
-              ) : (
-                <>
-                  <MatchDateFilter
-                    selectedDate={selectedDate}
-                    onChange={setSelectedDate}
-                    minDate={minDate}
-                    maxDate={maxDate}
-                  />
-
-                  {selectedDate && filteredFixtures.length === 0 ? (
+              {/* Matches */}
+              {activeTab === "matches" && (
+                <div className="p-6">
+                  {fixturesSwr.isLoading ? (
+                    <LoadingState label="Loading matches..." />
+                  ) : fixtures.length === 0 ? (
                     <EmptyState
-                      title={`No matches available for ${new Date(
-                        selectedDate
-                      ).toLocaleDateString("en-US", {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })}`}
-                      subtitle="Try selecting a different date or view all matches"
-                      action={
-                        <button
-                          onClick={() => setSelectedDate(null)}
-                          className="px-6 py-2.5 bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:brightness-110 transition-all shadow-xl"
-                        >
-                          View All Matches
-                        </button>
-                      }
+                      title="No matches available for this series"
+                      subtitle="Matches will appear here once the schedule is announced"
                     />
                   ) : (
-                    <MatchesByDate
-                      grouped={grouped}
-                      liveMatches={liveMatches}
-                    />
+                    <>
+                      <MatchDateFilter
+                        selectedDate={selectedDate}
+                        onChange={setSelectedDate}
+                        minDate={minDate}
+                        maxDate={maxDate}
+                      />
+
+                      {selectedDate && filteredFixtures.length === 0 ? (
+                        <EmptyState
+                          title={`No matches available for ${new Date(
+                            selectedDate,
+                          ).toLocaleDateString("en-US", {
+                            month: "long",
+                            day: "numeric",
+                            year: "numeric",
+                          })}`}
+                          subtitle="Try selecting a different date or view all matches"
+                          action={
+                            <button
+                              onClick={() => setSelectedDate(null)}
+                              className="px-6 py-2.5 bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:brightness-110 transition-all shadow-xl"
+                            >
+                              View All Matches
+                            </button>
+                          }
+                        />
+                      ) : (
+                        <MatchesByDate
+                          grouped={grouped}
+                          liveMatches={liveMatches}
+                        />
+                      )}
+                    </>
                   )}
-                </>
+                </div>
+              )}
+
+              {/* Points */}
+              {activeTab === "points" && (
+                <div>
+                  <PointsTable
+                    seasons={seasons}
+                    sortedSeasons={sortedSeasons}
+                    seasonId={seasonId}
+                    onSeasonChange={(id) => setSelectedSeasonId(id)}
+                    standingsData={standingsData}
+                    isLoading={!standingsData}
+                  />
+                </div>
               )}
             </div>
           )}
-
-          {/* Points */}
-          {activeTab === "points" && (
-            <div className="p-6">
-              <PointsTable
-                seasons={seasons}
-                sortedSeasons={sortedSeasons}
-                seasonId={seasonId}
-                onSeasonChange={(id) => setSelectedSeasonId(id)}
-                standingsData={standingsData}
-                isLoading={!standingsData}
-              />
-            </div>
-          )}
-        </SectionShell>
+        </main>
       </div>
 
       <Footer />

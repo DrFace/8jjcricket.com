@@ -127,20 +127,30 @@ export default function PlayerDetailPage() {
                   <div className="mt-4 flex flex-wrap gap-4 text-sm">
                     {player.dateofbirth && (
                       <div className="bg-slate-900/60 rounded-lg px-4 py-2 border border-white/10">
-                        <span className="text-india-gold font-semibold">DOB: </span>
+                        <span className="text-india-gold font-semibold">
+                          DOB:{" "}
+                        </span>
                         <span className="text-white">{player.dateofbirth}</span>
                       </div>
                     )}
                     {player.battingstyle && (
                       <div className="bg-slate-900/60 rounded-lg px-4 py-2 border border-white/10">
-                        <span className="text-india-gold font-semibold">Batting: </span>
-                        <span className="text-white">{player.battingstyle}</span>
+                        <span className="text-india-gold font-semibold">
+                          Batting:{" "}
+                        </span>
+                        <span className="text-white">
+                          {player.battingstyle}
+                        </span>
                       </div>
                     )}
                     {player.bowlingstyle && (
                       <div className="bg-slate-900/60 rounded-lg px-4 py-2 border border-white/10">
-                        <span className="text-india-gold font-semibold">Bowling: </span>
-                        <span className="text-white">{player.bowlingstyle}</span>
+                        <span className="text-india-gold font-semibold">
+                          Bowling:{" "}
+                        </span>
+                        <span className="text-white">
+                          {player.bowlingstyle}
+                        </span>
                       </div>
                     )}
                   </div>

@@ -11,6 +11,8 @@ import { Fetcher } from "@/lib/fetcher";
 import type { ApiEnvelope } from "@/lib/cricket-types";
 import { Fixture } from "@/types/fixture";
 import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
+import MobileCricketCategory from "@/components/mobile/MobileCricketCatgory";
+import MobilePagination from "@/components/mobile/MobilePagination";
 
 /**
  * RecentPage lists recently completed matches. It adds page-specific
@@ -97,97 +99,53 @@ export default function RecentPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-6 lg:flex-row">
-        {/* LEFT: heading + fixtures grid */}
-        <main className="flex-1 space-y-5">
-          {/* Header */}
-          <div>
-            <h1 className="text-lg font-extrabold text-white">
-              Recent Matches
-            </h1>
+      <div className="min-h-screen">
+        <main className="w-[99%]  mx-auto py-1">
+          <div className="flex flex-col space-y-4">
+            {/* Header */}
+            <div className="flex  items-center ">
+              <h1 className="m-h">Recent Matches</h1>
+            </div>
             <p className="mt-1 text-xs text-sky-100/70">
               See the most recent cricket matches and results on 8jjcricket.
             </p>
-          </div>
-          <div>
             <MobileTabBar tabs={navTabs} />
+            <MobileCricketCategory
+              selected={selectedCategory}
+              setSelected={setSelectedCategory}
+            />
+            {/* RIGHT: calendar / date filter */}
+            <aside className="lg:w-72">
+              <div>
+                {data ? (
+                  <CalenderModal
+                    fixtures={fixtures}
+                    setParentSelectedDate={setSelectedDate}
+                  />
+                ) : null}
+              </div>
+            </aside>
+            {/* Fixtures grid */}
+            {filteredFixtures.length === 0 ? (
+              <div className="card text-sm text-gray-600 text-center">
+                No matches found for this date. Try another day or clear the
+                filter.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {pagedFixtures.map((f) => (
+                  <MobileRecentCard key={f.id} f={f} />
+                ))}
+              </div>
+            )}
+
+            {/* Pagination */}
+            <MobilePagination
+              page={page}
+              totalPages={totalPages}
+              setPage={setPage}
+            />
           </div>
-
-          {/* Filters */}
-          <div className="w-full flex justify-center">
-            <div className="flex flex-wrap gap-2">
-              {CRICKET_CATEGORIES.map((cat) => {
-                const active = selectedCategory === cat;
-                return (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setSelectedCategory(cat)}
-                    className={[
-                      "rounded-full px-3 py-1 text-[11px] font-semibold transition",
-                      "border backdrop-blur",
-                      active
-                        ? "border-amber-300/60 bg-amber-300/15 text-amber-200 shadow"
-                        : "border-white/15 bg-white/5 text-sky-100/70 hover:border-amber-300/40 hover:text-sky-100",
-                    ].join(" ")}
-                  >
-                    {cat}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* RIGHT: calendar / date filter */}
-          <aside className="lg:w-72">
-            <div>
-              {data ? (
-                <CalenderModal
-                  fixtures={fixtures}
-                  setParentSelectedDate={setSelectedDate}
-                />
-              ) : null}
-            </div>
-          </aside>
-          {/* Fixtures grid */}
-          {filteredFixtures.length === 0 ? (
-            <div className="card text-sm text-gray-600 text-center">
-              No matches found for this date. Try another day or clear the
-              filter.
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {pagedFixtures.map((f) => (
-                <MobileRecentCard key={f.id} f={f} />
-              ))}
-            </div>
-          )}
-
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-3 pt-4">
-              <button
-                type="button"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 disabled:opacity-40"
-              >
-                Prev
-              </button>
-
-              <span className="text-xs text-white/70">
-                Page <strong>{page}</strong> / {totalPages}
-              </span>
-
-              <button
-                type="button"
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 disabled:opacity-40"
-              >
-                Next
-              </button>
-            </div>
-          )}
         </main>
       </div>
     </>

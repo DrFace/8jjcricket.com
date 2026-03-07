@@ -15,15 +15,15 @@ export default function SeriesTabs({
   onChange: (id: SeriesTabId) => void;
 }) {
   return (
-    <div className="border-t border-white/20 -mx-6 px-6 mt-4 pt-3">
-      <div className="flex overflow-x-auto gap-2 -mx-6 px-6 pb-2">
+    <div>
+      <div className="flex overflow-x-auto gap-4">
         {seriesTabs.map((tab) => (
           <SecondaryButton
             key={tab.id}
             onClick={() => onChange(tab.id)}
             active={activeTab === tab.id}
-            size="sm"
-            className="whitespace-nowrap rounded-lg"
+            size="md"
+            className="whitespace-nowrap rounded-lg w-full"
           >
             {tab.label}
           </SecondaryButton>

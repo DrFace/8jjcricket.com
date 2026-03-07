@@ -9,10 +9,10 @@ export default function MatchesByDate({
   liveMatches: Match[];
 }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       {Object.entries(grouped).map(([date, matches]) => (
         <div key={date}>
-          <div className="bg-gradient-to-r from-india-charcoal to-slate-900 border border-india-gold/30 px-4 py-3 mb-3 rounded-xl flex items-center justify-between backdrop-blur-sm">
+          <div className="mb-4">
             <p className="text-sm font-bold text-india-gold uppercase tracking-wide">
               {date}
             </p>
@@ -24,7 +24,7 @@ export default function MatchesByDate({
             )}
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
             {matches.map((match) => (
               <ArchiveCard key={match.id} f={match} />
             ))}

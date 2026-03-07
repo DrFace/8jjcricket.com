@@ -15,7 +15,7 @@ export function MobileCareerDetailsTable({
 
   const items = useMemo(
     () => careers.filter((c) => (kind === "batting" ? c.batting : c.bowling)),
-    [careers, kind]
+    [careers, kind],
   );
 
   const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
@@ -31,9 +31,11 @@ export function MobileCareerDetailsTable({
   const canNext = page < totalPages;
 
   return (
-    <div className="shadow-lg backdrop-blur">
+    <div className="">
       {/* Title */}
-      <div className="mb-3 text-lg font-semibold text-amber-300">{title}</div>
+      <div className="mb-3 text-lg font-semibold text-amber-300 text-center">
+        {title}
+      </div>
 
       {/* Table wrapper with horizontal scroll */}
       <div className="overflow-x-auto scrollbar-hide rounded-xl border border-amber-600">
@@ -160,7 +162,7 @@ export function MobileCareerDetailsTable({
             className={[
               "rounded-full border px-4 py-2 text-sm font-semibold transition",
               canPrev
-                ? "border-amber-800 bg-white/5 text-amber-300 hover:bg-white/10"
+                ? "border-amber-300 bg-white/5 text-amber-300 hover:bg-white/10"
                 : "cursor-not-allowed border-white/10 bg-white/0 text-white/40",
             ].join(" ")}
           >
@@ -178,7 +180,7 @@ export function MobileCareerDetailsTable({
             className={[
               "rounded-full border px-4 py-2 text-sm font-semibold transition",
               canNext
-                ? "border-amber-800 bg-white/5 hover:bg-white/10 text-amber-300"
+                ? "border-amber-300 bg-white/5 hover:bg-white/10 text-amber-300"
                 : "cursor-not-allowed border-white/10 bg-white/0 text-white/40",
             ].join(" ")}
           >

@@ -50,26 +50,17 @@ export default function Footer() {
         </div>
 
         {/* Social Icons */}
-        <div>
-          <div className="flex">
-            {SOCIALS_LINKS.slice(0, 2).map((s) => (
+        <div className="">
+          <div className="flex item-center justify-between py-4">
+            {SOCIALS_LINKS.map((s) => (
               <IconButton
                 key={s.url}
                 href={s.url}
                 ariaLabel={s.label}
                 className="h-12 w-12 rounded-2xl"
-                icon={<Image src={s.icon} alt={s.label} width={32} height={32} />}
-              />
-            ))}
-          </div>
-          <div className="flex">
-            {SOCIALS_LINKS.slice(2, 4).map((s) => (
-              <IconButton
-                key={s.url}
-                href={s.url}
-                ariaLabel={s.label}
-                className="h-12 w-12 rounded-2xl"
-                icon={<Image src={s.icon} alt={s.label} width={32} height={32} />}
+                icon={
+                  <Image src={s.icon} alt={s.label} width={32} height={32} />
+                }
               />
             ))}
           </div>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import MobileShareButton from "@/components/mobile/MobileShareButton";
+import MobileBackButton from "@/components/mobile/MobileBackButton";
 
 type Article = {
   id: number;
@@ -93,8 +94,23 @@ export default async function MobileArticlePage({ params }: Props) {
   if (!article) {
     return (
       <main className="min-h-screen text-white px-4">
-        <Link href="/mobile/news" className="text-amber-300 hover:underline">
-          ← Back to news
+        <Link
+          href="/mobile/news"
+          className="inline-flex items-center gap-2 text-amber-300 hover:text-amber-200 transition-colors"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          Back to News
         </Link>
 
         <p className="mt-6 text-white/60">Article not found.</p>
@@ -106,22 +122,21 @@ export default async function MobileArticlePage({ params }: Props) {
   const safeBodyHtml = sanitizeHtml(article.body);
 
   return (
-    <main className="min-h-screen text-white px-4 py-3">
-      <div className="mx-auto max-w-md">
+    <div className="min-h-screen">
+      <main className="w-[99%]  mx-auto py-1">
         {/* Top row: Back + Share */}
         <div className="flex items-center justify-between gap-3">
-          <Link
-            href="/mobile/news"
-            className="inline-flex rounded-full bg-gradient-to-r from-india-gold to-india-saffron  px-4 py-2 text-[11px] font-bold text-black hover:shadow-lg transition-all"
-          >
-            Back to News
-          </Link>
+          <div className="flex  items-center ">
+            {" "}
+            <MobileBackButton />
+            <h1 className="m-h">News </h1>
+          </div>
 
           {/* Share button (same style as your list page) */}
           <MobileShareButton slug={article.slug} title={article.title} />
         </div>
 
-        <h1 className="text-2xl font-bold mt-4 mb-2 leading-snug">
+        <h1 className="text-xl font-bold mt-4 mb-2 leading-snug">
           {article.title}
         </h1>
 
@@ -147,7 +162,7 @@ export default async function MobileArticlePage({ params }: Props) {
           className="prose prose-invert max-w-none text-white/90 bg-black/20 p-4 rounded-2xl "
           dangerouslySetInnerHTML={{ __html: safeBodyHtml }}
         />
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }

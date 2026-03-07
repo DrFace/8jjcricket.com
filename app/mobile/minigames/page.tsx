@@ -21,11 +21,11 @@ export default async function MinigamesPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col ">
-      {/* Header (unchanged) */}
-
-      <main className="flex-1 w-full max-w-2xl px-2">
-        <h1 className="text-2xl font-bold mb-5">Minigames</h1>
+    <div className="min-h-screen">
+      <main className="w-[99%]  mx-auto py-1">
+        <div className="flex  items-center mb-4">
+          <h1 className="m-h">Minigames</h1>
+        </div>
         <MobileMinigamesClient cards={cards} categories={gamesCategories} />
       </main>
     </div>

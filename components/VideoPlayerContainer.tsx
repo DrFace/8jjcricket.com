@@ -35,8 +35,6 @@ export default function VideoPlayerContainer({ src, poster, title }: Props) {
 
   // Use refs in handlers to avoid stale closure
   const handlePlay = () => {
-    console.log("calling play fun");
-
     if (isPlayingRef.current) {
       wasPlayingBefore.current = true;
       togglePlay();
@@ -44,7 +42,6 @@ export default function VideoPlayerContainer({ src, poster, title }: Props) {
   };
 
   const handlePause = () => {
-    console.log("calling pause fun");
     if (wasPlayingBefore.current) {
       togglePlay();
       wasPlayingBefore.current = false;

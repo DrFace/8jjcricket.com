@@ -8,9 +8,5 @@ import { seriesMetadata, seriesJsonLd } from "@/components/seo/SeriesSeo";
 export const metadata = seriesMetadata;
 
 export default function Page() {
-  return (
-        <Suspense fallback={<div className="p-6">Loading series…</div>}>
-      <SeriesClient />
-    </Suspense>
-  );
+  return <SeriesClient />;
 }

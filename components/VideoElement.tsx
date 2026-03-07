@@ -43,8 +43,6 @@ export default function VideoElement({
   }, [isPlaying]);
 
   const handlePlay = () => {
-    console.log("playiing");
-
     // background music currently playing?
     if (isPlaying) {
       wasPlayingBefore.current = true;
@@ -53,8 +51,6 @@ export default function VideoElement({
   };
 
   const handlePause = () => {
-    console.log("pauseee");
-
     if (wasPlayingBefore.current) {
       togglePlay();
       wasPlayingBefore.current = false;

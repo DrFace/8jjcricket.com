@@ -51,7 +51,7 @@ export default function GalleryClient({
   const filteredCategories = useMemo(() => {
     if (!query.trim()) return categories;
     return categories.filter((c) =>
-      c.name.toLowerCase().includes(query.trim().toLowerCase())
+      c.name.toLowerCase().includes(query.trim().toLowerCase()),
     );
   }, [categories, query]);
 
@@ -64,14 +64,14 @@ export default function GalleryClient({
     const list = albumsByCategoryId[String(activeCategory.id)] || [];
     if (!query.trim()) return list;
     return list.filter((a) =>
-      a.name.toLowerCase().includes(query.trim().toLowerCase())
+      a.name.toLowerCase().includes(query.trim().toLowerCase()),
     );
   }, [activeCategory, albumsByCategoryId, query]);
 
   return (
     <div className="space-y-8">
       {/* Sticky tools row */}
-      <div className="sticky top-0 z-20 -mx-4 bg-black/80 px-4 py-4 backdrop-blur supports-[backdrop-filter]:bg-black/50">
+      <div className="sticky top-0 z-20 py-4 px-6 backdrop-blur  bg-white/10 border-b border-white/10 rounded-2xl">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           {/* Category pills */}
           <div className="flex flex-wrap gap-2">

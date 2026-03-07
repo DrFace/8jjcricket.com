@@ -26,6 +26,7 @@ import MobileSectionShell from "@/components/ui/MobileSectionShell";
 import MobileMatchesByDate from "@/components/mobile/MobileMatchesByDate";
 import MobilePointsTable from "@/components/mobile/MobilePointsTable";
 import MobileSeriesHeader from "@/components/series/MobileSeriesHeader";
+import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
 
 export default function SeriesDetailPage({
   params,
@@ -35,12 +36,12 @@ export default function SeriesDetailPage({
   const [activeTab, setActiveTab] = useState<SeriesTabId>("matches");
   const [selectedSeasonId, setSelectedSeasonId] = useState<number | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(() =>
-    getTodayDateString()
+    getTodayDateString(),
   );
   const [open, setOpen] = useState(false);
   const leagueSwr = useSWR<{ data: League }>(
     `/api/leagues/${params.id}`,
-    Fetcher
+    Fetcher,
   );
   const league = leagueSwr.data?.data;
 
@@ -49,8 +50,8 @@ export default function SeriesDetailPage({
   const seasons = Array.isArray(seasonsRaw)
     ? seasonsRaw
     : Array.isArray(seasonsRaw?.data)
-    ? seasonsRaw.data
-    : [];
+      ? seasonsRaw.data
+      : [];
 
   const sortedSeasons = useMemo(() => {
     const getLatestYear = (name: string) => {
@@ -59,13 +60,13 @@ export default function SeriesDetailPage({
     };
 
     return [...seasons].sort(
-      (a, b) => getLatestYear(b.name) - getLatestYear(a.name)
+      (a, b) => getLatestYear(b.name) - getLatestYear(a.name),
     );
   }, [seasons]);
 
   const currentSeason = useMemo(
     () => (league ? pickCurrentSeason(league) : undefined),
-    [league]
+    [league],
   );
 
   const seasonId = useMemo(() => {
@@ -78,7 +79,7 @@ export default function SeriesDetailPage({
   const fixturesSwr = useSWR<{ data: Match[] }>(
     activeTab === "matches" ? `/api/leagues/${params.id}/fixtures` : null,
     Fetcher,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
 
   const fixtures = useMemo(() => {
@@ -88,7 +89,7 @@ export default function SeriesDetailPage({
 
   const { minDate, maxDate } = useMemo(
     () => deriveMinMaxDate(fixtures),
-    [fixtures]
+    [fixtures],
   );
 
   // Reset today filter behavior
@@ -96,24 +97,24 @@ export default function SeriesDetailPage({
     if (activeTab !== "matches" || fixtures.length === 0) return;
     const today = getTodayDateString();
     const todayHasMatches = fixtures.some(
-      (m) => m.starting_at?.slice(0, 10) === today
+      (m) => m.starting_at?.slice(0, 10) === today,
     );
     if (!todayHasMatches && selectedDate === today) setSelectedDate(null);
   }, [activeTab, fixtures, selectedDate]);
 
   const filteredFixtures = useMemo(
     () => filterFixturesBySelectedDate(fixtures, selectedDate),
-    [fixtures, selectedDate]
+    [fixtures, selectedDate],
   );
 
   const classifiedFixtures = useMemo(
     () => classifyFixtures(filteredFixtures),
-    [filteredFixtures]
+    [filteredFixtures],
   );
 
   const grouped = useMemo(
     () => groupFixturesByDisplayDate(classifiedFixtures),
-    [classifiedFixtures]
+    [classifiedFixtures],
   );
 
   // For LIVE badge per date group
@@ -134,23 +135,9 @@ export default function SeriesDetailPage({
       ? `/api/seasons/${seasonId}/standings`
       : null,
     Fetcher,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
   const standingsData = standingsSwr.data;
-  // ✅ Early returns AFTER all hooks are called
-  if (leagueSwr.error) {
-    return (
-      <ErrorState message="Failed to load series details. Please try again later." />
-    );
-  }
-
-  if (leagueSwr.isLoading) {
-    return <LoadingState label="Loading series..." />;
-  }
-
-  if (!league) {
-    return <ErrorState message="Series not found." />;
-  }
 
   const dateRange =
     currentSeason?.starting_at && currentSeason?.ending_at
@@ -166,84 +153,93 @@ export default function SeriesDetailPage({
   return (
     <>
       <BottomNav />
+      <div className="min-h-screen">
+        <main className="w-[99%]  mx-auto py-1">
+          {leagueSwr.isLoading ? (
+            <LoadingSkeleton num={3} col={1} />
+          ) : leagueSwr.error ? (
+            <ErrorState message="Failed to load series details. Please try again later." />
+          ) : !league ? (
+            <ErrorState message="Series not found." />
+          ) : (
+            <div className="space-y-4">
+              <MobileSeriesHeader
+                league={league}
+                currentSeason={currentSeason}
+                dateRange={dateRange}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+              />
 
-      <div className="space-y-6">
-        <MobileSeriesHeader
-          league={league}
-          currentSeason={currentSeason}
-          dateRange={dateRange}
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-        />
-
-        <MobileSectionShell>
-          {/* Matches */}
-          {activeTab === "matches" && (
-            <div className="p-1">
-              {fixturesSwr.isLoading ? (
-                <LoadingState label="Loading matches..." />
-              ) : fixtures.length === 0 ? (
-                <EmptyState
-                  title="No matches available for this series"
-                  subtitle="Matches will appear here once the schedule is announced"
-                />
-              ) : (
-                <>
-                  {/* Calendar Filter */}
-                  <SeriesCalenderModal
-                    isOpen={open}
-                    onClose={() => setOpen(false)}
-                    minDate={minDate}
-                    maxDate={maxDate}
-                    setOpen={setOpen}
-                    selectedDate={selectedDate}
-                    setSelectedDate={setSelectedDate}
-                  />
-                  <div className="mt-5" />
-                  {selectedDate && filteredFixtures.length === 0 ? (
+              {/* Matches */}
+              {activeTab === "matches" && (
+                <div>
+                  {fixturesSwr.isLoading ? (
+                    <LoadingSkeleton num={3} col={1} />
+                  ) : fixtures.length === 0 ? (
                     <EmptyState
-                      title={`No matches available for ${new Date(
-                        selectedDate
-                      ).toLocaleDateString("en-US", {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })}`}
-                      subtitle="Try selecting a different date or view all matches"
-                      action={
-                        <button
-                          onClick={() => setSelectedDate(null)}
-                          className="px-6 py-2.5 bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:brightness-110 transition-all shadow-xl"
-                        >
-                          View All Matches
-                        </button>
-                      }
+                      title="No matches available for this series"
+                      subtitle="Matches will appear here once the schedule is announced"
                     />
                   ) : (
-                    <MobileMatchesByDate
-                      grouped={grouped}
-                      liveMatches={liveMatches}
-                    />
+                    <>
+                      {/* Calendar Filter */}
+                      <SeriesCalenderModal
+                        isOpen={open}
+                        onClose={() => setOpen(false)}
+                        minDate={minDate}
+                        maxDate={maxDate}
+                        setOpen={setOpen}
+                        selectedDate={selectedDate}
+                        setSelectedDate={setSelectedDate}
+                      />
+
+                      {selectedDate && filteredFixtures.length === 0 ? (
+                        <EmptyState
+                          title={`No matches available for ${new Date(
+                            selectedDate,
+                          ).toLocaleDateString("en-US", {
+                            month: "long",
+                            day: "numeric",
+                            year: "numeric",
+                          })}`}
+                          subtitle="Try selecting a different date or view all matches"
+                          action={
+                            <button
+                              onClick={() => setSelectedDate(null)}
+                              className="px-6 py-2.5 bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:brightness-110 transition-all shadow-xl"
+                            >
+                              View All Matches
+                            </button>
+                          }
+                        />
+                      ) : (
+                        <MobileMatchesByDate
+                          grouped={grouped}
+                          liveMatches={liveMatches}
+                        />
+                      )}
+                    </>
                   )}
-                </>
+                </div>
+              )}
+
+              {/* Points */}
+              {activeTab === "points" && (
+                <div className="">
+                  <MobilePointsTable
+                    seasons={seasons}
+                    sortedSeasons={sortedSeasons}
+                    seasonId={seasonId}
+                    onSeasonChange={(id) => setSelectedSeasonId(id)}
+                    standingsData={standingsData}
+                    isLoading={!standingsData}
+                  />
+                </div>
               )}
             </div>
           )}
-
-          {/* Points */}
-          {activeTab === "points" && (
-            <div className="">
-              <MobilePointsTable
-                seasons={seasons}
-                sortedSeasons={sortedSeasons}
-                seasonId={seasonId}
-                onSeasonChange={(id) => setSelectedSeasonId(id)}
-                standingsData={standingsData}
-                isLoading={!standingsData}
-              />
-            </div>
-          )}
-        </MobileSectionShell>
+        </main>
       </div>
     </>
   );

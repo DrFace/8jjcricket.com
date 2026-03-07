@@ -165,7 +165,7 @@ export default function SeriesCalenderModal(props: CalenderModalProps) {
         onClick={handleTriggerClick}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="rounded-2xl border border-white/15 bg-black/50 backdrop-blur-xl p-4 shadow-2xl flex items-center justify-between w-full"
+        className="rounded-2xl border border-white/15 bg-black/10 backdrop-blur-xl p-4 shadow-2xl flex items-center justify-between w-full"
       >
         <div>
           <div className="flex items-center justify-between w-full">

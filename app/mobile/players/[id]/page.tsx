@@ -2,13 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { PlayerRespond } from "@/types/player";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import { GetDisplayName } from "@/lib/player";
 import { MobilePlayerCareerTables } from "@/components/mobile/MobilePlayerCareerTables";
+import MobileBackButton from "@/components/mobile/MobileBackButton";
 
 export default function PlayerDetailPage() {
   const params = useParams();
@@ -70,8 +70,8 @@ export default function PlayerDetailPage() {
 
   return (
     <>
-      <div className="min-h-screen flex flex-col">
-        <main className="flex-1">
+      <div className="min-h-screen">
+        <main className="w-[99%]  mx-auto py-1">
           {loading ? (
             <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
               <LoadingState label="player is loading" />
@@ -81,84 +81,69 @@ export default function PlayerDetailPage() {
               <ErrorState message={error ?? "Player not found"} />
             </div>
           ) : (
-            <div className="space-y-6 w-full">
-              <div className="mb-4">
-                <Link
-                  href="/mobile/players"
-                  className="inline-flex items-center gap-2 text-amber-300 hover:text-amber-200 transition-colors"
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M19 12H5M12 19l-7-7 7-7" />
-                  </svg>
-                  <span>Back to Players</span>
-                </Link>
-              </div>
-
-              <div className="flex flex-col items-center gap-8 md:flex-row mt-3">
-                <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-slate-900 shadow-md">
-                  <Image
-                    src={player?.image_path || "/placeholder.png"}
-                    alt={player ? GetDisplayName(player) : ""}
-                    fill
-                    className="object-contain"
-                  />
+            <div className="">
+              <div className="space-y-6 w-full">
+                <div className="flex items-center">
+                  <MobileBackButton />
+                  <span className="m-h">Player Details</span>
                 </div>
+                <div className="flex flex-col items-center gap-8 md:flex-row bg-white/5 p-6 rounded-3xl border border-white/15 shadow-lg">
+                  <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-slate-900 shadow-md">
+                    <Image
+                      src={player?.image_path || "/placeholder.png"}
+                      alt={player ? GetDisplayName(player) : ""}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
 
-                <div className="w-full">
-                  <h1 className="text-3xl font-bold text-white text-center">
-                    {player ? GetDisplayName(player) : ""}
-                  </h1>
-                  <p className="text-amber-300 text-center">
-                    {player.country?.name ?? "Unknown Country"}
-                  </p>
+                  <div className="w-full">
+                    <h1 className="text-2xl font-bold text-white text-center">
+                      {player ? GetDisplayName(player) : ""}
+                    </h1>
+                    <p className="text-amber-300 text-center">
+                      {player.country?.name ?? "Unknown Country"}
+                    </p>
 
-                  <div className="mt-3 space-y-1 text-sm text-sky-100/70 w-full">
-                    {player.dateofbirth && (
-                      <div className="flex justify-between w-full">
-                        <strong>DOB:</strong>
-                        <div> {player.dateofbirth}</div>
-                      </div>
-                    )}
-                    {player.battingstyle && (
-                      <div className="flex justify-between w-full">
-                        <strong>Batting Style:</strong>
-                        <div>{player.battingstyle}</div>
-                      </div>
-                    )}
-                    {player.bowlingstyle && (
-                      <div className="flex justify-between w-full">
-                        <strong>Bowling Style:</strong>
-                        <div>{player.bowlingstyle}</div>
-                      </div>
-                    )}
+                    <div className="mt-3 space-y-1 text-sm text-sky-100/70 w-full">
+                      {player.dateofbirth && (
+                        <div className="flex justify-between w-full">
+                          <strong>DOB:</strong>
+                          <div> {player.dateofbirth}</div>
+                        </div>
+                      )}
+                      {player.battingstyle && (
+                        <div className="flex justify-between w-full">
+                          <strong>Batting Style:</strong>
+                          <div>{player.battingstyle}</div>
+                        </div>
+                      )}
+                      {player.bowlingstyle && (
+                        <div className="flex justify-between w-full">
+                          <strong>Bowling Style:</strong>
+                          <div>{player.bowlingstyle}</div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
+
+                {careers.length > 0 ? (
+                  <div className="w-full">
+                    <h2 className="mb-4 text-2xl font-semibold text-white text-center">
+                      Career Statistics
+                    </h2>
+
+                    {careers && careers.length > 0 ? (
+                      <MobilePlayerCareerTables careers={careers} />
+                    ) : null}
+                  </div>
+                ) : (
+                  <div className="mt-10 rounded-2xl border border-white/15 bg-black/50 p-6 text-sm text-sky-100/70 backdrop-blur-xl text-center">
+                    Career statistics not available.
+                  </div>
+                )}
               </div>
-
-              {careers.length > 0 ? (
-                <div className="mt-10 w-full">
-                  <h2 className="mb-4 text-2xl font-semibold text-white">
-                    Career Statistics
-                  </h2>
-
-                  {careers && careers.length > 0 ? (
-                    <MobilePlayerCareerTables careers={careers} />
-                  ) : null}
-                </div>
-              ) : (
-                <div className="mt-10 rounded-2xl border border-white/15 bg-black/50 p-6 text-sm text-sky-100/70 backdrop-blur-xl text-center">
-                  Career statistics not available.
-                </div>
-              )}
             </div>
           )}
         </main>
