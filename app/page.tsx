@@ -13,7 +13,9 @@ import PartnersCarousel from "@/components/PartnersCarousel";
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
 import SponsorBar from "@/components/SponsorBar";
 import ScaleToFit from "@/components/ScaleToFit";
-
+import WavingFlags from "@/components/WavingFlags";
+import NeonBatSides from "@/components/NeonBatSides";
+import CricketSideDecor from "@/components/CricketSideDecor";
 export const metadata = homeMetadata;
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
@@ -221,7 +223,7 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
         </section>
 
-        {/* Portfolio Section */}
+        {/* ===================== Portfolio Section — WAVING FLAGS ADDED ===================== */}
         <section
           data-snap
           className="SectionScroll relative w-full h-full flex items-start"
@@ -233,6 +235,9 @@ export default async function HomePage() {
               className="absolute inset-0"
               style={{ background: "var(--bg-primary)" }}
             />
+
+            {/* ── WAVING FLAGS (left + right) ── */}
+            <CricketSideDecor />
 
             {/* SIDE PATTERN BACKGROUND */}
             <div className="pointer-events-none absolute inset-0 hidden lg:block">
@@ -349,6 +354,8 @@ export default async function HomePage() {
             </ScaleToFit>
           </div>
         </section>
+        {/* ===================== End Portfolio Section ================================= */}
+
         {/* News Section */}
         <section
           data-snap
@@ -459,6 +466,7 @@ export default async function HomePage() {
             </ScaleToFit>
           </div>
         </section>
+
         {/* Video Gallery Section */}
         {/* <section
           data-snap
@@ -509,6 +517,7 @@ export default async function HomePage() {
             </ScaleToFit>
           </div>
         </section> */}
+
         {/* Associate Section */}
         <section
           data-snap
@@ -619,6 +628,7 @@ export default async function HomePage() {
             </ScaleToFit>
           </div>
         </section>
+
         {/* FeedBack Section */}
         <section
           data-snap
