@@ -3,7 +3,6 @@ import Link from "next/link";
 import NewsListCards from "@/components/NewsListCards";
 import { HOME_NEWS_PARAM } from "@/lib/constant";
 import PrimaryButton from "@/components/ui/PrimaryButton";
-import SecondaryButton from "@/components/ui/SecondaryButton";
 
 type Article = {
   id: number;
@@ -26,18 +25,19 @@ const DEFAULT_API_BASE = "http://72.60.107.98:8001/api";
 const SITE_ORIGIN =
   process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://8jjcricket.com";
 
-
 function formatDate(date?: string | null) {
   if (!date) return "";
   return date.slice(0, 10);
 }
 
-
 async function fetchNews(): Promise<Article[]> {
   const base = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE;
-  const res = await fetch(`${base.replace(/\/+$/, "")}/news${HOME_NEWS_PARAM}`, {
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `${base.replace(/\/+$/, "")}/news${HOME_NEWS_PARAM}`,
+    {
+      cache: "no-store",
+    },
+  );
   if (!res.ok) return [];
   const json = await res.json();
   return json.data || [];
@@ -45,9 +45,7 @@ async function fetchNews(): Promise<Article[]> {
 
 export default async function HomeNewsShowcase() {
   const news = await fetchNews();
-
-  const items = news
-
+  const items = news;
   const featured = items.at(0);
 
   if (!featured) {
@@ -67,11 +65,11 @@ export default async function HomeNewsShowcase() {
 
   return (
     <div className="w-full">
-      <div className="grid gap-6 lg:gap-8 lg:grid-cols-[1.25fr,0.75fr]">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-[1.2fr,0.75fr]">
         {/* LEFT — Featured */}
         <Link
           href={`/news/${featured.slug}`}
-          className="group relative overflow-hidden rounded-3xl india-card-green-glow transition-all duration-500 hover:scale-[1.05] hover:rotate-x-3 hover:translate-z-10 hover:shadow-2xl shadow-lg"
+          className="group relative overflow-hidden rounded-3xl india-card-green-glow transition-all duration-500 hover:scale-[1.01] hover:rotate-x-3 hover:translate-z-10 hover:shadow-2xl shadow-lg"
         >
           {/* Image */}
           <div
@@ -82,7 +80,7 @@ export default async function HomeNewsShowcase() {
             <img
               src={featured.image_url!}
               alt=""
-              className="absolute inset-0 h-full w-full object-cover blur-md opacity-40 scale-110"
+              className="absolute inset-0 h-full w-full object-cover blur-md opacity-40 scale-103"
               aria-hidden="true"
             />
             {/* Full banner */}
@@ -90,7 +88,7 @@ export default async function HomeNewsShowcase() {
               src={featured.image_url!}
               alt={featured.title}
               className="relative h-full w-full object-contain object-center transition-transform duration-700 ease-out
-                         group-hover:scale-[1.03]"
+                         group-hover:scale-[1.01]"
             />
             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-india-charcoal via-india-charcoal/50 to-transparent" />
 
@@ -117,9 +115,7 @@ export default async function HomeNewsShowcase() {
 
             {/* CTA */}
             <div className="mt-5">
-              <PrimaryButton size="sm">
-                Read more
-              </PrimaryButton>
+              <PrimaryButton size="sm">Read more</PrimaryButton>
             </div>
           </div>
         </Link>
@@ -128,10 +124,7 @@ export default async function HomeNewsShowcase() {
         <div className="flex flex-col">
           <NewsListCards items={listItems} />
 
-          <PrimaryButton
-            href="/news"
-            className="mt-4 w-full"
-          >
+          <PrimaryButton href="/news" className="mt-4 w-full">
             View more →
           </PrimaryButton>
         </div>
@@ -139,4 +132,3 @@ export default async function HomeNewsShowcase() {
     </div>
   );
 }
-

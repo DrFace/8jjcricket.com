@@ -4,11 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { PlayerRespond } from "@/types/player";
-import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import { GetDisplayName } from "@/lib/player";
 import { MobilePlayerCareerTables } from "@/components/mobile/MobilePlayerCareerTables";
 import MobileBackButton from "@/components/mobile/MobileBackButton";
+import PlayerLoadingSkeliton from "@/components/mobile/PlayerLoadingSkeliton";
 
 export default function PlayerDetailPage() {
   const params = useParams();
@@ -72,21 +72,17 @@ export default function PlayerDetailPage() {
     <>
       <div className="min-h-screen">
         <main className="w-[99%]  mx-auto py-1">
+          <div className="flex items-center mb-5">
+            <MobileBackButton />
+            <span className="m-h">Player Details</span>
+          </div>
           {loading ? (
-            <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
-              <LoadingState label="player is loading" />
-            </div>
+            <PlayerLoadingSkeliton />
           ) : error || !player ? (
-            <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
-              <ErrorState message={error ?? "Player not found"} />
-            </div>
+            <ErrorState message={error ?? "Player not found"} />
           ) : (
             <div className="">
               <div className="space-y-6 w-full">
-                <div className="flex items-center">
-                  <MobileBackButton />
-                  <span className="m-h">Player Details</span>
-                </div>
                 <div className="flex flex-col items-center gap-8 md:flex-row bg-white/5 p-6 rounded-3xl border border-white/15 shadow-lg">
                   <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-slate-900 shadow-md">
                     <Image

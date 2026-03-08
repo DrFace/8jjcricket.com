@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { ArchiveFilters, ArchivesResponse } from "@/types/archive";
 import TopNav from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
@@ -11,153 +11,7 @@ import { BuildQueryString } from "@/lib/api/archives";
 import { NativeArchiveCard } from "@/components/NativeArchiveCard";
 import { PAGE_SIZE } from "@/lib/constant";
 import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
-
-/**
- * Pagination Component
- */
-interface PaginationProps {
-  currentPage: number;
-  lastPage: number;
-  onPageChange: (page: number) => void;
-  totalMatches: number;
-  from: number;
-  to: number;
-}
-
-function Pagination({
-  currentPage,
-  lastPage,
-  onPageChange,
-  totalMatches,
-  from,
-  to,
-}: PaginationProps) {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handlePageChange = (page: number) => {
-    onPageChange(page);
-    scrollToTop();
-  };
-
-  // Generate page numbers to display
-  const getPageNumbers = () => {
-    const pages: (number | string)[] = [];
-    const maxVisible = 7;
-
-    if (lastPage <= maxVisible) {
-      // Show all pages if total is small
-      for (let i = 1; i <= lastPage; i++) {
-        pages.push(i);
-      }
-    } else {
-      // Always show first page
-      pages.push(1);
-
-      if (currentPage > 3) {
-        pages.push("...");
-      }
-
-      // Show pages around current
-      const start = Math.max(2, currentPage - 1);
-      const end = Math.min(lastPage - 1, currentPage + 1);
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-
-      if (currentPage < lastPage - 2) {
-        pages.push("...");
-      }
-
-      // Always show last page
-      pages.push(lastPage);
-    }
-
-    return pages;
-  };
-
-  return (
-    <div className="rounded-3xl border border-india-gold/30 bg-slate-900/50 backdrop-blur-xl p-6 shadow-2xl">
-      {/* Info text */}
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-sky-100/70">
-          Showing <span className="font-bold text-india-gold">{from}</span> to{" "}
-          <span className="font-bold text-india-gold">{to}</span> of{" "}
-          <span className="font-bold text-india-gold">{totalMatches}</span>{" "}
-          matches
-        </p>
-      </div>
-
-      {/* Pagination controls */}
-      <div className="flex items-center justify-center gap-2 flex-wrap">
-        {/* Previous button */}
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-            currentPage === 1
-              ? "bg-slate-800/50 text-slate-500 cursor-not-allowed"
-              : "bg-gradient-to-r from-india-saffron/20 to-india-orange/20 text-india-gold hover:from-india-saffron/30 hover:to-india-orange/30 border border-india-gold/30 shadow-md"
-          }`}
-          aria-label="Previous page"
-        >
-          ← Previous
-        </button>
-
-        {/* Page numbers */}
-        <div className="flex items-center gap-1">
-          {getPageNumbers().map((page, index) => {
-            if (page === "...") {
-              return (
-                <span
-                  key={`ellipsis-${index}`}
-                  className="px-3 py-2 text-sky-100/50 font-medium"
-                >
-                  ...
-                </span>
-              );
-            }
-
-            const pageNum = page as number;
-            const isActive = pageNum === currentPage;
-
-            return (
-              <button
-                key={pageNum}
-                onClick={() => handlePageChange(pageNum)}
-                className={`min-w-[40px] h-10 rounded-xl text-sm font-medium transition-all ${
-                  isActive
-                    ? "bg-gradient-to-r from-india-saffron via-india-gold to-india-orange text-black font-extrabold shadow-lg shadow-india-gold/30"
-                    : "bg-slate-800/50 text-sky-100/80 hover:bg-slate-700/70 border border-white/10 hover:border-india-gold/30"
-                }`}
-                aria-label={`Page ${pageNum}`}
-                aria-current={isActive ? "page" : undefined}
-              >
-                {pageNum}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Next button */}
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === lastPage}
-          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-            currentPage === lastPage
-              ? "bg-slate-800/50 text-slate-500 cursor-not-allowed"
-              : "bg-gradient-to-r from-india-saffron/20 to-india-orange/20 text-india-gold hover:from-india-saffron/30 hover:to-india-orange/30 border border-india-gold/30 shadow-md"
-          }`}
-          aria-label="Next page"
-        >
-          Next →
-        </button>
-      </div>
-    </div>
-  );
-}
+import Pagination from "@/components/ui/Pagination";
 
 /**
  * Archives Page Component
@@ -472,12 +326,9 @@ export default function ArchivePage() {
                   {/* Pagination */}
                   {data && data.last_page > 1 && (
                     <Pagination
-                      currentPage={data.current_page}
-                      lastPage={data.last_page}
+                      page={data.current_page}
                       onPageChange={setPage}
-                      totalMatches={data.total}
-                      from={data.from}
-                      to={data.to}
+                      lastPage={data.last_page}
                     />
                   )}
                 </section>

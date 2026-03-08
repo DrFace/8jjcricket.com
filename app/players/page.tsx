@@ -5,6 +5,8 @@ import PlayerCard from "@/components/PlayerCard";
 import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
 import { debounce } from "@/lib/debounce";
+import CountryDropdown from "@/components/players/CountryDropdown";
+import Pagination from "@/components/ui/Pagination";
 
 type Country = { id: number; name: string };
 
@@ -283,22 +285,15 @@ export default function PlayersPage() {
 
                 <div className="space-y-2">
                   <label className="font-bold text-india-gold">Country</label>
-                  <select
-                    className="w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none focus:border-india-gold/50 focus:ring-india-gold/30 transition-all"
+                  <CountryDropdown
+                    countries={countries}
                     value={countryId}
-                    onChange={(e) => {
-                      setCountryId(e.target.value);
+                    onChange={(nextCountryId) => {
+                      setCountryId(nextCountryId);
                       setPage(1);
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                  >
-                    <option value="">All</option>
-                    {countries.map((c) => (
-                      <option key={c.id} value={String(c.id)}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </div>
               </div>
             </aside>
@@ -361,36 +356,14 @@ export default function PlayersPage() {
                           );
                         })}
                       </div>
-
-                      {totalPages > 1 && (
-                        <div className="mt-6 flex items-center justify-center gap-3 text-sm">
-                          <button
-                            disabled={page === 1}
-                            onClick={() => {
-                              setPage((x) => Math.max(1, x - 1));
-                              window.scrollTo({ top: 0, behavior: "smooth" });
-                            }}
-                            className="rounded-full border border-india-gold/30 bg-slate-900/80 px-3 py-1.5 text-india-gold backdrop-blur-sm hover:bg-slate-800/80 hover:border-india-gold/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all font-bold"
-                          >
-                            Prev
-                          </button>
-
-                          <span className="rounded-full border border-white/20 bg-black/50 px-3 py-1.5 text-india-gold backdrop-blur-xl font-medium">
-                            Page {page} of {totalPages}
-                          </span>
-
-                          <button
-                            disabled={page === totalPages}
-                            onClick={() => {
-                              setPage((x) => Math.min(totalPages, x + 1));
-                              window.scrollTo({ top: 0, behavior: "smooth" });
-                            }}
-                            className="rounded-full border border-india-gold/30 bg-slate-900/80 px-3 py-1.5 text-india-gold backdrop-blur-sm hover:bg-slate-800/80 hover:border-india-gold/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all font-bold"
-                          >
-                            Next
-                          </button>
-                        </div>
-                      )}
+   <Pagination 
+                    page={page}
+                    lastPage={totalPages}
+                    onPageChange={(newPage) => {
+                      setPage(newPage);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                  />
                     </>
                   )}
                 </>

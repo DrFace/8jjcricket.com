@@ -142,7 +142,7 @@ export default async function MobileArticlePage({ params }: Props) {
 
         {article.published_at && (
           <p className="text-xs text-white/50 mb-4">
-            {new Date(article.published_at).toLocaleString()}
+            {`${new Date(article.published_at).toLocaleString().slice(0, 14)} ${new Date(article.published_at).toLocaleString().slice(18, 22)}`}
           </p>
         )}
 

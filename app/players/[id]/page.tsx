@@ -8,7 +8,7 @@ import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
 import { PlayerRespond } from "@/types/player";
 import { PlayerCareerTables } from "@/components/PlayerCareerTables";
-import LoadingState from "@/components/ui/LoadingState";
+import LoadingPlayerSkelition from "@/components/players/LoadingPlayerSkelition";
 import ErrorState from "@/components/ui/ErrorState";
 import { GetDisplayName } from "@/lib/player";
 
@@ -74,38 +74,17 @@ export default function PlayerDetailPage() {
 
   return (
     <>
-      <div className="min-h-screen flex flex-col">
-        <TopNav />
-        <main className="flex-1">
+      <TopNav />
+      <div className="min-h-screen">
+        <main className="w-full md:w-[99%] lg:w-[95%] xl:w-[85%] mx-auto py-4 space-y-4">
           {loading ? (
-            <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
-              <LoadingState label="player is loading" />
-            </div>
+            <LoadingPlayerSkelition />
           ) : error || !player ? (
             <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
               <ErrorState message={error ?? "Player not found"} />
             </div>
           ) : (
             <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
-              <Link
-                href="/players"
-                className="inline-flex items-center gap-2 rounded-xl border border-india-gold/30 bg-white/5 px-4 py-2 text-sm font-bold text-india-gold transition-all hover:bg-white/10 hover:border-india-gold/50"
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M19 12H5M12 19l-7-7 7-7" />
-                </svg>
-                Back to Players
-              </Link>
-
               <div className="flex flex-col items-center gap-8 md:flex-row mt-3 rounded-3xl border border-india-gold/30 bg-gradient-to-br from-india-charcoal via-slate-900 to-india-blue/20 p-8 shadow-2xl backdrop-blur-xl">
                 <div className="relative h-40 w-40 overflow-hidden rounded-2xl bg-white/5 border border-india-gold/20 shadow-lg">
                   <Image
@@ -115,6 +94,25 @@ export default function PlayerDetailPage() {
                     className="object-contain"
                   />
                 </div>
+
+                <Link
+                  href="/players"
+                  className="absolute top-5 right-5 text-xs font-semibold inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-500 text-black font-semibold shadow-lg shadow-amber-500/30 transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-amber-500/40 hover:-translate-y-[2px] active:translate-y-0 disabled:opacity-50 px-4 py-3 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                  </svg>
+                  Back to Players
+                </Link>
 
                 <div>
                   <h1 className="text-4xl font-bold text-white india-header-text mb-2">

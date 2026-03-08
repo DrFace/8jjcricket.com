@@ -453,7 +453,7 @@ export default async function HomePage() {
             </div>
 
             <ScaleToFit className="w-full h-full pt-16 pb-2">
-              <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+              <div className="relative w-full bg-transparent p-4 min-w-[1400px]">
                 <HomeNewsShowcase />
               </div>
             </ScaleToFit>

@@ -7,13 +7,13 @@ import TopNav from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
 import ErrorState from "@/components/ui/ErrorState";
-import { PaginationComponet } from "@/components/ui/Pagination";
 import { League } from "@/types/series";
 import { ApiResponse, TabKey, TeamFromAPI } from "@/types/team";
 import { HasValidImage } from "@/lib/teams";
 import { PAGE_SIZE } from "@/lib/constant";
 import TeamsCard from "@/components/TeamsCard";
 import { FetchJson } from "@/lib/fetcher";
+import Pagination from "@/components/ui/Pagination";
 
 function parseLeagueParam(value: string | null): string | null {
   if (!value) return null;
@@ -25,7 +25,7 @@ function parseLeagueParam(value: string | null): string | null {
 // Fallback: allow numeric IDs only (adjust if your IDs are not numeric).
 function sanitizeLeagueId(
   raw: string | null,
-  leagues: League[]
+  leagues: League[],
 ): string | null {
   if (!raw) return null;
 
@@ -47,7 +47,7 @@ function isNationalTeam(team: TeamFromAPI): boolean {
 function sortTeamsByImage(teams: TeamFromAPI[]): TeamFromAPI[] {
   // Avoid mutating original array
   return [...teams].sort(
-    (a, b) => Number(HasValidImage(b)) - Number(HasValidImage(a))
+    (a, b) => Number(HasValidImage(b)) - Number(HasValidImage(a)),
   );
 }
 
@@ -98,7 +98,7 @@ function useTeamsData(leagueId: string | null) {
     }
 
     return allTeams.filter((t) =>
-      teamIds.has(Number((t as any).sportmonks_team_id))
+      teamIds.has(Number((t as any).sportmonks_team_id)),
     );
   }, [allTeams, fixturesSWR.data, leagueId]);
 
@@ -126,7 +126,7 @@ export default function TeamsClient() {
 
   const leagueId = useMemo(
     () => sanitizeLeagueId(leagueParamRaw, leagues),
-    [leagueParamRaw, leagues]
+    [leagueParamRaw, leagues],
   );
 
   // Re-run data hook with validated leagueId
@@ -141,22 +141,22 @@ export default function TeamsClient() {
 
   const national = useMemo(
     () => sortTeamsByImage(data.teams.filter(isNationalTeam)),
-    [data.teams]
+    [data.teams],
   );
 
   const domestic = useMemo(
     () => sortTeamsByImage(data.teams.filter((t) => !isNationalTeam(t))),
-    [data.teams]
+    [data.teams],
   );
 
   const visibleNational = useMemo(
     () => (activeTab === "domestic" ? [] : national),
-    [activeTab, national]
+    [activeTab, national],
   );
 
   const visibleDomestic = useMemo(
     () => (activeTab === "international" ? [] : domestic),
-    [activeTab, domestic]
+    [activeTab, domestic],
   );
 
   const visibleTeamsCount = visibleNational.length + visibleDomestic.length;
@@ -166,12 +166,12 @@ export default function TeamsClient() {
 
   const pagedInternational = useMemo(
     () => paginate(visibleNational, pageIntl, PAGE_SIZE),
-    [visibleNational, pageIntl]
+    [visibleNational, pageIntl],
   );
 
   const pagedDomestic = useMemo(
     () => paginate(visibleDomestic, pageDom, PAGE_SIZE),
-    [visibleDomestic, pageDom]
+    [visibleDomestic, pageDom],
   );
 
   const onLeagueChange = useCallback(
@@ -179,7 +179,7 @@ export default function TeamsClient() {
       if (value === "all") router.push("/teams");
       else router.push(`/teams?league=${encodeURIComponent(value)}`);
     },
-    [router]
+    [router],
   );
 
   const goBack = useCallback(() => router.back(), [router]);
@@ -193,7 +193,6 @@ export default function TeamsClient() {
   return (
     <>
       {/* Prefer Next.js metadata in app router; kept here to match your current approach */}
-
 
       <div className="min-h-screen flex flex-col">
         <TopNav />
@@ -348,10 +347,10 @@ export default function TeamsClient() {
                         ))}
                       </div>
 
-                      <PaginationComponet
+                      <Pagination
                         page={pageIntl}
-                        totalPages={intlPages}
-                        onPage={setPageIntl}
+                        lastPage={intlPages}
+                        onPageChange={setPageIntl}
                       />
                     </section>
                   )}
@@ -374,15 +373,16 @@ export default function TeamsClient() {
                         ))}
                       </div>
 
-                      <PaginationComponet
+                      <Pagination
                         page={pageDom}
-                        totalPages={domPages}
-                        onPage={setPageDom}
+                        lastPage={domPages}
+                        onPageChange={setPageDom}
                       />
                     </section>
                   )}
                 </>
               )}
+              <div className="h-5" />
             </div>
           )}
         </main>

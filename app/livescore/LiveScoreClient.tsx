@@ -8,6 +8,7 @@ import UpcomingCard from "@/components/UpcomingCard";
 import { CRICKET_CATEGORIES } from "@/lib/constant";
 import LiveScoreCard from "@/components/LiveScoreCard";
 import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
+import Pagination from "@/components/ui/Pagination";
 
 const fetcher = (u: string) => fetch(u).then((r) => r.json());
 
@@ -127,44 +128,6 @@ function Calendar({
         className="w-full rounded-xl border border-white/10 bg-white/5 py-2 text-xs text-white/80 hover:bg-white/10 transition"
       >
         Clear date
-      </button>
-    </div>
-  );
-}
-
-function Pagination({
-  page,
-  totalPages,
-  onPrev,
-  onNext,
-}: {
-  page: number;
-  totalPages: number;
-  onPrev: () => void;
-  onNext: () => void;
-}) {
-  if (totalPages <= 1) return null;
-  return (
-    <div className="mt-6 flex items-center justify-center gap-3">
-      <button
-        type="button"
-        onClick={onPrev}
-        disabled={page <= 1}
-        className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed transition"
-      >
-        Prev
-      </button>
-      <div className="text-xs text-white/70">
-        Page <span className="text-white/90 font-semibold">{page}</span> /{" "}
-        {totalPages}
-      </div>
-      <button
-        type="button"
-        onClick={onNext}
-        disabled={page >= totalPages}
-        className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed transition"
-      >
-        Next
       </button>
     </div>
   );
@@ -429,15 +392,8 @@ export default function LiveScoreHome() {
 
                         <Pagination
                           page={upcomingPage}
-                          totalPages={upcomingTotalPages}
-                          onPrev={() =>
-                            setUpcomingPage((p) => Math.max(1, p - 1))
-                          }
-                          onNext={() =>
-                            setUpcomingPage((p) =>
-                              Math.min(upcomingTotalPages, p + 1),
-                            )
-                          }
+                          lastPage={upcomingTotalPages}
+                          onPageChange={setUpcomingPage}
                         />
                       </>
                     ) : (
@@ -481,15 +437,8 @@ export default function LiveScoreHome() {
 
                         <Pagination
                           page={recentPage}
-                          totalPages={recentTotalPages}
-                          onPrev={() =>
-                            setRecentPage((p) => Math.max(1, p - 1))
-                          }
-                          onNext={() =>
-                            setRecentPage((p) =>
-                              Math.min(recentTotalPages, p + 1),
-                            )
-                          }
+                          lastPage={recentTotalPages}
+                          onPageChange={setRecentPage}
                         />
                       </>
                     ) : (

@@ -8,7 +8,6 @@ import Link from "next/link";
 import TopNav from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
-import { PaginationComponet } from "@/components/ui/Pagination";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import SecondaryButton from "@/components/ui/SecondaryButton";
 import ErrorState from "@/components/ui/ErrorState";
@@ -19,6 +18,7 @@ import { LeagueRespond, SeriesByMonth } from "@/types/series";
 // ✅ IMPORT SEO DATA
 import { seriesMetadata, seriesJsonLd } from "@/components/seo/SeriesSeo";
 import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
+import Pagination from "@/components/ui/Pagination";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -479,10 +479,10 @@ export default function SeriesPage() {
                 </div>
               )}
 
-              <PaginationComponet
+              <Pagination
                 page={page}
-                totalPages={totalPages}
-                onPage={onPage}
+                lastPage={totalPages}
+                onPageChange={onPage}
               />
             </>
           )}

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import MobileShareButton from "@/components/mobile/MobileShareButton";
+import MobileNewsCategoryDropdown from "@/components/mobile/MobileNewsCategoryDropdown";
 import LoadingSkeleton from "./ui/LoadingSkeleton";
 
 type Category = {
@@ -169,7 +170,7 @@ function MobilePagination({
 export default function MobileNewsClient() {
   const [activeCategory, setActiveCategory] = useState<string | null>(() => {
     if (typeof window === "undefined") return null;
-    return sessionStorage.getItem("mobile-news-category") || null;
+    return sessionStorage.getItem("mobile-news-category") || "Events";
   });
   const [page, setPage] = useState<number>(() => {
     if (typeof window === "undefined") return 1;
@@ -259,41 +260,14 @@ export default function MobileNewsClient() {
             </h1>
           </div>
 
-          {/* Category chips */}
-          <div className="mb-4 -mx-4 px-4 overflow-x-auto">
-            <div className="flex gap-2 w-max">
-              <button
-                onClick={() => setActiveCategory(null)}
-                className={[
-                  "px-4 py-2 rounded-full text-sm border transition",
-                  activeCategory === null
-                    ? "bg-amber-300/20 text-amber-300 border-amber-300/40"
-                    : "bg-white/5 text-white/70 border-white/20 hover:bg-white/10",
-                ].join(" ")}
-              >
-                All
-              </button>
-
-              {!catError &&
-                categories?.data?.map((cat: Category) => {
-                  const isActive = activeCategory === cat.slug;
-                  return (
-                    <button
-                      key={cat.id}
-                      onClick={() => setActiveCategory(cat.slug)}
-                      className={[
-                        "px-4 py-2 rounded-full text-sm border transition",
-                        isActive
-                          ? "bg-amber-300/20 text-amber-300 border-amber-300/40"
-                          : "bg-white/5 text-white/70 border-white/10 hover:bg-white/10",
-                      ].join(" ")}
-                    >
-                      {cat.name}
-                    </button>
-                  );
-                })}
-            </div>
-          </div>
+          <MobileNewsCategoryDropdown
+            categories={
+              catError ? [] : ((categories?.data ?? []) as Category[])
+            }
+            activeCategory={activeCategory}
+            onChange={setActiveCategory}
+            disabled={Boolean(catError)}
+          />
 
           {/* States */}
           {error ? (
@@ -338,7 +312,7 @@ export default function MobileNewsClient() {
 
                         {publishedLabel && (
                           <p className="text-xs text-white/50 mt-1">
-                            {publishedLabel}
+                            {`${publishedLabel.slice(0, 15)} ${publishedLabel.slice(18, 22)}`}
                           </p>
                         )}
 
@@ -348,7 +322,7 @@ export default function MobileNewsClient() {
                           </p>
                         )}
 
-                        <div className="mt-3 flex items-center justify-between gap-3">
+                        <div className="flex items-center justify-between gap-3 mt-4">
                           <Link
                             href={`/mobile/news/${item.slug}`}
                             className="text-sm font-medium text-amber-300 hover:underline"

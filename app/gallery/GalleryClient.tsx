@@ -126,7 +126,7 @@ export default function GalleryClient({
           No albums found for this category.
         </div>
       ) : (
-        <div className="grid gap-5 lg:grid-cols-2">
+        <div className="grid gap-5 lg:grid-cols-1">
           {activeAlbums.map((album) => {
             const albumPhotos = photosByAlbumSlug[album.slug] || [];
             const cover = albumPhotos[0]?.image_url;
@@ -164,16 +164,16 @@ export default function GalleryClient({
                     No photos in this album.
                   </div>
                 ) : (
-                  <div className="grid auto-rows-[130px] grid-cols-2 gap-3 px-5 pb-5 sm:grid-cols-3">
+                  <div className="grid grid-cols-2 gap-3 px-5 pb-5 sm:grid-cols-3">
                     {albumPhotos.slice(0, 12).map((p) => (
                       <button
                         key={p.id}
                         onClick={() => setLightbox(p)}
                         className={[
-                          "relative overflow-hidden rounded-2xl ring-1 ring-white/10 hover:ring-white/20",
+                          "relative w-full overflow-hidden rounded-2xl ring-1 ring-white/10 hover:ring-white/20",
                           p.orientation === "portrait"
-                            ? "row-span-2"
-                            : "col-span-1",
+                            ? "aspect-[2/3]"
+                            : "aspect-[3/2]",
                         ].join(" ")}
                         aria-label="Open image"
                       >

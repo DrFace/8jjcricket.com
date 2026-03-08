@@ -5,6 +5,7 @@ import BottomNav from "@/components/BottomNav";
 import PlayerCard from "@/components/games/PlayerCard";
 import { debounce } from "@/lib/debounce";
 import MobilePagination from "@/components/mobile/MobilePagination";
+import CountryDropdown from "@/components/players/CountryDropdown";
 
 type Country = { id: number; name: string };
 
@@ -225,7 +226,7 @@ export default function PlayersPage() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
               {/* Filters */}
               <aside className="md:col-span-1">
-                <div className="sticky top-20 space-y-4 rounded-2xl border border-white/15 bg-black/50 p-4 text-sm shadow-2xl backdrop-blur-xl">
+                <div className="relative z-40 sticky top-20 space-y-4 rounded-2xl border border-white/15 bg-black/50 p-4 text-sm shadow-2xl backdrop-blur-xl">
                   <div className="space-y-4">
                     <label className="font-medium text-amber-200">
                       Search by name
@@ -242,26 +243,17 @@ export default function PlayersPage() {
                     />
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="font-medium text-amber-200">
-                      Country
-                    </label>
-                    <select
-                      className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none focus:border-amber-400/50 focus:ring-amber-400/30"
+                  <div className="space-y-2">
+                    <label className="font-bold text-india-gold">Country</label>
+                    <CountryDropdown
+                      countries={countries}
                       value={countryId}
-                      onChange={(e) => {
-                        setCountryId(e.target.value);
+                      onChange={(nextCountryId) => {
+                        setCountryId(nextCountryId);
                         setPage(1);
                         window.scrollTo({ top: 0, behavior: "smooth" });
                       }}
-                    >
-                      <option value="">All</option>
-                      {countries.map((c) => (
-                        <option key={c.id} value={String(c.id)}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
+                    />
                   </div>
                 </div>
               </aside>

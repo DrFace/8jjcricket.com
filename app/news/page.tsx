@@ -7,6 +7,7 @@ import Link from "next/link";
 import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
 import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
+import Pagination from "@/components/ui/Pagination";
 
 type Category = {
   id: number;
@@ -411,87 +412,6 @@ function ShareButton({ url, title }: { url: string; title: string }) {
   );
 }
 
-/* ------------------ PAGINATION COMPONENT (THIS IS THE PAGINATION) ------------------ */
-function Pagination({
-  page,
-  lastPage,
-  onPageChange,
-}: {
-  page: number;
-  lastPage: number;
-  onPageChange: (p: number) => void;
-}) {
-  if (lastPage <= 1) return null;
-
-  const pagesToShow = 5;
-  const half = Math.floor(pagesToShow / 2);
-
-  let start = Math.max(1, page - half);
-  let end = Math.min(lastPage, start + pagesToShow - 1);
-  start = Math.max(1, end - pagesToShow + 1);
-
-  const numbers: number[] = [];
-  for (let p = start; p <= end; p++) numbers.push(p);
-
-  return (
-    <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
-      <button
-        onClick={() => onPageChange(Math.max(1, page - 1))}
-        disabled={page <= 1}
-        className="px-4 py-2 rounded-xl border border-white/10 bg-white/5 text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/10 transition"
-      >
-        Prev
-      </button>
-
-      {start > 1 && (
-        <>
-          <button
-            onClick={() => onPageChange(1)}
-            className="px-4 py-2 rounded-xl border border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 transition"
-          >
-            1
-          </button>
-          {start > 2 && <span className="text-slate-400 px-2">…</span>}
-        </>
-      )}
-
-      {numbers.map((p) => (
-        <button
-          key={p}
-          onClick={() => onPageChange(p)}
-          className={`px-4 py-2 rounded-xl border border-white/10 transition ${
-            p === page
-              ? "bg-gradient-to-r from-india-saffron via-india-gold to-india-orange text-black font-semibold shadow-md"
-              : "bg-white/5 text-slate-200 hover:bg-white/10"
-          }`}
-        >
-          {p}
-        </button>
-      ))}
-
-      {end < lastPage && (
-        <>
-          {end < lastPage - 1 && <span className="text-slate-400 px-2">…</span>}
-          <button
-            onClick={() => onPageChange(lastPage)}
-            className="px-4 py-2 rounded-xl border border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 transition"
-          >
-            {lastPage}
-          </button>
-        </>
-      )}
-
-      <button
-        onClick={() => onPageChange(Math.min(lastPage, page + 1))}
-        disabled={page >= lastPage}
-        className="px-4 py-2 rounded-xl border border-white/10 bg-white/5 text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/10 transition"
-      >
-        Next
-      </button>
-    </div>
-  );
-}
-
 /* ------------------ MAIN PAGE ------------------ */
 export default function NewsPage() {
   const [activeCategory, setActiveCategory] = useState<string | null>("events");
@@ -709,7 +629,7 @@ export default function NewsPage() {
                       return (
                         <article
                           key={item.id}
-                          className="group rounded-2xl india-card-green-glow p-4 transition-all duration-300 hover:-translate-y-1"
+                          className="relative group rounded-2xl india-card-green-glow p-4 transition-all duration-300 hover:-translate-y-1"
                         >
                           {imgSrc && (
                             <div className="mb-3 overflow-hidden rounded-xl border border-white/10 relative">
@@ -752,7 +672,9 @@ export default function NewsPage() {
                             </p>
                           )}
 
-                          <div className="mt-4 flex items-center justify-between gap-3">
+                          <div className="h-14" />
+
+                          <div className="absolute bottom-4 left-4 right-4 mt-4 flex items-center justify-between gap-3">
                             <Link
                               href={`/news/${item.slug}`}
                               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg
