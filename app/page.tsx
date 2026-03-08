@@ -9,6 +9,7 @@ import PortraitShowcaseSection from "@/components/PortraitShowcaseSection";
 import InteractiveHeroVideo from "@/components/InteractiveHeroVideo";
 import PartnersCarousel from "@/components/PartnersCarousel";
 // import HomeVideoGallery from "@/components/HomeVideoGallery";
+import React from "react";
 
 import { homeMetadata, homeJsonLd } from "@/components/seo/HomeSeo";
 import SponsorBar from "@/components/SponsorBar";
@@ -17,6 +18,78 @@ import WavingFlags from "@/components/WavingFlags";
 import NeonBatSides from "@/components/NeonBatSides";
 import CricketSideDecor from "@/components/CricketSideDecor";
 export const metadata = homeMetadata;
+
+const SIDE_PATTERN_STYLE = `
+  .sp { position:absolute; top:0; height:100%; width:22vw; max-width:320px; pointer-events:none; }
+  .sp-l { left:0; }
+  .sp-r { right:0; }
+  .sp-grid { background-repeat:repeat; background-size:60px 60px; mix-blend-mode:screen; }
+
+  .sp-plus-l {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%2300aaff' stroke-opacity='0.55' stroke-width='1.5'%3E%3Cpath d='M10 10h10M15 5v10'/%3E%3Cpath d='M40 10h10M45 5v10'/%3E%3Cpath d='M10 40h10M15 35v10'/%3E%3Cpath d='M40 40h10M45 35v10'/%3E%3C/g%3E%3C/svg%3E");
+    opacity:0.5;
+    -webkit-mask-image:linear-gradient(to right,rgba(0,0,0,1) 0%,rgba(0,0,0,0.9) 55%,rgba(0,0,0,0) 100%);
+    mask-image:linear-gradient(to right,rgba(0,0,0,1) 0%,rgba(0,0,0,0.9) 55%,rgba(0,0,0,0) 100%);
+  }
+  .sp-cross-l {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%2300aaff' stroke-opacity='0.30' stroke-width='2.5'%3E%3Cpath d='M30 30h30M45 15v30'/%3E%3Cpath d='M120 100h30M135 85v30'/%3E%3Cpath d='M20 140h20M30 130v20'/%3E%3C/g%3E%3C/svg%3E");
+    background-size:180px 180px; opacity:0.55;
+    -webkit-mask-image:linear-gradient(to right,rgba(0,0,0,1) 0%,rgba(0,0,0,0.8) 55%,rgba(0,0,0,0) 100%);
+    mask-image:linear-gradient(to right,rgba(0,0,0,1) 0%,rgba(0,0,0,0.8) 55%,rgba(0,0,0,0) 100%);
+  }
+  .sp-plus-r {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23ffb800' stroke-opacity='0.55' stroke-width='1.5'%3E%3Cpath d='M10 10h10M15 5v10'/%3E%3Cpath d='M40 10h10M45 5v10'/%3E%3Cpath d='M10 40h10M15 35v10'/%3E%3Cpath d='M40 40h10M45 35v10'/%3E%3C/g%3E%3C/svg%3E");
+    opacity:0.45;
+    -webkit-mask-image:linear-gradient(to left,rgba(0,0,0,1) 0%,rgba(0,0,0,0.9) 55%,rgba(0,0,0,0) 100%);
+    mask-image:linear-gradient(to left,rgba(0,0,0,1) 0%,rgba(0,0,0,0.9) 55%,rgba(0,0,0,0) 100%);
+  }
+  .sp-cross-r {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%23ffb800' stroke-opacity='0.28' stroke-width='2.5'%3E%3Cpath d='M120 30h30M135 15v30'/%3E%3Cpath d='M20 90h30M35 75v30'/%3E%3Cpath d='M130 140h30M145 125v30'/%3E%3C/g%3E%3C/svg%3E");
+    background-size:180px 180px; opacity:0.55;
+    -webkit-mask-image:linear-gradient(to left,rgba(0,0,0,1) 0%,rgba(0,0,0,0.8) 55%,rgba(0,0,0,0) 100%);
+    mask-image:linear-gradient(to left,rgba(0,0,0,1) 0%,rgba(0,0,0,0.8) 55%,rgba(0,0,0,0) 100%);
+  }
+  .sp-fade-v {
+    background: linear-gradient(to bottom, var(--bg-primary) 0%, transparent 8%, transparent 92%, var(--bg-primary) 100%);
+  }
+`;
+
+const SidePatternBackground = React.memo(function SidePatternBackground() {
+  const leftGlow = {
+    background:
+      "radial-gradient(ellipse at 25% 25%,rgba(0,170,255,.14) 0%,transparent 65%)," +
+      "radial-gradient(ellipse at 60% 70%,rgba(255,184,0,.10) 0%,transparent 60%)," +
+      "radial-gradient(ellipse at 10% 55%,rgba(0,170,255,.08) 0%,transparent 50%)",
+    filter: "blur(28px)",
+  } satisfies React.CSSProperties;
+
+  const rightGlow = {
+    background:
+      "radial-gradient(ellipse at 75% 30%,rgba(255,184,0,.14) 0%,transparent 65%)," +
+      "radial-gradient(ellipse at 40% 65%,rgba(0,170,255,.09) 0%,transparent 60%)," +
+      "radial-gradient(ellipse at 90% 60%,rgba(255,184,0,.10) 0%,transparent 50%)",
+    filter: "blur(28px)",
+  } satisfies React.CSSProperties;
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: SIDE_PATTERN_STYLE }} />
+      <div className="pointer-events-none absolute inset-0 hidden lg:block">
+        {/* LEFT */}
+        <div className="sp sp-l sp-grid sp-plus-l" />
+        <div className="sp sp-l sp-grid sp-cross-l" />
+        <div className="sp sp-l" style={leftGlow} />
+        <div className="sp sp-l sp-fade-v" />
+
+        {/* RIGHT */}
+        <div className="sp sp-r sp-grid sp-plus-r" />
+        <div className="sp sp-r sp-grid sp-cross-r" />
+        <div className="sp sp-r" style={rightGlow} />
+        <div className="sp sp-r sp-fade-v" />
+      </div>
+    </>
+  );
+});
 
 const WelcomePopup = dynamic(() => import("@/components/WelcomePopup"), {
   ssr: false,
@@ -224,136 +297,29 @@ export default async function HomePage() {
         </section>
 
         {/* ===================== Portfolio Section — WAVING FLAGS ADDED ===================== */}
-        <section
-          data-snap
-          className="SectionScroll relative w-full h-full flex items-start"
-          style={{ background: "var(--bg-primary)" }}
-        >
-          <div className="relative h-full w-full flex items-start overflow-hidden">
-            {/* base bg */}
-            <div
-              className="absolute inset-0"
-              style={{ background: "var(--bg-primary)" }}
-            />
+      <section
+      data-snap
+      className="SectionScroll relative w-full h-full flex items-start"
+      style={{ background: "var(--bg-primary)" }}
+    >
+      <div className="relative h-full w-full flex items-start overflow-hidden">
+        {/* base bg */}
+        <div className="absolute inset-0" style={{ background: "var(--bg-primary)" }} />
 
-            {/* ── WAVING FLAGS (left + right) ── */}
-            {/* <CricketSideDecor /> */}
+        {/* trophy videos — left + right */}
+        {/* <CricketSideDecor /> */}
 
-            {/* SIDE PATTERN BACKGROUND */}
-            <div className="pointer-events-none absolute inset-0 hidden lg:block">
-              {/* ── LEFT SIDE ── */}
+        {/* plus/cross pattern decorations */}
+        <SidePatternBackground />
 
-              {/* Left: dense plus grid */}
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%2300aaff' stroke-opacity='0.55' stroke-width='1.5'%3E%3Cpath d='M10 10h10M15 5v10'/%3E%3Cpath d='M40 10h10M45 5v10'/%3E%3Cpath d='M10 40h10M15 35v10'/%3E%3Cpath d='M40 40h10M45 35v10'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "60px 60px",
-                  mixBlendMode: "screen",
-                  opacity: 0.5,
-                  WebkitMaskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-
-              {/* Left: large accent crosses */}
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%2300aaff' stroke-opacity='0.30' stroke-width='2.5'%3E%3Cpath d='M30 30h30M45 15v30'/%3E%3Cpath d='M120 100h30M135 85v30'/%3E%3Cpath d='M20 140h20M30 130v20'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "180px 180px",
-                  mixBlendMode: "screen",
-                  opacity: 0.55,
-                  WebkitMaskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-
-              {/* Left: ambient glow blobs */}
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background: `radial-gradient(ellipse at 25% 25%, rgba(0,170,255,0.14) 0%, transparent 65%), radial-gradient(ellipse at 60% 70%, rgba(255,184,0,0.10) 0%, transparent 60%), radial-gradient(ellipse at 10% 55%, rgba(0,170,255,0.08) 0%, transparent 50%)`,
-                  filter: "blur(28px)",
-                }}
-              />
-
-              {/* Left: top-to-bottom vertical fade */}
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, var(--bg-primary) 0%, transparent 8%, transparent 92%, var(--bg-primary) 100%)",
-                }}
-              />
-
-              {/* ── RIGHT SIDE ── */}
-
-              {/* Right: dense plus grid */}
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23ffb800' stroke-opacity='0.55' stroke-width='1.5'%3E%3Cpath d='M10 10h10M15 5v10'/%3E%3Cpath d='M40 10h10M45 5v10'/%3E%3Cpath d='M10 40h10M15 35v10'/%3E%3Cpath d='M40 40h10M45 35v10'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "60px 60px",
-                  mixBlendMode: "screen",
-                  opacity: 0.45,
-                  WebkitMaskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-
-              {/* Right: large accent crosses */}
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%23ffb800' stroke-opacity='0.28' stroke-width='2.5'%3E%3Cpath d='M120 30h30M135 15v30'/%3E%3Cpath d='M20 90h30M35 75v30'/%3E%3Cpath d='M130 140h30M145 125v30'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "180px 180px",
-                  mixBlendMode: "screen",
-                  opacity: 0.55,
-                  WebkitMaskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-
-              {/* Right: ambient glow blobs */}
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background: `radial-gradient(ellipse at 75% 30%, rgba(255,184,0,0.14) 0%, transparent 65%), radial-gradient(ellipse at 40% 65%, rgba(0,170,255,0.09) 0%, transparent 60%), radial-gradient(ellipse at 90% 60%, rgba(255,184,0,0.10) 0%, transparent 50%)`,
-                  filter: "blur(28px)",
-                }}
-              />
-
-              {/* Right: top-to-bottom vertical fade */}
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, var(--bg-primary) 0%, transparent 8%, transparent 92%, var(--bg-primary) 100%)",
-                }}
-              />
-            </div>
-
-            {/* existing content */}
-            <ScaleToFit className="w-full h-full pt-16 pb-2">
-              <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
-                <PortraitShowcaseSection />
-              </div>
-            </ScaleToFit>
+        {/* main content */}
+        <ScaleToFit className="w-full h-full pt-16 pb-2">
+          <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
+            <PortraitShowcaseSection />
           </div>
-        </section>
+        </ScaleToFit>
+      </div>
+    </section>
         {/* ===================== End Portfolio Section ================================= */}
 
         {/* News Section */}
@@ -368,96 +334,9 @@ export default async function HomePage() {
               style={{ background: "var(--bg-primary)" }}
             />
 
-            {/* SIDE PATTERN BACKGROUND */}
-            <div className="pointer-events-none absolute inset-0 hidden lg:block">
-              {/* ── LEFT SIDE ── */}
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%2300aaff' stroke-opacity='0.55' stroke-width='1.5'%3E%3Cpath d='M10 10h10M15 5v10'/%3E%3Cpath d='M40 10h10M45 5v10'/%3E%3Cpath d='M10 40h10M15 35v10'/%3E%3Cpath d='M40 40h10M45 35v10'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "60px 60px",
-                  mixBlendMode: "screen",
-                  opacity: 0.5,
-                  WebkitMaskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%2300aaff' stroke-opacity='0.30' stroke-width='2.5'%3E%3Cpath d='M30 30h30M45 15v30'/%3E%3Cpath d='M120 100h30M135 85v30'/%3E%3Cpath d='M20 140h20M30 130v20'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "180px 180px",
-                  mixBlendMode: "screen",
-                  opacity: 0.55,
-                  WebkitMaskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background: `radial-gradient(ellipse at 25% 25%, rgba(0,170,255,0.14) 0%, transparent 65%), radial-gradient(ellipse at 60% 70%, rgba(255,184,0,0.10) 0%, transparent 60%), radial-gradient(ellipse at 10% 55%, rgba(0,170,255,0.08) 0%, transparent 50%)`,
-                  filter: "blur(28px)",
-                }}
-              />
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, var(--bg-primary) 0%, transparent 8%, transparent 92%, var(--bg-primary) 100%)",
-                }}
-              />
+            {/* plus/cross pattern decorations */}
+            <SidePatternBackground />
 
-              {/* ── RIGHT SIDE ── */}
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23ffb800' stroke-opacity='0.55' stroke-width='1.5'%3E%3Cpath d='M10 10h10M15 5v10'/%3E%3Cpath d='M40 10h10M45 5v10'/%3E%3Cpath d='M10 40h10M15 35v10'/%3E%3Cpath d='M40 40h10M45 35v10'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "60px 60px",
-                  mixBlendMode: "screen",
-                  opacity: 0.45,
-                  WebkitMaskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%23ffb800' stroke-opacity='0.28' stroke-width='2.5'%3E%3Cpath d='M120 30h30M135 15v30'/%3E%3Cpath d='M20 90h30M35 75v30'/%3E%3Cpath d='M130 140h30M145 125v30'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "180px 180px",
-                  mixBlendMode: "screen",
-                  opacity: 0.55,
-                  WebkitMaskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background: `radial-gradient(ellipse at 75% 30%, rgba(255,184,0,0.14) 0%, transparent 65%), radial-gradient(ellipse at 40% 65%, rgba(0,170,255,0.09) 0%, transparent 60%), radial-gradient(ellipse at 90% 60%, rgba(255,184,0,0.10) 0%, transparent 50%)`,
-                  filter: "blur(28px)",
-                }}
-              />
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, var(--bg-primary) 0%, transparent 8%, transparent 92%, var(--bg-primary) 100%)",
-                }}
-              />
-            </div>
 
             <ScaleToFit className="w-full h-full pt-16 pb-2">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
@@ -530,96 +409,9 @@ export default async function HomePage() {
               style={{ background: "var(--bg-primary)" }}
             />
 
-            {/* SIDE PATTERN BACKGROUND */}
-            <div className="pointer-events-none absolute inset-0 hidden lg:block">
-              {/* ── LEFT SIDE ── */}
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%2300aaff' stroke-opacity='0.55' stroke-width='1.5'%3E%3Cpath d='M10 10h10M15 5v10'/%3E%3Cpath d='M40 10h10M45 5v10'/%3E%3Cpath d='M10 40h10M15 35v10'/%3E%3Cpath d='M40 40h10M45 35v10'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "60px 60px",
-                  mixBlendMode: "screen",
-                  opacity: 0.5,
-                  WebkitMaskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%2300aaff' stroke-opacity='0.30' stroke-width='2.5'%3E%3Cpath d='M30 30h30M45 15v30'/%3E%3Cpath d='M120 100h30M135 85v30'/%3E%3Cpath d='M20 140h20M30 130v20'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "180px 180px",
-                  mixBlendMode: "screen",
-                  opacity: 0.55,
-                  WebkitMaskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background: `radial-gradient(ellipse at 25% 25%, rgba(0,170,255,0.14) 0%, transparent 65%), radial-gradient(ellipse at 60% 70%, rgba(255,184,0,0.10) 0%, transparent 60%), radial-gradient(ellipse at 10% 55%, rgba(0,170,255,0.08) 0%, transparent 50%)`,
-                  filter: "blur(28px)",
-                }}
-              />
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, var(--bg-primary) 0%, transparent 8%, transparent 92%, var(--bg-primary) 100%)",
-                }}
-              />
+            {/* plus/cross pattern decorations */}
+            <SidePatternBackground />
 
-              {/* ── RIGHT SIDE ── */}
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23ffb800' stroke-opacity='0.55' stroke-width='1.5'%3E%3Cpath d='M10 10h10M15 5v10'/%3E%3Cpath d='M40 10h10M45 5v10'/%3E%3Cpath d='M10 40h10M15 35v10'/%3E%3Cpath d='M40 40h10M45 35v10'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "60px 60px",
-                  mixBlendMode: "screen",
-                  opacity: 0.45,
-                  WebkitMaskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%23ffb800' stroke-opacity='0.28' stroke-width='2.5'%3E%3Cpath d='M120 30h30M135 15v30'/%3E%3Cpath d='M20 90h30M35 75v30'/%3E%3Cpath d='M130 140h30M145 125v30'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "180px 180px",
-                  mixBlendMode: "screen",
-                  opacity: 0.55,
-                  WebkitMaskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background: `radial-gradient(ellipse at 75% 30%, rgba(255,184,0,0.14) 0%, transparent 65%), radial-gradient(ellipse at 40% 65%, rgba(0,170,255,0.09) 0%, transparent 60%), radial-gradient(ellipse at 90% 60%, rgba(255,184,0,0.10) 0%, transparent 50%)`,
-                  filter: "blur(28px)",
-                }}
-              />
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, var(--bg-primary) 0%, transparent 8%, transparent 92%, var(--bg-primary) 100%)",
-                }}
-              />
-            </div>
 
             <ScaleToFit className="w-full h-full pt-16 pb-2">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
@@ -641,96 +433,9 @@ export default async function HomePage() {
               style={{ background: "var(--bg-primary)" }}
             />
 
-            {/* SIDE PATTERN BACKGROUND */}
-            <div className="pointer-events-none absolute inset-0 hidden lg:block">
-              {/* ── LEFT SIDE ── */}
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%2300aaff' stroke-opacity='0.55' stroke-width='1.5'%3E%3Cpath d='M10 10h10M15 5v10'/%3E%3Cpath d='M40 10h10M45 5v10'/%3E%3Cpath d='M10 40h10M15 35v10'/%3E%3Cpath d='M40 40h10M45 35v10'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "60px 60px",
-                  mixBlendMode: "screen",
-                  opacity: 0.5,
-                  WebkitMaskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%2300aaff' stroke-opacity='0.30' stroke-width='2.5'%3E%3Cpath d='M30 30h30M45 15v30'/%3E%3Cpath d='M120 100h30M135 85v30'/%3E%3Cpath d='M20 140h20M30 130v20'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "180px 180px",
-                  mixBlendMode: "screen",
-                  opacity: 0.55,
-                  WebkitMaskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background: `radial-gradient(ellipse at 25% 25%, rgba(0,170,255,0.14) 0%, transparent 65%), radial-gradient(ellipse at 60% 70%, rgba(255,184,0,0.10) 0%, transparent 60%), radial-gradient(ellipse at 10% 55%, rgba(0,170,255,0.08) 0%, transparent 50%)`,
-                  filter: "blur(28px)",
-                }}
-              />
-              <div
-                className="absolute left-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, var(--bg-primary) 0%, transparent 8%, transparent 92%, var(--bg-primary) 100%)",
-                }}
-              />
+            {/* plus/cross pattern decorations */}
+            <SidePatternBackground />
 
-              {/* ── RIGHT SIDE ── */}
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23ffb800' stroke-opacity='0.55' stroke-width='1.5'%3E%3Cpath d='M10 10h10M15 5v10'/%3E%3Cpath d='M40 10h10M45 5v10'/%3E%3Cpath d='M10 40h10M15 35v10'/%3E%3Cpath d='M40 40h10M45 35v10'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "60px 60px",
-                  mixBlendMode: "screen",
-                  opacity: 0.45,
-                  WebkitMaskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%23ffb800' stroke-opacity='0.28' stroke-width='2.5'%3E%3Cpath d='M120 30h30M135 15v30'/%3E%3Cpath d='M20 90h30M35 75v30'/%3E%3Cpath d='M130 140h30M145 125v30'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "180px 180px",
-                  mixBlendMode: "screen",
-                  opacity: 0.55,
-                  WebkitMaskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                  maskImage:
-                    "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 55%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background: `radial-gradient(ellipse at 75% 30%, rgba(255,184,0,0.14) 0%, transparent 65%), radial-gradient(ellipse at 40% 65%, rgba(0,170,255,0.09) 0%, transparent 60%), radial-gradient(ellipse at 90% 60%, rgba(255,184,0,0.10) 0%, transparent 50%)`,
-                  filter: "blur(28px)",
-                }}
-              />
-              <div
-                className="absolute right-0 top-0 h-full w-[22vw] max-w-[320px]"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, var(--bg-primary) 0%, transparent 8%, transparent 92%, var(--bg-primary) 100%)",
-                }}
-              />
-            </div>
 
             <ScaleToFit className="w-full h-full pt-16 pb-2">
               <div className="relative w-full bg-transparent p-4 min-w-[1440px]">
