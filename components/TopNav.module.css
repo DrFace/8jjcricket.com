@@ -13,6 +13,20 @@
     #034d81 90%,
     #012e72 100%
   );
+/* 
+.gradientText {
+  background: linear-gradient(
+    270deg,
+    #fcd34d 10%,
+    #aca109 15%,
+    #a0af87 0%,
+    #57aeec 60%,
+    #034d81 90%,
+    #012e72 100%
+  ); */
+
+
+
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
