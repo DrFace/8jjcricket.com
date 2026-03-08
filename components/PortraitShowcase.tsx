@@ -18,8 +18,6 @@ type PortraitPage = {
   portrait_image_url?: string | null;
 };
 
-// IMPORTANT:
-// Use NEXT_PUBLIC_BACKEND_BASE as the site origin (NO /api)
 const SITE_ORIGIN = (
   process.env.NEXT_PUBLIC_BACKEND_BASE ||
   process.env.NEXT_PUBLIC_SITE_ORIGIN ||
@@ -30,20 +28,16 @@ const SITE_ORIGIN = (
 
 const DEFAULT_LEFT_IMAGE = "/AMD.png";
 
-function pickFirst<T>(...vals: (T | null | undefined)[]) {
+function pickFirst<T>(...vals: (T | null | undefined)[]): T | null {
   for (const v of vals) {
-    if (v !== null && v !== undefined && String(v).trim() !== "") return v;
+    if (v !== null && v !== undefined && String(v).trim() !== "") return v as T;
   }
   return null;
 }
 
 function toStorageUrl(pathOrUrl: string | null): string | null {
   if (!pathOrUrl) return null;
-
-  // If backend returns absolute URLs, keep them
   if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
-
-  // Otherwise treat as a storage path
   const clean = String(pathOrUrl).replaceAll("\\", "/").replace(/^\/+/, "");
   return `${SITE_ORIGIN}/storage/${clean}`;
 }
@@ -64,8 +58,6 @@ function getMainPortrait(p: PortraitPage) {
     ),
   );
 }
-
-// THIS is what you requested for the slideshow:
 function getPortraitImage(p: PortraitPage) {
   return toStorageUrl(pickFirst(p.portrait_image_url, p.portrait_image_path));
 }
@@ -86,66 +78,52 @@ function PortraitSlideshow({
     if (index >= len) setIndex(0);
   }, [index, len]);
 
-  // Progress bar animation
   useEffect(() => {
     if (len <= 1) return;
-
     setProgress(0);
     const startTime = Date.now();
     const duration = 4000;
-
     const updateProgress = () => {
       const elapsed = Date.now() - startTime;
       const newProgress = Math.min((elapsed / duration) * 100, 100);
       setProgress(newProgress);
-
       if (newProgress < 100) {
         progressRef.current = setTimeout(updateProgress, 16);
       }
     };
-
     updateProgress();
-
     return () => {
-      if (progressRef.current) {
-        clearTimeout(progressRef.current);
-      }
+      if (progressRef.current) clearTimeout(progressRef.current);
     };
   }, [index, len]);
 
-  // Auto-play functionality
   useEffect(() => {
     if (len <= 1) return;
-
-    const startAutoPlay = () => {
-      autoPlayRef.current = setInterval(() => {
-        setIndex((i) => (i + 1) % len);
-      }, 4000);
-    };
-
-    startAutoPlay();
-
+    autoPlayRef.current = setInterval(() => {
+      setIndex((i) => (i + 1) % len);
+    }, 4000);
     return () => {
-      if (autoPlayRef.current) {
-        clearInterval(autoPlayRef.current);
-      }
+      if (autoPlayRef.current) clearInterval(autoPlayRef.current);
     };
   }, [len]);
 
   const canGo = len > 1;
 
+  const resetAutoPlay = () => {
+    if (autoPlayRef.current) {
+      clearInterval(autoPlayRef.current);
+      autoPlayRef.current = setInterval(
+        () => setIndex((i) => (i + 1) % len),
+        4000,
+      );
+    }
+  };
+
   const prev = useCallback(() => {
     if (!len || isTransitioning) return;
     setIsTransitioning(true);
     setIndex((i) => (i - 1 + len) % len);
-
-    if (autoPlayRef.current) {
-      clearInterval(autoPlayRef.current);
-      autoPlayRef.current = setInterval(() => {
-        setIndex((i) => (i + 1) % len);
-      }, 4000);
-    }
-
+    resetAutoPlay();
     setTimeout(() => setIsTransitioning(false), 700);
   }, [len, isTransitioning]);
 
@@ -153,14 +131,7 @@ function PortraitSlideshow({
     if (!len || isTransitioning) return;
     setIsTransitioning(true);
     setIndex((i) => (i + 1) % len);
-
-    if (autoPlayRef.current) {
-      clearInterval(autoPlayRef.current);
-      autoPlayRef.current = setInterval(() => {
-        setIndex((i) => (i + 1) % len);
-      }, 4000);
-    }
-
+    resetAutoPlay();
     setTimeout(() => setIsTransitioning(false), 700);
   }, [len, isTransitioning]);
 
@@ -169,14 +140,7 @@ function PortraitSlideshow({
       if (isTransitioning || slideIndex === index) return;
       setIsTransitioning(true);
       setIndex(slideIndex);
-
-      if (autoPlayRef.current) {
-        clearInterval(autoPlayRef.current);
-        autoPlayRef.current = setInterval(() => {
-          setIndex((i) => (i + 1) % len);
-        }, 4000);
-      }
-
+      resetAutoPlay();
       setTimeout(() => setIsTransitioning(false), 700);
     },
     [isTransitioning, index, len],
@@ -186,18 +150,12 @@ function PortraitSlideshow({
 
   return (
     <div className="group/carousel relative h-full w-full overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 via-slate-800 to-india-saffron/30 border border-india-gold/60 shadow-2xl shadow-india-gold/30">
-      {/* Sliding container - FIXED: Use proper flex layout */}
       <div
         className="flex h-full transition-transform duration-700 ease-out"
-        style={{
-          transform: `translateX(-${index * 100}%)`,
-        }}
+        style={{ transform: `translateX(-${index * 100}%)` }}
       >
         {items.map((item, idx) => {
           const isActive = idx === index;
-          const isPrev = idx === (index - 1 + len) % len;
-          const isNext = idx === (index + 1) % len;
-
           return (
             <div key={idx} className="relative h-full w-full flex-shrink-0">
               <a
@@ -207,7 +165,6 @@ function PortraitSlideshow({
                 className="absolute inset-0 block group/slide"
                 title={item.title}
               >
-                {/* Image with parallax effect */}
                 <div className="absolute inset-0 overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -219,12 +176,8 @@ function PortraitSlideshow({
                     draggable={false}
                   />
                 </div>
-
-                {/* Gradient overlays */}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30 opacity-0 transition-opacity duration-500 group-hover/slide:opacity-100" />
-
-                {/* Title overlay with animation - only visible on hover */}
                 <div
                   className={`pointer-events-none absolute bottom-0 left-0 right-0 p-8 text-white transition-all duration-700 ${
                     isActive ? "translate-y-0" : "translate-y-4"
@@ -241,7 +194,6 @@ function PortraitSlideshow({
         })}
       </div>
 
-      {/* Enhanced Prev / Next buttons */}
       <div className="absolute inset-y-0 left-6 z-20 flex items-center opacity-0 transition-opacity duration-300 group-hover/carousel:opacity-100">
         <IconButton
           onClick={(e: React.MouseEvent) => {
@@ -298,7 +250,6 @@ function PortraitSlideshow({
         />
       </div>
 
-      {/* Enhanced dot indicators - only visible on hover */}
       {len > 1 && (
         <div className="absolute top-6 left-1/2 z-20 flex -translate-x-1/2 gap-3 rounded-full bg-black/40 px-4 py-3 backdrop-blur-md opacity-0 transition-opacity duration-300 group-hover/carousel:opacity-100">
           {items.map((_, idx) => (
@@ -327,7 +278,6 @@ function PortraitSlideshow({
         </div>
       )}
 
-      {/* Decorative corner accents */}
       <div className="pointer-events-none absolute top-0 left-0 h-32 w-32 bg-gradient-to-br from-india-saffron/20 to-transparent rounded-br-full" />
       <div className="pointer-events-none absolute bottom-0 right-0 h-32 w-32 bg-gradient-to-tl from-india-green/20 to-transparent rounded-tl-full" />
     </div>
@@ -341,7 +291,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
       .sort((a, b) => {
         const aId = typeof a?.id === "number" ? a.id : Number(a?.id ?? 0);
         const bId = typeof b?.id === "number" ? b.id : Number(b?.id ?? 0);
-        return aId - bId; // ASC: 0,1,2...
+        return aId - bId;
       });
   }, [pages]);
 
@@ -350,9 +300,8 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
 
   const leftImage = activeLeftUrl || DEFAULT_LEFT_IMAGE;
 
-  // Slideshow: use ONLY portrait_image_path / portrait_image_url (as requested)
   const slideshowItems = useMemo(() => {
-    const items = cleanPages
+    return cleanPages
       .map((p) => {
         const src = getPortraitImage(p);
         const isHttp =
@@ -365,8 +314,6 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
         };
       })
       .filter(Boolean) as { src: string; href: string; title: string }[];
-
-    return items;
   }, [cleanPages]);
 
   const onPortraitHover = useCallback((p: PortraitPage) => {
@@ -384,11 +331,9 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
 
   const PAGE_SIZE = 4;
   const [pageIndex, setPageIndex] = useState(0);
-
   const pageCount = Math.max(1, Math.ceil(cleanPages.length / PAGE_SIZE));
   const canPrev = pageIndex > 0;
   const canNext = pageIndex < pageCount - 1;
-
   const visiblePages = cleanPages.slice(
     pageIndex * PAGE_SIZE,
     pageIndex * PAGE_SIZE + PAGE_SIZE,
@@ -401,19 +346,39 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
       <div className="relative mx-auto h-[85vh] min-h-[700px] w-full max-w-[1600px]">
         <div className="pointer-events-none absolute inset-0 rounded-[2.5rem]" />
 
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-[46%] overflow-hidden rounded-l-[2.5rem]">
-          <div
-            className="absolute inset-0 bg-contain bg-left-bottom bg-no-repeat transition-all duration-700"
-            style={{
-              backgroundImage: `url(${leftImage})`,
-              filter: "drop-shadow(0 4px 18px rgba(0,0,0,0.18))",
-            }}
-          />
-        </div>
+        {/*
+          LEFT IMAGE PANEL
+          KEY FIX: backgroundImage and borderRadius must be on the SAME element.
+          Using a single div with inline style so the browser clips the
+          background image to the rounded corners correctly.
+          borderRadius order: top-left | top-right | bottom-right | bottom-left
+        */}
+   <div
+  className="pointer-events-none absolute inset-y-0 left-0 w-[46%] transition-all duration-700"
+  style={{
+    filter: "drop-shadow(0 4px 18px rgba(0,0,0,0.18))",
+  }}
+>
+  <div
+    className="h-full w-full overflow-hidden"
+    style={{
+      borderRadius: "2.5rem 0 2.5rem 2.5rem",
+    }}
+  >
+    <div
+      className="h-full w-full transition-all duration-700"
+      style={{
+        backgroundImage: `url(${leftImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center bottom",
+        backgroundRepeat: "no-repeat",
+      }}
+    />
+  </div>
+</div>
 
         <div className="relative ml-[46%] flex h-full flex-col gap-7 p-8 pt-16">
-          {/* TOP: Replace BannerCarouselNew with portrait_image_path slideshow + buttons */}
-          <div className="group relative h-[40%] overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-india-gold/50 transition-all duration-500 hover:ring-india-gold/70 hover:shadow-india-gold/50 hover:rotate-x-1 hover:scale-[1.01]">
+          <div className="group relative h-[40%] overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-india-gold/50 transition-all duration-500 hover:ring-india-gold/70 hover:shadow-india-gold/50 hover:scale-[1.01]">
             <PortraitSlideshow items={slideshowItems} />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </div>
@@ -432,7 +397,7 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                     href={isHttp ? p.slug : `/portraits/${p.slug}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="group relative h-full w-full max-w-[460px] mx-auto overflow-hidden rounded-[1.75rem] shadow-2xl transition-all duration-500 hover:scale-[1.05] hover:rotate-x-2 hover:shadow-india-gold/70"
+                    className="group relative h-full w-full max-w-[460px] mx-auto overflow-hidden rounded-[1.75rem] shadow-2xl transition-all duration-500 hover:scale-[1.05] hover:shadow-india-gold/70"
                     onMouseEnter={() => onPortraitHover(p)}
                     onMouseLeave={onPortraitLeave}
                     title={p.title}
@@ -483,7 +448,6 @@ export default function PortraitShowcase({ pages }: { pages: PortraitPage[] }) {
                   </svg>
                 }
               />
-
               <IconButton
                 onClick={() =>
                   setPageIndex((p) => Math.min(pageCount - 1, p + 1))
