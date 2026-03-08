@@ -24,7 +24,7 @@ export default function RankingTable({ data, title }: RankingTableProps) {
   return (
     <section className="p-[1px] rounded-2xl bg-gradient-to-b from-india-gold/50 to-transparent">
       <div className="bg-slate-900/80 rounded-2xl p-4 overflow-hidden backdrop-blur-md">
-        <div className="flex justify-between items-center mb-4 border-b border-india-gold/20 pb-2">
+        <div className="flex justify-center items-center mb-4 border-b border-india-gold/20 pb-2">
           <h2 className="text-sm font-bold text-india-gold uppercase tracking-wider india-header-text">
             {title}
           </h2>
@@ -42,7 +42,7 @@ export default function RankingTable({ data, title }: RankingTableProps) {
                     >
                       {header}
                     </th>
-                  )
+                  ),
                 )}
               </tr>
             </thead>

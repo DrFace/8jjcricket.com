@@ -287,433 +287,442 @@ export default function ArchivePage() {
   // Check if any filters are active
   const hasActiveFilters = category || format || date;
 
-  // Error state
-  if (error) {
-    return (
-      <>
-        <TopNav />
-        <BottomNav />
-        <div className="min-h-[60vh] flex items-center justify-center overflow-visible">
-          <div className="max-w-md w-full rounded-2xl border border-red-500/30 bg-black/70 backdrop-blur-xl px-6 py-8 shadow-2xl">
-            <div className="flex items-start gap-4">
-              <div className="text-3xl">⚠️</div>
-              <div>
-                <h1 className="text-xl font-semibold text-red-400 mb-2">
-                  Failed to load archives
-                </h1>
-                <p className="text-sm text-red-300/80 mb-4">{error}</p>
-                <button
-                  onClick={() => window.location.reload()}
-                  className="px-4 py-2 rounded-lg bg-red-500/20 text-red-300 hover:bg-red-500/30 transition-colors text-sm font-medium border border-red-500/30"
-                >
-                  Reload Page
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <Footer />
-      </>
-    );
-  }
-
-  // Loading state
-  if (isLoading) {
-    return (
-      <>
-        <TopNav />
-        <BottomNav />
-
-        <div className="min-h-[60vh] space-y-6 m-2">
-          {/* Hero */}
-          <div className="rounded-3xl border border-white/80 bg-slate-900/80 px-6 py-5 shadow-2xl backdrop-blur-xl">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-xs font-semibold tracking-[0.18em] text-amber-300">
-                  8JJCRICKET · ARCHIVE
-                </p>
-                <h1 className="mt-2 text-2xl md:text-3xl font-semibold text-white">
-                  Cricket Archives
-                </h1>
-                <p className="mt-2 text-sm md:text-base text-sky-100/80 max-w-xl">
-                  {description}
-                </p>
-              </div>
-              <div className="hidden sm:flex items-center gap-3 rounded-full border border-white/20 bg-black/40 px-4 py-2 backdrop-blur-sm">
-                <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-                <span className="text-xs font-medium text-amber-200">
-                  Loading archives…
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Skeleton grid */}
-          <LoadingSkeleton num={6} col={3} />
-        </div>
-        <Footer />
-      </>
-    );
-  }
-
-  // Empty state
-  if (!dataMemo || dataMemo.length === 0) {
-    return (
-      <>
-        <TopNav />
-        <BottomNav />
-
-        <div className="space-y-6">
-          {/* Hero */}
-          <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div>
-                <p className="text-xs font-semibold tracking-[0.18em] text-amber-400">
-                  8JJCRICKET · ARCHIVE
-                </p>
-                <h1 className="mt-2 text-2xl md:text-3xl font-semibold text-white">
-                  Cricket Archives
-                </h1>
-                <p className="mt-2 text-sm md:text-base text-sky-100/90 max-w-xl">
-                  {description}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Filters */}
-          <div className="rounded-2xl border border-white/15 bg-black/50 backdrop-blur-xl p-5 shadow-2xl">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Category Filter */}
-              <div>
-                <label
-                  htmlFor="category"
-                  className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
-                >
-                  Category
-                </label>
-                <select
-                  id="category"
-                  value={category}
-                  onChange={(e) =>
-                    handleCategoryChange(
-                      e.target.value as "" | "International" | "Leagues",
-                    )
-                  }
-                  className="w-full rounded-lg border border-white/20 bg-slate-800/80 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
-                >
-                  <option value="">All Categories</option>
-                  <option value="International">International</option>
-                  <option value="Leagues">Leagues</option>
-                </select>
-              </div>
-
-              {/* Format Filter */}
-              <div>
-                <label
-                  htmlFor="format"
-                  className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
-                >
-                  Format
-                </label>
-                <select
-                  id="format"
-                  value={format}
-                  onChange={(e) =>
-                    handleFormatChange(
-                      e.target.value as "" | "T20" | "ODI" | "Test",
-                    )
-                  }
-                  className="w-full rounded-lg border border-white/20 bg-slate-800/80 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
-                >
-                  <option value="">All Formats</option>
-                  <option value="T20">T20</option>
-                  <option value="ODI">ODI</option>
-                  <option value="Test">Test</option>
-                </select>
-              </div>
-
-              {/* Date Filter */}
-              <div>
-                <label
-                  htmlFor="date"
-                  className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
-                >
-                  Match Date
-                </label>
-                <input
-                  type="date"
-                  id="date"
-                  value={date}
-                  onChange={(e) => handleDateChange(e.target.value)}
-                  className="w-full rounded-lg border border-white/20 bg-slate-800/80 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
-                />
-              </div>
-
-              {/* Clear Button */}
-              <div className="flex items-end">
-                <button
-                  onClick={clearFilters}
-                  disabled={!hasActiveFilters}
-                  className={`w-full px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    hasActiveFilters
-                      ? "bg-gradient-to-r from-red-500/20 to-orange-500/20 text-red-300 hover:from-red-500/30 hover:to-orange-500/30 border border-red-500/30"
-                      : "bg-slate-800/50 text-slate-500 cursor-not-allowed"
-                  }`}
-                >
-                  Clear Filters
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Empty state message */}
-          <div className="min-h-[40vh] flex items-center justify-center">
-            <div className="max-w-md w-full rounded-3xl border border-india-gold/20 bg-slate-900/60 backdrop-blur-xl px-6 py-8 shadow-2xl text-center">
-              <div className="text-5xl mb-4 grayscale opacity-50">🏏</div>
-              <h2 className="text-xl font-bold text-india-gold mb-2">
-                No matches found
-              </h2>
-              <p className="text-sm text-sky-100/80">
-                {hasActiveFilters
-                  ? "Try adjusting your filters to see more results."
-                  : "No archived matches are available at this time."}
-              </p>
-              {hasActiveFilters && (
-                <button
-                  onClick={clearFilters}
-                  className="mt-4 px-6 py-2 rounded-xl bg-india-gold/10 text-india-gold hover:bg-india-gold/20 transition-all text-sm font-bold border border-india-gold/30 hover:shadow-[0_0_15px_rgba(255,153,51,0.2)]"
-                >
-                  Clear All Filters
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-        <Footer />
-      </>
-    );
-  }
-
   // Main content
   return (
     <>
       <TopNav />
       <BottomNav />
 
-      <div className="flex flex-col-reverse gap-6 lg:flex-row my-2">
-        {/* Main content */}
-        <main className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[82%] 2xl:ml-[9%] xl:ml-[4%] lg:ml-[1%]">
-          {/* Hero */}
-          <div className="rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div>
-                <p className="text-xs font-bold tracking-[0.18em] text-india-gold">
-                  8JJCRICKET · ARCHIVE
-                </p>
-                <h1 className="mt-2 text-2xl md:text-3xl font-bold text-white india-header-text">
-                  Cricket Archives
-                </h1>
-                <p className="mt-2 text-sm md:text-base text-sky-100/90 max-w-xl">
-                  {description}
-                </p>
+      <div className="min-h-screen">
+        <main className="w-full md:w-[99%] lg:w-[95%] xl:w-[85%] mx-auto py-4">
+          {/* Loading */}
+          {dataMemo && dataMemo.length > 0 ? (
+            isLoading ? (
+              <div className="min-h-[60vh] space-y-6 m-2">
+                {/* Hero */}
+                <div className="rounded-3xl border border-white/80 bg-slate-900/80 px-6 py-5 shadow-2xl backdrop-blur-xl">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-semibold tracking-[0.18em] text-amber-300">
+                        8JJCRICKET · ARCHIVE
+                      </p>
+                      <h1 className="mt-2 text-2xl md:text-3xl font-semibold text-white">
+                        Cricket Archives
+                      </h1>
+                      <p className="mt-2 text-sm md:text-base text-sky-100/80 max-w-xl">
+                        {description}
+                      </p>
+                    </div>
+                    <div className="hidden sm:flex items-center gap-3 rounded-full border border-white/20 bg-black/40 px-4 py-2 backdrop-blur-sm">
+                      <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                      <span className="text-xs font-medium text-amber-200">
+                        Loading archives…
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Skeleton grid */}
+                <LoadingSkeleton num={6} col={3} />
               </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-950/40 backdrop-blur-sm px-3 py-1 text-xs font-bold text-emerald-300 shadow-sm">
-                  <span className="mr-2 h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                  {data?.total} matches
-                </span>
-                <span className="inline-flex items-center rounded-full border border-india-gold/30 bg-india-gold/10 backdrop-blur-sm px-3 py-1 text-xs font-bold text-india-gold shadow-sm">
-                  🏏 All formats
-                </span>
+            ) : error ? (
+              <div className="max-w-md w-full rounded-2xl border border-red-500/30 bg-black/70 backdrop-blur-xl px-6 py-8 shadow-2xl">
+                <div className="flex items-start gap-4">
+                  <div className="text-3xl">⚠️</div>
+                  <div>
+                    <h1 className="text-xl font-semibold text-red-400 mb-2">
+                      Failed to load archives
+                    </h1>
+                    <p className="text-sm text-red-300/80 mb-4">{error}</p>
+                    <button
+                      onClick={() => window.location.reload()}
+                      className="px-4 py-2 rounded-lg bg-red-500/20 text-red-300 hover:bg-red-500/30 transition-colors text-sm font-medium border border-red-500/30"
+                    >
+                      Reload Page
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <section className="space-y-6 col-span-4 md:col-span-3 ">
+                  {/* Hero */}
+                  <div className="rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                      <div>
+                        <p className="text-xs font-bold tracking-[0.18em] text-india-gold">
+                          8JJCRICKET · ARCHIVE
+                        </p>
+                        <h1 className="mt-2 text-2xl md:text-3xl font-bold text-white india-header-text">
+                          Cricket Archives
+                        </h1>
+                        <p className="mt-2 text-sm md:text-base text-sky-100/90 max-w-xl">
+                          {description}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-950/40 backdrop-blur-sm px-3 py-1 text-xs font-bold text-emerald-300 shadow-sm">
+                          <span className="mr-2 h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                          {data?.total} matches
+                        </span>
+                        <span className="inline-flex items-center rounded-full border border-india-gold/30 bg-india-gold/10 backdrop-blur-sm px-3 py-1 text-xs font-bold text-india-gold shadow-sm">
+                          🏏 All formats
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Filters */}
+                  <div className="rounded-2xl border border-white/15 bg-black/50 backdrop-blur-xl p-5 shadow-2xl">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {/* Category Filter */}
+                      <div>
+                        <label
+                          htmlFor="category"
+                          className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
+                        >
+                          Category
+                        </label>
+                        <select
+                          id="category"
+                          value={category}
+                          onChange={(e) =>
+                            handleCategoryChange(
+                              e.target.value as
+                                | ""
+                                | "International"
+                                | "Leagues",
+                            )
+                          }
+                          className="w-full rounded-lg border border-white/20 bg-slate-800/80 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
+                        >
+                          <option value="">All Categories</option>
+                          <option value="International">International</option>
+                          <option value="Leagues">Leagues</option>
+                        </select>
+                      </div>
+
+                      {/* Format Filter */}
+                      <div>
+                        <label
+                          htmlFor="format"
+                          className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
+                        >
+                          Format
+                        </label>
+                        <select
+                          id="format"
+                          value={format}
+                          onChange={(e) =>
+                            handleFormatChange(
+                              e.target.value as "" | "T20" | "ODI" | "Test",
+                            )
+                          }
+                          className="w-full rounded-lg border border-white/20 bg-slate-800/80 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
+                        >
+                          <option value="">All Formats</option>
+                          <option value="T20">T20</option>
+                          <option value="ODI">ODI</option>
+                          <option value="Test">Test</option>
+                        </select>
+                      </div>
+
+                      {/* Date Filter */}
+                      <div>
+                        <label
+                          htmlFor="date"
+                          className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
+                        >
+                          Match Date
+                        </label>
+                        <input
+                          type="date"
+                          id="date"
+                          value={date}
+                          onChange={(e) => handleDateChange(e.target.value)}
+                          className="w-full rounded-lg border border-white/20 bg-slate-800/80 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
+                        />
+                      </div>
+
+                      {/* Clear Button */}
+                      <div className="flex items-end">
+                        <button
+                          onClick={clearFilters}
+                          disabled={!hasActiveFilters}
+                          className={`w-full px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                            hasActiveFilters
+                              ? "bg-gradient-to-r from-red-500/20 to-orange-500/20 text-red-300 hover:from-red-500/30 hover:to-orange-500/30 border border-red-500/30"
+                              : "bg-slate-800/50 text-slate-500 cursor-not-allowed"
+                          }`}
+                        >
+                          Clear Filters
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Archives Grid */}
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {dataMemo &&
+                      dataMemo.map((archive) => (
+                        <NativeArchiveCard key={archive.id} archive={archive} />
+                      ))}
+                  </div>
+
+                  {/* Pagination */}
+                  {data && data.last_page > 1 && (
+                    <Pagination
+                      currentPage={data.current_page}
+                      lastPage={data.last_page}
+                      onPageChange={setPage}
+                      totalMatches={data.total}
+                      from={data.from}
+                      to={data.to}
+                    />
+                  )}
+                </section>
+
+                {/* Sidebar */}
+                {data ? (
+                  <aside className="col-span-4 md:col-span-1">
+                    <div className="sticky top-20 space-y-4 rounded-2xl border border-india-gold/30 bg-slate-900/50 p-5 shadow-2xl backdrop-blur-xl">
+                      <div>
+                        <h2 className="text-sm font-bold tracking-tight text-india-gold mb-2 uppercase border-b border-india-gold/20 pb-2">
+                          Quick Stats
+                        </h2>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-sky-100/70 font-medium">
+                              Total Matches
+                            </span>
+                            <span className="font-bold text-white">
+                              {data.total}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-sky-100/70 font-medium">
+                              Current Page
+                            </span>
+                            <span className="font-bold text-white">
+                              {data.current_page} / {data.last_page}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-sky-100/70 font-medium">
+                              Per Page
+                            </span>
+                            <span className="font-bold text-white">
+                              {data.per_page}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="border-t border-white/10 pt-4">
+                        <h2 className="text-sm font-bold tracking-tight text-india-gold mb-3 uppercase border-b border-india-gold/20 pb-2">
+                          Active Filters
+                        </h2>
+                        <div className="space-y-2">
+                          {category && (
+                            <div className="flex items-center justify-between bg-india-gold/10 rounded-lg px-3 py-2 border border-india-gold/20">
+                              <span className="text-xs text-india-gold font-medium">
+                                Category
+                              </span>
+                              <span className="text-xs font-bold text-white">
+                                {category}
+                              </span>
+                            </div>
+                          )}
+                          {format && (
+                            <div className="flex items-center justify-between bg-purple-500/10 rounded-lg px-3 py-2 border border-purple-500/20">
+                              <span className="text-xs text-purple-300 font-medium">
+                                Format
+                              </span>
+                              <span className="text-xs font-bold text-white">
+                                {format}
+                              </span>
+                            </div>
+                          )}
+                          {date && (
+                            <div className="flex items-center justify-between bg-blue-500/10 rounded-lg px-3 py-2 border border-blue-500/20">
+                              <span className="text-xs text-blue-300 font-medium">
+                                Date
+                              </span>
+                              <span className="text-xs font-bold text-white">
+                                {date}
+                              </span>
+                            </div>
+                          )}
+                          {!hasActiveFilters && (
+                            <p className="text-xs text-sky-100/50 italic text-center py-2">
+                              No filters applied
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </aside>
+                ) : null}
+              </div>
+            )
+          ) : isLoading ? (
+            <div className="min-h-[60vh] space-y-6 m-2">
+              {/* Hero */}
+              <div className="rounded-3xl border border-white/80 bg-slate-900/80 px-6 py-5 shadow-2xl backdrop-blur-xl">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.18em] text-amber-300">
+                      8JJCRICKET · ARCHIVE
+                    </p>
+                    <h1 className="mt-2 text-2xl md:text-3xl font-semibold text-white">
+                      Cricket Archives
+                    </h1>
+                    <p className="mt-2 text-sm md:text-base text-sky-100/80 max-w-xl">
+                      {description}
+                    </p>
+                  </div>
+                  <div className="hidden sm:flex items-center gap-3 rounded-full border border-white/20 bg-black/40 px-4 py-2 backdrop-blur-sm">
+                    <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                    <span className="text-xs font-medium text-amber-200">
+                      Loading archives…
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Skeleton grid */}
+              <LoadingSkeleton num={6} col={3} />
+            </div>
+          ) : (
+            <div className="space-y-6 ">
+              {/* Hero */}
+              <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.18em] text-amber-400">
+                      8JJCRICKET · ARCHIVE
+                    </p>
+                    <h1 className="mt-2 text-2xl md:text-3xl font-semibold text-white">
+                      Cricket Archives
+                    </h1>
+                    <p className="mt-2 text-sm md:text-base text-sky-100/90 max-w-xl">
+                      {description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Filters */}
+              <div className="rounded-2xl border border-white/15 bg-black/50 backdrop-blur-xl p-5 shadow-2xl">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {/* Category Filter */}
+                  <div>
+                    <label
+                      htmlFor="category"
+                      className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
+                    >
+                      Category
+                    </label>
+                    <select
+                      id="category"
+                      value={category}
+                      onChange={(e) =>
+                        handleCategoryChange(
+                          e.target.value as "" | "International" | "Leagues",
+                        )
+                      }
+                      className="w-full rounded-lg border border-white/20 bg-slate-800/80 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
+                    >
+                      <option value="">All Categories</option>
+                      <option value="International">International</option>
+                      <option value="Leagues">Leagues</option>
+                    </select>
+                  </div>
+
+                  {/* Format Filter */}
+                  <div>
+                    <label
+                      htmlFor="format"
+                      className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
+                    >
+                      Format
+                    </label>
+                    <select
+                      id="format"
+                      value={format}
+                      onChange={(e) =>
+                        handleFormatChange(
+                          e.target.value as "" | "T20" | "ODI" | "Test",
+                        )
+                      }
+                      className="w-full rounded-lg border border-white/20 bg-slate-800/80 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
+                    >
+                      <option value="">All Formats</option>
+                      <option value="T20">T20</option>
+                      <option value="ODI">ODI</option>
+                      <option value="Test">Test</option>
+                    </select>
+                  </div>
+
+                  {/* Date Filter */}
+                  <div>
+                    <label
+                      htmlFor="date"
+                      className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
+                    >
+                      Match Date
+                    </label>
+                    <input
+                      type="date"
+                      id="date"
+                      value={date}
+                      onChange={(e) => handleDateChange(e.target.value)}
+                      className="w-full rounded-lg border border-white/20 bg-slate-800/80 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
+                    />
+                  </div>
+
+                  {/* Clear Button */}
+                  <div className="flex items-end">
+                    <button
+                      onClick={clearFilters}
+                      disabled={!hasActiveFilters}
+                      className={`w-full px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                        hasActiveFilters
+                          ? "bg-gradient-to-r from-red-500/20 to-orange-500/20 text-red-300 hover:from-red-500/30 hover:to-orange-500/30 border border-red-500/30"
+                          : "bg-slate-800/50 text-slate-500 cursor-not-allowed"
+                      }`}
+                    >
+                      Clear Filters
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Empty state message */}
+              <div className="min-h-[40vh] flex items-center justify-center">
+                <div className="max-w-md w-full rounded-3xl border border-india-gold/20 bg-slate-900/60 backdrop-blur-xl px-6 py-8 shadow-2xl text-center">
+                  <div className="text-5xl mb-4 grayscale opacity-50">🏏</div>
+                  <h2 className="text-xl font-bold text-india-gold mb-2">
+                    No matches found
+                  </h2>
+                  <p className="text-sm text-sky-100/80">
+                    {hasActiveFilters
+                      ? "Try adjusting your filters to see more results."
+                      : "No archived matches are available at this time."}
+                  </p>
+                  {hasActiveFilters && (
+                    <button
+                      onClick={clearFilters}
+                      className="mt-4 px-6 py-2 rounded-xl bg-india-gold/10 text-india-gold hover:bg-india-gold/20 transition-all text-sm font-bold border border-india-gold/30 hover:shadow-[0_0_15px_rgba(255,153,51,0.2)]"
+                    >
+                      Clear All Filters
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Filters */}
-          <div className="rounded-2xl border border-white/15 bg-black/50 backdrop-blur-xl p-5 shadow-2xl">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Category Filter */}
-              <div>
-                <label
-                  htmlFor="category"
-                  className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
-                >
-                  Category
-                </label>
-                <select
-                  id="category"
-                  value={category}
-                  onChange={(e) =>
-                    handleCategoryChange(
-                      e.target.value as "" | "International" | "Leagues",
-                    )
-                  }
-                  className="w-full rounded-lg border border-white/20 bg-slate-800/80 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
-                >
-                  <option value="">All Categories</option>
-                  <option value="International">International</option>
-                  <option value="Leagues">Leagues</option>
-                </select>
-              </div>
-
-              {/* Format Filter */}
-              <div>
-                <label
-                  htmlFor="format"
-                  className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
-                >
-                  Format
-                </label>
-                <select
-                  id="format"
-                  value={format}
-                  onChange={(e) =>
-                    handleFormatChange(
-                      e.target.value as "" | "T20" | "ODI" | "Test",
-                    )
-                  }
-                  className="w-full rounded-lg border border-white/20 bg-slate-800/80 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
-                >
-                  <option value="">All Formats</option>
-                  <option value="T20">T20</option>
-                  <option value="ODI">ODI</option>
-                  <option value="Test">Test</option>
-                </select>
-              </div>
-
-              {/* Date Filter */}
-              <div>
-                <label
-                  htmlFor="date"
-                  className="block text-xs font-bold text-india-gold mb-2 uppercase tracking-wide"
-                >
-                  Match Date
-                </label>
-                <input
-                  type="date"
-                  id="date"
-                  value={date}
-                  onChange={(e) => handleDateChange(e.target.value)}
-                  className="w-full rounded-lg border border-white/20 bg-slate-800/80 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
-                />
-              </div>
-
-              {/* Clear Button */}
-              <div className="flex items-end">
-                <button
-                  onClick={clearFilters}
-                  disabled={!hasActiveFilters}
-                  className={`w-full px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    hasActiveFilters
-                      ? "bg-gradient-to-r from-red-500/20 to-orange-500/20 text-red-300 hover:from-red-500/30 hover:to-orange-500/30 border border-red-500/30"
-                      : "bg-slate-800/50 text-slate-500 cursor-not-allowed"
-                  }`}
-                >
-                  Clear Filters
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Archives Grid */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {dataMemo.map((archive) => (
-              <NativeArchiveCard key={archive.id} archive={archive} />
-            ))}
-          </div>
-
-          {/* Pagination */}
-          {data && data.last_page > 1 && (
-            <Pagination
-              currentPage={data.current_page}
-              lastPage={data.last_page}
-              onPageChange={setPage}
-              totalMatches={data.total}
-              from={data.from}
-              to={data.to}
-            />
           )}
         </main>
-        {data ? (
-          <aside className="2xl:w-[15%] xl:w-[15%] lg:w-[16%] mr-[1%]">
-            <div className="rounded-2xl border border-india-gold/30 bg-slate-900/50 backdrop-blur-xl p-5 shadow-2xl space-y-4 sticky top-6">
-              <div>
-                <h2 className="text-sm font-bold tracking-tight text-india-gold mb-2 uppercase border-b border-india-gold/20 pb-2">
-                  Quick Stats
-                </h2>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-sky-100/70 font-medium">
-                      Total Matches
-                    </span>
-                    <span className="font-bold text-white">{data.total}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-sky-100/70 font-medium">
-                      Current Page
-                    </span>
-                    <span className="font-bold text-white">
-                      {data.current_page} / {data.last_page}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-sky-100/70 font-medium">
-                      Per Page
-                    </span>
-                    <span className="font-bold text-white">
-                      {data.per_page}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-white/10 pt-4">
-                <h2 className="text-sm font-bold tracking-tight text-india-gold mb-3 uppercase border-b border-india-gold/20 pb-2">
-                  Active Filters
-                </h2>
-                <div className="space-y-2">
-                  {category && (
-                    <div className="flex items-center justify-between bg-india-gold/10 rounded-lg px-3 py-2 border border-india-gold/20">
-                      <span className="text-xs text-india-gold font-medium">
-                        Category
-                      </span>
-                      <span className="text-xs font-bold text-white">
-                        {category}
-                      </span>
-                    </div>
-                  )}
-                  {format && (
-                    <div className="flex items-center justify-between bg-purple-500/10 rounded-lg px-3 py-2 border border-purple-500/20">
-                      <span className="text-xs text-purple-300 font-medium">
-                        Format
-                      </span>
-                      <span className="text-xs font-bold text-white">
-                        {format}
-                      </span>
-                    </div>
-                  )}
-                  {date && (
-                    <div className="flex items-center justify-between bg-blue-500/10 rounded-lg px-3 py-2 border border-blue-500/20">
-                      <span className="text-xs text-blue-300 font-medium">
-                        Date
-                      </span>
-                      <span className="text-xs font-bold text-white">
-                        {date}
-                      </span>
-                    </div>
-                  )}
-                  {!hasActiveFilters && (
-                    <p className="text-xs text-sky-100/50 italic text-center py-2">
-                      No filters applied
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </aside>
-        ) : null}
-        {/* Sidebar */}
       </div>
 
       <Footer />

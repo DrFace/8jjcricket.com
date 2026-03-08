@@ -300,7 +300,7 @@ export default function LiveScoreHome() {
 
   return (
     <div>
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="w-full md:w-[99%] lg:w-[95%] xl:w-[85%] mx-auto py-4">
         {/* Tabs */}
         <div className="flex justify-center gap-4 mb-8">
           {(["Live", "Upcoming", "Recent"] as const).map((tab) => (
@@ -309,7 +309,7 @@ export default function LiveScoreHome() {
               onClick={() => setActiveTab(tab)}
               className={`px-6 py-2 rounded-full text-sm font-bold transition shadow-md ${
                 activeTab === tab
-                  ? "bg-gradient-to-r from-india-saffron to-india-gold text-black border border-india-gold"
+                  ? "bg-gradient-to-r from-india-gold to-india-saffron  text-black border border-india-gold"
                   : "bg-black/40 text-white hover:bg-white/10 border border-white/10"
               }`}
             >
@@ -354,7 +354,7 @@ export default function LiveScoreHome() {
 
                 <div className="mb-10">
                   {filteredLive.length > 0 ? (
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
+                    <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                       {filteredLive.map((match: any) => (
                         <LiveScoreCard key={match.id} f={match} />
                       ))}
@@ -387,7 +387,7 @@ export default function LiveScoreHome() {
                         No recent matches found for this date/filter.
                       </div>
                     ) : (
-                      <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
+                      <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                         {liveTabRecent4.map((f: any) => (
                           <LiveScoreCard key={f.id} f={f} />
                         ))}

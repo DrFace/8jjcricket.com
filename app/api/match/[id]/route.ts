@@ -46,14 +46,14 @@ function generateMockMatchData(id: string) {
         name: "India",
         code: "IND",
         image_path: "https://cdn.sportmonks.com/images/cricket/teams/1/1.png",
-        country_id: 1
+        country_id: 1,
       },
       visitorteam: {
         id: 2,
         name: "Australia",
         code: "AUS",
         image_path: "https://cdn.sportmonks.com/images/cricket/teams/2/2.png",
-        country_id: 2
+        country_id: 2,
       },
       runs: [
         {
@@ -62,7 +62,7 @@ function generateMockMatchData(id: string) {
           score: 286,
           wickets: 5,
           overs: 50.0,
-          updated_at: "2026-01-20T14:00:00.000000Z"
+          updated_at: "2026-01-20T14:00:00.000000Z",
         },
         {
           id: 2,
@@ -70,31 +70,29 @@ function generateMockMatchData(id: string) {
           score: 245,
           wickets: 10,
           overs: 47.3,
-          updated_at: "2026-01-20T17:00:00.000000Z"
-        }
+          updated_at: "2026-01-20T17:00:00.000000Z",
+        },
       ],
       batting: [],
-      bowling: []
-    }
+      bowling: [],
+    },
   };
 }
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   const { id } = params;
 
   if (!id) {
     return NextResponse.json(
       { error: "Match ID is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   try {
-    console.log(`Fetching match data from: ${BACKEND_BASE}/api/match/${id}`);
-    
     const res = await fetch(`${BACKEND_BASE}/api/match/${id}`, {
       cache: "no-store",
       headers: {
@@ -106,20 +104,20 @@ export async function GET(
     if (!res.ok) {
       const text = await res.text();
       console.error(`❌ Backend /api/match/${id} error:`, res.status, text);
-      console.log('Falling back to mock match data...');
-      
+      console.log("Falling back to mock match data...");
+
       // Return mock data as fallback
       const mockData = generateMockMatchData(id);
       return NextResponse.json(mockData);
     }
 
     const json = await res.json();
-    console.log('Successfully fetched match data from backend');
+    console.log("Successfully fetched match data from backend");
     return NextResponse.json(json);
   } catch (err: any) {
     console.error("❌ Exception fetching match data:", err?.message || err);
-    console.log('Falling back to mock match data...');
-    
+    console.log("Falling back to mock match data...");
+
     // Return mock data as fallback
     const mockData = generateMockMatchData(id);
     return NextResponse.json(mockData);

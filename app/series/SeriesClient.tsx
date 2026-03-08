@@ -178,297 +178,317 @@ export default function SeriesPage() {
 
   return (
     <>
-      <div className="min-h-screen flex flex-col">
-        <TopNav />
-        <BottomNav />
+      <TopNav />
+      <BottomNav />
 
-        <main className="flex-1">
-          <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80 my-2">
-            {isLoading ? (
-              <LoadingSkeleton num={10} col={5} />
-            ) : error ? (
-              <ErrorState message="Failed to load series." />
-            ) : (
-              <>
-                {/* Tabs */}
-                <div className="mt-2">
-                  <div className="flex overflow-x-auto gap-2">
-                    {SERIES_TABS.map((tab) => (
-                      <SecondaryButton
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
-                        active={activeTab === tab.id}
-                        size="sm"
-                        className="px-6 whitespace-nowrap"
-                      >
-                        {tab.label}
-                      </SecondaryButton>
-                    ))}
+      <div className="min-h-screen">
+        <main className="w-full md:w-[99%] lg:w-[95%] xl:w-[85%] mx-auto py-4">
+          {isLoading ? (
+            <div className="min-h-[60vh] space-y-6 m-2">
+              {/* Hero */}
+              <div className="rounded-3xl border border-white/80 bg-slate-900/80 px-6 py-5 shadow-2xl backdrop-blur-xl">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-semibold tracking-[0.18em] text-amber-300">
+                      8JJCRICKET · Series
+                    </p>
+                    <h1 className="mt-2 text-2xl md:text-3xl font-semibold text-white">
+                      Cricket Series
+                    </h1>
+                  </div>
+                  <div className="hidden sm:flex items-center gap-3 rounded-full border border-white/20 bg-black/40 px-4 py-2 backdrop-blur-sm">
+                    <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                    <span className="text-xs font-medium text-amber-200">
+                      Loading series…
+                    </span>
                   </div>
                 </div>
-
-                {activeTab === "series" && (
-                  <>
-                    {/* SEO Content Section */}
-                    <div className="rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
-                      <p className="text-xs font-bold tracking-[0.18em] text-india-gold">
-                        8JJCRICKET · SERIES
-                      </p>
-                      <h1 className="mt-2 text-3xl font-bold text-white india-header-text">
-                        Cricket Series Schedule 2026 | 8jjcricket
-                      </h1>
-                      <p className="mt-2 text-sky-100/90">
-                        Complete cricket tournament calendar for 2026 at
-                        8jjcricket. Get match schedules, fixtures, dates, and
-                        venues for IPL 2026, T20 World Cup, international tours,
-                        Test series, and all domestic leagues. Updated daily
-                        with the latest squad announcements and venue changes.
-                      </p>
-                    </div>
-
-                    {/* Series Grid */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                      {sortedLeagues && sortedLeagues.length > 0 ? (
-                        sortedLeagues.map((league) => {
-                          const isActive = league.seasons?.some(
-                            (s: any) => s.is_current,
-                          );
-                          return (
-                            <div
-                              key={league.id}
-                              className={`rounded-2xl border p-6 hover:shadow-[0_20px_50px_rgba(255,153,51,0.2)] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center group relative cursor-pointer backdrop-blur-xl ${
-                                isActive
-                                  ? "border-india-gold/60 bg-india-charcoal/90 ring-2 ring-india-gold/20"
-                                  : "border-white/10 bg-india-charcoal/80 hover:border-india-gold/40"
-                              }`}
-                            >
-                              {isActive && (
-                                <span className="absolute top-2 right-2 px-2 py-0.5 bg-gradient-to-r from-india-saffron via-india-gold to-india-orange text-black text-xs font-bold rounded-full shadow-lg">
-                                  LIVE
-                                </span>
-                              )}
-
-                              <div className="w-16 h-16 mb-3 flex items-center justify-center rounded-xl">
-                                {league.image_path ? (
-                                  <img
-                                    src={
-                                      league.image_path ||
-                                      "/images/series-placeholder.jpg"
-                                    }
-                                    alt={`${league.name} - Cricket Series at 8jjcricket`}
-                                    className="max-w-full max-h-full object-contain rounded-xl"
-                                    onError={(e) => {
-                                      e.currentTarget.src =
-                                        "/images/series-placeholder.jpg";
-                                    }}
-                                  />
-                                ) : (
-                                  <div className="w-full h-full bg-gradient-to-br from-india-saffron to-india-gold rounded-lg flex items-center justify-center text-black font-bold text-xl shadow-lg">
-                                    {league?.code
-                                      ?.substring(0, 2)
-                                      .toUpperCase()}
-                                  </div>
-                                )}
-                              </div>
-
-                              <h3 className="font-bold text-white text-sm line-clamp-2 mb-1 group-hover:text-india-gold transition-colors">
-                                {league.name}
-                              </h3>
-
-                              <p className="text-xs text-india-gold/80 uppercase font-medium mb-3">
-                                {league.code}
-                              </p>
-
-                              <div className="flex gap-2 mt-auto w-full">
-                                <SecondaryButton
-                                  href={`/series/${league.sportmonks_league_id}`}
-                                  size="sm"
-                                  className="flex-1 px-1 h-8 text-[10px]"
-                                  ariaLabel={`View ${league.name} details at 8jjcricket`}
-                                >
-                                  Details
-                                </SecondaryButton>
-                                <PrimaryButton
-                                  href={`/teams?league=${league.sportmonks_league_id}`}
-                                  size="sm"
-                                  className="flex-1 px-1 h-8 text-[10px]"
-                                  ariaLabel={`View ${league.name} teams`}
-                                >
-                                  Teams
-                                </PrimaryButton>
-                              </div>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <div className="col-span-full rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-8 text-center shadow-2xl">
-                          <p className="text-sky-100/80">
-                            No current or upcoming series found. Check back soon
-                            for cricket series updates at 8jjcricket.
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Breadcrumb Navigation */}
-                    <nav aria-label="Breadcrumb" className="text-sm">
-                      <ol
-                        itemScope
-                        itemType="https://schema.org/BreadcrumbList"
-                        className="flex items-center space-x-2 text-slate-400"
-                      >
-                        <li
-                          itemProp="itemListElement"
-                          itemScope
-                          itemType="https://schema.org/ListItem"
-                        >
-                          <Link
-                            itemProp="item"
-                            href="https://8jjcricket.com"
-                            className="hover:text-india-gold transition-colors"
-                          >
-                            <span itemProp="name">8jjcricket</span>
-                          </Link>
-                          <meta itemProp="position" content="1" />
-                        </li>
-                        <li className="before:content-['>'] before:mx-2 text-slate-500">
-                          <span itemProp="name">Cricket Series</span>
-                          <meta itemProp="position" content="2" />
-                        </li>
-                      </ol>
-                    </nav>
-                  </>
-                )}
-
-                {/* Current Matches Tab */}
-                {activeTab === "current" && (
-                  <div className="rounded-2xl india-card-gradient p-8 text-center shadow-2xl">
-                    <svg
-                      className="w-16 h-16 text-india-gold/50 mx-auto mb-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                <p className="mt-2 text-sm md:text-base text-sky-100/80 ">
+                  {description}
+                </p>
+              </div>
+              <LoadingSkeleton num={10} col={5} />
+            </div>
+          ) : error ? (
+            <ErrorState message="Failed to load series." />
+          ) : (
+            <>
+              {/* Tabs */}
+              <div className="mb-4">
+                <div className="flex overflow-x-auto gap-2">
+                  {SERIES_TABS.map((tab) => (
+                    <SecondaryButton
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      active={activeTab === tab.id}
+                      size="sm"
+                      className="px-6 whitespace-nowrap"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
-                      />
-                    </svg>
-                    <h3 className="text-lg font-bold text-white mb-2">
-                      Live Matches
-                    </h3>
-                    <p className="text-slate-300 mb-4">
-                      Check the home page for live cricket matches at 8jjcricket
-                    </p>
-                    <PrimaryButton href="/" size="md">
-                      View Live Matches
-                    </PrimaryButton>
-                  </div>
-                )}
-
-                {/* Matches By Day Tab */}
-                {activeTab === "byDay" && (
-                  <div className="rounded-2xl india-card-gradient p-8 text-center shadow-2xl">
-                    <svg
-                      className="w-16 h-16 text-india-gold/50 mx-auto mb-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                    <h3 className="text-lg font-bold text-white mb-2">
-                      Matches Schedule
-                    </h3>
-                    <p className="text-slate-300 mb-4">
-                      View matches organized by date on the Recent and Upcoming
-                      pages
-                    </p>
-                    <div className="flex gap-3 justify-center">
-                      <SecondaryButton href="/recent" size="md">
-                        Recent Matches
-                      </SecondaryButton>
-                      <PrimaryButton href="/upcoming" size="md">
-                        Upcoming Matches
-                      </PrimaryButton>
-                    </div>
-                  </div>
-                )}
-
-                {/* Teams Tab */}
-                {activeTab === "teams" && (
-                  <div className="rounded-2xl india-card-gradient p-8 text-center shadow-2xl">
-                    <svg
-                      className="w-16 h-16 text-india-gold/50 mx-auto mb-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      />
-                    </svg>
-                    <h3 className="text-lg font-bold text-white mb-2">
-                      Cricket Teams
-                    </h3>
-                    <p className="text-slate-300 mb-4">
-                      Browse all international and domestic cricket teams
-                    </p>
-                    <PrimaryButton href="/teams" size="md">
-                      View All Teams
-                    </PrimaryButton>
-                  </div>
-                )}
-
-                {/* Archive Tab */}
-                {activeTab === "archive" && (
-                  <div className="rounded-2xl india-card-gradient p-8 text-center shadow-2xl">
-                    <svg
-                      className="w-16 h-16 text-india-gold/50 mx-auto mb-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
-                      />
-                    </svg>
-                    <h3 className="text-lg font-bold text-white mb-2">
-                      Series Archive
-                    </h3>
-                    <p className="text-slate-300 mb-4">
-                      Browse past cricket series and tournaments
-                    </p>
-                    <SecondaryButton href="/archive" size="md">
-                      View Archive
+                      {tab.label}
                     </SecondaryButton>
-                  </div>
-                )}
+                  ))}
+                </div>
+              </div>
 
-                <PaginationComponet
-                  page={page}
-                  totalPages={totalPages}
-                  onPage={onPage}
-                />
-              </>
-            )}
-          </div>
+              {activeTab === "series" && (
+                <>
+                  {/* SEO Content Section */}
+                  <div className="mb-5 rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
+                    <p className="text-xs font-bold tracking-[0.18em] text-india-gold">
+                      8JJCRICKET · SERIES
+                    </p>
+                    <h1 className="mt-2 text-3xl font-bold text-white india-header-text">
+                      Cricket Series Schedule 2026 | 8jjcricket
+                    </h1>
+                    <p className="mt-2 text-sky-100/90">
+                      Complete cricket tournament calendar for 2026 at
+                      8jjcricket. Get match schedules, fixtures, dates, and
+                      venues for IPL 2026, T20 World Cup, international tours,
+                      Test series, and all domestic leagues. Updated daily with
+                      the latest squad announcements and venue changes.
+                    </p>
+                  </div>
+
+                  {/* Series Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    {sortedLeagues && sortedLeagues.length > 0 ? (
+                      sortedLeagues.map((league) => {
+                        const isActive = league.seasons?.some(
+                          (s: any) => s.is_current,
+                        );
+                        return (
+                          <div
+                            key={league.id}
+                            className={`rounded-2xl border p-6 hover:shadow-[0_20px_50px_rgba(255,153,51,0.2)] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center group relative cursor-pointer backdrop-blur-xl ${
+                              isActive
+                                ? "border-india-gold/60 bg-india-charcoal/90 ring-2 ring-india-gold/20"
+                                : "border-white/10 bg-india-charcoal/80 hover:border-india-gold/40"
+                            }`}
+                          >
+                            {isActive && (
+                              <span className="absolute top-2 right-2 px-2 py-0.5 bg-gradient-to-r from-india-saffron via-india-gold to-india-orange text-black text-xs font-bold rounded-full shadow-lg">
+                                LIVE
+                              </span>
+                            )}
+
+                            <div className="w-16 h-16 mb-3 flex items-center justify-center rounded-xl">
+                              {league.image_path ? (
+                                <img
+                                  src={
+                                    league.image_path ||
+                                    "/images/series-placeholder.jpg"
+                                  }
+                                  alt={`${league.name} - Cricket Series at 8jjcricket`}
+                                  className="max-w-full max-h-full object-contain rounded-xl"
+                                  onError={(e) => {
+                                    e.currentTarget.src =
+                                      "/images/series-placeholder.jpg";
+                                  }}
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-gradient-to-br from-india-saffron to-india-gold rounded-lg flex items-center justify-center text-black font-bold text-xl shadow-lg">
+                                  {league?.code?.substring(0, 2).toUpperCase()}
+                                </div>
+                              )}
+                            </div>
+
+                            <h3 className="font-bold text-white text-sm line-clamp-2 mb-1 group-hover:text-india-gold transition-colors">
+                              {league.name}
+                            </h3>
+
+                            <p className="text-xs text-india-gold/80 uppercase font-medium mb-3">
+                              {league.code}
+                            </p>
+
+                            <div className="flex gap-2 mt-auto w-full">
+                              <SecondaryButton
+                                href={`/series/${league.sportmonks_league_id}`}
+                                size="sm"
+                                className="flex-1 px-1 h-8 text-[10px]"
+                                ariaLabel={`View ${league.name} details at 8jjcricket`}
+                              >
+                                Details
+                              </SecondaryButton>
+                              <PrimaryButton
+                                href={`/teams?league=${league.sportmonks_league_id}`}
+                                size="sm"
+                                className="flex-1 px-1 h-8 text-[10px]"
+                                ariaLabel={`View ${league.name} teams`}
+                              >
+                                Teams
+                              </PrimaryButton>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="col-span-full rounded-2xl border border-white/20 bg-black/50 backdrop-blur-xl p-8 text-center shadow-2xl">
+                        <p className="text-sky-100/80">
+                          No current or upcoming series found. Check back soon
+                          for cricket series updates at 8jjcricket.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Breadcrumb Navigation */}
+                  <nav aria-label="Breadcrumb" className="text-sm">
+                    <ol
+                      itemScope
+                      itemType="https://schema.org/BreadcrumbList"
+                      className="flex items-center space-x-2 text-slate-400"
+                    >
+                      <li
+                        itemProp="itemListElement"
+                        itemScope
+                        itemType="https://schema.org/ListItem"
+                      >
+                        <Link
+                          itemProp="item"
+                          href="https://8jjcricket.com"
+                          className="hover:text-india-gold transition-colors"
+                        >
+                          <span itemProp="name">8jjcricket</span>
+                        </Link>
+                        <meta itemProp="position" content="1" />
+                      </li>
+                      <li className="before:content-['>'] before:mx-2 text-slate-500">
+                        <span itemProp="name">Cricket Series</span>
+                        <meta itemProp="position" content="2" />
+                      </li>
+                    </ol>
+                  </nav>
+                </>
+              )}
+
+              {/* Current Matches Tab */}
+              {activeTab === "current" && (
+                <div className="rounded-2xl india-card-gradient p-8 text-center shadow-2xl">
+                  <svg
+                    className="w-16 h-16 text-india-gold/50 mx-auto mb-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
+                  </svg>
+                  <h3 className="text-lg font-bold text-white mb-2">
+                    Live Matches
+                  </h3>
+                  <p className="text-slate-300 mb-4">
+                    Check the home page for live cricket matches at 8jjcricket
+                  </p>
+                  <PrimaryButton href="/" size="md">
+                    View Live Matches
+                  </PrimaryButton>
+                </div>
+              )}
+
+              {/* Matches By Day Tab */}
+              {activeTab === "byDay" && (
+                <div className="rounded-2xl india-card-gradient p-8 text-center shadow-2xl">
+                  <svg
+                    className="w-16 h-16 text-india-gold/50 mx-auto mb-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <h3 className="text-lg font-bold text-white mb-2">
+                    Matches Schedule
+                  </h3>
+                  <p className="text-slate-300 mb-4">
+                    View matches organized by date on the Recent and Upcoming
+                    pages
+                  </p>
+                  <div className="flex gap-3 justify-center">
+                    <SecondaryButton href="/recent" size="md">
+                      Recent Matches
+                    </SecondaryButton>
+                    <PrimaryButton href="/upcoming" size="md">
+                      Upcoming Matches
+                    </PrimaryButton>
+                  </div>
+                </div>
+              )}
+
+              {/* Teams Tab */}
+              {activeTab === "teams" && (
+                <div className="rounded-2xl india-card-gradient p-8 text-center shadow-2xl">
+                  <svg
+                    className="w-16 h-16 text-india-gold/50 mx-auto mb-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+                  <h3 className="text-lg font-bold text-white mb-2">
+                    Cricket Teams
+                  </h3>
+                  <p className="text-slate-300 mb-4">
+                    Browse all international and domestic cricket teams
+                  </p>
+                  <PrimaryButton href="/teams" size="md">
+                    View All Teams
+                  </PrimaryButton>
+                </div>
+              )}
+
+              {/* Archive Tab */}
+              {activeTab === "archive" && (
+                <div className="rounded-2xl india-card-gradient p-8 text-center shadow-2xl">
+                  <svg
+                    className="w-16 h-16 text-india-gold/50 mx-auto mb-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                    />
+                  </svg>
+                  <h3 className="text-lg font-bold text-white mb-2">
+                    Series Archive
+                  </h3>
+                  <p className="text-slate-300 mb-4">
+                    Browse past cricket series and tournaments
+                  </p>
+                  <SecondaryButton href="/archive" size="md">
+                    View Archive
+                  </SecondaryButton>
+                </div>
+              )}
+
+              <PaginationComponet
+                page={page}
+                totalPages={totalPages}
+                onPage={onPage}
+              />
+            </>
+          )}
         </main>
-        <Footer />
       </div>
+      <Footer />
     </>
   );
 }

@@ -4,6 +4,7 @@ import useSWR from "swr";
 import type { Fixture } from "@/types/fixture";
 import MobileLiveCard from "./MobileLiveCard";
 import MobileFixtureCard from "./MobileFixtureCard";
+import LoadingSkeleton from "../ui/LoadingSkeleton";
 
 interface LiveGridProps {
   filter?: string;
@@ -13,7 +14,7 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 function filterFixtures(
   fixtures: Fixture[],
-  filter: string | undefined
+  filter: string | undefined,
 ): Fixture[] {
   if (!filter || filter === "All") return fixtures;
 
@@ -48,11 +49,7 @@ export default function MobileLiveGrid({ filter = "All" }: LiveGridProps) {
   }
 
   if (isLoading) {
-    return (
-      <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-xs text-sky-100/60 animate-pulse">
-        Loading live scores…
-      </div>
-    );
+    return <LoadingSkeleton num={1} col={1} />;
   }
 
   const fixtures: Fixture[] = data?.data?.live ?? [];

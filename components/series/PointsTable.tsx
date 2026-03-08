@@ -45,17 +45,19 @@ export default function PointsTable({
   const rows = standingsData?.data ?? [];
 
   return (
-    <div className="p-6" key={`points-${seasonId}`}>
+    <div key={`points-${seasonId}`}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-india-charcoal via-slate-900 to-india-charcoal rounded-t-2xl p-6 mb-0 border border-india-gold/30 border-b-0 backdrop-blur-xl">
+      <div className="bg-gradient-to-r from-india-charcoal via-slate-900 to-india-charcoal rounded-t-2xl p-3 border border-india-gold/30 border-b-0 backdrop-blur-xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold text-india-gold drop-shadow-lg india-header-text">
               Points Table
             </h2>
+          </div>
 
+          <div className="flex item-center gap-3">
             {seasons.length > 0 && (
-              <div className="mt-3">
+              <div className="">
                 <select
                   value={seasonId || ""}
                   onChange={(e) => onSeasonChange(Number(e.target.value))}
@@ -73,12 +75,11 @@ export default function PointsTable({
                 </select>
               </div>
             )}
-          </div>
-
-          <div className="bg-india-gold/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-india-gold/30">
-            <p className="text-india-gold text-xs font-bold uppercase tracking-wide">
-              {rows.length > 0 ? "Latest Standings" : "Standings"}
-            </p>
+            <div className="bg-india-gold/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-india-gold/30">
+              <p className="text-india-gold text-xs font-bold uppercase tracking-wide">
+                {rows.length > 0 ? "Latest Standings" : "Standings"}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -104,9 +105,7 @@ export default function PointsTable({
               d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
             />
           </svg>
-          <p className="text-white font-bold text-lg">
-            No standings available
-          </p>
+          <p className="text-white font-bold text-lg">No standings available</p>
           <p className="text-sky-100/70 text-sm mt-2">
             Points table will be updated once matches begin
           </p>
@@ -117,35 +116,35 @@ export default function PointsTable({
             <table className="w-full">
               <thead>
                 <tr className="bg-gradient-to-r from-slate-800/80 to-slate-900/80 border-b-2 border-india-gold/30">
-                  <th className="px-6 py-4 text-left text-xs font-bold text-india-gold uppercase tracking-wider">
+                  <th className="px-6 py-2 text-left text-xs font-bold text-india-gold uppercase tracking-wider">
                     <div className="flex items-center gap-2">
                       <span className="w-8 h-8 bg-gradient-to-br from-india-saffron to-india-orange text-slate-900 rounded-full flex items-center justify-center text-sm font-black">
                         #
                       </span>
                     </div>
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-india-gold uppercase tracking-wider">
+                  <th className="px-6 py-2 text-left text-xs font-bold text-india-gold uppercase tracking-wider">
                     Team
                   </th>
-                  <th className="px-6 py-4 text-center text-xs font-bold text-india-gold uppercase tracking-wider">
+                  <th className="px-6 py-2 text-center text-xs font-bold text-india-gold uppercase tracking-wider">
                     <div className="flex flex-col items-center">
                       <span>Played</span>
                       <span className="text-sky-200">P</span>
                     </div>
                   </th>
-                  <th className="px-6 py-4 text-center text-xs font-bold text-india-gold uppercase tracking-wider">
+                  <th className="px-6 py-2 text-center text-xs font-bold text-india-gold uppercase tracking-wider">
                     <div className="flex flex-col items-center">
                       <span>Won</span>
                       <span className="text-india-green">W</span>
                     </div>
                   </th>
-                  <th className="px-6 py-4 text-center text-xs font-bold text-india-gold uppercase tracking-wider">
+                  <th className="px-6 py-2 text-center text-xs font-bold text-india-gold uppercase tracking-wider">
                     <div className="flex flex-col items-center">
                       <span>Lost</span>
                       <span className="text-red-400">L</span>
                     </div>
                   </th>
-                  <th className="px-6 py-4 text-center text-xs font-bold text-india-gold uppercase tracking-wider">
+                  <th className="px-6 py-2 text-center text-xs font-bold text-india-gold uppercase tracking-wider">
                     <div className="flex flex-col items-center">
                       <span>Points</span>
                       <span className="text-india-gold">PTS</span>
@@ -168,17 +167,17 @@ export default function PointsTable({
                           : ""
                       } ${isLast ? "bg-red-950/20" : ""}`}
                     >
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-2">
                         <div className="flex items-center gap-3">
                           <span
-                            className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
+                            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                               index === 0
                                 ? "bg-gradient-to-br from-india-gold to-yellow-600 text-slate-900 shadow-lg shadow-india-gold/50"
                                 : index === 1
-                                ? "bg-gradient-to-br from-gray-300 to-gray-500 text-slate-900 shadow-md shadow-gray-400/50"
-                                : index === 2
-                                ? "bg-gradient-to-br from-orange-400 to-orange-600 text-slate-900 shadow-md shadow-orange-500/50"
-                                : "bg-slate-800/80 text-india-gold border border-white/20"
+                                  ? "bg-gradient-to-br from-gray-300 to-gray-500 text-slate-900 shadow-md shadow-gray-400/50"
+                                  : index === 2
+                                    ? "bg-gradient-to-br from-orange-400 to-orange-600 text-slate-900 shadow-md shadow-orange-500/50"
+                                    : "bg-slate-800/80 text-india-gold border border-white/20"
                             }`}
                           >
                             {index + 1}
@@ -196,40 +195,44 @@ export default function PointsTable({
                         </div>
                       </td>
 
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-2">
                         <span className="text-sm font-bold text-white">
                           {standing.team?.name || "Team"}
                         </span>
                       </td>
 
-                      <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-slate-800/80 border border-sky-400/30 text-sky-200 font-bold text-base">
+                      <td className="px-6 py-2 text-center">
+                        <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800/80 border border-sky-400/30 text-sky-200 font-bold text-base">
                           {standing.played || 0}
                         </span>
                       </td>
 
-                      <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-slate-800/80 border border-india-green/30 text-india-green font-bold text-base">
+                      <td className="px-6 py-2 text-center">
+                        <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800/80 border border-india-green/30 text-india-green font-bold text-base">
                           {standing.won || 0}
                         </span>
                       </td>
 
-                      <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-slate-800/80 border border-red-400/30 text-red-300 font-bold text-base">
+                      <td className="px-6 py-2 text-center">
+                        <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800/80 border border-red-400/30 text-red-300 font-bold text-base">
                           {standing.lost || 0}
                         </span>
                       </td>
 
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-6 py-2 text-center">
                         <div className="flex items-center justify-center gap-2">
-                          <span className="inline-flex items-center justify-center w-16 h-12 rounded-xl bg-gradient-to-br from-india-saffron to-india-gold text-slate-900 font-bold text-lg shadow-lg shadow-india-gold/40">
+                          <span className="inline-flex items-center justify-center w-10 h-8 rounded-xl bg-gradient-to-br from-india-saffron to-india-gold text-slate-900 font-bold text-lg shadow-lg shadow-india-gold/40">
                             {standing.points || 0}
                           </span>
 
-                          {isTop3 && (
-                            <span className="px-2 py-1 bg-india-green/20 border border-india-green/50 text-india-green text-xs font-bold rounded">
-                              Q
-                            </span>
+                          {isTop3 ? (
+                            <div className="w-10">
+                              <span className=" px-2 py-1 bg-india-green/20 border border-india-green/50 text-india-green text-xs font-bold rounded">
+                                Q
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="w-10" />
                           )}
                         </div>
                       </td>

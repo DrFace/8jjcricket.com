@@ -36,13 +36,15 @@ export function MobileSummaryTable<T>({
   }, [rows, page, pageSize]);
 
   return (
-    <div className="shadow-lg backdrop-blur px-2">
+    <div className="flex flex-col items-center">
       {/* Title */}
-      <div className="mb-3 text-lg font-semibold text-amber-300">{title}</div>
+      <div className="mb-3 text-lg font-semibold text-amber-300 text-center">
+        {title}
+      </div>
 
       {/* Table wrapper (horizontal scroll on small screens) */}
       <div
-        className="rounded-xl border border-amber-600 inline-block w-fit overflow-hidden"
+        className="rounded-3xl border border-amber-600 inline-block w-fit overflow-hidden"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
         <table className="border-collapse text-sm text-white w-auto">
@@ -101,14 +103,14 @@ export function MobileSummaryTable<T>({
 
       {/* Pagination */}
       {rows.length > pageSize && (
-        <div className="mt-4 flex items-center justify-between">
+        <div className="mt-4 flex items-center justify-between gap-10">
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={!canPrev}
             className={[
               "rounded-full border py-2 text-sm font-semibold transition px-4",
               canPrev
-                ? "border-amber-800 bg-white/5 text-amber-300 hover:bg-white/10"
+                ? "border-amber-300 bg-white/5 text-amber-300 hover:bg-white/10"
                 : "cursor-not-allowed border-white/10 bg-transparent text-white/40",
             ].join(" ")}
           >
@@ -126,7 +128,7 @@ export function MobileSummaryTable<T>({
             className={[
               "rounded-full border py-2 text-sm font-semibold transition px-4",
               canNext
-                ? "border-amber-800 bg-white/5 text-amber-300 hover:bg-white/10"
+                ? "border-amber-300 bg-white/5 text-amber-300 hover:bg-white/10"
                 : "cursor-not-allowed border-white/10 bg-transparent text-white/40",
             ].join(" ")}
           >

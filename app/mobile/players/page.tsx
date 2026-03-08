@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import BottomNav from "@/components/BottomNav";
 import PlayerCard from "@/components/games/PlayerCard";
 import { debounce } from "@/lib/debounce";
+import MobilePagination from "@/components/mobile/MobilePagination";
 
 type Country = { id: number; name: string };
 
@@ -30,7 +31,7 @@ type LaravelPaginator<T> = {
   prev_page_url?: string | null;
 };
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 const DEFAULT_COUNTRY_NAME = "India";
 
 export default function PlayersPage() {
@@ -43,70 +44,36 @@ export default function PlayersPage() {
 
   const [q, setQ] = useState(() => {
     if (typeof window === "undefined") return "";
-    return sessionStorage.getItem("mobile-players-query") || "";
+    return sessionStorage.getItem("players-query") || "";
   });
-  const [searchValue, setSearchValue] = useState(q);
-  const [countryId, setCountryId] = useState<string>(() => {
+  const [countryId, setCountryId] = useState(() => {
     if (typeof window === "undefined") return "";
-    return sessionStorage.getItem("mobile-players-country") || "";
+    return sessionStorage.getItem("players-country") || "";
   });
-  const [page, setPage] = useState<number>(() => {
+  const [page, setPage] = useState(() => {
     if (typeof window === "undefined") return 1;
-    const p = sessionStorage.getItem("mobile-players-page");
+    const p = sessionStorage.getItem("players-page");
     return p ? parseInt(p, 10) : 1;
   });
   const [isRestored, setIsRestored] = useState(false);
 
-  // Sync searchValue with q initially and when q changes externally (e.g. restore)
-  useEffect(() => {
-    setSearchValue(q);
-  }, [q]);
-
-  // Mark as restored on mount
+  // Mark as restored on mount to enable saving
   useEffect(() => {
     setIsRestored(true);
   }, []);
 
-  // Save state to sessionStorage
-  useEffect(() => {
-    if (!isRestored) return;
-    sessionStorage.setItem("mobile-players-query", q);
-    sessionStorage.setItem("mobile-players-country", countryId);
-    sessionStorage.setItem("mobile-players-page", String(page));
-  }, [q, countryId, page, isRestored]);
-
-  // Save scroll position
-  useEffect(() => {
-    const handleScroll = () => {
-      if (isRestored) {
-        sessionStorage.setItem("mobile-players-scroll-pos", window.scrollY.toString());
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isRestored]);
-
-  // Restore scroll position after players are loaded
-  useEffect(() => {
-    if (isRestored && !loading && players.length > 0) {
-      const savedScroll = sessionStorage.getItem("mobile-players-scroll-pos");
-      if (savedScroll) {
-        setTimeout(() => {
-          window.scrollTo(0, parseInt(savedScroll, 10));
-        }, 100);
-      }
-    }
-  }, [isRestored, loading, players.length]);
-
-  // ensure default country set only once
+  // ✅ ensure we only apply the default once
   const didSetDefaultCountry = useRef(false);
 
   const debouncedSetQ = useRef(
     debounce((val: string) => {
       setQ(val);
       setPage(1);
-    }, 300)
+    }, 300),
   ).current;
+
+  // Track the raw search input for the controlled component
+  const [searchValue, setSearchValue] = useState("");
 
   async function loadCatalog(p: number, query: string, cId: string) {
     setLoading(true);
@@ -124,40 +91,114 @@ export default function PlayersPage() {
       });
 
       if (!res.ok) throw new Error("Failed to fetch catalog");
+
       const json = await res.json();
 
       const fetchedCountries: Country[] = json.countries ?? [];
       setCountries(fetchedCountries);
 
-      // default country India only once (only if user hasn't selected anything AND no session exists)
-      const hasSavedCountry = typeof window !== "undefined" && sessionStorage.getItem("mobile-players-country") !== null;
+      // ✅ Set default country to India only once (and only if user hasn't selected anything)
+      // ✅ Set default country to India only once (and only if user hasn't selected anything AND no session exists)
+      const hasSavedCountry =
+        typeof window !== "undefined" &&
+        sessionStorage.getItem("players-country") !== null;
 
       if (!didSetDefaultCountry.current && !cId && !hasSavedCountry) {
         const india = fetchedCountries.find(
-          (c) => c.name?.toLowerCase() === DEFAULT_COUNTRY_NAME.toLowerCase()
+          (c) => c.name?.toLowerCase() === DEFAULT_COUNTRY_NAME.toLowerCase(),
         );
         if (india) {
           didSetDefaultCountry.current = true;
           setCountryId(String(india.id));
           setPage(1);
-
-          // return early: countryId change triggers reload
+          // Return early: changing countryId will trigger useEffect to reload with India
           setPlayers([]);
           setPager(null);
           setLoading(false);
           return;
         }
-        didSetDefaultCountry.current = true;
       }
+      didSetDefaultCountry.current = true; // prevent endless attempts
 
       setPlayers(json.players?.data ?? []);
       setPager(json.players ?? null);
     } catch (e: any) {
-      setErr(e?.message ?? "Something went wrong");
+      setErr(e.message ?? "Something went wrong");
     } finally {
       setLoading(false);
     }
   }
+
+  // Save state to sessionStorage
+  useEffect(() => {
+    if (!isRestored) return;
+    sessionStorage.setItem("players-query", q);
+    sessionStorage.setItem("players-country", countryId);
+    sessionStorage.setItem("players-page", String(page));
+  }, [q, countryId, page, isRestored]);
+
+  // Clear storage when navigating away from players section
+  useEffect(() => {
+    const clearPlayersStorage = () => {
+      sessionStorage.removeItem("players-query");
+      sessionStorage.removeItem("players-country");
+      sessionStorage.removeItem("players-page");
+      sessionStorage.removeItem("players-scroll-pos");
+    };
+
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest("a");
+      if (link) {
+        const href = link.getAttribute("href");
+        // Keep storage if navigating to player detail pages (/players/*)
+        // Clear if navigating anywhere else
+
+        if (href && !href.includes("players")) {
+          clearPlayersStorage();
+        }
+      }
+    };
+
+    // Handle browser back/forward navigation
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      if (!path.includes("players")) {
+        clearPlayersStorage();
+      }
+    };
+
+    document.addEventListener("click", handleClick);
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      document.removeEventListener("click", handleClick);
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
+  // Save scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isRestored) {
+        sessionStorage.setItem("players-scroll-pos", window.scrollY.toString());
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isRestored]);
+
+  // Restore scroll position after players are loaded
+  useEffect(() => {
+    if (isRestored && !loading && players.length > 0) {
+      const savedScroll = sessionStorage.getItem("players-scroll-pos");
+      if (savedScroll) {
+        setTimeout(() => {
+          window.scrollTo(0, parseInt(savedScroll, 10));
+        }, 100);
+      }
+    }
+  }, [isRestored, loading, players.length]);
 
   useEffect(() => {
     loadCatalog(page, q, countryId);
@@ -168,154 +209,136 @@ export default function PlayersPage() {
 
   return (
     <>
-
       <BottomNav />
-
-      <div className="mx-auto px-4 py-8 md:py-10">
-        <header className="mb-6 rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
-          <h1 className="text-2xl font-bold text-white">Players</h1>
-          <p className="mt-1 text-xs font-semibold tracking-[0.18em] text-amber-400">
-            Browse players. Use search and filters to find them faster.
-          </p>
-        </header>
-
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-          {/* Filters */}
-          <aside className="md:col-span-1">
-            <div className="sticky top-4 space-y-4 rounded-2xl border border-white/15 bg-black/50 p-4 text-sm shadow-2xl backdrop-blur-xl">
-              <div className="space-y-1">
-                <label className="font-medium text-amber-200">
-                  Search by name
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Ahmed, Sharma..."
-                  className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white placeholder:text-slate-400 outline-none focus:border-amber-400/50 focus:ring-amber-400/30"
-                  value={searchValue}
-                  onChange={(e) => {
-                    setSearchValue(e.target.value);
-                    debouncedSetQ(e.target.value);
-                  }}
-                />
+      <div className="min-h-screen">
+        <main className="w-[99%]  mx-auto py-1">
+          <div className="space-y-4">
+            <header className="">
+              <div className="flex  items-center mb-4">
+                <h1 className="m-h">Players</h1>
               </div>
+              <p className="mt-1 text-xs font-semibold tracking-[0.18em] text-amber-400">
+                Browse players. Use search and filters to find them faster.
+              </p>
+            </header>
 
-              <div className="space-y-1">
-                <label className="font-medium text-amber-200">Country</label>
-                <select
-                  className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none focus:border-amber-400/50 focus:ring-amber-400/30"
-                  value={countryId}
-                  onChange={(e) => {
-                    setCountryId(e.target.value);
-                    setPage(1);
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                >
-                  <option value="">All</option>
-                  {countries.map((c) => (
-                    <option key={c.id} value={String(c.id)}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </aside>
-
-          {/* Grid */}
-          <main className="md:col-span-3">
-            {loading && (
-              <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
-                Loading players…
-                <div className="mt-4 mx-auto h-6 w-6 animate-spin rounded-full border-4 border-amber-400 border-t-transparent" />
-              </div>
-            )}
-
-            {err && !loading && (
-              <div className="rounded-2xl border border-red-500/30 bg-black/70 p-6 text-sm text-red-300 backdrop-blur-xl">
-                {err}
-              </div>
-            )}
-
-            {!loading && !err && (
-              <>
-                {players.length === 0 ? (
-                  <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
-                    No players match your filters.
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+              {/* Filters */}
+              <aside className="md:col-span-1">
+                <div className="sticky top-20 space-y-4 rounded-2xl border border-white/15 bg-black/50 p-4 text-sm shadow-2xl backdrop-blur-xl">
+                  <div className="space-y-4">
+                    <label className="font-medium text-amber-200">
+                      Search by name
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Ahmed, Sharma..."
+                      className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white placeholder:text-slate-400 outline-none focus:border-amber-400/50 focus:ring-amber-400/30"
+                      value={searchValue}
+                      onChange={(e) => {
+                        setSearchValue(e.target.value);
+                        debouncedSetQ(e.target.value);
+                      }}
+                    />
                   </div>
-                ) : (
-                  <>
-                    <div className="mb-3 text-xs text-sky-100/60">
-                      Showing{" "}
-                      <span className="font-medium text-amber-300">
-                        {players.length}
-                      </span>{" "}
-                      players on this page.
-                      {pager ? (
-                        <>
-                          {" "}
-                          Total:{" "}
-                          <span className="font-medium text-amber-300">
-                            {pager.total}
-                          </span>
-                        </>
-                      ) : null}
-                    </div>
 
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {players.map((p) => (
-                        <PlayerCard
-                          key={p.id}
-                          id={p.id}
-                          fullname={
-                            p.fullname ??
-                            p.name ??
-                            [p.firstname, p.lastname]
-                              .filter(Boolean)
-                              .join(" ") ??
-                            `Player #${p.id}`
-                          }
-                          position={p.position ?? null}
-                          country={p.country?.name ?? null}
-                          image_path={p.image_path ?? null}
-                        />
+                  <div className="space-y-1">
+                    <label className="font-medium text-amber-200">
+                      Country
+                    </label>
+                    <select
+                      className="mt-1 w-full rounded-xl border border-white/20 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none focus:border-amber-400/50 focus:ring-amber-400/30"
+                      value={countryId}
+                      onChange={(e) => {
+                        setCountryId(e.target.value);
+                        setPage(1);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                    >
+                      <option value="">All</option>
+                      {countries.map((c) => (
+                        <option key={c.id} value={String(c.id)}>
+                          {c.name}
+                        </option>
                       ))}
-                    </div>
+                    </select>
+                  </div>
+                </div>
+              </aside>
 
-                    {totalPages > 1 && (
-                      <div className="mt-6 flex items-center justify-center gap-3 text-sm">
-                        <button
-                          disabled={page === 1}
-                          onClick={() => {
-                            setPage((x) => Math.max(1, x - 1));
-                            window.scrollTo({ top: 0, behavior: "smooth" });
-                          }}
-                          className="rounded-full border border-amber-400/30 bg-slate-900/80 px-3 py-1.5 text-amber-200 backdrop-blur-sm hover:bg-slate-800/80 hover:border-amber-400/50 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          Prev
-                        </button>
+              {/* Grid */}
+              <main className="md:col-span-3">
+                {loading && (
+                  <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
+                    Loading players…
+                    <div className="mt-4 mx-auto h-6 w-6 animate-spin rounded-full border-4 border-amber-400 border-t-transparent" />
+                  </div>
+                )}
 
-                        <span className="rounded-full border border-white/20 bg-black/50 px-3 py-1.5 text-amber-300 backdrop-blur-xl">
-                          Page {page} of {totalPages}
-                        </span>
+                {err && !loading && (
+                  <div className="rounded-2xl border border-red-500/30 bg-black/70 p-6 text-sm text-red-300 backdrop-blur-xl">
+                    {err}
+                  </div>
+                )}
 
-                        <button
-                          disabled={page === totalPages}
-                          onClick={() => {
-                            setPage((x) => Math.min(totalPages, x + 1));
-                            window.scrollTo({ top: 0, behavior: "smooth" });
-                          }}
-                          className="rounded-full border border-amber-400/30 bg-slate-900/80 px-3 py-1.5 text-amber-200 backdrop-blur-sm hover:bg-slate-800/80 hover:border-amber-400/50 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          Next
-                        </button>
+                {!loading && !err && (
+                  <>
+                    {players.length === 0 ? (
+                      <div className="rounded-2xl border border-white/15 bg-black/50 p-6 text-center text-sm text-sky-100/70 backdrop-blur-xl">
+                        No players match your filters.
                       </div>
+                    ) : (
+                      <>
+                        <div className="mb-3 text-center text-xs text-sky-100/60">
+                          Showing{" "}
+                          <span className="font-medium text-amber-300">
+                            {players.length}
+                          </span>{" "}
+                          players on this page.
+                          {pager ? (
+                            <>
+                              {" "}
+                              Total:{" "}
+                              <span className="font-medium text-amber-300">
+                                {pager.total}
+                              </span>
+                            </>
+                          ) : null}
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                          {players.map((p) => (
+                            <PlayerCard
+                              key={p.id}
+                              id={p.id}
+                              fullname={
+                                p.fullname ??
+                                p.name ??
+                                [p.firstname, p.lastname]
+                                  .filter(Boolean)
+                                  .join(" ") ??
+                                `Player #${p.id}`
+                              }
+                              position={p.position ?? null}
+                              country={p.country?.name ?? null}
+                              image_path={p.image_path ?? null}
+                            />
+                          ))}
+                        </div>
+
+                        <MobilePagination
+                          page={page}
+                          totalPages={totalPages}
+                          setPage={setPage}
+                        />
+                      </>
                     )}
                   </>
                 )}
-              </>
-            )}
-          </main>
-        </div>
+              </main>
+            </div>
+          </div>
+        </main>
       </div>
     </>
   );

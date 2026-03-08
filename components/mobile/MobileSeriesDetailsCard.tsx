@@ -42,17 +42,12 @@ export default function MobileSeriesDetailsCard({ f }: { f: Match }) {
         href={`/mobile/match/${f.id}`}
         className="relative z-10 block rounded-2xl px-5 py-5 transition-transform duration-300 group-hover:scale-105"
       >
-        <div className="text-xs font-black text-amber-400 uppercase tracking-widest mb-3">
+        <div className="text-sm font-black text-amber-400 uppercase tracking-widest text-center space-y-4">
           {dateLine.toString().split(",")[2]}
         </div>
 
-        <div className="flex justify-between items-start gap-3 mb-4">
+        <div className="flex justify-between items-start gap-3">
           <div className="flex flex-col gap-2">
-            {/* {f.status && (
-              <div className="text-xs font-bold text-slate-300 uppercase tracking-widest">
-                {f.status}
-              </div>
-            )} */}
             <p className="text-sm font-black text-white uppercase tracking-wider">
               {metaLine}
             </p>
@@ -63,18 +58,18 @@ export default function MobileSeriesDetailsCard({ f }: { f: Match }) {
               "inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide border-2 transition-all whitespace-nowrap",
               f.live
                 ? "bg-red-500/30 text-red-200 border-red-400/60 animate-pulse"
-                : "bg-slate-700/60 text-slate-200 border-slate-600/60"
+                : "bg-slate-700/60 text-slate-200 border-slate-600/60",
             )}
           >
             {f.live
               ? "LIVE"
               : f.status === "Finished"
-              ? "FINISHED"
-              : "Upcoming"}
+                ? "FINISHED"
+                : "Upcoming"}
           </span>
         </div>
 
-        <div className="flex items-center justify-between space-x-8 gap-3 py-5 rounded-xl group-hover:border-amber-500/40 transition-colors mb-4">
+        <div className="flex items-center justify-between space-x-8 gap-3 py-5 rounded-xl group-hover:border-amber-500/40 transition-colors">
           <div className="flex-1 min-w-0">
             <MobileTeamBadge team={home} size={70} className="justify-start" />
           </div>
@@ -82,7 +77,7 @@ export default function MobileSeriesDetailsCard({ f }: { f: Match }) {
           <div
             className="px-4 py-2 text-white font-black text-lg uppercase tracking-widest
             bg-gradient-to-r from-amber-400 via-amber-600 to-amber-800
-            rounded-lg shadow-lg whitespace-nowrap"
+            rounded-2xl shadow-2xl whitespace-nowrap"
           >
             VS
           </div>
@@ -97,7 +92,7 @@ export default function MobileSeriesDetailsCard({ f }: { f: Match }) {
         </div>
 
         {f.note && (
-          <p className="text-xs text-slate-300 font-medium italic border-l-2 border-amber-500/60 pl-3 py-2 rounded bg-slate-800/30">
+          <p className="text-xs text-center text-slate-200 font-medium italic border-x-2 border-amber-500/60 pl-3 py-2 rounded-2xl bg-slate-800/30">
             {f.note}
           </p>
         )}

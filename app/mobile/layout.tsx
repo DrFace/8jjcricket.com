@@ -11,7 +11,7 @@ import MobileFloatingSupport from "@/components/mobile/MobileFloatingSupport";
 import { motion } from "framer-motion";
 import styles from "@/components/TopNav.module.css";
 import { Poppins } from "next/font/google";
-
+import "./mobileGlobals.css";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["600", "700", "800"],

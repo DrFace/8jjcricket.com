@@ -31,12 +31,9 @@ export async function getArchives(
   filters?: ArchiveFilters,
 ): Promise<ArchivesResponse> {
   try {
-    console.log("call getArchives");
     const apibase = "https://8jjcricket.com/api";
     const queryString = BuildQueryString(filters);
-    console.log("queryString", queryString);
     const url = `${apibase}/archives${queryString}`;
-    console.log("Arc url", url);
 
     const response = await fetch(url, {
       method: "GET",

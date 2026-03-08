@@ -82,7 +82,7 @@ export default function GalleryMobileClient({
   return (
     <div className="space-y-5">
       {/* Search */}
-      <div className="top-0 z-20 bg-black px-4 py-3">
+      <div className="top-0 z-20 py-3">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -92,9 +92,9 @@ export default function GalleryMobileClient({
       </div>
 
       {/* Category chips */}
-      <div className="px-4">
+      <div>
         <div className="overflow-x-auto">
-          <div className="flex w-max items-center gap-2 pb-2">
+          <div className="flex w-max items-center gap-4">
             {filteredCategories.map((c) => {
               const isActive = c.slug === activeCat;
               return (
@@ -118,7 +118,7 @@ export default function GalleryMobileClient({
 
       {/* Active Category Header */}
       {activeCategory && (
-        <div className="px-4">
+        <div>
           <h2 className="text-lg font-extrabold tracking-tight">
             {activeCategory.name}
           </h2>
@@ -129,7 +129,7 @@ export default function GalleryMobileClient({
       )}
 
       {/* Albums */}
-      <div className="px-4">
+      <div>
         {activeAlbums.length === 0 ? (
           <div className="rounded-2xl bg-white/5 p-6 text-sm text-white/60 ring-1 ring-white/10">
             No albums found for this category.
@@ -154,8 +154,6 @@ export default function GalleryMobileClient({
                         {albumPhotos.length} photos
                       </p>
                     </div>
-
-                    
                   </div>
 
                   {/* Photo grid */}
@@ -181,7 +179,7 @@ export default function GalleryMobileClient({
                             <div
                               className={[
                                 "w-full",
-                                isPortrait ? "aspect-[3/4]" : "aspect-[16/9]",
+                                isPortrait ? "aspect-[2/3]" : "aspect-[3/2]",
                               ].join(" ")}
                             >
                               <img
@@ -212,40 +210,51 @@ export default function GalleryMobileClient({
       {/* Lightbox */}
       {lightbox && (
         <div
-          className="fixed inset-0 z-50 bg-black/90"
+          className="fixed inset-0 z-50 bg-black/60"
           onClick={() => setLightbox(null)}
           role="dialog"
           aria-modal="true"
         >
-          <div
-            className="relative h-full w-full"
-            onClick={(e) => e.stopPropagation()}
+          {/* TOP-RIGHT CLOSE (X) BUTTON */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setLightbox(null);
+            }}
+            aria-label="Close"
+            className="fixed z-[60] flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white shadow-lg hover:bg-white/20 active:scale-95 transition-transform"
+            style={{
+              top: "calc(env(safe-area-inset-top) + 87px)",
+              right: "25px",
+            }}
           >
-            {/* TOP-RIGHT CLOSE (X) BUTTON */}
-            <button
-              onClick={() => setLightbox(null)}
-              aria-label="Close"
-              className="fixed z-[60] flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-white ring-1 ring-white/20 hover:bg-black"
-              style={{
-                top: "calc(env(safe-area-inset-top) + 12px)",
-                right: "12px",
-              }}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              ✕
-            </button>
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
 
-            {/* Image */}
-            <div className="flex h-full items-center justify-center p-3">
-              <img
-                src={lightbox.image_url}
-                alt={lightbox.name || ""}
-                className="max-h-[90vh] w-auto max-w-full object-contain"
-              />
-            </div>
+          {/* Image */}
+          <div className="flex h-full items-center justify-center p-3 rounded-2xl">
+            <img
+              src={lightbox.image_url}
+              alt={lightbox.name || ""}
+              className="max-h-[90vh] w-auto max-w-full object-contain rounded-2xl"
+              onClick={(e) => e.stopPropagation()}
+            />
           </div>
         </div>
       )}
-
     </div>
   );
 }

@@ -576,215 +576,215 @@ export default function NewsPage() {
   return (
     <div className="min-h-screen flex flex-col bg-transparent text-slate-100">
       <TopNav />
-
-      <main className="flex-1 px-4 py-10">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* LEFT SIDEBAR */}
-          <aside className="md:col-span-1 h-fit sticky top-28">
-            {/* HIGHLIGHTED EVENTS CATEGORY */}
-            {categories?.data
-              ?.filter((cat: Category) => cat.slug === "events")
-              .map((cat: Category) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.slug)}
-                  className={`block w-full text-left px-5 py-4 rounded-2xl mb-4 transition-all duration-500 group relative overflow-hidden border ${
-                    activeCategory === cat.slug
-                      ? "bg-gradient-to-br from-india-saffron via-india-gold to-india-orange border-white/20 text-black font-bold shadow-2xl shadow-india-saffron/40 scale-[1.02]"
-                      : "bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-india-gold/50 hover:-translate-y-1"
-                  }`}
-                >
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`flex h-12 w-12 items-center justify-center rounded-xl transition-colors duration-300 ${
-                        activeCategory === cat.slug
-                          ? "bg-white/20 text-black"
-                          : "bg-india-gold/10 text-india-gold"
-                      }`}
-                    >
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M8 2v4" />
-                        <path d="M16 2v4" />
-                        <rect width="18" height="18" x="3" y="4" rx="2" />
-                        <path d="M3 10h18" />
-                      </svg>
-                    </div>
-                    <div>
-                      <div
-                        className={`text-[10px] uppercase tracking-[0.2em] font-black mb-0.5 ${
-                          activeCategory === cat.slug
-                            ? "text-black/60"
-                            : "text-india-gold"
-                        }`}
-                      >
-                        Featured
-                      </div>
-                      <div className="text-xl font-black">{cat.name}</div>
-                    </div>
-                  </div>
-                  {activeCategory === cat.slug && (
-                    <div className="absolute inset-0 bg-white/10 animate-pulse pointer-events-none" />
-                  )}
-                </button>
-              ))}
-
-            <div className="rounded-2xl india-card-gradient p-4">
-              <h2 className="text-lg font-bold mb-3 india-header-text">
-                Categories
-              </h2>
-
-              <button
-                onClick={() => setActiveCategory(null)}
-                className={`block w-full text-left px-3 py-2 rounded-xl mb-1 transition-all duration-300 ${
-                  activeCategory === null
-                    ? "bg-gradient-to-r from-india-saffron to-india-gold text-black font-bold shadow-lg shadow-india-saffron/30"
-                    : "text-slate-200 hover:bg-white/5 hover:translate-x-1"
-                }`}
-              >
-                All News
-              </button>
-
+      <div className="min-h-screen">
+        <main className="w-full md:w-[99%] lg:w-[95%] xl:w-[85%] mx-auto py-4">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* LEFT SIDEBAR */}
+            <aside className="md:col-span-1 h-fit sticky top-28">
+              {/* HIGHLIGHTED EVENTS CATEGORY */}
               {categories?.data
-                ?.filter((cat: Category) => cat.slug !== "events")
+                ?.filter((cat: Category) => cat.slug === "events")
                 .map((cat: Category) => (
                   <button
                     key={cat.id}
                     onClick={() => setActiveCategory(cat.slug)}
-                    className={`block w-full text-left px-3 py-2 rounded-xl mb-1 transition-all duration-300 ${
+                    className={`block w-full text-left px-5 py-4 rounded-2xl mb-4 transition-all duration-500 group relative overflow-hidden border ${
                       activeCategory === cat.slug
-                        ? "bg-gradient-to-r from-india-saffron to-india-gold text-black font-bold shadow-lg shadow-india-saffron/30"
-                        : "text-slate-200 hover:bg-white/5 hover:translate-x-1"
+                        ? "bg-gradient-to-br from-india-saffron via-india-gold to-india-orange border-white/20 text-black font-bold shadow-2xl shadow-india-saffron/40 scale-[1.02]"
+                        : "bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-india-gold/50 hover:-translate-y-1"
                     }`}
                   >
-                    {cat.name}
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`flex h-12 w-12 items-center justify-center rounded-xl transition-colors duration-300 ${
+                          activeCategory === cat.slug
+                            ? "bg-white/20 text-black"
+                            : "bg-india-gold/10 text-india-gold"
+                        }`}
+                      >
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M8 2v4" />
+                          <path d="M16 2v4" />
+                          <rect width="18" height="18" x="3" y="4" rx="2" />
+                          <path d="M3 10h18" />
+                        </svg>
+                      </div>
+                      <div>
+                        <div
+                          className={`text-[10px] uppercase tracking-[0.2em] font-black mb-0.5 ${
+                            activeCategory === cat.slug
+                              ? "text-black/60"
+                              : "text-india-gold"
+                          }`}
+                        >
+                          Featured
+                        </div>
+                        <div className="text-xl font-black">{cat.name}</div>
+                      </div>
+                    </div>
+                    {activeCategory === cat.slug && (
+                      <div className="absolute inset-0 bg-white/10 animate-pulse pointer-events-none" />
+                    )}
                   </button>
                 ))}
-            </div>
-          </aside>
 
-          {/* MAIN CONTENT */}
-          <section className="md:col-span-3">
-            <div className="flex items-end justify-between gap-4 mb-6">
-              <h1 className="text-3xl md:text-4xl font-bold india-header-text">
-                {activeCategory === null
-                  ? "Latest News"
-                  : `News in "${activeCategory}"`}
-              </h1>
+              <div className="rounded-2xl india-card-gradient p-4">
+                <h2 className="text-lg font-bold mb-3 india-header-text">
+                  Categories
+                </h2>
 
-              <div className="text-sm text-slate-300">
-                Page{" "}
-                <span className="text-india-gold font-semibold">
-                  {currentPage}
-                </span>{" "}
-                of {lastPage}
+                <button
+                  onClick={() => setActiveCategory(null)}
+                  className={`block w-full text-left px-3 py-2 rounded-xl mb-1 transition-all duration-300 ${
+                    activeCategory === null
+                      ? "bg-gradient-to-r from-india-saffron to-india-gold text-black font-bold shadow-lg shadow-india-saffron/30"
+                      : "text-slate-200 hover:bg-white/5 hover:translate-x-1"
+                  }`}
+                >
+                  All News
+                </button>
+
+                {categories?.data
+                  ?.filter((cat: Category) => cat.slug !== "events")
+                  .map((cat: Category) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => setActiveCategory(cat.slug)}
+                      className={`block w-full text-left px-3 py-2 rounded-xl mb-1 transition-all duration-300 ${
+                        activeCategory === cat.slug
+                          ? "bg-gradient-to-r from-india-saffron to-india-gold text-black font-bold shadow-lg shadow-india-saffron/30"
+                          : "text-slate-200 hover:bg-white/5 hover:translate-x-1"
+                      }`}
+                    >
+                      {cat.name}
+                    </button>
+                  ))}
               </div>
-            </div>
+            </aside>
 
-            {error ? (
-              <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 text-india-red">
-                Failed to load news articles.
+            {/* MAIN CONTENT */}
+            <section className="md:col-span-3">
+              <div className="flex items-end justify-between gap-4 mb-6">
+                <h1 className="text-3xl md:text-4xl font-bold india-header-text">
+                  {activeCategory === null
+                    ? "Latest News"
+                    : `News in "${activeCategory}"`}
+                </h1>
+
+                <div className="text-sm text-slate-300">
+                  Page{" "}
+                  <span className="text-india-gold font-semibold">
+                    {currentPage}
+                  </span>{" "}
+                  of {lastPage}
+                </div>
               </div>
-            ) : isLoading ? (
-              <LoadingSkeleton num={4} col={2} />
-            ) : articles.length === 0 ? (
-              <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 text-slate-300">
-                No news found.
-              </div>
-            ) : (
-              <>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-                  {articles.map((item) => {
-                    const imgSrc = normalizeImageUrl(item.image_url);
-                    const shareUrl = buildShareUrl(item.slug);
 
-                    return (
-                      <article
-                        key={item.id}
-                        className="group rounded-2xl india-card-green-glow p-4 transition-all duration-300 hover:-translate-y-1"
-                      >
-                        {imgSrc && (
-                          <div className="mb-3 overflow-hidden rounded-xl border border-white/10 relative">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={imgSrc}
-                              alt={item.title}
-                              className="w-full h-40 object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-india-charcoal/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          </div>
-                        )}
+              {error ? (
+                <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 text-india-red">
+                  Failed to load news articles.
+                </div>
+              ) : isLoading ? (
+                <LoadingSkeleton num={4} col={2} />
+              ) : articles.length === 0 ? (
+                <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 text-slate-300">
+                  No news found.
+                </div>
+              ) : (
+                <>
+                  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+                    {articles.map((item) => {
+                      const imgSrc = normalizeImageUrl(item.image_url);
+                      const shareUrl = buildShareUrl(item.slug);
 
-                        <h2 className="text-xl font-semibold mb-2 text-slate-100 group-hover:text-india-gold transition-colors duration-300">
-                          <Link
-                            href={`/news/${item.slug}`}
-                            className="hover:text-india-gold transition"
-                          >
-                            {item.title}
-                          </Link>
-                        </h2>
+                      return (
+                        <article
+                          key={item.id}
+                          className="group rounded-2xl india-card-green-glow p-4 transition-all duration-300 hover:-translate-y-1"
+                        >
+                          {imgSrc && (
+                            <div className="mb-3 overflow-hidden rounded-xl border border-white/10 relative">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={imgSrc}
+                                alt={item.title}
+                                className="w-full h-40 object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-india-charcoal/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            </div>
+                          )}
 
-                        {item.published_at && (
-                          <div className="text-xs text-slate-400 mb-2 group-hover:text-slate-300 transition-colors duration-300">
-                            {item.published_at && (
-                              <p className="text-xs text-slate-400 mb-2">
-                                {new Intl.DateTimeFormat("en-IN", {
-                                  dateStyle: "medium",
-                                  timeStyle: "short",
-                                  timeZone: "Asia/Kolkata",
-                                }).format(new Date(item.published_at))}
-                              </p>
-                            )}
-                          </div>
-                        )}
+                          <h2 className="text-xl font-semibold mb-2 text-slate-100 group-hover:text-india-gold transition-colors duration-300">
+                            <Link
+                              href={`/news/${item.slug}`}
+                              className="hover:text-india-gold transition"
+                            >
+                              {item.title}
+                            </Link>
+                          </h2>
 
-                        {item.excerpt && (
-                          <p className="text-sm text-slate-300 line-clamp-2">
-                            {item.excerpt}
-                          </p>
-                        )}
+                          {item.published_at && (
+                            <div className="text-xs text-slate-400 mb-2 group-hover:text-slate-300 transition-colors duration-300">
+                              {item.published_at && (
+                                <p className="text-xs text-slate-400 mb-2">
+                                  {new Intl.DateTimeFormat("en-IN", {
+                                    dateStyle: "medium",
+                                    timeStyle: "short",
+                                    timeZone: "Asia/Kolkata",
+                                  }).format(new Date(item.published_at))}
+                                </p>
+                              )}
+                            </div>
+                          )}
 
-                        <div className="mt-4 flex items-center justify-between gap-3">
-                          <Link
-                            href={`/news/${item.slug}`}
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg
-                                       bg-gradient-to-r from-india-saffron to-india-gold
+                          {item.excerpt && (
+                            <p className="text-sm text-slate-300 line-clamp-2">
+                              {item.excerpt}
+                            </p>
+                          )}
+
+                          <div className="mt-4 flex items-center justify-between gap-3">
+                            <Link
+                              href={`/news/${item.slug}`}
+                              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                                       bg-gradient-to-r from-india-gold to-india-saffron 
                                        text-black text-sm font-bold shadow-lg shadow-india-saffron/30
                                        transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-india-saffron/40"
-                          >
-                            Read more{" "}
-                            <span className="transition-transform duration-300 group-hover:translate-x-1">
-                              →
-                            </span>
-                          </Link>
+                            >
+                              Read more{" "}
+                              <span className="transition-transform duration-300 group-hover:translate-x-1">
+                                →
+                              </span>
+                            </Link>
 
-                          <ShareButton url={shareUrl} title={item.title} />
-                        </div>
-                      </article>
-                    );
-                  })}
-                </div>
+                            <ShareButton url={shareUrl} title={item.title} />
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
 
-                {/* THIS IS THE PAGINATION RENDER */}
-                <Pagination
-                  page={currentPage}
-                  lastPage={lastPage}
-                  onPageChange={(p) => setPage(p)}
-                />
-              </>
-            )}
-          </section>
-        </div>
-      </main>
-
+                  {/* THIS IS THE PAGINATION RENDER */}
+                  <Pagination
+                    page={currentPage}
+                    lastPage={lastPage}
+                    onPageChange={(p) => setPage(p)}
+                  />
+                </>
+              )}
+            </section>
+          </div>
+        </main>
+      </div>
       <Footer />
     </div>
   );

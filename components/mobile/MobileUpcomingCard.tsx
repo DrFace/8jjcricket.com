@@ -20,35 +20,35 @@ export default function MobileUpcomingCard({ f }: { f: Fixture }) {
       <div
         className={cn(
           "relative rounded-2xl p-[0.2px]",
-          "bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-500",
-          "shadow-lg shadow-amber-500/25"
+          "shadow-lg shadow-amber-500/25",
         )}
       >
         {/* Card body */}
         <div
           className={cn(
             "relative rounded-2xl p-4",
-            "bg-gradient-to-br from-[#0E1118] via-[#0B0E14] to-black"
+            "bg-white/10 backdrop-blur-sm",
           )}
         >
-
           {/* Header */}
           <div className="relative z-10 flex items-start justify-between gap-3">
-            <div className="min-w-0">
+            <div className="w-full">
               <h3
                 className="
               text-sm sm:text-base
               font-extrabold
               text-transparent bg-clip-text
               bg-gradient-to-r from-white to-sky-200
-              truncate
+              truncate text-center
             "
               >
                 {homeLabel} vs {awayLabel}
               </h3>
 
-              <p className="mt-0.5 text-[11px] text-sky-100/60">
-                {[f.round, leagueName, formatDate(f.starting_at)].filter(Boolean).join(" · ")}
+              <p className="mt-0.5 text-[11px] text-sky-100/60 text-center">
+                {[f.round, leagueName, formatDate(f.starting_at)]
+                  .filter(Boolean)
+                  .join(" · ")}
               </p>
               {venueCity && (
                 <p className="mt-0.5 text-[10px] text-sky-100/40 uppercase tracking-wider">
@@ -56,7 +56,6 @@ export default function MobileUpcomingCard({ f }: { f: Fixture }) {
                 </p>
               )}
             </div>
-
           </div>
 
           {/* Divider */}
@@ -69,10 +68,8 @@ export default function MobileUpcomingCard({ f }: { f: Fixture }) {
             </div>
 
             <div className="flex flex-col items-center shrink-0 px-1">
-              <span className="text-[10px] tracking-widest text-sky-100/40">
-                VS
-              </span>
-              <span className="h-1 w-1 rounded-full bg-white/20" />
+              <span className="text-md tracking-widest text-amber-300">VS</span>
+              <span className="h-1 w-1 rounded-full bg-amber-300" />
             </div>
 
             <div className="flex-1 flex justify-end">

@@ -6,8 +6,7 @@ import React from "react";
 
 function MobileSponsorBar() {
   const { sponsors, isLoading, error } = useSponsors();
-  console.log("Sponsors data:", sponsors);
-
+  
   if (isLoading || error || !sponsors || sponsors.length === 0) {
     return null;
   }

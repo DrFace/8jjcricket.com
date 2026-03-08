@@ -275,7 +275,7 @@ export default async function MobileHomePage() {
           </div>
         </div>
 
-        <div className="relative w-full rounded-2xl border border-india-gold/20 bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 p-4 shadow-2xl backdrop-blur-xl">
+        <div className="relative w-full rounded-2xl border border-india-gold/20 bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 shadow-2xl backdrop-blur-xl">
           <MobilePortraitShowcaseSection />
         </div>
         {/* </Reveal> */}

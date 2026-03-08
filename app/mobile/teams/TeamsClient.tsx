@@ -5,13 +5,14 @@ import { useSearchParams, useRouter } from "next/navigation";
 import useSWR from "swr";
 import BottomNav from "@/components/BottomNav";
 import ErrorState from "@/components/ui/ErrorState";
-import { PaginationComponet } from "@/components/ui/Pagination";
 import { League } from "@/types/series";
 import { ApiResponse, TabKey, TeamFromAPI } from "@/types/team";
 import { HasValidImage } from "@/lib/teams";
 import { MOBILE_PAGE_SIZE } from "@/lib/constant";
 import TeamsCard from "@/components/TeamsCard";
 import { FetchJson } from "@/lib/fetcher";
+import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
+import MobilePagination from "@/components/mobile/MobilePagination";
 
 function parseLeagueParam(value: string | null): string | null {
   if (!value) return null;
@@ -23,7 +24,7 @@ function parseLeagueParam(value: string | null): string | null {
 // Fallback: allow numeric IDs only (adjust if your IDs are not numeric).
 function sanitizeLeagueId(
   raw: string | null,
-  leagues: League[]
+  leagues: League[],
 ): string | null {
   if (!raw) return null;
 
@@ -45,7 +46,7 @@ function isNationalTeam(team: TeamFromAPI): boolean {
 function sortTeamsByImage(teams: TeamFromAPI[]): TeamFromAPI[] {
   // Avoid mutating original array
   return [...teams].sort(
-    (a, b) => Number(HasValidImage(b)) - Number(HasValidImage(a))
+    (a, b) => Number(HasValidImage(b)) - Number(HasValidImage(a)),
   );
 }
 
@@ -96,7 +97,7 @@ function useTeamsData(leagueId: string | null) {
     }
 
     return allTeams.filter((t) =>
-      teamIds.has(Number((t as any).sportmonks_team_id))
+      teamIds.has(Number((t as any).sportmonks_team_id)),
     );
   }, [allTeams, fixturesSWR.data, leagueId]);
 
@@ -124,7 +125,7 @@ export default function TeamsClient() {
 
   const leagueId = useMemo(
     () => sanitizeLeagueId(leagueParamRaw, leagues),
-    [leagueParamRaw, leagues]
+    [leagueParamRaw, leagues],
   );
 
   // Re-run data hook with validated leagueId
@@ -139,22 +140,22 @@ export default function TeamsClient() {
 
   const national = useMemo(
     () => sortTeamsByImage(data.teams.filter(isNationalTeam)),
-    [data.teams]
+    [data.teams],
   );
 
   const domestic = useMemo(
     () => sortTeamsByImage(data.teams.filter((t) => !isNationalTeam(t))),
-    [data.teams]
+    [data.teams],
   );
 
   const visibleNational = useMemo(
     () => (activeTab === "domestic" ? [] : national),
-    [activeTab, national]
+    [activeTab, national],
   );
 
   const visibleDomestic = useMemo(
     () => (activeTab === "international" ? [] : domestic),
-    [activeTab, domestic]
+    [activeTab, domestic],
   );
 
   const visibleTeamsCount = visibleNational.length + visibleDomestic.length;
@@ -164,12 +165,12 @@ export default function TeamsClient() {
 
   const pagedInternational = useMemo(
     () => paginate(visibleNational, pageIntl, MOBILE_PAGE_SIZE),
-    [visibleNational, pageIntl]
+    [visibleNational, pageIntl],
   );
 
   const pagedDomestic = useMemo(
     () => paginate(visibleDomestic, pageDom, MOBILE_PAGE_SIZE),
-    [visibleDomestic, pageDom]
+    [visibleDomestic, pageDom],
   );
 
   const onLeagueChange = useCallback(
@@ -177,7 +178,7 @@ export default function TeamsClient() {
       if (value === "all") router.push("/teams");
       else router.push(`/teams?league=${encodeURIComponent(value)}`);
     },
-    [router]
+    [router],
   );
 
   const goBack = useCallback(() => router.back(), [router]);
@@ -190,31 +191,17 @@ export default function TeamsClient() {
 
   return (
     <>
-
-      <div className="min-h-screen flex flex-col">
-        <BottomNav />
-
-        <main className="flex-1">
+      <BottomNav />
+      <div className="min-h-screen">
+        <main className="w-[99%]  mx-auto py-1">
           {showError ? (
-            <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
-              <ErrorState message="Failed to load teams. Please try again later." />
-            </div>
+            <ErrorState message="Failed to load teams. Please try again later." />
           ) : isLoading ? (
-            <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
-              <div className="h-24 bg-slate-900/80 border border-white/20 rounded-3xl animate-pulse backdrop-blur-xl" />
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-20 bg-slate-900/80 border border-white/20 rounded-2xl animate-pulse backdrop-blur-xl"
-                  />
-                ))}
-              </div>
-            </div>
+            <LoadingSkeleton num={3} col={1} />
           ) : (
-            <div className="space-y-6 2xl:w-[75%] xl:w-[80%] lg:w-[95%] mx-auto h-min-80">
+            <div className="space-y-4">
               {/* Header */}
-              <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 p-6 md:p-8 shadow-2xl backdrop-blur-xl mt-5">
+              <div className="rounded-3xl border border-amber-400/40 bg-gradient-to-br from-slate-900/90 via-amber-900/20 to-orange-900/30 p-6 shadow-2xl backdrop-blur-xl">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                   <div className="flex items-center gap-4">
                     <button
@@ -242,9 +229,9 @@ export default function TeamsClient() {
                       <p className="text-xs font-semibold tracking-[0.18em] text-amber-300 mb-1">
                         8JJCRICKET · TEAMS
                       </p>
-                      <h1 className="text-2xl md:text-3xl font-bold text-white">
-                        Cricket Teams
-                      </h1>
+                      <div className="flex  items-center ">
+                        <h1 className="m-h">Cricket Teams</h1>
+                      </div>
                       <p className="text-sky-100/80 text-sm md:text-base mt-1">
                         Browse teams by series and leagues
                       </p>
@@ -343,10 +330,10 @@ export default function TeamsClient() {
                         ))}
                       </div>
 
-                      <PaginationComponet
-                        page={pageIntl}
-                        totalPages={intlPages}
-                        onPage={setPageIntl}
+                      <MobilePagination
+                        page={pageDom}
+                        totalPages={domPages}
+                        setPage={setPageDom}
                       />
                     </section>
                   )}
@@ -369,10 +356,10 @@ export default function TeamsClient() {
                         ))}
                       </div>
 
-                      <PaginationComponet
+                      <MobilePagination
                         page={pageDom}
                         totalPages={domPages}
-                        onPage={setPageDom}
+                        setPage={setPageDom}
                       />
                     </section>
                   )}

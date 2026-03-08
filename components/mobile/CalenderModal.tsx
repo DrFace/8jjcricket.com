@@ -51,7 +51,7 @@ function Calendar({
 }: CalendarProps) {
   const initialMonth = selectedDate ? new Date(selectedDate) : new Date();
   const [viewMonth, setViewMonth] = useState<Date>(
-    new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1)
+    new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1),
   );
 
   const min = minDate ? new Date(minDate) : undefined;
@@ -61,7 +61,7 @@ function Calendar({
     const startOfMonth = new Date(
       viewMonth.getFullYear(),
       viewMonth.getMonth(),
-      1
+      1,
     );
     const startDay = startOfMonth.getDay();
     const gridStart = new Date(startOfMonth);
@@ -140,7 +140,7 @@ function Calendar({
           className="rounded-md px-2 py-1 text-amber-300 hover:bg-white/10 transition-colors"
           onClick={() =>
             setViewMonth(
-              new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1)
+              new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1),
             )
           }
         >
@@ -178,7 +178,7 @@ function Calendar({
           className="rounded-md px-2 py-1 text-amber-300 hover:bg-white/10 transition-colors"
           onClick={() =>
             setViewMonth(
-              new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1)
+              new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1),
             )
           }
         >
@@ -239,7 +239,7 @@ function Calendar({
             const today = new Date(
               now.getFullYear(),
               now.getMonth(),
-              now.getDate()
+              now.getDate(),
             );
             setViewMonth(new Date(today.getFullYear(), today.getMonth(), 1));
             onSelectDate(toDateString(today));
@@ -283,9 +283,9 @@ export default function CalenderModal(props: CalenderModalProps) {
     () =>
       [...fixtures].sort(
         (a, b) =>
-          new Date(a.starting_at).getTime() - new Date(b.starting_at).getTime()
+          new Date(a.starting_at).getTime() - new Date(b.starting_at).getTime(),
       ),
-    [fixtures]
+    [fixtures],
   );
 
   const minDate =
@@ -369,7 +369,6 @@ export default function CalenderModal(props: CalenderModalProps) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "rgba(0,0,0,0.65)",
         WebkitBackdropFilter: "blur(6px)",
         padding: 16,
       }}
@@ -404,7 +403,7 @@ export default function CalenderModal(props: CalenderModalProps) {
         onClick={handleTriggerClick}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="rounded-2xl border border-white/15 bg-black/50 backdrop-blur-xl p-4 shadow-2xl flex items-center justify-between w-full"
+        className="rounded-2xl border border-white/15 bg-black/10 backdrop-blur-xl p-4 shadow-2xl flex items-center justify-between w-full"
       >
         <div className="w-full">
           <div className="flex items-center justify-between w-full">

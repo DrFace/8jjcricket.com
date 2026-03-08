@@ -15,15 +15,7 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(seriesJsonLd) }}
       />
-      {/* ----------------------------- */}
-
-      <Suspense
-        fallback={
-          <div className="p-6 text-amber-200 animate-pulse">
-            Loading series...
-          </div>
-        }
-      >
+      <Suspense fallback={null}>
         <SeriesClient />
       </Suspense>
     </>

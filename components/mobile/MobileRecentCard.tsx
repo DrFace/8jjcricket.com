@@ -29,7 +29,6 @@ export default function MobileRecentCard({ f }: { f: Fixture }) {
       <div
         className={cn(
           "relative rounded-2xl p-[0.2px]",
-          "bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-500",
           "shadow-lg shadow-amber-500/25",
         )}
       >
@@ -37,9 +36,20 @@ export default function MobileRecentCard({ f }: { f: Fixture }) {
         <div
           className={cn(
             "relative rounded-2xl p-4",
-            "bg-gradient-to-br from-[#0E1118] via-[#0B0E14] to-black",
+            "bg-white/10 backdrop-blur-sm",
           )}
         >
+          <h3
+            className="
+              text-sm sm:text-base
+              font-extrabold
+              text-transparent bg-clip-text
+              bg-gradient-to-r from-white to-sky-200
+              truncate text-center
+            "
+          >
+            {homeLabel} vs {awayLabel}
+          </h3>
           <p className="mt-0.5 text-[11px] text-sky-100/60 text-center">
             {f.round ?? "Match"} · {formatDate(f.starting_at)}
           </p>

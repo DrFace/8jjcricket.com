@@ -1,0 +1,10 @@
+.m-h {
+  @apply text-2xl font-bold bg-clip-text text-transparent;
+  background-image: linear-gradient(
+    90deg,
+    #ff6600 0%,
+    #ffb800 38%,
+    #ffffff 58%,
+    #138808 100%
+  );
+}

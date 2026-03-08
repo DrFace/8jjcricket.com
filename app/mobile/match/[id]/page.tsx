@@ -17,9 +17,9 @@ export async function generateMetadata({
 export default function MatchPage({ params }: { params: { id: string } }) {
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center">
         <MobileBackButton />
-        <h1 className="text-2xl font-bold text-white india-header-text">Scoreboard</h1>
+        <h1 className="m-h">Scoreboard</h1>
       </div>
 
       <MobileScoreboard id={params.id} />

@@ -33,7 +33,7 @@ const SITE_ORIGIN =
 function apiBase() {
   return (process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE).replace(
     /\/+$/,
-    ""
+    "",
   );
 }
 
@@ -124,24 +124,25 @@ export default async function GalleryPage() {
     <>
       <TopNav />
 
-      <main className="min-h-screen bg-black text-white">
-        <div className="mx-auto w-full max-w-7xl px-4 py-8">
-          {/* HERO */}
-          <div className="relative overflow-hidden rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 p-6 sm:p-10 shadow-2xl backdrop-blur-xl">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs font-bold tracking-widest text-india-gold">
-                  8JJ SPORTS • GALLERY
-                </p>
-                <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl text-white india-header-text">
-                  Moments. Matches. Memories.
-                </h1>
-                <p className="mt-2 max-w-2xl text-sm text-sky-100/70">
-                  Browse images by category and album. Click any photo to view
-                  fullscreen.
-                </p>
+      <div className="min-h-screen">
+        <main className="w-full md:w-[99%] lg:w-[95%] xl:w-[85%] mx-auto py-4">
+          <div className="space-y-4">
+            {/* HERO */}
+            <div className="relative overflow-hidden rounded-3xl border border-india-gold/40 bg-gradient-to-br from-india-charcoal via-india-maroon/20 to-india-blue/30 px-6 py-5 shadow-2xl backdrop-blur-xl">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-bold tracking-widest text-india-gold">
+                    8JJ SPORTS • GALLERY
+                  </p>
+                  <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl text-white india-header-text">
+                    Moments. Matches. Memories.
+                  </h1>
+                  <p className="mt-2 max-w-2xl text-sm text-sky-100/70">
+                    Browse images by category and album. Click any photo to view
+                    fullscreen.
+                  </p>
 
-                {/* <div className="mt-5 flex flex-wrap gap-3 text-xs">
+                  {/* <div className="mt-5 flex flex-wrap gap-3 text-xs">
                   <span className="rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
                     {categories.length} Categories
                   </span>
@@ -152,41 +153,41 @@ export default async function GalleryPage() {
                     {totalPhotos} Photos
                   </span>
                 </div> */}
-              </div>
+                </div>
 
-              <Link
-                href="/"
-                className="shrink-0 rounded-full bg-gradient-to-r from-india-saffron to-india-gold px-4 py-2 text-[11px] font-bold text-black hover:shadow-lg transition-all"
-              >
-                Back Home
-              </Link>
+                <Link
+                  href="/"
+                  className="shrink-0 rounded-full bg-gradient-to-r from-india-gold to-india-saffron  px-4 py-2 text-[11px] font-bold text-black hover:shadow-lg transition-all"
+                >
+                  Back Home
+                </Link>
+              </div>
+            </div>
+
+            {/* BODY */}
+            <div className="mt-8">
+              {categories.length === 0 ? (
+                <div className="rounded-2xl bg-slate-900/60 backdrop-blur-md p-8 text-sm text-center text-sky-100/60 border border-india-gold/20 shadow-lg">
+                  No categories found.
+                </div>
+              ) : (
+                <GalleryClient
+                  categories={categories}
+                  albumsByCategoryId={Object.fromEntries(
+                    Array.from(albumsByCategoryId.entries()).map(([k, v]) => [
+                      String(k),
+                      v,
+                    ]),
+                  )}
+                  photosByAlbumSlug={Object.fromEntries(
+                    photosByAlbumSlug.entries(),
+                  )}
+                />
+              )}
             </div>
           </div>
-
-          {/* BODY */}
-          <div className="mt-8">
-            {categories.length === 0 ? (
-              <div className="rounded-2xl bg-slate-900/60 backdrop-blur-md p-8 text-sm text-sky-100/60 border border-india-gold/20 shadow-lg">
-                No categories found.
-              </div>
-            ) : (
-              <GalleryClient
-                categories={categories}
-                albumsByCategoryId={Object.fromEntries(
-                  Array.from(albumsByCategoryId.entries()).map(([k, v]) => [
-                    String(k),
-                    v,
-                  ])
-                )}
-                photosByAlbumSlug={Object.fromEntries(
-                  photosByAlbumSlug.entries()
-                )}
-              />
-            )}
-          </div>
-        </div>
-      </main>
-
+        </main>
+      </div>
       <Footer />
     </>
   );
