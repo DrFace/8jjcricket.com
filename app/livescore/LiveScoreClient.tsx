@@ -350,7 +350,7 @@ export default function LiveScoreHome() {
                         No recent matches found for this date/filter.
                       </div>
                     ) : (
-                      <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                      <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 gap-4">
                         {liveTabRecent4.map((f: any) => (
                           <LiveScoreCard key={f.id} f={f} />
                         ))}
