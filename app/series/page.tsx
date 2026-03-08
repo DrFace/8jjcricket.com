@@ -15,7 +15,9 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(seriesJsonLd) }}
       />
-      <SeriesClient />
+      <Suspense fallback={null}>
+        <SeriesClient />
+      </Suspense>
     </>
   );
 }
