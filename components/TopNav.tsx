@@ -237,7 +237,7 @@ export default function TopNav() {
 
       <header className="sticky top-0 z-50 border-b border-[var(--border-primary)] bg-[var(--bg-card)] backdrop-blur-xl shadow-lg">
         <div className="flex w-full items-center justify-between px-2 lg:px-4 py-2">
-          <Link
+          {/* <Link
             href="/"
             className="flex justify-center gap-2 text-2xl lg:text-4xl font-bold shrink-0"
           >
@@ -257,7 +257,20 @@ export default function TopNav() {
             >
               <span className={styles.gradientText}>8JJCRICKET</span>
             </motion.div>
-          </Link>
+          </Link> */}
+          <Link
+  href="/"
+  className="flex justify-center items-center shrink-0"
+>
+  <Image
+    src="/newlogo.png"
+    alt="8jj Cricket logo"
+    width={180}
+    height={20}
+    priority
+    className="block brightness-[1.2] contrast-110 saturate-125 drop-shadow-[0_0_20px_rgba(56,189,248,1)] drop-shadow-[0_0_35px_rgba(14,165,233,0.9)] drop-shadow-[0_0_50px_rgba(6,182,212,0.7)] hover:scale-105 transition-transform duration-300"
+  />
+</Link>
 
           <nav className="hidden gap-3 lg:gap-5 xl:gap-8 text-[13px] lg:text-[14px] xl:text-[15px] font-semibold md:flex whitespace-nowrap">
             <NavItem href="/" label="Home" active={isActive("/")} />
