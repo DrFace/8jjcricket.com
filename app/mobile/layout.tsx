@@ -1,6 +1,7 @@
 // app/mobile/layout.tsx
 "use client";
 
+import Image from "next/image";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -203,12 +204,11 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-3">
             <MobileSidebar />
 
-            <Link
+            {/* <Link
               href="/mobile"
               className="flex items-center gap-2 relative active:scale-95"
               aria-label="Go to Home"
             >
-              {/* Logo */}
               <div className="relative">
                 <img
                   src="/8jjlogo.png"
@@ -216,7 +216,6 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
                   className="relative z-10 h-9 w-9 object-contain"
                 />
 
-                {/* Glow underneath */}
                 <span
                   aria-hidden
                   className="
@@ -240,7 +239,21 @@ export default function MoblieLayout({ children }: { children: ReactNode }) {
               >
                 <span className={styles.gradientTextMobile}>8JJCRICKET</span>
               </motion.div>
-            </Link>
+            </Link> */}
+
+              <Link
+                          href="/"
+                          className="flex justify-center items-center shrink-0"
+                        >
+                          <Image
+                            src="/newlogo.png"
+                            alt="8jj Cricket logo"
+                            width={161}
+                            height={50}
+                            priority
+                            className="w-25 block brightness-[1.2] contrast-110 saturate-125 drop-shadow-[0_0_20px_rgba(56,189,248,1)] drop-shadow-[0_0_35px_rgba(14,165,233,0.9)] drop-shadow-[0_0_50px_rgba(6,182,212,0.7)] hover:scale-105 transition-transform duration-300"
+                          />
+                        </Link>
           </div>
 
           <div className="ml-5 inline-flex h-9 items-center justify-center rounded-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors">

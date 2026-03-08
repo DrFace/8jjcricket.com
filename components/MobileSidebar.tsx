@@ -125,7 +125,7 @@ export default function MobileSidebar() {
         >
           {/* Header */}
           <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-            <Link
+            {/* <Link
               href="/"
               onClick={() => setOpen(false)}
               className="flex items-center justify-between gap-2"
@@ -142,8 +142,21 @@ export default function MobileSidebar() {
                   8jjcricket
                 </div>
               </div>
-            </Link>
+            </Link> */}
 
+             <Link
+              href="/"
+              className="flex justify-center items-center shrink-0"
+            >
+              <Image
+                src="/newlogo.png"
+                alt="8jj Cricket logo"
+                width={170}
+                height={10}
+                priority
+                className="block brightness-[1.2] contrast-110 saturate-125 drop-shadow-[0_0_20px_rgba(56,189,248,1)] drop-shadow-[0_0_35px_rgba(14,165,233,0.9)] drop-shadow-[0_0_50px_rgba(6,182,212,0.7)] hover:scale-105 transition-transform duration-300"
+              />
+            </Link>
             <button
               type="button"
               onClick={() => setOpen(false)}
